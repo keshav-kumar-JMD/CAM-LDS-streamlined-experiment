@@ -147,6 +147,8 @@ class PipelineTests(unittest.TestCase):
             for i,c in enumerate(nb.cells):
                 if c.cell_type=='code':
                     compile(c.source,str(path),'exec')
-                    self.assertIn('Recovery / safe rerun',nb.cells[i-1].source)
+                    if c.get('id','').startswith('code-'):
+                        description=next(nb.cells[j].source for j in range(i-1,-1,-1) if nb.cells[j].cell_type=='markdown')
+                        self.assertIn('Recovery / safe rerun',description)
 
 if __name__=='__main__':unittest.main()

@@ -1,29 +1,37 @@
-# Backup status
+# Streamlined experiment backup
 
-This repository is the portable backup of the streamlined CAM-LDS experiment. It includes source code, notebooks, frozen manifests and tokenizers, prepared datasets, response records, telemetry, and completed LoRA adapter archives.
+Snapshot date: 26 October 2026 (Australia/Brisbane).
 
-## Included completed SFT adapters
+## Complete SFT evaluations
 
-- BitNet 2B: technique, explanation, joint and full
-- Hermes: technique, explanation, joint and full
-- Llama 3B: technique, explanation, joint and full
-- Qwen 1B: technique, explanation, joint and full
+The following models have all four final adapters plus 140 validation and 145 test rows for every adapter:
 
-The final adapter ZIP files are stored with Git LFS. Base-model weights are excluded because the frozen Hugging Face repository and revision are recorded and can be downloaded again.
+- Llama 3B
+- Mistral 7B
+- Qwen 1B
+- Qwen 7B
 
-## Incomplete models at backup time
+## Partial evaluations
 
-- Mistral 7B: training was active, with no acknowledged local trainer checkpoint yet.
-- Qwen 7B: the last worker failed before an acknowledged local trainer checkpoint was created.
+- Hermes: all four adapters and all four 145-row test runs are complete; validation responses are absent.
+- BitNet 2B: all four adapters and all validation runs are complete; technique and explanation tests are complete, joint test was active, and full test was pending at snapshot time.
+- Untreated BitNet and untreated Hermes inference were active at snapshot time.
 
-No checkpoint is claimed for these models. Rerunning section 4 starts the unfinished condition unless a newer acknowledged checkpoint has subsequently arrived from Colab.
+## Resume state
 
-## Excluded transient data
+All 24 final adapter archives are included through Git LFS. No trainer checkpoint is included because no remaining work requires training: unfinished work is inference and resumes from the atomic per-row ledgers under `results/`.
 
-- Python virtual environments
-- Downloaded base-model caches
-- Superseded trainer checkpoints for models that already have final adapters
-- Receiver tokens, heartbeat files, tunnel state and partial uploads
+## Telemetry policy
+
+`telemetry/final_run_inventory.json` indexes the latest completed structured telemetry record for each available logical run. These records retain total runtime, model/cache load time, training or inference time, software versions, GPU/CUDA/driver details, sampled utilisation and power, estimated energy, and peak GPU memory. Superseded failed-attempt telemetry and completed-run append-only logs are excluded. Available logs for interrupted active runs are retained in `telemetry/in_progress_logs/`.
+
+Colab compute-unit balances are only available if they were manually entered in notebook section 7; no billing file was present at this snapshot.
+
+## Exclusions
+
+- Downloaded base-model weights (frozen repository and commit remain recorded)
+- Receiver tokens and tunnel state
+- Partial upload files
+- Superseded training checkpoints
+- Python environments
 - Claude and Hugging Face credentials
-
-The original parent `secret/` directory is outside this repository and must never be committed.
