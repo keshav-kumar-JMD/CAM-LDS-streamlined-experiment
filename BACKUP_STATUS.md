@@ -1,37 +1,39 @@
 # Streamlined experiment backup
 
-Snapshot date: 26 October 2026 (Australia/Brisbane).
+Snapshot date: 27 October 2026 (Australia/Brisbane).
 
 ## Complete SFT evaluations
 
-The following models have all four final adapters plus 140 validation and 145 test rows for every adapter:
+All four final adapters and all 140 validation plus 145 test rows are complete for:
 
-- Llama 3B
-- Mistral 7B
-- Qwen 1B
-- Qwen 7B
+- bitnet2b
+- hermes
+- llama3b
+- mistral7b
+- qwen1b
+- qwen7b
 
-## Partial evaluations
+## Complete untreated evaluation
 
-- Hermes: all four adapters and all four 145-row test runs are complete; validation responses are absent.
-- BitNet 2B: all four adapters and all validation runs are complete; technique and explanation tests are complete, joint test was active, and full test was pending at snapshot time.
-- Untreated BitNet and untreated Hermes inference were active at snapshot time.
+- hermes: 990/990 finalized rows
 
-## Resume state
+## Incomplete, resumable untreated evaluations
 
-All 24 final adapter archives are included through Git LFS. No trainer checkpoint is included because no remaining work requires training: unfinished work is inference and resumes from the atomic per-row ledgers under `results/`.
+- bitnet2b: 653/990 finalized rows; atomic record ledger retained.
+- llama3b: 289/990 finalized rows; atomic record ledger retained.
+- mistral7b, qwen1b and qwen7b: no untreated response folders were present at snapshot time.
 
-## Telemetry policy
+The single `in_progress` marker in each partial CSV is deliberately retained and will be retried; it is not considered a finalized response.
 
-`telemetry/final_run_inventory.json` indexes the latest completed structured telemetry record for each available logical run. These records retain total runtime, model/cache load time, training or inference time, software versions, GPU/CUDA/driver details, sampled utilisation and power, estimated energy, and peak GPU memory. Superseded failed-attempt telemetry and completed-run append-only logs are excluded. Available logs for interrupted active runs are retained in `telemetry/in_progress_logs/`.
+## Resume and artifact policy
 
-Colab compute-unit balances are only available if they were manually entered in notebook section 7; no billing file was present at this snapshot.
+- All 24 final SFT adapter archives are included with Git LFS.
+- No trainer checkpoints are included because every training condition has a final adapter.
+- Incomplete inference resumes from `results/<model>/untreated_hf/all/records/`.
+- Immutable base-model weights, Colab caches, receiver runtime state, partial uploads, environments and secrets are excluded.
 
-## Exclusions
+## Report-grade telemetry
 
-- Downloaded base-model weights (frozen repository and commit remain recorded)
-- Receiver tokens and tunnel state
-- Partial upload files
-- Superseded training checkpoints
-- Python environments
-- Claude and Hugging Face credentials
+`telemetry/final_run_inventory.json` indexes 74 selected structured telemetry records. The selected records retain runtime, model/cache load time, training/inference time, software versions, GPU/CUDA/driver, sampled utilisation and power, estimated energy, peak GPU memory and token totals where available. Superseded progress attempts and completed-run logs are excluded. Interruption logs for the two incomplete untreated runs are retained separately.
+
+Manual Colab billing data: not present in the source experiment. Device energy estimates are not equivalent to Colab compute-unit charges.

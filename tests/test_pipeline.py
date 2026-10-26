@@ -25,6 +25,16 @@ class CharacterTokenizer:
         return {'input_ids':[ord(c) for c in text], 'offset_mapping':[(i,i+1) for i in range(len(text))]}
 
 class PipelineTests(unittest.TestCase):
+    def test_base_models_bypass_checkpoint_tunnel(self):
+        root=Path(__file__).resolve().parents[1]
+        source=(root/'streamlined/gpu.py').read_text(encoding='utf-8')
+        loader=source[source.index('def load_base'):source.index('def run_identity')]
+        self.assertIn("cache_source='colab_local_reuse' if intact else 'huggingface_direct'",loader)
+        self.assertIn('snapshot_download(',loader)
+        self.assertNotIn('mirror.fetch(',loader)
+        self.assertNotIn('persist(',loader)
+        self.assertNotIn('package(',loader)
+
     def test_exact_source_and_masks(self):
         line=' {"response": { "explanation" : "a\\nb", "techniques": ["T1000"], "confidence":"Neutral" }, "x":2}'
         a,b=object_spans(line)['response'];answer=line[a:b]

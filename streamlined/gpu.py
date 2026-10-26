@@ -23,27 +23,26 @@ def load_base(root,key,mirror,hb,training=False):
     if not torch.cuda.is_bf16_supported():
         raise RuntimeError('Frozen protocol requires native BF16. Use A100, H100 or L4; no silent precision change.')
     spec=read_json(root/'manifests/models.json')[key]
-    folder=root/'models/base'/key; archive=root/'models/base'/f'{key}.zip'
+    # Base weights are immutable public/upstream artifacts. Keep them only in the
+    # current Colab runtime and obtain them directly from the frozen HF revision.
+    # Sending multi-GB base archives through the laptop checkpoint tunnel made
+    # restarts slow and could strand workers in an interrupted chunk transfer.
+    folder=root/'models/base'/key
     started=time.perf_counter()
     marker=folder/'snapshot_complete.json'
     complete=read_json(marker) if marker.exists() else {}
     intact=complete.get('revision')==spec['revision'] and all((folder/name).is_file() and
         (folder/name).stat().st_size==size for name,size in complete.get('files',{}).items())
+    cache_source='colab_local_reuse' if intact else 'huggingface_direct'
     if not intact:
-        hb.update('restore/download base model','model cache')
-        restored=mirror.fetch(f'models/base/{key}.zip',archive) if mirror else False
-        if restored:safe_extract(archive,folder)
-        else:
-            snapshot_download(spec['repo'],revision=spec['revision'],local_dir=folder,
-                token=os.environ.get('HF_TOKEN'),allow_patterns=['*.json','*.safetensors','*.model','*.txt','*.jinja'])
-            write_json(marker,{'revision':spec['revision'],'files':{
-                p.relative_to(folder).as_posix():p.stat().st_size for p in folder.rglob('*')
-                if p.is_file() and '.cache' not in p.parts and p.name!='snapshot_complete.json'}})
-            package(folder,archive)
+        hb.update('download frozen base model directly from Hugging Face','model cache')
+        snapshot_download(spec['repo'],revision=spec['revision'],local_dir=folder,
+            token=os.environ.get('HF_TOKEN'),allow_patterns=['*.json','*.safetensors','*.model','*.txt','*.jinja'])
+        write_json(marker,{'revision':spec['revision'],'files':{
+            p.relative_to(folder).as_posix():p.stat().st_size for p in folder.rglob('*')
+            if p.is_file() and '.cache' not in p.parts and p.name!='snapshot_complete.json'}})
     if not marker.exists() or read_json(marker)['revision']!=spec['revision']:
         raise ValueError('Restored base snapshot does not match the frozen revision')
-    if not archive.exists():package(folder,archive)
-    persist(root,archive,mirror) # Reconcile an upload interrupted after download completed.
     tok=AutoTokenizer.from_pretrained(folder,local_files_only=True,fix_mistral_regex=False)
     if tok.pad_token_id is None:tok.pad_token=tok.eos_token
     if digest(tok.chat_template)!=spec['chat_template_sha256']:raise ValueError('Tokenizer template changed')
@@ -58,7 +57,8 @@ def load_base(root,key,mirror,hb,training=False):
             raise ValueError('BitNet requires its native trainable BF16-master online quantization path')
     elif quant:raise ValueError('Deployment quantization is outside this experiment')
     model.config.use_cache=not training
-    return tok,model,spec,{'model_load_seconds':time.perf_counter()-started,'model_cache_restore_download_sync_seconds':cache_seconds}
+    return tok,model,spec,{'model_load_seconds':time.perf_counter()-started,
+        'model_cache_prepare_seconds':cache_seconds,'model_cache_source':cache_source}
 
 def run_identity(root,key,condition):
     m=verify_experiment(root)

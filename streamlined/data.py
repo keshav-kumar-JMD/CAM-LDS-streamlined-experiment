@@ -162,16 +162,3 @@ def feasibility(root):
     write_json(target,manifest)
     return {'eligible_train':len(ids),'excluded_train':len(excluded),'rows_audited':len(audit)}
 
-def cache_bases(root,selected=None):
-    """Optional local download, no inference; Colab can restore these archives."""
-    from huggingface_hub import snapshot_download
-    from .transport import package
-    root=Path(root);specs=read_json(root/'manifests/models.json');token=secret(root,'HF_Token.txt')
-    for key in selected or list(MODELS):
-        spec=specs[key];folder=root/'models/base'/key
-        snapshot_download(spec['repo'],revision=spec['revision'],local_dir=folder,token=token,
-            allow_patterns=['*.json','*.safetensors','*.model','*.txt','*.jinja'])
-        write_json(folder/'snapshot_complete.json',{'revision':spec['revision'],
-            'files':{p.relative_to(folder).as_posix():p.stat().st_size for p in folder.rglob('*')
-                     if p.is_file() and '.cache' not in p.parts and p.name!='snapshot_complete.json'}})
-        archive=root/'models/base'/f'{key}.zip';package(folder,archive);print('Cached locally:',key,flush=True)

@@ -148,16 +148,12 @@ watchdog_ready(ROOT)
 assert (ROOT/'manifests/experiment.json').is_file(), 'Complete section 4 first'
 print('Bundle:', make_bundle(ROOT))''',
         'Start the terminals below, then rerun 1 and 5. After a tunnel restart, reconnect each Colab notebook.',COMMANDS)
-    cell(nb,'6. Optional local base-model cache','**Full base weights can be downloaded once on this laptop without a GPU.** '
-         'This avoids spending Colab time downloading them from Hugging Face. Archives plus extracted weights require '
-         'substantial disk space (roughly twice the checkpoint sizes). It is optional: Colab otherwise downloads and mirrors them.',
-         '''DOWNLOAD_BASES_LOCALLY = False
-SELECTED_CACHE_MODELS = list(MODELS)
-if DOWNLOAD_BASES_LOCALLY:
-    from streamlined.data import cache_bases
-    cache_bases(ROOT,SELECTED_CACHE_MODELS)''',
-         'Rerun 1 and 6 after a download interruption. Hugging Face reuses downloaded files. No paid requests or model execution.',
-         cost='Network transfer and local disk use; no GPU needed.')
+    cell(nb,'6. Base-model cache policy','**Base weights are not mirrored through the laptop receiver.** Each Colab runtime '
+         'downloads the frozen Hugging Face revision directly and reuses it for every later stage in that surviving runtime. '
+         'The receiver stores only experiment-specific adapters, checkpoints, responses and telemetry.',
+         '''print('Base-model policy: direct Hugging Face download into each Colab runtime; no laptop archive transfer.')''',
+         'No action is required. A new Colab virtual machine downloads its own copy once; ordinary cell reruns reuse it.',
+         cost='No work is performed by this documentation cell.')
     save(nb,'00_prepare_universal_dataset.ipynb')
 
 def gpu_notebook(key,sft):
@@ -173,7 +169,8 @@ def gpu_notebook(key,sft):
         'Rerun after every runtime or tunnel restart. Do not replace code while an old worker is still running.')
     cell(nb,'2. Install reusable GPU dependencies','Install pinned CUDA PyTorch, Transformers and PEFT in the '
         'kernel environment before any model imports. **No llama.cpp/CUDA compilation is required.** '
-        'Model downloads are archived on the laptop after the first successful download and reused through the receiver.',
+        'Base models download directly from their frozen Hugging Face revisions and are reused within the surviving Colab runtime; '
+        'large base-weight archives never pass through the laptop receiver.',
         '''import subprocess, sys
 subprocess.run([sys.executable,'-m','pip','install','-r',str(ROOT/'requirements-colab.txt')],check=True)
 print('Dependencies ready; model work runs in a fresh subprocess.')''',
@@ -207,11 +204,13 @@ for condition in CONDITIONS:
             'GPU training for four adapters; local archive transfers include optimizer state.')
         cell(nb,'5. Validation ablations, all adapters','Generate independently on the frozen validation rows. '
             'Every completed response is retained irrespective of quality, syntax, empty text or length termination.',
-            '''for condition in CONDITIONS:
+            '''from streamlined.common import CONDITIONS
+for condition in CONDITIONS:
     worker(ROOT,MODEL,'infer',condition,'validation')''',recovery+'Rerun 5. Completed prompt IDs are skipped.',cost='GPU inference.')
         cell(nb,'6. Prespecified test replication, all adapters','Evaluate all four adapters on test without using validation '
             'scores to select an adapter or change training. Test responses never enter training.',
-            '''for condition in CONDITIONS:
+            '''from streamlined.common import CONDITIONS
+for condition in CONDITIONS:
     worker(ROOT,MODEL,'infer',condition,'test')''',recovery+'Rerun 6. Completed IDs are skipped.',cost='GPU inference.')
     else:
         cell(nb,'4. Generate all 990 untreated responses','The exact HF base revision, BF16 precision and template match the SFT '
