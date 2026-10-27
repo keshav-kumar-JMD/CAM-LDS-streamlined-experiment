@@ -10,13 +10,14 @@ All four final adapters and all 140 validation plus 145 test rows are complete f
 
 - hermes: 990/990 finalized rows
 - llama3b: 990/990 finalized rows
+- mistral7b: 990/990 finalized rows
+- qwen1b: 990/990 finalized rows
 
 ## Incomplete, resumable untreated evaluations
 
-- bitnet2b: 820/990 finalized rows; atomic record ledger retained.
-- mistral7b: 592/990 finalized rows; atomic record ledger retained.
+- bitnet2b: atomic record ledger retained at the snapshot's recorded coverage.
 
-The `in_progress` marker, when present, is retained and retried rather than treated as a finalized response. Untreated models without a result folder have not started.
+Untreated models without a result folder have not started.
 
 ## Resume and artifact policy
 
@@ -28,4 +29,4 @@ The `in_progress` marker, when present, is retained and retried rather than trea
 
 ## Report-grade telemetry
 
-`telemetry/final_run_inventory.json` indexes 74 selected structured records containing runtime, model/cache load, training/inference time, software, GPU/CUDA/driver, utilisation, power, energy, peak memory and token totals where available. Incomplete-run logs are retained separately. Manual Colab billing data: not present in the source experiment.
+`telemetry/final_run_inventory.json` indexes 76 selected structured records containing runtime, model/cache load, training/inference time, software, GPU/CUDA/driver, utilisation, power, energy, peak memory and token totals where available. Incomplete-run logs are retained separately. Manual Colab billing data: not present in the source experiment.
