@@ -13,6 +13,7 @@ All four final adapters and all 140 validation plus 145 test rows are complete f
 - llama3b: 990/990 finalized rows
 - mistral7b: 990/990 finalized rows
 - qwen1b: 990/990 finalized rows
+- qwen7b: 990/990 finalized rows
 
 ## Incomplete, resumable untreated evaluations
 
@@ -28,4 +29,4 @@ None in this snapshot. Untreated models without a result folder have not started
 
 ## Report-grade telemetry
 
-`telemetry/final_run_inventory.json` indexes 77 selected structured records containing runtime, model/cache load, training/inference time, software, GPU/CUDA/driver, utilisation, power, energy, peak memory and token totals where available. Incomplete-run logs are retained separately. Manual Colab billing data: not present in the source experiment.
+`telemetry/final_run_inventory.json` indexes 78 selected structured records containing runtime, model/cache load, training/inference time, software, GPU/CUDA/driver, utilisation, power, energy, peak memory and token totals where available. Incomplete-run logs are retained separately. Manual Colab billing data: not present in the source experiment.
