@@ -1,0 +1,243 @@
+{
+  "prompt_id": "78",
+  "scenario": "3",
+  "variant": "ssh_apt",
+  "step": "14",
+  "split": "train",
+  "group_id": "[\"3\", \"14\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765535705.048:17031): arch=c000003e syscall=91 success=yes exit=0 a0=3 a1=81a4 a2=100 a3=0 items=1 ppid=4266 pid=4780 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"vim\" exe=\"/usr/bin/vim.basic\" subj=unconfined\u001dARCH=x86_64 SYSCALL=fchmod AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535705.048:17031): item=0 name=(null) inode=1034119 dev=fc:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535705.048:17031): proctitle=76696D0044454249414E2F636F6E74726F6C\n        type=SYSCALL msg=audit(1765535705.048:17032): arch=c000003e syscall=188 success=yes exit=0 a0=5643e601f720 a1=7fc874232000 a2=5643e6291970 a3=1c items=1 ppid=4266 pid=4780 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"vim\" exe=\"/usr/bin/vim.basic\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setxattr AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535705.048:17032): item=0 name=\"DEBIAN/control\" inode=1034119 dev=fc:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535705.048:17032): proctitle=76696D0044454249414E2F636F6E74726F6C\n        type=SYSCALL msg=audit(1765535705.048:17033): arch=c000003e syscall=87 success=yes exit=0 a0=5643e62710f0 a1=1 a2=0 a3=1 items=2 ppid=4266 pid=4780 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"vim\" exe=\"/usr/bin/vim.basic\" subj=unconfined\u001dARCH=x86_64 SYSCALL=unlink AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535705.048:17033): item=0 name=\"/tmp/.tmux_data/healthcheckd/DEBIAN/\" inode=1034117 dev=fc:01 mode=040755 ouid=0 ogid=0 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765535705.048:17033): item=1 name=\"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" inode=1034126 dev=fc:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535705.048:17033): proctitle=76696D0044454249414E2F636F6E74726F6C",
+  "prompt_sha256": "9e75e3753ee6bbc6aeb16b56918c4aa69f3363eba2bcd03e87c7828dcb051b81",
+  "ground_truth": "[\"T1059\", \"T1574\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1546.016\", \"T1564.001\", \"T1036.005\", \"T1222.002\", \"T1074.001\", \"T1059.004\", \"T1105\", \"T1195.002\", \"T1574.011\", \"T1027\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root-owned edits with vim to a Debian package control file under a hidden /tmp path named like a daemon (/tmp/.tmux_data/healthcheckd/DEBIAN/control), suggesting preparation of a potentially malicious installer package or persistence artifact. While file edits and chmod/xattr operations can be normal, the hidden staging location and service-like package name are suspicious.\"}",
+  "teacher_response_sha256": "5ebfee4ad4c5db6ca56d4472aa4a8559676d74949717ce01ee17ca385895814d",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:78",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"A12.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+  "candidate_response_sha256": "48aabf930c98da813db9e590b421db209827b6417136989d65322c95bcbdcf9e",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1325,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 108.26470993900148,
+  "candidate_output_tokens_per_second": 9.458299020769946,
+  "candidate_peak_allocated_bytes": 5083022336,
+  "candidate_peak_reserved_bytes": 6452936704,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "b81d42843d5214ff1cc7b2d0c0df498639ef05679994f36478f8421b6c9690c7",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1036\", \"T1564.001\", \"T1059.004\", \"T1222.002\", \"T1543.002\", \"T1005\", \"T1074.001\", \"T1546\", \"T1070.004\", \"T1505\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The root user (via the non-root account 'john' escalated through sudo/elevated session) edits a DEBIAN/control file inside a hidden directory named '/tmp/.tmux_data/healthcheckd', a masquerading and concealment pattern used to stage a malicious Debian package, and then modifies extended attributes and deletes the swap file, indicating anti-forensic cleanup. The benign-looking names ('tmux_data', 'healthcheckd') combined with the hidden location and cleanup of editor artifacts strongly suggest an attacker is building a backdoored package.\"\n}\n```",
+  "haiku_reference_response_sha256": "4d6cece1dcfbbf60e1793334ccbf3870d8fc1533138b4e45f9e25d731e5cac42",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "d15068f39fb94a81dbbc009046c1960760627178dcb5c107ce532d2328357c3c",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's only listed 'technique' is a degenerate string of repeated '1' characters prefixed with 'A12', which is not a valid ATT&CK ID. Neither T1059 nor T1574 is present among the first ten predictions, so coverage is zero.\",\n    \"prediction_evidence_support\": \"The single prediction is not a real ATT&CK technique identifier and cannot be tied to any log artifact; the logs (vim editing DEBIAN/control in /tmp/.tmux_data/healthcheckd, setxattr, unlink of a .swp file) are not supported by this output.\",\n    \"explanation_grounding\": \"No explanation field is present in the candidate output, so grounding cannot be assessed beyond absence.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, and the one prediction is invalid, so there is no reason linked to any technique.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate text, so this dimension is unassessable.\",\n    \"instruction_adherence\": \"The output is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a malformed repeated-character token rather than the top 10 ATT&CK IDs.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [\"A12.1.1.1.1.1 (malformed repeated-digit string, not a valid ATT&CK ID)\"],\n  \"failure_labels\": [\n    \"invalid_technique_id\",\n    \"degenerate_repetition\",\n    \"missing_confidence_field\",\n    \"missing_explanation_field\",\n    \"invalid_json\",\n    \"schema_noncompliance\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or substantive confidence statement.\"\n}\n```",
+  "response_hash": "c750f9db7c6a801f607fa7c919c7e8596d7f71a746e2cb33226eb355e64d3c40",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvFQHDtdC66CKAHtq2y",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's only listed 'technique' is a degenerate string of repeated '1' characters prefixed with 'A12', which is not a valid ATT&CK ID. Neither T1059 nor T1574 is present among the first ten predictions, so coverage is zero.\",\n    \"prediction_evidence_support\": \"The single prediction is not a real ATT&CK technique identifier and cannot be tied to any log artifact; the logs (vim editing DEBIAN/control in /tmp/.tmux_data/healthcheckd, setxattr, unlink of a .swp file) are not supported by this output.\",\n    \"explanation_grounding\": \"No explanation field is present in the candidate output, so grounding cannot be assessed beyond absence.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, and the one prediction is invalid, so there is no reason linked to any technique.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate text, so this dimension is unassessable.\",\n    \"instruction_adherence\": \"The output is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a malformed repeated-character token rather than the top 10 ATT&CK IDs.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [\"A12.1.1.1.1.1 (malformed repeated-digit string, not a valid ATT&CK ID)\"],\n  \"failure_labels\": [\n    \"invalid_technique_id\",\n    \"degenerate_repetition\",\n    \"missing_confidence_field\",\n    \"missing_explanation_field\",\n    \"invalid_json\",\n    \"schema_noncompliance\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or substantive confidence statement.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 5047,
+      "output_tokens": 878,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 5047,
+    "output_tokens": 878,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00047185,
+  "batch_api": true,
+  "elapsed_seconds": 39296.04354786873,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5047,
+  "output_tokens": 878,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's only listed 'technique' is a degenerate string of repeated '1' characters prefixed with 'A12', which is not a valid ATT&CK ID. Neither T1059 nor T1574 is present among the first ten predictions, so coverage is zero.\",\n    \"prediction_evidence_support\": \"The single prediction is not a real ATT&CK technique identifier and cannot be tied to any log artifact; the logs (vim editing DEBIAN/control in /tmp/.tmux_data/healthcheckd, setxattr, unlink of a .swp file) are not supported by this output.\",\n    \"explanation_grounding\": \"No explanation field is present in the candidate output, so grounding cannot be assessed beyond absence.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, and the one prediction is invalid, so there is no reason linked to any technique.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate text, so this dimension is unassessable.\",\n    \"instruction_adherence\": \"The output is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a malformed repeated-character token rather than the top 10 ATT&CK IDs.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [\"A12.1.1.1.1.1 (malformed repeated-digit string, not a valid ATT&CK ID)\"],\n  \"failure_labels\": [\n    \"invalid_technique_id\",\n    \"degenerate_repetition\",\n    \"missing_confidence_field\",\n    \"missing_explanation_field\",\n    \"invalid_json\",\n    \"schema_noncompliance\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or substantive confidence statement.\"\n}\n```",
+  "judge_response_sha256": "c750f9db7c6a801f607fa7c919c7e8596d7f71a746e2cb33226eb355e64d3c40",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 0,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": null,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "The candidate's only listed 'technique' is a degenerate string of repeated '1' characters prefixed with 'A12', which is not a valid ATT&CK ID. Neither T1059 nor T1574 is present among the first ten predictions, so coverage is zero.",
+      "prediction_evidence_support": "The single prediction is not a real ATT&CK technique identifier and cannot be tied to any log artifact; the logs (vim editing DEBIAN/control in /tmp/.tmux_data/healthcheckd, setxattr, unlink of a .swp file) are not supported by this output.",
+      "explanation_grounding": "No explanation field is present in the candidate output, so grounding cannot be assessed beyond absence.",
+      "prediction_reason_alignment": "No explanation is provided, and the one prediction is invalid, so there is no reason linked to any technique.",
+      "confidence_evidence_support": "No confidence label is recoverable from the candidate text, so this dimension is unassessable.",
+      "instruction_adherence": "The output is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a malformed repeated-character token rather than the top 10 ATT&CK IDs."
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+    },
+    "extracted_predictions": [
+      "A12.1.1.1.1.1 (malformed repeated-digit string, not a valid ATT&CK ID)"
+    ],
+    "failure_labels": [
+      "invalid_technique_id",
+      "degenerate_repetition",
+      "missing_confidence_field",
+      "missing_explanation_field",
+      "invalid_json",
+      "schema_noncompliance"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence field or substantive confidence statement."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 0,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "The candidate's only listed 'technique' is a degenerate string of repeated '1' characters prefixed with 'A12', which is not a valid ATT&CK ID. Neither T1059 nor T1574 is present among the first ten predictions, so coverage is zero.",
+    "prediction_evidence_support": "The single prediction is not a real ATT&CK technique identifier and cannot be tied to any log artifact; the logs (vim editing DEBIAN/control in /tmp/.tmux_data/healthcheckd, setxattr, unlink of a .swp file) are not supported by this output.",
+    "explanation_grounding": "No explanation field is present in the candidate output, so grounding cannot be assessed beyond absence.",
+    "prediction_reason_alignment": "No explanation is provided, and the one prediction is invalid, so there is no reason linked to any technique.",
+    "confidence_evidence_support": "No confidence label is recoverable from the candidate text, so this dimension is unassessable.",
+    "instruction_adherence": "The output is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a malformed repeated-character token rather than the top 10 ATT&CK IDs."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_extracted_predictions": [
+    "A12.1.1.1.1.1 (malformed repeated-digit string, not a valid ATT&CK ID)"
+  ],
+  "judge_failure_labels": [
+    "invalid_technique_id",
+    "degenerate_repetition",
+    "missing_confidence_field",
+    "missing_explanation_field",
+    "invalid_json",
+    "schema_noncompliance"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence field or substantive confidence statement."
+}

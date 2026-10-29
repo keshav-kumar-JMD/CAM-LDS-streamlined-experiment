@@ -1,0 +1,243 @@
+{
+  "prompt_id": "809",
+  "scenario": "1",
+  "variant": "pwnkit_sshkey",
+  "step": "7",
+  "split": "test",
+  "group_id": "[\"1\", \"7\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758116471.164:6371): arch=c000003e syscall=59 success=yes exit=0 a0=55a7a8088998 a1=55a7a8088910 a2=55a7a8088930 a3=8 items=3 ppid=4560 pid=4564 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=(none) ses=4294967295 comm=\"python3\" exe=\"/usr/bin/python3.9\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1758116471.164:6371): argc=3 a0=\"python3\" a1=\"-c\" a2=696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=PATH msg=audit(1758116471.164:6371): item=0 name=\"/usr/bin/python3\" inode=5914 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758116471.164:6371): item=1 name=\"/usr/bin/python3\" inode=6206 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758116471.164:6371): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758116471.164:6371): proctitle=707974686F6E33002D6300696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=SYSCALL msg=audit(1758116471.216:6372): arch=c000003e syscall=59 success=yes exit=0 a0=7f8228cf4110 a1=7f8228d551c0 a2=7ffc9db68c18 a3=fffffffffffff28e items=3 ppid=4564 pid=4565 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1758116471.216:6372): argc=1 a0=\"/bin/bash\"\n        type=PATH msg=audit(1758116471.216:6372): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758116471.216:6372): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "c25cea1bcdffe1da91c2faa6338c4ed0dc5390ffcc7486589583d921615863ae",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059.006\", \"T1059\", \"T1100\", \"T1505.003\", \"T1190\", \"T1611\", \"T1053\", \"T1203\", \"T1078\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show the www-data user executing `python3 -c 'import pty; pty.spawn(\\\"/bin/bash\\\")'`, which is a classic method to upgrade a web shell or reverse shell into an interactive TTY-backed Bash session. Execution under the web server account with unset AUID and spawned `/bin/bash` strongly suggests attacker shell activity rather than normal administration.\"}",
+  "teacher_response_sha256": "31913558682478d32b89f477aa7a595398ad7fa0f1e9ba74a50b6ff3bfa5f446",
+  "teacher_confidence_label": "Almost Certain: Attack",
+  "model": "hermes",
+  "condition": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "0b6fa8a7eecc10fd5310ebe209bf4c7d11acb075c6cf141706092383887930f0:809",
+  "candidate_response_raw": "{\"techniques\": \"T1053.004\", \"confidence\": \"99.99999999999999\"}",
+  "candidate_response_sha256": "c342313e7c23885c3700b0fb02d92c61d1df7fbfd3ce3a2e5259046521bd98ff",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "technique",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "0b6fa8a7eecc10fd5310ebe209bf4c7d11acb075c6cf141706092383887930f0",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "2d6acc4b2aeb1ffcbc0f88b3f3435be75e921dbe52824ec99d62675dc461d6ad",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1629,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 39,
+  "candidate_elapsed_seconds": 1.6447658559991396,
+  "candidate_output_tokens_per_second": 23.711581717088126,
+  "candidate_peak_allocated_bytes": 4153935872,
+  "candidate_peak_reserved_bytes": 10288627712,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "f75403661829c75f75447d55919ae093bfab59d7fcaa6d5274e7462b8a634636",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.006\", \"T1059.004\", \"T1059\", \"T1190\", \"T1505.003\", \"T1548\", \"T1068\", \"T1036\", \"T1571\", \"T1570\"],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The web server account www-data (UID 33) spawns python3 with an inline command (-c) that imports pty and calls pty.spawn('/bin/bash'), which is a classic reverse/interactive shell upgrade typical of web application exploitation. The subsequent bash process is spawned from the python process on a pseudo-terminal (tty=pts0), indicating an attacker has obtained an interactive shell as the web service account.\"\n}\n```",
+  "haiku_reference_response_sha256": "9cb75adb16616a6c1a790a3a88bab8eae6ed11cafdba59b1c080a186da1deaff",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "1e1471a21805392261290a13d44eb168637260d78a384c3d806b41a4a2dabd4b",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 0,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Candidate predicts only T1053.004 (Cron/at-style scheduled task); ground truth is T1059, which is not covered. Coverage is 0.\",\n    \"prediction_evidence_support\": \"The logs show python3 -c importing pty and spawning /bin/bash as www-data, with bash on pts0. Nothing in the logs relates to scheduled tasks or cron, so T1053.004 is unsupported.\",\n    \"explanation_grounding\": \"No explanation field is present, so grounding scores 0 per the rubric.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, and the single prediction is not connected to any observed artifact. Scores 0.\",\n    \"confidence_evidence_support\": \"Confidence is '99.99999999999999', which is not one of the seven permitted categories and is not a recognizable label. It is also grossly disproportionate to a single unsupported prediction and no reasoning. Scored 0.\",\n    \"instruction_adherence\": \"Output is valid JSON but uses a string instead of a list for techniques, uses a numeric string for confidence, omits the explanation field, and lists only one technique rather than up to ten. Most required fields and format constraints are violated.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": null,\n    \"reasoning_similarity\": null\n  },\n  \"extracted_predictions\": [\"T1053.004\"],\n  \"failure_labels\": [\"wrong_technique\", \"missing_explanation\", \"invalid_confidence_label\", \"schema_violation\", \"incomplete_technique_list\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"The candidate's confidence value '99.99999999999999' is a numeric string, not a recognizable category, so no label is recoverable to compare against the warranted 'Certain: Attack'.\",\n  \"confidence_label_null_reason\": \"No clearly expressed label from the seven permitted categories could be recovered from the candidate's confidence field.\"\n}\n```",
+  "response_hash": "8bf02ca13955346c3667b2ee333347a16b669c2fed75d43bb1055fbb17698352",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv5ypoykfXYfXM8EYiV",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 0,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Candidate predicts only T1053.004 (Cron/at-style scheduled task); ground truth is T1059, which is not covered. Coverage is 0.\",\n    \"prediction_evidence_support\": \"The logs show python3 -c importing pty and spawning /bin/bash as www-data, with bash on pts0. Nothing in the logs relates to scheduled tasks or cron, so T1053.004 is unsupported.\",\n    \"explanation_grounding\": \"No explanation field is present, so grounding scores 0 per the rubric.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, and the single prediction is not connected to any observed artifact. Scores 0.\",\n    \"confidence_evidence_support\": \"Confidence is '99.99999999999999', which is not one of the seven permitted categories and is not a recognizable label. It is also grossly disproportionate to a single unsupported prediction and no reasoning. Scored 0.\",\n    \"instruction_adherence\": \"Output is valid JSON but uses a string instead of a list for techniques, uses a numeric string for confidence, omits the explanation field, and lists only one technique rather than up to ten. Most required fields and format constraints are violated.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": null,\n    \"reasoning_similarity\": null\n  },\n  \"extracted_predictions\": [\"T1053.004\"],\n  \"failure_labels\": [\"wrong_technique\", \"missing_explanation\", \"invalid_confidence_label\", \"schema_violation\", \"incomplete_technique_list\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"The candidate's confidence value '99.99999999999999' is a numeric string, not a recognizable category, so no label is recoverable to compare against the warranted 'Certain: Attack'.\",\n  \"confidence_label_null_reason\": \"No clearly expressed label from the seven permitted categories could be recovered from the candidate's confidence field.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3911,
+      "output_tokens": 844,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3911,
+    "output_tokens": 844,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00040655,
+  "batch_api": true,
+  "elapsed_seconds": 40729.14650058746,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3911,
+  "output_tokens": 844,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 0,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Candidate predicts only T1053.004 (Cron/at-style scheduled task); ground truth is T1059, which is not covered. Coverage is 0.\",\n    \"prediction_evidence_support\": \"The logs show python3 -c importing pty and spawning /bin/bash as www-data, with bash on pts0. Nothing in the logs relates to scheduled tasks or cron, so T1053.004 is unsupported.\",\n    \"explanation_grounding\": \"No explanation field is present, so grounding scores 0 per the rubric.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, and the single prediction is not connected to any observed artifact. Scores 0.\",\n    \"confidence_evidence_support\": \"Confidence is '99.99999999999999', which is not one of the seven permitted categories and is not a recognizable label. It is also grossly disproportionate to a single unsupported prediction and no reasoning. Scored 0.\",\n    \"instruction_adherence\": \"Output is valid JSON but uses a string instead of a list for techniques, uses a numeric string for confidence, omits the explanation field, and lists only one technique rather than up to ten. Most required fields and format constraints are violated.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": null,\n    \"reasoning_similarity\": null\n  },\n  \"extracted_predictions\": [\"T1053.004\"],\n  \"failure_labels\": [\"wrong_technique\", \"missing_explanation\", \"invalid_confidence_label\", \"schema_violation\", \"incomplete_technique_list\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"The candidate's confidence value '99.99999999999999' is a numeric string, not a recognizable category, so no label is recoverable to compare against the warranted 'Certain: Attack'.\",\n  \"confidence_label_null_reason\": \"No clearly expressed label from the seven permitted categories could be recovered from the candidate's confidence field.\"\n}\n```",
+  "judge_response_sha256": "8bf02ca13955346c3667b2ee333347a16b669c2fed75d43bb1055fbb17698352",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 0,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": 0,
+      "instruction_adherence": 1
+    },
+    "reasons": {
+      "technique_identification": "Candidate predicts only T1053.004 (Cron/at-style scheduled task); ground truth is T1059, which is not covered. Coverage is 0.",
+      "prediction_evidence_support": "The logs show python3 -c importing pty and spawning /bin/bash as www-data, with bash on pts0. Nothing in the logs relates to scheduled tasks or cron, so T1053.004 is unsupported.",
+      "explanation_grounding": "No explanation field is present, so grounding scores 0 per the rubric.",
+      "prediction_reason_alignment": "No explanation is provided, and the single prediction is not connected to any observed artifact. Scores 0.",
+      "confidence_evidence_support": "Confidence is '99.99999999999999', which is not one of the seven permitted categories and is not a recognizable label. It is also grossly disproportionate to a single unsupported prediction and no reasoning. Scored 0.",
+      "instruction_adherence": "Output is valid JSON but uses a string instead of a list for techniques, uses a numeric string for confidence, omits the explanation field, and lists only one technique rather than up to ten. Most required fields and format constraints are violated."
+    },
+    "null_reasons": {
+      "prediction_similarity": null,
+      "reasoning_similarity": null
+    },
+    "extracted_predictions": [
+      "T1053.004"
+    ],
+    "failure_labels": [
+      "wrong_technique",
+      "missing_explanation",
+      "invalid_confidence_label",
+      "schema_violation",
+      "incomplete_technique_list"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "The candidate's confidence value '99.99999999999999' is a numeric string, not a recognizable category, so no label is recoverable to compare against the warranted 'Certain: Attack'.",
+    "confidence_label_null_reason": "No clearly expressed label from the seven permitted categories could be recovered from the candidate's confidence field."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 0,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": 0,
+  "score_instruction_adherence": 1,
+  "judge_reasons": {
+    "technique_identification": "Candidate predicts only T1053.004 (Cron/at-style scheduled task); ground truth is T1059, which is not covered. Coverage is 0.",
+    "prediction_evidence_support": "The logs show python3 -c importing pty and spawning /bin/bash as www-data, with bash on pts0. Nothing in the logs relates to scheduled tasks or cron, so T1053.004 is unsupported.",
+    "explanation_grounding": "No explanation field is present, so grounding scores 0 per the rubric.",
+    "prediction_reason_alignment": "No explanation is provided, and the single prediction is not connected to any observed artifact. Scores 0.",
+    "confidence_evidence_support": "Confidence is '99.99999999999999', which is not one of the seven permitted categories and is not a recognizable label. It is also grossly disproportionate to a single unsupported prediction and no reasoning. Scored 0.",
+    "instruction_adherence": "Output is valid JSON but uses a string instead of a list for techniques, uses a numeric string for confidence, omits the explanation field, and lists only one technique rather than up to ten. Most required fields and format constraints are violated."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": null,
+    "reasoning_similarity": null
+  },
+  "judge_extracted_predictions": [
+    "T1053.004"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique",
+    "missing_explanation",
+    "invalid_confidence_label",
+    "schema_violation",
+    "incomplete_technique_list"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "The candidate's confidence value '99.99999999999999' is a numeric string, not a recognizable category, so no label is recoverable to compare against the warranted 'Certain: Attack'.",
+  "confidence_label_null_reason": "No clearly expressed label from the seven permitted categories could be recovered from the candidate's confidence field."
+}

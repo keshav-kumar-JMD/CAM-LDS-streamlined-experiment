@@ -1,0 +1,241 @@
+{
+  "prompt_id": "663",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "23",
+  "split": "validation",
+  "group_id": "[\"2\", \"23\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1759318450.960:4618): proctitle=737368643A20726F6F74406E6F747479\n        type=CRED_REFR msg=audit(1759318450.960:4619): pid=2922 uid=0 auid=0 ses=5 subj==unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/sshd\" hostname=192.42.1.174 addr=192.42.1.174 terminal=ssh res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1759318450.964:4620): arch=c000003e syscall=59 success=yes exit=0 a0=564d08928760 a1=7ffe2756e720 a2=564d0891af80 a3=8 items=3 ppid=2880 pid=2922 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759318450.964:4620): argc=3 a0=\"bash\" a1=\"-c\" a2=\"/usr/lib/openssh/sftp-server\"\n        type=PATH msg=audit(1759318450.964:4620): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318450.964:4620): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318450.964:4620): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318450.964:4620): proctitle=737368643A20726F6F74406E6F747479\n        type=SYSCALL msg=audit(1759318450.964:4621): arch=c000003e syscall=59 success=yes exit=0 a0=55eaa0ec10e0 a1=55eaa0ec07f0 a2=55eaa0eb12c0 a3=fffffffffffff286 items=3 ppid=2880 pid=2922 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"sftp-server\" exe=\"/usr/lib/openssh/sftp-server\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759318450.964:4621): argc=1 a0=\"/usr/lib/openssh/sftp-server\"",
+  "prompt_sha256": "5bd2b27e5fa6d41290a33f7e7e1c1b1d99f10888da9b895a02584619625b6a42",
+  "ground_truth": "[\"T1105\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1021.004\", \"T1105\", \"T1078\", \"T1021\", \"T1059.004\", \"T1059\", \"T1030\", \"T1071\", \"T1133\", \"T1567\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show a root SSH session starting the OpenSSH SFTP subsystem via bash executing /usr/lib/openssh/sftp-server from remote address 192.42.1.174. This could indicate SSH/SFTP remote services and file transfer activity, but there are no clear malicious artifacts beyond a privileged login and normal sftp-server execution.\"}",
+  "teacher_response_sha256": "9ea7f033fc2cc41d5c452e725c85e0c3d9a5e560e3106a61d8c99bcfe7acea6d",
+  "teacher_confidence_label": "Neutral",
+  "model": "hermes",
+  "condition": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "7d7344a36f2db01e0cc9b7c2ccc3dab12268271c823284c051b62f1b1db969d4:663",
+  "candidate_response_raw": "{\"techniques\": \"T1053.004\", \"confidence\": \"T1053.004\": \"The logs show root executing /usr/lib/openssh/sftp-server as root, which is consistent with SSH/FTP service discovery and execution. This activity is most directly related to T1053.004, which describes SSH/FTP service discovery and execution.\"}",
+  "candidate_response_sha256": "3e2be32205b951ae40dc6b3d6ce4d0720f4a93f3c46202ebf76b07626a307df0",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "joint",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "7d7344a36f2db01e0cc9b7c2ccc3dab12268271c823284c051b62f1b1db969d4",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "07d0c6108b789aad34901ac02a76abbc01a04f84f9a0209780bf7ab0f58afb50",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1409,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 88,
+  "candidate_elapsed_seconds": 3.7638240460000816,
+  "candidate_output_tokens_per_second": 23.38047659096073,
+  "candidate_peak_allocated_bytes": 4092101120,
+  "candidate_peak_reserved_bytes": 9021947904,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "c99da6825d4c73269651c5eb4fe20a9f7480001762e5b80c2d982f9e4bd82783",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1021.004\", \"T1059.004\", \"T1078\", \"T1059\", \"T1098\", \"T1548\", \"T1036\", \"T1505\", \"T1040\", \"T1543\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The log shows root logging in via sshd from 192.42.1.174 followed by the SFTP subsystem being launched through bash (sftp-server), which is a standard OpenSSH file transfer workflow and not inherently malicious. The bash -c invocation wrapping sftp-server is typical of sshd's subsystem handling, though root SSH login from a remote address is a notable privilege that warrants verification.\"\n}\n```",
+  "haiku_reference_response_sha256": "24269f080afff21b2f1290faf15dfcc5b28f04ebdd3e2c25b2726e219d3f93df",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "2391c3e53845bcf8a1e2953c2b405c742d7096d469ab162ac844607258f790a1",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 2,\n    \"prediction_reason_alignment\": 1,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1105 (Ingress Tool Transfer). The candidate's only predicted ID is T1053.004 (Scheduled Task/Job: Cron), which does not match. The candidate's own explanation names SSH/FTP discovery, which is not T1105.\",\n    \"prediction_evidence_support\": \"T1053.004 is a scheduled task/cron technique with no support in the logs, which show an SSH login followed by sftp-server execution. The SFTP subsystem launch is weakly related to file transfer activity but does not support a scheduling technique.\",\n    \"explanation_grounding\": \"The explanation references the root user and the sftp-server execution, which are real observations. However, it calls the activity 'SSH/FTP service discovery' and 'execution' without grounding that in the logs, and does not mention the sshd login from 192.42.1.174 or the bash -c wrapper.\",\n    \"prediction_reason_alignment\": \"The reason given (SSH/FTP service discovery and execution) does not match the predicted technique T1053.004, which concerns scheduled jobs. The mismatch between prediction and rationale is substantial.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable. The candidate's 'confidence' field holds a technique ID, not one of the seven allowed categories.\",\n    \"instruction_adherence\": \"The output is not valid JSON. The 'techniques' field is a single string rather than a list of up to ten IDs, and the 'confidence' field is malformed and contains a technique ID instead of a confidence category. Required fields are not in the specified schema.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response; the confidence field contains a technique ID rather than a category.\"\n  },\n  \"extracted_predictions\": [\"T1053.004\"],\n  \"failure_labels\": [\"wrong_technique\", \"invalid_json\", \"schema_violation\", \"missing_confidence_label\", \"unsupported_technique_claim\"],\n  \"prediction_similarity\": 0,\n  \"reasoning_similarity\": 1,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate's confidence field contains a technique ID (T1053.004) and no category from the allowed set.\"\n}\n```",
+  "response_hash": "eb9c17ee0bd79e5a728003ddd4912d1e040b824b25bd2e0f9aff28472cdb13ce",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv8LkCxKp1TH45FoUYP",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 2,\n    \"prediction_reason_alignment\": 1,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1105 (Ingress Tool Transfer). The candidate's only predicted ID is T1053.004 (Scheduled Task/Job: Cron), which does not match. The candidate's own explanation names SSH/FTP discovery, which is not T1105.\",\n    \"prediction_evidence_support\": \"T1053.004 is a scheduled task/cron technique with no support in the logs, which show an SSH login followed by sftp-server execution. The SFTP subsystem launch is weakly related to file transfer activity but does not support a scheduling technique.\",\n    \"explanation_grounding\": \"The explanation references the root user and the sftp-server execution, which are real observations. However, it calls the activity 'SSH/FTP service discovery' and 'execution' without grounding that in the logs, and does not mention the sshd login from 192.42.1.174 or the bash -c wrapper.\",\n    \"prediction_reason_alignment\": \"The reason given (SSH/FTP service discovery and execution) does not match the predicted technique T1053.004, which concerns scheduled jobs. The mismatch between prediction and rationale is substantial.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable. The candidate's 'confidence' field holds a technique ID, not one of the seven allowed categories.\",\n    \"instruction_adherence\": \"The output is not valid JSON. The 'techniques' field is a single string rather than a list of up to ten IDs, and the 'confidence' field is malformed and contains a technique ID instead of a confidence category. Required fields are not in the specified schema.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response; the confidence field contains a technique ID rather than a category.\"\n  },\n  \"extracted_predictions\": [\"T1053.004\"],\n  \"failure_labels\": [\"wrong_technique\", \"invalid_json\", \"schema_violation\", \"missing_confidence_label\", \"unsupported_technique_claim\"],\n  \"prediction_similarity\": 0,\n  \"reasoning_similarity\": 1,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate's confidence field contains a technique ID (T1053.004) and no category from the allowed set.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3838,
+      "output_tokens": 966,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3838,
+    "output_tokens": 966,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00043339999999999996,
+  "batch_api": true,
+  "elapsed_seconds": 9162.004387617111,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3838,
+  "output_tokens": 966,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 2,\n    \"prediction_reason_alignment\": 1,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1105 (Ingress Tool Transfer). The candidate's only predicted ID is T1053.004 (Scheduled Task/Job: Cron), which does not match. The candidate's own explanation names SSH/FTP discovery, which is not T1105.\",\n    \"prediction_evidence_support\": \"T1053.004 is a scheduled task/cron technique with no support in the logs, which show an SSH login followed by sftp-server execution. The SFTP subsystem launch is weakly related to file transfer activity but does not support a scheduling technique.\",\n    \"explanation_grounding\": \"The explanation references the root user and the sftp-server execution, which are real observations. However, it calls the activity 'SSH/FTP service discovery' and 'execution' without grounding that in the logs, and does not mention the sshd login from 192.42.1.174 or the bash -c wrapper.\",\n    \"prediction_reason_alignment\": \"The reason given (SSH/FTP service discovery and execution) does not match the predicted technique T1053.004, which concerns scheduled jobs. The mismatch between prediction and rationale is substantial.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable. The candidate's 'confidence' field holds a technique ID, not one of the seven allowed categories.\",\n    \"instruction_adherence\": \"The output is not valid JSON. The 'techniques' field is a single string rather than a list of up to ten IDs, and the 'confidence' field is malformed and contains a technique ID instead of a confidence category. Required fields are not in the specified schema.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response; the confidence field contains a technique ID rather than a category.\"\n  },\n  \"extracted_predictions\": [\"T1053.004\"],\n  \"failure_labels\": [\"wrong_technique\", \"invalid_json\", \"schema_violation\", \"missing_confidence_label\", \"unsupported_technique_claim\"],\n  \"prediction_similarity\": 0,\n  \"reasoning_similarity\": 1,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate's confidence field contains a technique ID (T1053.004) and no category from the allowed set.\"\n}\n```",
+  "judge_response_sha256": "eb9c17ee0bd79e5a728003ddd4912d1e040b824b25bd2e0f9aff28472cdb13ce",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 1,
+      "explanation_grounding": 2,
+      "prediction_reason_alignment": 1,
+      "confidence_evidence_support": null,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "Ground truth is T1105 (Ingress Tool Transfer). The candidate's only predicted ID is T1053.004 (Scheduled Task/Job: Cron), which does not match. The candidate's own explanation names SSH/FTP discovery, which is not T1105.",
+      "prediction_evidence_support": "T1053.004 is a scheduled task/cron technique with no support in the logs, which show an SSH login followed by sftp-server execution. The SFTP subsystem launch is weakly related to file transfer activity but does not support a scheduling technique.",
+      "explanation_grounding": "The explanation references the root user and the sftp-server execution, which are real observations. However, it calls the activity 'SSH/FTP service discovery' and 'execution' without grounding that in the logs, and does not mention the sshd login from 192.42.1.174 or the bash -c wrapper.",
+      "prediction_reason_alignment": "The reason given (SSH/FTP service discovery and execution) does not match the predicted technique T1053.004, which concerns scheduled jobs. The mismatch between prediction and rationale is substantial.",
+      "confidence_evidence_support": "No confidence label is recoverable. The candidate's 'confidence' field holds a technique ID, not one of the seven allowed categories.",
+      "instruction_adherence": "The output is not valid JSON. The 'techniques' field is a single string rather than a list of up to ten IDs, and the 'confidence' field is malformed and contains a technique ID instead of a confidence category. Required fields are not in the specified schema."
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response; the confidence field contains a technique ID rather than a category."
+    },
+    "extracted_predictions": [
+      "T1053.004"
+    ],
+    "failure_labels": [
+      "wrong_technique",
+      "invalid_json",
+      "schema_violation",
+      "missing_confidence_label",
+      "unsupported_technique_claim"
+    ],
+    "prediction_similarity": 0,
+    "reasoning_similarity": 1,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate's confidence field contains a technique ID (T1053.004) and no category from the allowed set."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 1,
+  "score_explanation_grounding": 2,
+  "score_prediction_reason_alignment": 1,
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "Ground truth is T1105 (Ingress Tool Transfer). The candidate's only predicted ID is T1053.004 (Scheduled Task/Job: Cron), which does not match. The candidate's own explanation names SSH/FTP discovery, which is not T1105.",
+    "prediction_evidence_support": "T1053.004 is a scheduled task/cron technique with no support in the logs, which show an SSH login followed by sftp-server execution. The SFTP subsystem launch is weakly related to file transfer activity but does not support a scheduling technique.",
+    "explanation_grounding": "The explanation references the root user and the sftp-server execution, which are real observations. However, it calls the activity 'SSH/FTP service discovery' and 'execution' without grounding that in the logs, and does not mention the sshd login from 192.42.1.174 or the bash -c wrapper.",
+    "prediction_reason_alignment": "The reason given (SSH/FTP service discovery and execution) does not match the predicted technique T1053.004, which concerns scheduled jobs. The mismatch between prediction and rationale is substantial.",
+    "confidence_evidence_support": "No confidence label is recoverable. The candidate's 'confidence' field holds a technique ID, not one of the seven allowed categories.",
+    "instruction_adherence": "The output is not valid JSON. The 'techniques' field is a single string rather than a list of up to ten IDs, and the 'confidence' field is malformed and contains a technique ID instead of a confidence category. Required fields are not in the specified schema."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response; the confidence field contains a technique ID rather than a category."
+  },
+  "judge_extracted_predictions": [
+    "T1053.004"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique",
+    "invalid_json",
+    "schema_violation",
+    "missing_confidence_label",
+    "unsupported_technique_claim"
+  ],
+  "judge_prediction_similarity": 0,
+  "judge_reasoning_similarity": 1,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate's confidence field contains a technique ID (T1053.004) and no category from the allowed set."
+}

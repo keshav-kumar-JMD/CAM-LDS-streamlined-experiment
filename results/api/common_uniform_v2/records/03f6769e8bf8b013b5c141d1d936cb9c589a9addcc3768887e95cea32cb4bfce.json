@@ -1,0 +1,243 @@
+{
+  "prompt_id": "252",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "15",
+  "split": "train",
+  "group_id": "[\"2\", \"15\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 11:43:30 inetfw dnsmasq[734]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 11:43:30 inetfw dnsmasq[734]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 11:43:30 inetfw dnsmasq[734]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 11:43:30 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 11:43:30 inetfw dnsmasq[734]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759319010.768:5250): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c00094804c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759319010.768:5250): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759319010.768:5250): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759319010.772:5251): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c0009480ac a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759319010.772:5251): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759319010.772:5251): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759319010.776:5252): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c00094810c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759319010.776:5252): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759319010.776:5252): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "ea324b1603ab0d7a2890d7b49881916bbb2d9cbe81073ad1876baf8f19d7faff",
+  "ground_truth": "[\"T1005\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1566.002\", \"T1071.001\", \"T1102\", \"T1090\", \"T1189\", \"T1036\", \"T1583.001\", \"T1584.001\", \"T1105\", \"T1041\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a host resolving and connecting over HTTPS to the lookalike domain `faaacebook.com`, which is suspicious for a phishing or masqueraded web destination. However, the evidence is limited to DNS and connection activity from `zmcontroller`, so malicious intent is not fully confirmed.\"}",
+  "teacher_response_sha256": "7bfa6e20003f0b9a3b596cd6cc5a958387bf25cd518abf20bd4187f70097c7f1",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:252",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1.1: Informational\",\n    \"TTP-1",
+  "candidate_response_sha256": "51374a23476254a31d7379e8b9c01554d252f4a360106dee296268501d336f17",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1249,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 109.97969070800173,
+  "candidate_output_tokens_per_second": 9.31080996325713,
+  "candidate_peak_allocated_bytes": 5071233024,
+  "candidate_peak_reserved_bytes": 6452936704,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "7831fd3f66681f7fceba9d3ef18cdab29f1c3d4676ad46b80a46b44206eeb05d",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1071.004\", \"T1071.001\", \"T1568.002\", \"T1568\", \"T1090\", \"T1572\", \"T1204\", \"T1036.005\", \"T1219\", \"T1041\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The inetfw DNS log shows a query for 'faaacebook.com', a typosquatted domain mimicking facebook.com, resolved to an external IP (192.42.1.174), suggesting possible DNS-based redirection or C2 lookup. On videoserver, an unusual binary named 'zmcontroller' running as root with a 'fax' group context makes DNS queries directly to the internal resolver and then attempts an outbound connection to the same external IP on port 443 (HTTPS), which strongly indicates beaconing/command-and-control activity masquerading as a legitimate process.\"\n}\n```",
+  "haiku_reference_response_sha256": "f27a1e2aa0f88a1adb7b9cf42eafe3b14fcfc658bcfbabf7743b646e39e3a1d0",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "9aaf9cd11e823e7eabd2bdfba6e4c32c7da7b1e33fd8810c1bc05ade1df104a7",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's first ten predictions are all the same non-ATT&CK string 'TTP-1.1: Informational'; none match the ground-truth ID T1005.\",\n    \"prediction_evidence_support\": \"The predicted label is not a valid ATT&CK technique ID and is not supported by any observation in the logs.\",\n    \"explanation_grounding\": \"No explanation field is present in the recovered content; the output is a repeated placeholder list truncated mid-stream.\",\n    \"prediction_reason_alignment\": \"No reasoning links any prediction to log artifacts; predictions are repeated placeholders.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate.\",\n    \"instruction_adherence\": \"Output is not valid JSON, does not follow the requested top-10 ID-only format (uses invented labels instead), is truncated, and omits the confidence and explanation fields.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [\"TTP-1.1: Informational\"],\n  \"failure_labels\": [\"invalid_technique_ids\", \"repeated_placeholder_output\", \"truncated_response\", \"missing_confidence\", \"missing_explanation\", \"invalid_json\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was expressed, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response never states a confidence category.\"\n}\n```",
+  "response_hash": "b8ab3fcf6b4941b3569fafc7ec7a9ac6cbd5c146fd58389a801eaed66c34e5c6",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvEoctWVE3pgvGm8tg3",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's first ten predictions are all the same non-ATT&CK string 'TTP-1.1: Informational'; none match the ground-truth ID T1005.\",\n    \"prediction_evidence_support\": \"The predicted label is not a valid ATT&CK technique ID and is not supported by any observation in the logs.\",\n    \"explanation_grounding\": \"No explanation field is present in the recovered content; the output is a repeated placeholder list truncated mid-stream.\",\n    \"prediction_reason_alignment\": \"No reasoning links any prediction to log artifacts; predictions are repeated placeholders.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate.\",\n    \"instruction_adherence\": \"Output is not valid JSON, does not follow the requested top-10 ID-only format (uses invented labels instead), is truncated, and omits the confidence and explanation fields.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [\"TTP-1.1: Informational\"],\n  \"failure_labels\": [\"invalid_technique_ids\", \"repeated_placeholder_output\", \"truncated_response\", \"missing_confidence\", \"missing_explanation\", \"invalid_json\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was expressed, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response never states a confidence category.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 5424,
+      "output_tokens": 711,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 5424,
+    "output_tokens": 711,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00044895,
+  "batch_api": true,
+  "elapsed_seconds": 4810.67317032814,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5424,
+  "output_tokens": 711,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's first ten predictions are all the same non-ATT&CK string 'TTP-1.1: Informational'; none match the ground-truth ID T1005.\",\n    \"prediction_evidence_support\": \"The predicted label is not a valid ATT&CK technique ID and is not supported by any observation in the logs.\",\n    \"explanation_grounding\": \"No explanation field is present in the recovered content; the output is a repeated placeholder list truncated mid-stream.\",\n    \"prediction_reason_alignment\": \"No reasoning links any prediction to log artifacts; predictions are repeated placeholders.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate.\",\n    \"instruction_adherence\": \"Output is not valid JSON, does not follow the requested top-10 ID-only format (uses invented labels instead), is truncated, and omits the confidence and explanation fields.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [\"TTP-1.1: Informational\"],\n  \"failure_labels\": [\"invalid_technique_ids\", \"repeated_placeholder_output\", \"truncated_response\", \"missing_confidence\", \"missing_explanation\", \"invalid_json\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was expressed, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response never states a confidence category.\"\n}\n```",
+  "judge_response_sha256": "b8ab3fcf6b4941b3569fafc7ec7a9ac6cbd5c146fd58389a801eaed66c34e5c6",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 0,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": null,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "The candidate's first ten predictions are all the same non-ATT&CK string 'TTP-1.1: Informational'; none match the ground-truth ID T1005.",
+      "prediction_evidence_support": "The predicted label is not a valid ATT&CK technique ID and is not supported by any observation in the logs.",
+      "explanation_grounding": "No explanation field is present in the recovered content; the output is a repeated placeholder list truncated mid-stream.",
+      "prediction_reason_alignment": "No reasoning links any prediction to log artifacts; predictions are repeated placeholders.",
+      "confidence_evidence_support": "No confidence label is recoverable from the candidate.",
+      "instruction_adherence": "Output is not valid JSON, does not follow the requested top-10 ID-only format (uses invented labels instead), is truncated, and omits the confidence and explanation fields."
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+    },
+    "extracted_predictions": [
+      "TTP-1.1: Informational"
+    ],
+    "failure_labels": [
+      "invalid_technique_ids",
+      "repeated_placeholder_output",
+      "truncated_response",
+      "missing_confidence",
+      "missing_explanation",
+      "invalid_json"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was expressed, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response never states a confidence category."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 0,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "The candidate's first ten predictions are all the same non-ATT&CK string 'TTP-1.1: Informational'; none match the ground-truth ID T1005.",
+    "prediction_evidence_support": "The predicted label is not a valid ATT&CK technique ID and is not supported by any observation in the logs.",
+    "explanation_grounding": "No explanation field is present in the recovered content; the output is a repeated placeholder list truncated mid-stream.",
+    "prediction_reason_alignment": "No reasoning links any prediction to log artifacts; predictions are repeated placeholders.",
+    "confidence_evidence_support": "No confidence label is recoverable from the candidate.",
+    "instruction_adherence": "Output is not valid JSON, does not follow the requested top-10 ID-only format (uses invented labels instead), is truncated, and omits the confidence and explanation fields."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_extracted_predictions": [
+    "TTP-1.1: Informational"
+  ],
+  "judge_failure_labels": [
+    "invalid_technique_ids",
+    "repeated_placeholder_output",
+    "truncated_response",
+    "missing_confidence",
+    "missing_explanation",
+    "invalid_json"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was expressed, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response never states a confidence category."
+}

@@ -1,0 +1,275 @@
+{
+  "prompt_id": "399",
+  "scenario": "1",
+  "variant": "cron_pam",
+  "step": "12",
+  "split": "train",
+  "group_id": "[\"1\", \"12\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758704840.574:4750): arch=c000003e syscall=59 success=yes exit=0 a0=558e34863340 a1=558e34863130 a2=558e34862e80 a3=fffffffffffff286 items=3 ppid=2970 pid=2983 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"chmod\" exe=\"/usr/bin/chmod\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1758704840.574:4750): argc=3 a0=\"chmod\" a1=\"+x\" a2=\"linpeas.sh\"\n        type=PATH msg=audit(1758704840.574:4750): item=0 name=\"/usr/bin/chmod\" inode=811 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758704840.574:4750): item=1 name=\"/usr/bin/chmod\" inode=811 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758704840.574:4750): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758704840.574:4750): proctitle=63686D6F64002B78006C696E706561732E7368",
+  "prompt_sha256": "01cbb1ccaaccb5441b977b5482a59e236cbc1138a4be7d42f78b450e70b82bab",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1222.002\", \"T1059.004\", \"T1033\", \"T1082\", \"T1083\", \"T1049\", \"T1069.001\", \"T1135\", \"T1518.001\", \"T1016\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The log shows the www-data web service account executing `chmod +x linpeas.sh`, making the well-known Linux privilege escalation enumeration script LinPEAS executable. This strongly indicates post-exploitation discovery/preparation activity rather than normal web server behavior.\"}",
+  "teacher_response_sha256": "afaacab1a6ec9b48aa688568bc5f7e4afab9b4e8cfec8b96f60ab7a95cdaf212",
+  "teacher_confidence_label": "Almost Certain: Attack",
+  "model": "hermes",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b:399",
+  "candidate_response_raw": "{\n  \"techniques\": [\n    \"SYSCALL\",\n    \"EXECVE\",\n    \"PATH\",\n    \"PROCTITLE\"\n  ],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The logs contain a syscall (chmod) executed by the system, which is a common attack technique used to gain unauthorized access to system files. The path to the executable file (chmod.sh) is also present in the logs, which is a common attack vector for Linux systems. The proctitle (63686D6F64002B78006C696E706561732E7368) is also a common attack indicator, as it is a common technique used to identify the target system and its configuration.\"\n}",
+  "candidate_response_sha256": "3660678c203bcd00219de2d42b5f5745be9d18cc7ab10272a5bd770e320cfe0d",
+  "candidate_confidence_label_strict": "Somewhat Certain: Attack",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 993,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 170,
+  "candidate_elapsed_seconds": 4.169182280995301,
+  "candidate_output_tokens_per_second": 40.775381967568045,
+  "candidate_peak_allocated_bytes": 3968624640,
+  "candidate_peak_reserved_bytes": 9992929280,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": true,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "ccaabe28dea2fdff221558440ef250e9e12cd35bca1723fdb97eeb6e444201a0",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1222.002\",\n    \"T1059.004\",\n    \"T1068\",\n    \"T1083\",\n    \"T1552.001\",\n    \"T1505.003\",\n    \"T1548.001\",\n    \"T1505\",\n    \"T1046\",\n    \"T1592\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The web server service account www-data (uid 33) executes chmod +x on linpeas.sh, a well-known Linux privilege escalation enumeration script, which is an atypical action for a web daemon and indicates post-compromise reconnaissance. The lack of a login session (auid unset, ses=4294967295) and the execution from a web-server context further suggest a web shell or exploited application being used to stage and run attacker tooling.\"\n}\n```",
+  "haiku_reference_response_sha256": "8fc2086ab1f50c15afb7290639f068e4ce3d60fe67b99559c0ca2bbb7d5bd056",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "6d8893714eecd85775e9e4db5f7f38ab116655c9dbd023de7b632916e1a95b6a",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059. The candidate's first ten predictions are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID coverage.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"The logs do show chmod +x on linpeas.sh executed by www-data, which supports an execution-related claim, but the predicted items are log artifact names rather than techniques, so specificity is not supported.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"The explanation cites real artifacts (chmod, www-data, linpeas-related proctitle), but it misstates the file as chmod.sh, misreads the proctitle hex as a target-identification indicator, and asserts a common attack vector without tying it to observed evidence.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The reasoning about an unauthorized chmod is loosely connected to execution, but the predictions themselves are not ATT&CK techniques, so alignment between reasons and technique choices is weak.\"},\"confidence_evidence_support\":{\"score\":2,\"reason\":\"Somewhat Certain: Attack is a moderate label, and the logs (web-server account running chmod on linpeas.sh) warrant more than moderate confidence; the explanation also leans on inaccurate claims, making calibration only mixed.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"The output is valid JSON with required fields, but the techniques field lists log record types instead of ATT&CK IDs as requested, violating the core task.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"SYSCALL\",\"EXECVE\",\"PATH\",\"PROCTITLE\"],\"failure_labels\":[\"wrong_identifier_type\",\"no_attack_technique_ids\",\"factual_misstatement_chmod_sh\",\"missed_T1059\",\"misinterpreted_proctitle\"],\"prediction_similarity\":{\"score\":0,\"reason\":\"No predicted ID overlaps with the reference set; candidate lists log record types while the reference lists ATT&CK technique IDs.\"},\"reasoning_similarity\":{\"score\":1,\"reason\":\"Both identify chmod-based attacker activity by a web service account, but the candidate lacks the linpeas.sh enumeration context and the web-shell/post-compromise framing.\"},\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Both are Attack-direction labels that are adjacent; the candidate is one step less confident than warranted by the www-data execution of linpeas.sh.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "a278fb4314337e07de761b6ba45f65999a4b29fe5a4743fdc7b2febe9b3dd007",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv1pV7kARmyLcxhoQnr",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059. The candidate's first ten predictions are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID coverage.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"The logs do show chmod +x on linpeas.sh executed by www-data, which supports an execution-related claim, but the predicted items are log artifact names rather than techniques, so specificity is not supported.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"The explanation cites real artifacts (chmod, www-data, linpeas-related proctitle), but it misstates the file as chmod.sh, misreads the proctitle hex as a target-identification indicator, and asserts a common attack vector without tying it to observed evidence.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The reasoning about an unauthorized chmod is loosely connected to execution, but the predictions themselves are not ATT&CK techniques, so alignment between reasons and technique choices is weak.\"},\"confidence_evidence_support\":{\"score\":2,\"reason\":\"Somewhat Certain: Attack is a moderate label, and the logs (web-server account running chmod on linpeas.sh) warrant more than moderate confidence; the explanation also leans on inaccurate claims, making calibration only mixed.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"The output is valid JSON with required fields, but the techniques field lists log record types instead of ATT&CK IDs as requested, violating the core task.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"SYSCALL\",\"EXECVE\",\"PATH\",\"PROCTITLE\"],\"failure_labels\":[\"wrong_identifier_type\",\"no_attack_technique_ids\",\"factual_misstatement_chmod_sh\",\"missed_T1059\",\"misinterpreted_proctitle\"],\"prediction_similarity\":{\"score\":0,\"reason\":\"No predicted ID overlaps with the reference set; candidate lists log record types while the reference lists ATT&CK technique IDs.\"},\"reasoning_similarity\":{\"score\":1,\"reason\":\"Both identify chmod-based attacker activity by a web service account, but the candidate lacks the linpeas.sh enumeration context and the web-shell/post-compromise framing.\"},\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Both are Attack-direction labels that are adjacent; the candidate is one step less confident than warranted by the www-data execution of linpeas.sh.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3443,
+      "output_tokens": 942,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3443,
+    "output_tokens": 942,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00040764999999999996,
+  "batch_api": true,
+  "elapsed_seconds": 41536.24938583374,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3443,
+  "output_tokens": 942,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059. The candidate's first ten predictions are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID coverage.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"The logs do show chmod +x on linpeas.sh executed by www-data, which supports an execution-related claim, but the predicted items are log artifact names rather than techniques, so specificity is not supported.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"The explanation cites real artifacts (chmod, www-data, linpeas-related proctitle), but it misstates the file as chmod.sh, misreads the proctitle hex as a target-identification indicator, and asserts a common attack vector without tying it to observed evidence.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The reasoning about an unauthorized chmod is loosely connected to execution, but the predictions themselves are not ATT&CK techniques, so alignment between reasons and technique choices is weak.\"},\"confidence_evidence_support\":{\"score\":2,\"reason\":\"Somewhat Certain: Attack is a moderate label, and the logs (web-server account running chmod on linpeas.sh) warrant more than moderate confidence; the explanation also leans on inaccurate claims, making calibration only mixed.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"The output is valid JSON with required fields, but the techniques field lists log record types instead of ATT&CK IDs as requested, violating the core task.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"SYSCALL\",\"EXECVE\",\"PATH\",\"PROCTITLE\"],\"failure_labels\":[\"wrong_identifier_type\",\"no_attack_technique_ids\",\"factual_misstatement_chmod_sh\",\"missed_T1059\",\"misinterpreted_proctitle\"],\"prediction_similarity\":{\"score\":0,\"reason\":\"No predicted ID overlaps with the reference set; candidate lists log record types while the reference lists ATT&CK technique IDs.\"},\"reasoning_similarity\":{\"score\":1,\"reason\":\"Both identify chmod-based attacker activity by a web service account, but the candidate lacks the linpeas.sh enumeration context and the web-shell/post-compromise framing.\"},\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Both are Attack-direction labels that are adjacent; the candidate is one step less confident than warranted by the www-data execution of linpeas.sh.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "a278fb4314337e07de761b6ba45f65999a4b29fe5a4743fdc7b2febe9b3dd007",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1059. The candidate's first ten predictions are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID coverage."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "The logs do show chmod +x on linpeas.sh executed by www-data, which supports an execution-related claim, but the predicted items are log artifact names rather than techniques, so specificity is not supported."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation cites real artifacts (chmod, www-data, linpeas-related proctitle), but it misstates the file as chmod.sh, misreads the proctitle hex as a target-identification indicator, and asserts a common attack vector without tying it to observed evidence."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "The reasoning about an unauthorized chmod is loosely connected to execution, but the predictions themselves are not ATT&CK techniques, so alignment between reasons and technique choices is weak."
+      },
+      "confidence_evidence_support": {
+        "score": 2,
+        "reason": "Somewhat Certain: Attack is a moderate label, and the logs (web-server account running chmod on linpeas.sh) warrant more than moderate confidence; the explanation also leans on inaccurate claims, making calibration only mixed."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "The output is valid JSON with required fields, but the techniques field lists log record types instead of ATT&CK IDs as requested, violating the core task."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "SYSCALL",
+      "EXECVE",
+      "PATH",
+      "PROCTITLE"
+    ],
+    "failure_labels": [
+      "wrong_identifier_type",
+      "no_attack_technique_ids",
+      "factual_misstatement_chmod_sh",
+      "missed_T1059",
+      "misinterpreted_proctitle"
+    ],
+    "prediction_similarity": {
+      "score": 0,
+      "reason": "No predicted ID overlaps with the reference set; candidate lists log record types while the reference lists ATT&CK technique IDs."
+    },
+    "reasoning_similarity": {
+      "score": 1,
+      "reason": "Both identify chmod-based attacker activity by a web service account, but the candidate lacks the linpeas.sh enumeration context and the web-shell/post-compromise framing."
+    },
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "Both are Attack-direction labels that are adjacent; the candidate is one step less confident than warranted by the www-data execution of linpeas.sh.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1059. The candidate's first ten predictions are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID coverage."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "The logs do show chmod +x on linpeas.sh executed by www-data, which supports an execution-related claim, but the predicted items are log artifact names rather than techniques, so specificity is not supported."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation cites real artifacts (chmod, www-data, linpeas-related proctitle), but it misstates the file as chmod.sh, misreads the proctitle hex as a target-identification indicator, and asserts a common attack vector without tying it to observed evidence."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "The reasoning about an unauthorized chmod is loosely connected to execution, but the predictions themselves are not ATT&CK techniques, so alignment between reasons and technique choices is weak."
+  },
+  "score_confidence_evidence_support": {
+    "score": 2,
+    "reason": "Somewhat Certain: Attack is a moderate label, and the logs (web-server account running chmod on linpeas.sh) warrant more than moderate confidence; the explanation also leans on inaccurate claims, making calibration only mixed."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "The output is valid JSON with required fields, but the techniques field lists log record types instead of ATT&CK IDs as requested, violating the core task."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "SYSCALL",
+    "EXECVE",
+    "PATH",
+    "PROCTITLE"
+  ],
+  "judge_failure_labels": [
+    "wrong_identifier_type",
+    "no_attack_technique_ids",
+    "factual_misstatement_chmod_sh",
+    "missed_T1059",
+    "misinterpreted_proctitle"
+  ],
+  "judge_prediction_similarity": {
+    "score": 0,
+    "reason": "No predicted ID overlaps with the reference set; candidate lists log record types while the reference lists ATT&CK technique IDs."
+  },
+  "judge_reasoning_similarity": {
+    "score": 1,
+    "reason": "Both identify chmod-based attacker activity by a web service account, but the candidate lacks the linpeas.sh enumeration context and the web-shell/post-compromise framing."
+  },
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "Both are Attack-direction labels that are adjacent; the candidate is one step less confident than warranted by the www-data execution of linpeas.sh.",
+  "confidence_label_null_reason": null
+}

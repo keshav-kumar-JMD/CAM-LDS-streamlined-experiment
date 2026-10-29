@@ -1,0 +1,243 @@
+{
+  "prompt_id": "813",
+  "scenario": "1",
+  "variant": "cron_sshkey",
+  "step": "20",
+  "split": "train",
+  "group_id": "[\"1\", \"20\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758696444.412:13529): arch=c000003e syscall=59 success=yes exit=0 a0=564f07587470 a1=564f07588e80 a2=564f07588a80 a3=fffffffffffff286 items=3 ppid=17157 pid=17168 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=9 comm=\"id\" exe=\"/usr/bin/id\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758696444.412:13529): argc=1 a0=\"id\"\n        type=PATH msg=audit(1758696444.412:13529): item=0 name=\"/usr/bin/id\" inode=879 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758696444.412:13529): item=1 name=\"/usr/bin/id\" inode=879 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758696444.412:13529): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758696444.412:13529): proctitle=\"id\"",
+  "prompt_sha256": "31ae293e98f8eba043e8724186cf29197ec35b2488ca026d94363c868a49255a",
+  "ground_truth": "[\"T1033\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1033\", \"T1059.004\", \"T1082\", \"T1078\", \"T1005\", \"T1204\", \"T1106\", \"T1049\", \"T1087\", \"T1016\"], \"confidence\": \"Neutral\", \"explanation\": \"The log shows root executing the standard Linux `id` command from an interactive TTY, which can be used for account/user discovery but is also common benign administrative activity. There are no additional suspicious artifacts such as unusual parent process, persistence, privilege escalation, or network activity.\"}",
+  "teacher_response_sha256": "dcf7fb326a898fe04e4a5e017a612b0eda09a1ea8ae28f61cb3bdea0a7b5a8fd",
+  "teacher_confidence_label": "Neutral",
+  "model": "hermes",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b:813",
+  "candidate_response_raw": "{\n  \"techniques\": [\n    \"SYSCALL\",\n    \"EXECVE\"\n  ],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The logs contain a syscall (59) and an EXECVE (1758696444.412:13529) message, both of which are typical indicators of a system-level attack. The syscall message indicates that the process is executing a system call, while the EXECVE message indicates that the process is attempting to execute a file. The logs also contain the path to the ID executable, which is a common attack vector for rootkits and other malware. Additionally, the logs mention the OUID (Open User ID) of the process, which is a common attack vector for remote attackers. Overall, the samples suggest that the logs correspond to an attack on the system.\"\n}",
+  "candidate_response_sha256": "55d63216fc8c628400d1f5a4cd77dd208ac83f7577c2fe79c7bdddc03081d373",
+  "candidate_confidence_label_strict": "Somewhat Certain: Attack",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 915,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 183,
+  "candidate_elapsed_seconds": 4.392954885001018,
+  "candidate_output_tokens_per_second": 41.65760969338013,
+  "candidate_peak_allocated_bytes": 3964163072,
+  "candidate_peak_reserved_bytes": 8669626368,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": true,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "4f20b39bc05e214eb5d56ff0e2c40c3a4a198b3300e9a246017fca9fbe552dd9",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1033\", \"T1087.001\", \"T1082\", \"T1059.004\", \"T1078\", \"T1083\", \"T1518\", \"T1057\", \"T1016\", \"T1049\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The log shows a single execve of /usr/bin/id run by root from an interactive pts1 terminal, with a parent process spawned in a normal session, which is typical administrator activity for checking the current user identity. The lack of follow-on suspicious behavior, network activity, or unusual file access makes it more likely to be benign, though the root context and discovery-style command warrant some caution.\"\n}\n```",
+  "haiku_reference_response_sha256": "59cc1c144a28aeeb56494b1c38db863ac11f893ea93d4b7cbab674452b3416f1",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "1be5aa910027fe48c1ec8248abe89fd288c7184a583d0e53a8b8eeb51716e231",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 1,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 1,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1033 (System Owner/User Discovery). The candidate predicted 'SYSCALL' and 'EXECVE', which are audit record types, not ATT&CK technique IDs. No exact-ID match, so coverage is 0.\",\n    \"prediction_evidence_support\": \"The logs do show execve of /usr/bin/id, which relates to user discovery, but the candidate did not name any valid ATT&CK technique ID. The predictions are not ATT&CK techniques at all, so they cannot be supported at the claimed specificity.\",\n    \"explanation_grounding\": \"The explanation cites real artifacts (syscall 59, EXECVE, /usr/bin/id, OUID), but it misreads them: it calls OUID an 'Open User ID' attack vector and presents file-owner metadata as an attack indicator. It also asserts rootkit/remote-attacker associations not supported by the logs.\",\n    \"prediction_reason_alignment\": \"The predictions (audit record types) are not connected to a meaningful technique reason. The explanation ties generic syscall/EXECVE presence to attack without linking to any ATT&CK behavior.\",\n    \"confidence_evidence_support\": \"The candidate label 'Somewhat Certain: Attack' is not well supported. A single run of 'id' by root from an interactive pts terminal is more consistent with normal or discovery-style administrator activity, so the attack conclusion is overconfident.\",\n    \"instruction_adherence\": \"Output is valid JSON with all three required fields. However, 'techniques' contains non-ATT&CK strings instead of IDs, violating the task's core requirement; the explanation is roughly two sentences, acceptable.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"Reference predictions are not directly needed for this scoring; similarity assessed against ground truth only as no comparison response was specified.\",\n    \"reasoning_similarity\": \"No comparison response scored for reasoning similarity in this evaluation.\"\n  },\n  \"extracted_predictions\": [\"SYSCALL\", \"EXECVE\"],\n  \"failure_labels\": [\n    \"non_attack_technique_identifiers\",\n    \"missed_ground_truth_technique\",\n    \"misinterpreted_audit_metadata\",\n    \"overconfident_attack_label\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": 1,\n  \"confidence_label_agreement_reason\": \"Candidate says Attack while the warranted label is Normal in the same ~somewhat certainty strength; opposite direction with moderate certainty, so weak directional disagreement.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "33772b4f37f5d3e9b1ae569c0bd01f25b7b7fcced2da643f53e1bbb3a85e5c0c",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv1oGSemuXWdFZq7raN",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 1,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 1,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1033 (System Owner/User Discovery). The candidate predicted 'SYSCALL' and 'EXECVE', which are audit record types, not ATT&CK technique IDs. No exact-ID match, so coverage is 0.\",\n    \"prediction_evidence_support\": \"The logs do show execve of /usr/bin/id, which relates to user discovery, but the candidate did not name any valid ATT&CK technique ID. The predictions are not ATT&CK techniques at all, so they cannot be supported at the claimed specificity.\",\n    \"explanation_grounding\": \"The explanation cites real artifacts (syscall 59, EXECVE, /usr/bin/id, OUID), but it misreads them: it calls OUID an 'Open User ID' attack vector and presents file-owner metadata as an attack indicator. It also asserts rootkit/remote-attacker associations not supported by the logs.\",\n    \"prediction_reason_alignment\": \"The predictions (audit record types) are not connected to a meaningful technique reason. The explanation ties generic syscall/EXECVE presence to attack without linking to any ATT&CK behavior.\",\n    \"confidence_evidence_support\": \"The candidate label 'Somewhat Certain: Attack' is not well supported. A single run of 'id' by root from an interactive pts terminal is more consistent with normal or discovery-style administrator activity, so the attack conclusion is overconfident.\",\n    \"instruction_adherence\": \"Output is valid JSON with all three required fields. However, 'techniques' contains non-ATT&CK strings instead of IDs, violating the task's core requirement; the explanation is roughly two sentences, acceptable.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"Reference predictions are not directly needed for this scoring; similarity assessed against ground truth only as no comparison response was specified.\",\n    \"reasoning_similarity\": \"No comparison response scored for reasoning similarity in this evaluation.\"\n  },\n  \"extracted_predictions\": [\"SYSCALL\", \"EXECVE\"],\n  \"failure_labels\": [\n    \"non_attack_technique_identifiers\",\n    \"missed_ground_truth_technique\",\n    \"misinterpreted_audit_metadata\",\n    \"overconfident_attack_label\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": 1,\n  \"confidence_label_agreement_reason\": \"Candidate says Attack while the warranted label is Normal in the same ~somewhat certainty strength; opposite direction with moderate certainty, so weak directional disagreement.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3349,
+      "output_tokens": 1079,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3349,
+    "output_tokens": 1079,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00043720000000000006,
+  "batch_api": true,
+  "elapsed_seconds": 10099.236457824707,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3349,
+  "output_tokens": 1079,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 1,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 1,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1033 (System Owner/User Discovery). The candidate predicted 'SYSCALL' and 'EXECVE', which are audit record types, not ATT&CK technique IDs. No exact-ID match, so coverage is 0.\",\n    \"prediction_evidence_support\": \"The logs do show execve of /usr/bin/id, which relates to user discovery, but the candidate did not name any valid ATT&CK technique ID. The predictions are not ATT&CK techniques at all, so they cannot be supported at the claimed specificity.\",\n    \"explanation_grounding\": \"The explanation cites real artifacts (syscall 59, EXECVE, /usr/bin/id, OUID), but it misreads them: it calls OUID an 'Open User ID' attack vector and presents file-owner metadata as an attack indicator. It also asserts rootkit/remote-attacker associations not supported by the logs.\",\n    \"prediction_reason_alignment\": \"The predictions (audit record types) are not connected to a meaningful technique reason. The explanation ties generic syscall/EXECVE presence to attack without linking to any ATT&CK behavior.\",\n    \"confidence_evidence_support\": \"The candidate label 'Somewhat Certain: Attack' is not well supported. A single run of 'id' by root from an interactive pts terminal is more consistent with normal or discovery-style administrator activity, so the attack conclusion is overconfident.\",\n    \"instruction_adherence\": \"Output is valid JSON with all three required fields. However, 'techniques' contains non-ATT&CK strings instead of IDs, violating the task's core requirement; the explanation is roughly two sentences, acceptable.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"Reference predictions are not directly needed for this scoring; similarity assessed against ground truth only as no comparison response was specified.\",\n    \"reasoning_similarity\": \"No comparison response scored for reasoning similarity in this evaluation.\"\n  },\n  \"extracted_predictions\": [\"SYSCALL\", \"EXECVE\"],\n  \"failure_labels\": [\n    \"non_attack_technique_identifiers\",\n    \"missed_ground_truth_technique\",\n    \"misinterpreted_audit_metadata\",\n    \"overconfident_attack_label\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": 1,\n  \"confidence_label_agreement_reason\": \"Candidate says Attack while the warranted label is Normal in the same ~somewhat certainty strength; opposite direction with moderate certainty, so weak directional disagreement.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "33772b4f37f5d3e9b1ae569c0bd01f25b7b7fcced2da643f53e1bbb3a85e5c0c",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 0,
+      "explanation_grounding": 1,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": 1,
+      "instruction_adherence": 1
+    },
+    "reasons": {
+      "technique_identification": "Ground truth is T1033 (System Owner/User Discovery). The candidate predicted 'SYSCALL' and 'EXECVE', which are audit record types, not ATT&CK technique IDs. No exact-ID match, so coverage is 0.",
+      "prediction_evidence_support": "The logs do show execve of /usr/bin/id, which relates to user discovery, but the candidate did not name any valid ATT&CK technique ID. The predictions are not ATT&CK techniques at all, so they cannot be supported at the claimed specificity.",
+      "explanation_grounding": "The explanation cites real artifacts (syscall 59, EXECVE, /usr/bin/id, OUID), but it misreads them: it calls OUID an 'Open User ID' attack vector and presents file-owner metadata as an attack indicator. It also asserts rootkit/remote-attacker associations not supported by the logs.",
+      "prediction_reason_alignment": "The predictions (audit record types) are not connected to a meaningful technique reason. The explanation ties generic syscall/EXECVE presence to attack without linking to any ATT&CK behavior.",
+      "confidence_evidence_support": "The candidate label 'Somewhat Certain: Attack' is not well supported. A single run of 'id' by root from an interactive pts terminal is more consistent with normal or discovery-style administrator activity, so the attack conclusion is overconfident.",
+      "instruction_adherence": "Output is valid JSON with all three required fields. However, 'techniques' contains non-ATT&CK strings instead of IDs, violating the task's core requirement; the explanation is roughly two sentences, acceptable."
+    },
+    "null_reasons": {
+      "prediction_similarity": "Reference predictions are not directly needed for this scoring; similarity assessed against ground truth only as no comparison response was specified.",
+      "reasoning_similarity": "No comparison response scored for reasoning similarity in this evaluation."
+    },
+    "extracted_predictions": [
+      "SYSCALL",
+      "EXECVE"
+    ],
+    "failure_labels": [
+      "non_attack_technique_identifiers",
+      "missed_ground_truth_technique",
+      "misinterpreted_audit_metadata",
+      "overconfident_attack_label"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": 1,
+    "confidence_label_agreement_reason": "Candidate says Attack while the warranted label is Normal in the same ~somewhat certainty strength; opposite direction with moderate certainty, so weak directional disagreement.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 0,
+  "score_explanation_grounding": 1,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": 1,
+  "score_instruction_adherence": 1,
+  "judge_reasons": {
+    "technique_identification": "Ground truth is T1033 (System Owner/User Discovery). The candidate predicted 'SYSCALL' and 'EXECVE', which are audit record types, not ATT&CK technique IDs. No exact-ID match, so coverage is 0.",
+    "prediction_evidence_support": "The logs do show execve of /usr/bin/id, which relates to user discovery, but the candidate did not name any valid ATT&CK technique ID. The predictions are not ATT&CK techniques at all, so they cannot be supported at the claimed specificity.",
+    "explanation_grounding": "The explanation cites real artifacts (syscall 59, EXECVE, /usr/bin/id, OUID), but it misreads them: it calls OUID an 'Open User ID' attack vector and presents file-owner metadata as an attack indicator. It also asserts rootkit/remote-attacker associations not supported by the logs.",
+    "prediction_reason_alignment": "The predictions (audit record types) are not connected to a meaningful technique reason. The explanation ties generic syscall/EXECVE presence to attack without linking to any ATT&CK behavior.",
+    "confidence_evidence_support": "The candidate label 'Somewhat Certain: Attack' is not well supported. A single run of 'id' by root from an interactive pts terminal is more consistent with normal or discovery-style administrator activity, so the attack conclusion is overconfident.",
+    "instruction_adherence": "Output is valid JSON with all three required fields. However, 'techniques' contains non-ATT&CK strings instead of IDs, violating the task's core requirement; the explanation is roughly two sentences, acceptable."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "Reference predictions are not directly needed for this scoring; similarity assessed against ground truth only as no comparison response was specified.",
+    "reasoning_similarity": "No comparison response scored for reasoning similarity in this evaluation."
+  },
+  "judge_extracted_predictions": [
+    "SYSCALL",
+    "EXECVE"
+  ],
+  "judge_failure_labels": [
+    "non_attack_technique_identifiers",
+    "missed_ground_truth_technique",
+    "misinterpreted_audit_metadata",
+    "overconfident_attack_label"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": 1,
+  "confidence_label_agreement_reason": "Candidate says Attack while the warranted label is Normal in the same ~somewhat certainty strength; opposite direction with moderate certainty, so weak directional disagreement.",
+  "confidence_label_null_reason": null
+}

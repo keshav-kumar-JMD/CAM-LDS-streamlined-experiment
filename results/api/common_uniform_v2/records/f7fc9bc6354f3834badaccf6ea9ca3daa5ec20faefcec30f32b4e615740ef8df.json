@@ -1,0 +1,277 @@
+{
+  "prompt_id": "794",
+  "scenario": "1",
+  "variant": "pwnkit_pam",
+  "step": "10",
+  "split": "test",
+  "group_id": "[\"1\", \"10\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758527343.570:4875): arch=c000003e syscall=59 success=yes exit=0 a0=559c58fa25c0 a1=559c58fa0120 a2=559c58fa2e80 a3=fffffffffffff286 items=3 ppid=3047 pid=3053 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"stty\" exe=\"/usr/bin/stty\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1758527343.570:4875): argc=5 a0=\"stty\" a1=\"rows\" a2=\"38\" a3=\"columns\" a4=\"116\"\n        type=PATH msg=audit(1758527343.570:4875): item=0 name=\"/usr/bin/stty\" inode=845 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758527343.570:4875): item=1 name=\"/usr/bin/stty\" inode=845 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758527343.570:4875): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758527343.570:4875): proctitle=7374747900726F777300333800636F6C756D6E7300313136",
+  "prompt_sha256": "62303a58d72be8e468d583630ed758bffb8fd947a5846cbb9b993e774e68b713",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1021.004\", \"T1105\", \"T1219\", \"T1033\", \"T1082\", \"T1057\", \"T1078\", \"T1562.004\"], \"confidence\": \"Neutral\", \"explanation\": \"The log only shows www-data executing /usr/bin/stty to set terminal rows and columns on pts0, which is commonly seen when an interactive shell or PTY is being configured. While execution as www-data with unset audit session can be consistent with a web shell/reverse shell context, this single artifact is not sufficient to confirm malicious activity.\"}",
+  "teacher_response_sha256": "122a7454416b36e25253a30cec3466b25f7c91d833bab4cf53e1d818d5878bd9",
+  "teacher_confidence_label": "Neutral",
+  "model": "qwen7b",
+  "condition": "full",
+  "candidate_status": "completed",
+  "candidate_record_id": "9a296c2228562a49709746a68753fc694fae9ae93fa549235a38885b7551ef1c:794",
+  "candidate_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059.003\", \"T1059.002\", \"T1059.001\", \"T1059\", \"T1102\", \"T1033\", \"T1036\", \"T1036.001\", \"T1036.002\"], \"confidence\": \"Neutral\", \"explanation\": \"The log shows a web server (www-data) executing a stty command to set terminal size, which is a common administrative task. While stty can be used for privilege escalation, the specific command and context do not strongly indicate malicious activity.\"}",
+  "candidate_response_sha256": "d660df464d28d0f05dc2d1cddb8005382e853828376dbf8cf80d032df206ca65",
+  "candidate_confidence_label_strict": "Neutral",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "qwen7b",
+  "candidate_condition": "full",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "9a296c2228562a49709746a68753fc694fae9ae93fa549235a38885b7551ef1c",
+  "candidate_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "candidate_adapter_sha256": "91e7e48ad87f0f846898686457c71e193b6eb67da67cbefb089a6d3d53d25d24",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1023,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 160,
+  "candidate_elapsed_seconds": 8.11287432100653,
+  "candidate_output_tokens_per_second": 19.721740245095955,
+  "candidate_peak_allocated_bytes": 15509955584,
+  "candidate_peak_reserved_bytes": 19300089856,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": true,
+  "candidate_required_fields_present": true,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "89359f3d5b9c25ad5dff2582d280952f4ca158c9a29d6dc65ce28b1657338129",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1059\", \"T1082\", \"T1033\", \"T1068\", \"T1505.003\", \"T1190\", \"T1543\", \"T1569\", \"T1105\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The audit log shows the www-data web server account (UID 33, no login session, auid unset) executing /usr/bin/stty with terminal size arguments (rows 38, columns 116), which is a classic sign of an attacker spawning an interactive TTY from a web shell, typically a prelude to a reverse or interactive shell. Although stty is a benign utility that can be launched legitimately by web applications, its execution under www-data with no associated login session is unusual enough to suggest post-exploitation activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "8e028902ece638a320b702092ea30b5ad8ebcf9c308eb804ba4c29e8da34322e",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "74ee96034543c3773c68aecb7282806cd8bd66a5db55492832986da1109c0965",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 2, \"reason\": \"Ground truth T1059 is present in the candidate's list at rank 5, within the first ten distinct predictions; only one ground-truth ID exists, so coverage is complete (1/1) and scores at the top of the scale.\"},\n    \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"The logs show www-data executing /usr/bin/stty with no login session, which supports a command-execution technique (T1059 family), but the sub-technique IDs T1059.001-.004 (PowerShell, AppleScript, Python-style interpreter classes) are not supported by any observed interpreter. T1102 (Web Service), T1036 masquerading, and T1033 system owner discovery have little or no direct support in these artifacts.\"},\n    \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation accurately cites the www-data user and the stty execution, distinguishing observed facts from an interpretation that the command is administrative. It does not address the unset auid or the terminal-size arguments beyond a passing mention, and it does not explain why the listed sub-techniques were chosen.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Predicted sub-techniques are not connected to any stated reason; the explanation argues only for benign activity and then gives a broad list of unrelated techniques without justification.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"Neutral is a cautious label that matches the candidate's stated ambiguity. However, the explanation's own observation that www-data spawned stty without a login session is a meaningful anomaly that the candidate underweights, so calibration is somewhat weak.\"},\n    \"instruction_adherence\": {\"score\": 3, \"reason\": \"Valid JSON with all required fields, a list of ten techniques, a permitted confidence label, and a brief explanation. The explanation is slightly longer than 1-2 sentences only marginally, and IDs are listed without descriptions as requested.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was assessed for similarity in this evaluation.\",\n    \"reasoning_similarity\": \"No comparison response was assessed for similarity in this evaluation.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\", \"T1059.003\", \"T1059.002\", \"T1059.001\", \"T1059\", \"T1102\", \"T1033\", \"T1036\", \"T1036.001\", \"T1036.002\"],\n  \"failure_labels\": [\"over-specific sub-technique prediction\", \"weak reason-to-technique alignment\", \"underweighted anomaly (www-data with no login session)\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Neutral\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"Neutral versus Somewhat Certain: Attack involves Neutral and a directional difference of one step; the logs (web-server account spawning a TTY utility with no auid) warrant a lean toward attack, but not high certainty.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "3bcbbfd07a7f5afd4ed4607e6bbf1d9e0674ff9c901ad0d7767e68655d2cb508",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwzkgdKYGeqqNrDX75M",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 2, \"reason\": \"Ground truth T1059 is present in the candidate's list at rank 5, within the first ten distinct predictions; only one ground-truth ID exists, so coverage is complete (1/1) and scores at the top of the scale.\"},\n    \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"The logs show www-data executing /usr/bin/stty with no login session, which supports a command-execution technique (T1059 family), but the sub-technique IDs T1059.001-.004 (PowerShell, AppleScript, Python-style interpreter classes) are not supported by any observed interpreter. T1102 (Web Service), T1036 masquerading, and T1033 system owner discovery have little or no direct support in these artifacts.\"},\n    \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation accurately cites the www-data user and the stty execution, distinguishing observed facts from an interpretation that the command is administrative. It does not address the unset auid or the terminal-size arguments beyond a passing mention, and it does not explain why the listed sub-techniques were chosen.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Predicted sub-techniques are not connected to any stated reason; the explanation argues only for benign activity and then gives a broad list of unrelated techniques without justification.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"Neutral is a cautious label that matches the candidate's stated ambiguity. However, the explanation's own observation that www-data spawned stty without a login session is a meaningful anomaly that the candidate underweights, so calibration is somewhat weak.\"},\n    \"instruction_adherence\": {\"score\": 3, \"reason\": \"Valid JSON with all required fields, a list of ten techniques, a permitted confidence label, and a brief explanation. The explanation is slightly longer than 1-2 sentences only marginally, and IDs are listed without descriptions as requested.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was assessed for similarity in this evaluation.\",\n    \"reasoning_similarity\": \"No comparison response was assessed for similarity in this evaluation.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\", \"T1059.003\", \"T1059.002\", \"T1059.001\", \"T1059\", \"T1102\", \"T1033\", \"T1036\", \"T1036.001\", \"T1036.002\"],\n  \"failure_labels\": [\"over-specific sub-technique prediction\", \"weak reason-to-technique alignment\", \"underweighted anomaly (www-data with no login session)\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Neutral\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"Neutral versus Somewhat Certain: Attack involves Neutral and a directional difference of one step; the logs (web-server account spawning a TTY utility with no auid) warrant a lean toward attack, but not high certainty.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3387,
+      "output_tokens": 1095,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3387,
+    "output_tokens": 1095,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00044310000000000004,
+  "batch_api": true,
+  "elapsed_seconds": 24548.105346679688,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3387,
+  "output_tokens": 1095,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 2, \"reason\": \"Ground truth T1059 is present in the candidate's list at rank 5, within the first ten distinct predictions; only one ground-truth ID exists, so coverage is complete (1/1) and scores at the top of the scale.\"},\n    \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"The logs show www-data executing /usr/bin/stty with no login session, which supports a command-execution technique (T1059 family), but the sub-technique IDs T1059.001-.004 (PowerShell, AppleScript, Python-style interpreter classes) are not supported by any observed interpreter. T1102 (Web Service), T1036 masquerading, and T1033 system owner discovery have little or no direct support in these artifacts.\"},\n    \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation accurately cites the www-data user and the stty execution, distinguishing observed facts from an interpretation that the command is administrative. It does not address the unset auid or the terminal-size arguments beyond a passing mention, and it does not explain why the listed sub-techniques were chosen.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Predicted sub-techniques are not connected to any stated reason; the explanation argues only for benign activity and then gives a broad list of unrelated techniques without justification.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"Neutral is a cautious label that matches the candidate's stated ambiguity. However, the explanation's own observation that www-data spawned stty without a login session is a meaningful anomaly that the candidate underweights, so calibration is somewhat weak.\"},\n    \"instruction_adherence\": {\"score\": 3, \"reason\": \"Valid JSON with all required fields, a list of ten techniques, a permitted confidence label, and a brief explanation. The explanation is slightly longer than 1-2 sentences only marginally, and IDs are listed without descriptions as requested.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was assessed for similarity in this evaluation.\",\n    \"reasoning_similarity\": \"No comparison response was assessed for similarity in this evaluation.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\", \"T1059.003\", \"T1059.002\", \"T1059.001\", \"T1059\", \"T1102\", \"T1033\", \"T1036\", \"T1036.001\", \"T1036.002\"],\n  \"failure_labels\": [\"over-specific sub-technique prediction\", \"weak reason-to-technique alignment\", \"underweighted anomaly (www-data with no login session)\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Neutral\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"Neutral versus Somewhat Certain: Attack involves Neutral and a directional difference of one step; the logs (web-server account spawning a TTY utility with no auid) warrant a lean toward attack, but not high certainty.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "3bcbbfd07a7f5afd4ed4607e6bbf1d9e0674ff9c901ad0d7767e68655d2cb508",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 2,
+        "reason": "Ground truth T1059 is present in the candidate's list at rank 5, within the first ten distinct predictions; only one ground-truth ID exists, so coverage is complete (1/1) and scores at the top of the scale."
+      },
+      "prediction_evidence_support": {
+        "score": 2,
+        "reason": "The logs show www-data executing /usr/bin/stty with no login session, which supports a command-execution technique (T1059 family), but the sub-technique IDs T1059.001-.004 (PowerShell, AppleScript, Python-style interpreter classes) are not supported by any observed interpreter. T1102 (Web Service), T1036 masquerading, and T1033 system owner discovery have little or no direct support in these artifacts."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation accurately cites the www-data user and the stty execution, distinguishing observed facts from an interpretation that the command is administrative. It does not address the unset auid or the terminal-size arguments beyond a passing mention, and it does not explain why the listed sub-techniques were chosen."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Predicted sub-techniques are not connected to any stated reason; the explanation argues only for benign activity and then gives a broad list of unrelated techniques without justification."
+      },
+      "confidence_evidence_support": {
+        "score": 2,
+        "reason": "Neutral is a cautious label that matches the candidate's stated ambiguity. However, the explanation's own observation that www-data spawned stty without a login session is a meaningful anomaly that the candidate underweights, so calibration is somewhat weak."
+      },
+      "instruction_adherence": {
+        "score": 3,
+        "reason": "Valid JSON with all required fields, a list of ten techniques, a permitted confidence label, and a brief explanation. The explanation is slightly longer than 1-2 sentences only marginally, and IDs are listed without descriptions as requested."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "No comparison response was assessed for similarity in this evaluation.",
+      "reasoning_similarity": "No comparison response was assessed for similarity in this evaluation."
+    },
+    "extracted_predictions": [
+      "T1059.004",
+      "T1059.003",
+      "T1059.002",
+      "T1059.001",
+      "T1059",
+      "T1102",
+      "T1033",
+      "T1036",
+      "T1036.001",
+      "T1036.002"
+    ],
+    "failure_labels": [
+      "over-specific sub-technique prediction",
+      "weak reason-to-technique alignment",
+      "underweighted anomaly (www-data with no login session)"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Neutral",
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": 2,
+    "confidence_label_agreement_reason": "Neutral versus Somewhat Certain: Attack involves Neutral and a directional difference of one step; the logs (web-server account spawning a TTY utility with no auid) warrant a lean toward attack, but not high certainty.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 2,
+    "reason": "Ground truth T1059 is present in the candidate's list at rank 5, within the first ten distinct predictions; only one ground-truth ID exists, so coverage is complete (1/1) and scores at the top of the scale."
+  },
+  "score_prediction_evidence_support": {
+    "score": 2,
+    "reason": "The logs show www-data executing /usr/bin/stty with no login session, which supports a command-execution technique (T1059 family), but the sub-technique IDs T1059.001-.004 (PowerShell, AppleScript, Python-style interpreter classes) are not supported by any observed interpreter. T1102 (Web Service), T1036 masquerading, and T1033 system owner discovery have little or no direct support in these artifacts."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation accurately cites the www-data user and the stty execution, distinguishing observed facts from an interpretation that the command is administrative. It does not address the unset auid or the terminal-size arguments beyond a passing mention, and it does not explain why the listed sub-techniques were chosen."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Predicted sub-techniques are not connected to any stated reason; the explanation argues only for benign activity and then gives a broad list of unrelated techniques without justification."
+  },
+  "score_confidence_evidence_support": {
+    "score": 2,
+    "reason": "Neutral is a cautious label that matches the candidate's stated ambiguity. However, the explanation's own observation that www-data spawned stty without a login session is a meaningful anomaly that the candidate underweights, so calibration is somewhat weak."
+  },
+  "score_instruction_adherence": {
+    "score": 3,
+    "reason": "Valid JSON with all required fields, a list of ten techniques, a permitted confidence label, and a brief explanation. The explanation is slightly longer than 1-2 sentences only marginally, and IDs are listed without descriptions as requested."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No comparison response was assessed for similarity in this evaluation.",
+    "reasoning_similarity": "No comparison response was assessed for similarity in this evaluation."
+  },
+  "judge_extracted_predictions": [
+    "T1059.004",
+    "T1059.003",
+    "T1059.002",
+    "T1059.001",
+    "T1059",
+    "T1102",
+    "T1033",
+    "T1036",
+    "T1036.001",
+    "T1036.002"
+  ],
+  "judge_failure_labels": [
+    "over-specific sub-technique prediction",
+    "weak reason-to-technique alignment",
+    "underweighted anomaly (www-data with no login session)"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Neutral",
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": 2,
+  "confidence_label_agreement_reason": "Neutral versus Somewhat Certain: Attack involves Neutral and a directional difference of one step; the logs (web-server account spawning a TTY utility with no auid) warrant a lean toward attack, but not high certainty.",
+  "confidence_label_null_reason": null
+}

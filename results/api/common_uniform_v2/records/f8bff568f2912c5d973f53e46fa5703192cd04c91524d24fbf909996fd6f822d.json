@@ -1,0 +1,241 @@
+{
+  "prompt_id": "880",
+  "scenario": "3",
+  "variant": "ssh_puppet",
+  "step": "27",
+  "split": "validation",
+  "group_id": "[\"3\", \"27\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nlinuxshare:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765544064.640:3035): arch=c000003e syscall=59 success=yes exit=0 a0=55662a1379e0 a1=55662a137a60 a2=55662a1372b0 a3=b842b33936233152 items=3 ppid=2115 pid=2119 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"find\" exe=\"/usr/bin/find\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765544064.640:3035): argc=2 a0=\"find\" a1=\"/media/data/Images\"\n        type=PATH msg=audit(1765544064.640:3035): item=0 name=\"/usr/bin/find\" inode=1449 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765544064.640:3035): item=1 name=\"/usr/bin/find\" inode=1449 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765544064.640:3035): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=2058 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765544064.640:3035): proctitle=66696E64002F6D656469612F646174612F496D61676573",
+  "prompt_sha256": "15f1e9cbc222aaf3c48116d3115ce1d74f5dbb61bcaf833a29ba5337c83aa445",
+  "ground_truth": "[\"T1018\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1083\", \"T1005\", \"T1078\", \"T1059\", \"T1033\", \"T1082\", \"T1106\", \"T1204\", \"T1049\", \"T1027\"], \"confidence\": \"Neutral\", \"explanation\": \"The log shows root executing /usr/bin/find against /media/data/Images, which is consistent with file and directory discovery. This single command could be benign administrative activity or attacker reconnaissance, with no additional malicious artifacts present.\"}",
+  "teacher_response_sha256": "4cfe5f44ba7fb0d168925f4dc925113eb8c6acc24eefc69356e96da7766391bb",
+  "teacher_confidence_label": "Neutral",
+  "model": "hermes",
+  "condition": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "0b6fa8a7eecc10fd5310ebe209bf4c7d11acb075c6cf141706092383887930f0:880",
+  "candidate_response_raw": "{\"techniques\": \"T1059.004\", \"confidence\": \"99.99999999999999\"}",
+  "candidate_response_sha256": "099a4a7bdd3dff5278279dd8af51f45461ae6a7cd5861f9894f41615b34420a6",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "technique",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "0b6fa8a7eecc10fd5310ebe209bf4c7d11acb075c6cf141706092383887930f0",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "2d6acc4b2aeb1ffcbc0f88b3f3435be75e921dbe52824ec99d62675dc461d6ad",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 987,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 38,
+  "candidate_elapsed_seconds": 1.6230205439997007,
+  "candidate_output_tokens_per_second": 23.413135551786958,
+  "candidate_peak_allocated_bytes": 3993584128,
+  "candidate_peak_reserved_bytes": 10554966016,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "52033bd309311d169cac43fc8a444188dd1280dcccef8c8c76a0953880acc16c",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1083\", \"T1074\", \"T1087\", \"T1039\", \"T1070\", \"T1005\", \"T1057\", \"T1082\", \"T1046\", \"T1119\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The log shows a root-owned execution of /usr/bin/find with a benign argument pointing to /media/data/Images, consistent with routine file listing or administrative activity. Although file discovery is commonly associated with attacker reconnaissance, a single find invocation on an image directory with no follow-on suspicious behavior, persistence, or data exfiltration indicators suggests normal activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "2a15128a569fb8af8568a30239162e1e9d4b61ae59b3f96bc5e464dc57ec4fc2",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "c8b74786e1159024db31abaa132147c41293443caac00087b802d6b713985649",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1018 (Remote System Discovery). The candidate predicted only T1059.004, which is not the ground-truth ID, so exact-ID coverage is 0.\",\n    \"prediction_evidence_support\": \"T1059.004 (Unix Shell) is weakly supported: the logs show an execve of /usr/bin/find by root with a path argument, which is a command execution, but nothing indicates a shell interpreter. The prediction is only loosely supported at the specificity claimed.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all, so there is no grounding to assess; missing explanation scores 0.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, so predictions cannot be connected to any stated reason.\",\n    \"confidence_evidence_support\": \"The confidence value '99.99999999999999' is not one of the required categories and is not a recognizable label. It also implies near-certainty of an attack, which the benign-looking single find command on a local image directory does not support. The value is not a clearly expressed category, so it is treated as unrecoverable for label agreement.\",\n    \"instruction_adherence\": \"The output omits the required 'explanation' field, uses a non-list value for 'techniques' (a single string rather than a top-10 list), and gives a numeric confidence instead of a permitted category. The JSON is valid but the schema is not followed.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"The candidate's confidence value is a numeric string that does not map to any of the seven permitted categories, so no candidate confidence label is recoverable for evaluation.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\"],\n  \"failure_labels\": [\"wrong_technique_id\", \"missing_explanation\", \"schema_violation\", \"invalid_confidence_label\", \"insufficient_technique_list\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable; the numeric value does not correspond to any permitted category.\",\n  \"confidence_label_null_reason\": \"The candidate's confidence field contains '99.99999999999999', which is not a clearly expressed category label.\"\n}\n```",
+  "response_hash": "23a4abaaa016adefec6e81e1d900cf103174916e771c0591180f43aee655bf2e",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv4ChA2THF5GfwbvX22",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1018 (Remote System Discovery). The candidate predicted only T1059.004, which is not the ground-truth ID, so exact-ID coverage is 0.\",\n    \"prediction_evidence_support\": \"T1059.004 (Unix Shell) is weakly supported: the logs show an execve of /usr/bin/find by root with a path argument, which is a command execution, but nothing indicates a shell interpreter. The prediction is only loosely supported at the specificity claimed.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all, so there is no grounding to assess; missing explanation scores 0.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, so predictions cannot be connected to any stated reason.\",\n    \"confidence_evidence_support\": \"The confidence value '99.99999999999999' is not one of the required categories and is not a recognizable label. It also implies near-certainty of an attack, which the benign-looking single find command on a local image directory does not support. The value is not a clearly expressed category, so it is treated as unrecoverable for label agreement.\",\n    \"instruction_adherence\": \"The output omits the required 'explanation' field, uses a non-list value for 'techniques' (a single string rather than a top-10 list), and gives a numeric confidence instead of a permitted category. The JSON is valid but the schema is not followed.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"The candidate's confidence value is a numeric string that does not map to any of the seven permitted categories, so no candidate confidence label is recoverable for evaluation.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\"],\n  \"failure_labels\": [\"wrong_technique_id\", \"missing_explanation\", \"schema_violation\", \"invalid_confidence_label\", \"insufficient_technique_list\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable; the numeric value does not correspond to any permitted category.\",\n  \"confidence_label_null_reason\": \"The candidate's confidence field contains '99.99999999999999', which is not a clearly expressed category label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3153,
+      "output_tokens": 920,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3153,
+    "output_tokens": 920,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00038764999999999996,
+  "batch_api": true,
+  "elapsed_seconds": 25891.545278310776,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3153,
+  "output_tokens": 920,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1018 (Remote System Discovery). The candidate predicted only T1059.004, which is not the ground-truth ID, so exact-ID coverage is 0.\",\n    \"prediction_evidence_support\": \"T1059.004 (Unix Shell) is weakly supported: the logs show an execve of /usr/bin/find by root with a path argument, which is a command execution, but nothing indicates a shell interpreter. The prediction is only loosely supported at the specificity claimed.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all, so there is no grounding to assess; missing explanation scores 0.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, so predictions cannot be connected to any stated reason.\",\n    \"confidence_evidence_support\": \"The confidence value '99.99999999999999' is not one of the required categories and is not a recognizable label. It also implies near-certainty of an attack, which the benign-looking single find command on a local image directory does not support. The value is not a clearly expressed category, so it is treated as unrecoverable for label agreement.\",\n    \"instruction_adherence\": \"The output omits the required 'explanation' field, uses a non-list value for 'techniques' (a single string rather than a top-10 list), and gives a numeric confidence instead of a permitted category. The JSON is valid but the schema is not followed.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"The candidate's confidence value is a numeric string that does not map to any of the seven permitted categories, so no candidate confidence label is recoverable for evaluation.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\"],\n  \"failure_labels\": [\"wrong_technique_id\", \"missing_explanation\", \"schema_violation\", \"invalid_confidence_label\", \"insufficient_technique_list\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable; the numeric value does not correspond to any permitted category.\",\n  \"confidence_label_null_reason\": \"The candidate's confidence field contains '99.99999999999999', which is not a clearly expressed category label.\"\n}\n```",
+  "judge_response_sha256": "23a4abaaa016adefec6e81e1d900cf103174916e771c0591180f43aee655bf2e",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 1,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": null,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "Ground truth is T1018 (Remote System Discovery). The candidate predicted only T1059.004, which is not the ground-truth ID, so exact-ID coverage is 0.",
+      "prediction_evidence_support": "T1059.004 (Unix Shell) is weakly supported: the logs show an execve of /usr/bin/find by root with a path argument, which is a command execution, but nothing indicates a shell interpreter. The prediction is only loosely supported at the specificity claimed.",
+      "explanation_grounding": "The candidate provides no explanation field at all, so there is no grounding to assess; missing explanation scores 0.",
+      "prediction_reason_alignment": "No explanation is provided, so predictions cannot be connected to any stated reason.",
+      "confidence_evidence_support": "The confidence value '99.99999999999999' is not one of the required categories and is not a recognizable label. It also implies near-certainty of an attack, which the benign-looking single find command on a local image directory does not support. The value is not a clearly expressed category, so it is treated as unrecoverable for label agreement.",
+      "instruction_adherence": "The output omits the required 'explanation' field, uses a non-list value for 'techniques' (a single string rather than a top-10 list), and gives a numeric confidence instead of a permitted category. The JSON is valid but the schema is not followed."
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "The candidate's confidence value is a numeric string that does not map to any of the seven permitted categories, so no candidate confidence label is recoverable for evaluation."
+    },
+    "extracted_predictions": [
+      "T1059.004"
+    ],
+    "failure_labels": [
+      "wrong_technique_id",
+      "missing_explanation",
+      "schema_violation",
+      "invalid_confidence_label",
+      "insufficient_technique_list"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable; the numeric value does not correspond to any permitted category.",
+    "confidence_label_null_reason": "The candidate's confidence field contains '99.99999999999999', which is not a clearly expressed category label."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 1,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "Ground truth is T1018 (Remote System Discovery). The candidate predicted only T1059.004, which is not the ground-truth ID, so exact-ID coverage is 0.",
+    "prediction_evidence_support": "T1059.004 (Unix Shell) is weakly supported: the logs show an execve of /usr/bin/find by root with a path argument, which is a command execution, but nothing indicates a shell interpreter. The prediction is only loosely supported at the specificity claimed.",
+    "explanation_grounding": "The candidate provides no explanation field at all, so there is no grounding to assess; missing explanation scores 0.",
+    "prediction_reason_alignment": "No explanation is provided, so predictions cannot be connected to any stated reason.",
+    "confidence_evidence_support": "The confidence value '99.99999999999999' is not one of the required categories and is not a recognizable label. It also implies near-certainty of an attack, which the benign-looking single find command on a local image directory does not support. The value is not a clearly expressed category, so it is treated as unrecoverable for label agreement.",
+    "instruction_adherence": "The output omits the required 'explanation' field, uses a non-list value for 'techniques' (a single string rather than a top-10 list), and gives a numeric confidence instead of a permitted category. The JSON is valid but the schema is not followed."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "The candidate's confidence value is a numeric string that does not map to any of the seven permitted categories, so no candidate confidence label is recoverable for evaluation."
+  },
+  "judge_extracted_predictions": [
+    "T1059.004"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_id",
+    "missing_explanation",
+    "schema_violation",
+    "invalid_confidence_label",
+    "insufficient_technique_list"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable; the numeric value does not correspond to any permitted category.",
+  "confidence_label_null_reason": "The candidate's confidence field contains '99.99999999999999', which is not a clearly expressed category label."
+}

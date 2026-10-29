@@ -1,0 +1,273 @@
+{
+  "prompt_id": "990",
+  "scenario": "7",
+  "variant": "",
+  "step": "9",
+  "split": "train",
+  "group_id": "[\"7\", \"9\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ndocker:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1768991795.610:5229): arch=c000003e syscall=42 success=no exit=-115 a0=6 a1=1a3b290 a2=10 a3=0 items=0 ppid=1928 pid=3514 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=(none) ses=4294967295 comm=\"rJZMoLeJ\" exe=\"/var/www/nextcloud/rJZMoLeJ\" subj=docker-default\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=SOCKADDR msg=audit(1768991795.610:5229): saddr=02000947AC1200010000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.18.0.1 lport=2375 }\n        type=PROCTITLE msg=audit(1768991795.610:5229): proctitle=\"./rJZMoLeJ\"",
+  "prompt_sha256": "a24ccd0f432a35b7871462421379082612ba2871f4c35046b44bd84f1248b137",
+  "ground_truth": "[\"T1016\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1611\", \"T1610\", \"T1203\", \"T1059\", \"T1105\", \"T1071\", \"T1021\", \"T1046\", \"T1018\", \"T1082\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"A suspicious randomly named executable running as www-data from the Nextcloud web directory attempts to connect to 172.18.0.1:2375, the Docker API port, indicating likely container/docker socket or daemon exploitation from a compromised web app container. The random binary name and execution path are not consistent with normal Nextcloud activity.\"}",
+  "teacher_response_sha256": "d828a662b3251349d4c719298fc2adfeb2ce629d6606e77486c523a1285f7637",
+  "teacher_confidence_label": "Almost Certain: Attack",
+  "model": "qwen7b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "e1c2fda3f39f077e7f74012fd0d51fd621931088ea87e57d546b6d20fd8c066c:990",
+  "candidate_response_raw": "```json\n{\n    \"techniques\": [\n        \"T1098\",\n        \"T1210\",\n        \"T1071\",\n        \"T1075\",\n        \"T1059\",\n        \"T1566\",\n        \"T1543\",\n        \"T1021\",\n        \"T1027\",\n        \"T1047\"\n    ],\n    \"confidence\": \"Almost Certain: Attack\",\n    \"explanation\": \"The log entries indicate a potential attack where a process with a suspicious name (\\\"rJZMoLeJ\\\") is attempting to connect to a Docker API endpoint (2375 port) using a crafted syscall. This behavior is indicative of an attempt to exploit or gain unauthorized access to a Docker environment.\"\n}\n```",
+  "candidate_response_sha256": "f87534fdc8be1260f66daf13854df9e2465cf1b1171125b7d14699320fb9edd2",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "qwen7b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "e1c2fda3f39f077e7f74012fd0d51fd621931088ea87e57d546b6d20fd8c066c",
+  "candidate_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 647,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 173,
+  "candidate_elapsed_seconds": 5.137419472001056,
+  "candidate_output_tokens_per_second": 33.67449376926495,
+  "candidate_peak_allocated_bytes": 15414704640,
+  "candidate_peak_reserved_bytes": 21671968768,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "cb92b20b732a71c96e906bcc4b6cbab8c08c56cbaab963dcbed15b33943c6d8a",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1610\",\n    \"T1611\",\n    \"T1059.004\",\n    \"T1571\",\n    \"T1190\",\n    \"T1505.003\",\n    \"T1078\",\n    \"T1569.002\",\n    \"T1046\",\n    \"T1021.004\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"An unsigned binary with a randomized name (rJZMoLeJ) located in the Nextcloud web directory and run as the www-data web server user attempted a connect() to the Docker Engine API on TCP port 2375 (unauthenticated remote Docker API) at 172.18.0.1, indicating a web-shell or dropped payload trying to control the container host. Launching a randomly named executable from a web application path and reaching out to the Docker daemon are strong indicators of container escape/abuse and attacker-driven lateral movement, not normal activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "272a2900a4b04926fbbdcaae3469a92345152b06f0d254c8c6b3bc52a98bddec",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "26dc1218397d290029a2d33e14667efe2eae7474b33be83afab7b346b3554f7a",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1016 (System Network Configuration Discovery). None of the ten candidate techniques (T1098, T1210, T1071, T1075, T1059, T1566, T1543, T1021, T1027, T1047) match T1016.\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs do show a randomly named executable under a web path connecting to Docker API port 2375 as www-data, which gives some support to attack-related techniques, but the specific predictions (phishing T1566, spearphishing-like T1027 obfuscation, WMI T1047, etc.) are not supported by any supplied artifact.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites real observations (rJZMoLeJ name, connect to port 2375, syscall use) and reasonably frames them, but 'crafted syscall' is an overstatement and it does not tie to the technique list it outputs.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"The explanation discusses Docker API exploitation, yet none of the listed techniques relate to Docker API access or discovery; the ranked list is largely disconnected from the stated reasoning.\"}, \"confidence_evidence_support\": {\"score\": 3, \"reason\": \"'Almost Certain: Attack' is reasonably proportionate given a randomly named binary running from a web directory connecting to an unauthenticated Docker API, with only minor overconfidence in calling it crafted.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is wrapped in a code fence and is not strict JSON per the audit; it does include all required fields and a brief explanation, but the top-10 list contains many arbitrary IDs without rationale.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1098\", \"T1210\", \"T1071\", \"T1075\", \"T1059\", \"T1566\", \"T1543\", \"T1021\", \"T1027\", \"T1047\"], \"failure_labels\": [\"wrong_technique_ids\", \"missed_ground_truth_technique\", \"format_nonstrict_json\", \"weak_prediction_reason_alignment\"], \"prediction_similarity\": 1, \"reasoning_similarity\": 2, \"candidate_confidence_label\": \"Almost Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Attack\", \"confidence_label_agreement\": 4, \"confidence_label_agreement_reason\": \"The candidate's label matches the independently warranted label exactly.\", \"confidence_label_null_reason\": null}",
+  "response_hash": "c4eeae31b1ace8d488b45501dc01da7b0b9a44b20cecf9f551ef84db3df5d663",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwepyHVRYRrQpMfh4q4",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1016 (System Network Configuration Discovery). None of the ten candidate techniques (T1098, T1210, T1071, T1075, T1059, T1566, T1543, T1021, T1027, T1047) match T1016.\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs do show a randomly named executable under a web path connecting to Docker API port 2375 as www-data, which gives some support to attack-related techniques, but the specific predictions (phishing T1566, spearphishing-like T1027 obfuscation, WMI T1047, etc.) are not supported by any supplied artifact.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites real observations (rJZMoLeJ name, connect to port 2375, syscall use) and reasonably frames them, but 'crafted syscall' is an overstatement and it does not tie to the technique list it outputs.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"The explanation discusses Docker API exploitation, yet none of the listed techniques relate to Docker API access or discovery; the ranked list is largely disconnected from the stated reasoning.\"}, \"confidence_evidence_support\": {\"score\": 3, \"reason\": \"'Almost Certain: Attack' is reasonably proportionate given a randomly named binary running from a web directory connecting to an unauthenticated Docker API, with only minor overconfidence in calling it crafted.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is wrapped in a code fence and is not strict JSON per the audit; it does include all required fields and a brief explanation, but the top-10 list contains many arbitrary IDs without rationale.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1098\", \"T1210\", \"T1071\", \"T1075\", \"T1059\", \"T1566\", \"T1543\", \"T1021\", \"T1027\", \"T1047\"], \"failure_labels\": [\"wrong_technique_ids\", \"missed_ground_truth_technique\", \"format_nonstrict_json\", \"weak_prediction_reason_alignment\"], \"prediction_similarity\": 1, \"reasoning_similarity\": 2, \"candidate_confidence_label\": \"Almost Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Attack\", \"confidence_label_agreement\": 4, \"confidence_label_agreement_reason\": \"The candidate's label matches the independently warranted label exactly.\", \"confidence_label_null_reason\": null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3053,
+      "output_tokens": 869,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3053,
+    "output_tokens": 869,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0003699,
+  "batch_api": true,
+  "elapsed_seconds": 1408.6415553092957,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3053,
+  "output_tokens": 869,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1016 (System Network Configuration Discovery). None of the ten candidate techniques (T1098, T1210, T1071, T1075, T1059, T1566, T1543, T1021, T1027, T1047) match T1016.\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs do show a randomly named executable under a web path connecting to Docker API port 2375 as www-data, which gives some support to attack-related techniques, but the specific predictions (phishing T1566, spearphishing-like T1027 obfuscation, WMI T1047, etc.) are not supported by any supplied artifact.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites real observations (rJZMoLeJ name, connect to port 2375, syscall use) and reasonably frames them, but 'crafted syscall' is an overstatement and it does not tie to the technique list it outputs.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"The explanation discusses Docker API exploitation, yet none of the listed techniques relate to Docker API access or discovery; the ranked list is largely disconnected from the stated reasoning.\"}, \"confidence_evidence_support\": {\"score\": 3, \"reason\": \"'Almost Certain: Attack' is reasonably proportionate given a randomly named binary running from a web directory connecting to an unauthenticated Docker API, with only minor overconfidence in calling it crafted.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is wrapped in a code fence and is not strict JSON per the audit; it does include all required fields and a brief explanation, but the top-10 list contains many arbitrary IDs without rationale.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1098\", \"T1210\", \"T1071\", \"T1075\", \"T1059\", \"T1566\", \"T1543\", \"T1021\", \"T1027\", \"T1047\"], \"failure_labels\": [\"wrong_technique_ids\", \"missed_ground_truth_technique\", \"format_nonstrict_json\", \"weak_prediction_reason_alignment\"], \"prediction_similarity\": 1, \"reasoning_similarity\": 2, \"candidate_confidence_label\": \"Almost Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Attack\", \"confidence_label_agreement\": 4, \"confidence_label_agreement_reason\": \"The candidate's label matches the independently warranted label exactly.\", \"confidence_label_null_reason\": null}",
+  "judge_response_sha256": "c4eeae31b1ace8d488b45501dc01da7b0b9a44b20cecf9f551ef84db3df5d663",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1016 (System Network Configuration Discovery). None of the ten candidate techniques (T1098, T1210, T1071, T1075, T1059, T1566, T1543, T1021, T1027, T1047) match T1016."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "The logs do show a randomly named executable under a web path connecting to Docker API port 2375 as www-data, which gives some support to attack-related techniques, but the specific predictions (phishing T1566, spearphishing-like T1027 obfuscation, WMI T1047, etc.) are not supported by any supplied artifact."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation cites real observations (rJZMoLeJ name, connect to port 2375, syscall use) and reasonably frames them, but 'crafted syscall' is an overstatement and it does not tie to the technique list it outputs."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "The explanation discusses Docker API exploitation, yet none of the listed techniques relate to Docker API access or discovery; the ranked list is largely disconnected from the stated reasoning."
+      },
+      "confidence_evidence_support": {
+        "score": 3,
+        "reason": "'Almost Certain: Attack' is reasonably proportionate given a randomly named binary running from a web directory connecting to an unauthenticated Docker API, with only minor overconfidence in calling it crafted."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Output is wrapped in a code fence and is not strict JSON per the audit; it does include all required fields and a brief explanation, but the top-10 list contains many arbitrary IDs without rationale."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1098",
+      "T1210",
+      "T1071",
+      "T1075",
+      "T1059",
+      "T1566",
+      "T1543",
+      "T1021",
+      "T1027",
+      "T1047"
+    ],
+    "failure_labels": [
+      "wrong_technique_ids",
+      "missed_ground_truth_technique",
+      "format_nonstrict_json",
+      "weak_prediction_reason_alignment"
+    ],
+    "prediction_similarity": 1,
+    "reasoning_similarity": 2,
+    "candidate_confidence_label": "Almost Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 4,
+    "confidence_label_agreement_reason": "The candidate's label matches the independently warranted label exactly.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1016 (System Network Configuration Discovery). None of the ten candidate techniques (T1098, T1210, T1071, T1075, T1059, T1566, T1543, T1021, T1027, T1047) match T1016."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "The logs do show a randomly named executable under a web path connecting to Docker API port 2375 as www-data, which gives some support to attack-related techniques, but the specific predictions (phishing T1566, spearphishing-like T1027 obfuscation, WMI T1047, etc.) are not supported by any supplied artifact."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation cites real observations (rJZMoLeJ name, connect to port 2375, syscall use) and reasonably frames them, but 'crafted syscall' is an overstatement and it does not tie to the technique list it outputs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "The explanation discusses Docker API exploitation, yet none of the listed techniques relate to Docker API access or discovery; the ranked list is largely disconnected from the stated reasoning."
+  },
+  "score_confidence_evidence_support": {
+    "score": 3,
+    "reason": "'Almost Certain: Attack' is reasonably proportionate given a randomly named binary running from a web directory connecting to an unauthenticated Docker API, with only minor overconfidence in calling it crafted."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Output is wrapped in a code fence and is not strict JSON per the audit; it does include all required fields and a brief explanation, but the top-10 list contains many arbitrary IDs without rationale."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1098",
+    "T1210",
+    "T1071",
+    "T1075",
+    "T1059",
+    "T1566",
+    "T1543",
+    "T1021",
+    "T1027",
+    "T1047"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_ids",
+    "missed_ground_truth_technique",
+    "format_nonstrict_json",
+    "weak_prediction_reason_alignment"
+  ],
+  "judge_prediction_similarity": 1,
+  "judge_reasoning_similarity": 2,
+  "candidate_confidence_label": "Almost Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 4,
+  "confidence_label_agreement_reason": "The candidate's label matches the independently warranted label exactly.",
+  "confidence_label_null_reason": null
+}

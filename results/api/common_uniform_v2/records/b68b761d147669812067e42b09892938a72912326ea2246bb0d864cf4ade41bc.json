@@ -1,0 +1,271 @@
+{
+  "prompt_id": "416",
+  "scenario": "1",
+  "variant": "cron_pam",
+  "step": "17",
+  "split": "validation",
+  "group_id": "[\"1\", \"17\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=EXECVE msg=audit(1758706279.746:13699): argc=3 a0=\"python3\" a1=\"-c\" a2=696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=PATH msg=audit(1758706279.746:13699): item=0 name=\"/usr/bin/python3\" inode=5914 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758706279.746:13699): item=1 name=\"/usr/bin/python3\" inode=6206 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758706279.746:13699): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758706279.746:13699): proctitle=707974686F6E33002D6300696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=SYSCALL msg=audit(1758706279.774:13700): arch=c000003e syscall=59 success=yes exit=0 a0=7f36a3159ef0 a1=7f36a31d01b0 a2=7ffcffe36918 a3=fffffffffffff28e items=3 ppid=17398 pid=17399 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=8 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758706279.774:13700): argc=1 a0=\"/bin/bash\"\n        type=PATH msg=audit(1758706279.774:13700): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758706279.774:13700): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758706279.774:13700): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "ee53be2ac35e8d6aa8a666d9c2044a10d0c9d18838b66c3f2eb4f2c09c458853",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.006\", \"T1059.004\", \"T1059\", \"T1100\", \"T1203\", \"T1078\", \"T1021.004\", \"T1053\", \"T1548\", \"T1562\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The audit logs show root executing `python3 -c 'import pty; pty.spawn(\\\"/bin/bash\\\")'`, which is a common adversary action to upgrade a shell to an interactive TTY using Python. This behavior is strongly associated with post-exploitation command execution rather than normal administrative activity.\"}",
+  "teacher_response_sha256": "7b388907e33af96e1a7c41e83f80034237de6f8d1a07f30ad272512fca00c2dc",
+  "teacher_confidence_label": "Almost Certain: Attack",
+  "model": "mistral7b",
+  "condition": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "84e1c751e8683f56bb5ed622764f1814edbbb2193bff9ba96f270c1872a76ae1:416",
+  "candidate_response_raw": "{  \"techniques\": [\"T1059.004\", \"T1059\", \"T1059.006\", \"T1059.007\", \"T1105\", \"T1036\", \"T1078\", \"T1027\", \"T1204.002\", \"T1204.004\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The audit log shows root executing `/usr/bin/python3 -c 'import pty; pty.spawn(\"/bin/bash\")'`, which is a common Python-based TTY shell spawning technique used for interactive command execution. The use of `import pty; pty.spawn(\"/bin/bash\")` directly from the command line strongly indicates an attacker-driven shell upgrade rather than normal administrative activity.\"\n}",
+  "candidate_response_sha256": "22199d9929a7f2bb718a18c95d6fbde396ee46bd0b9639134ba339b49e776e0e",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "joint",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "84e1c751e8683f56bb5ed622764f1814edbbb2193bff9ba96f270c1872a76ae1",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_adapter_sha256": "61200e033717e929636f3fad85373040743b618ecf9f82b058baebbc7a32e4a3",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1579,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 211,
+  "candidate_elapsed_seconds": 11.666855442002998,
+  "candidate_output_tokens_per_second": 18.085421650152455,
+  "candidate_peak_allocated_bytes": 14958051328,
+  "candidate_peak_reserved_bytes": 19400753152,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "0ba317f123c67e92361aced5de915e3a86cc38059f6d1dc3342a7c54a7ed4e1e",
+  "haiku_reference_response_raw": "Decoding the hex argument: `696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229` translates to `import pty;pty.spawn(\"/bin/bash\")`. This is a classic reverse-shell / TTY upgrade pattern: a Python one-liner spawning an interactive bash shell as root, with no legitimate administrative context visible. The process chain (python3 with -c, then bash with a pts1 tty allocated, parent PID 17398) is characteristic of an attacker who has gained command execution and is stabilizing an interactive shell.\n\n```json\n{\n  \"techniques\": [\n    \"T1059.006\",\n    \"T1059.004\",\n    \"T1059\",\n    \"T1571\",\n    \"T1068\",\n    \"T1548\",\n    \"T1078\",\n    \"T1105\",\n    \"T1021.004\",\n    \"T1134\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The python3 -c invocation decodes to 'import pty;pty.spawn(\\\"/bin/bash\\\")', a common technique for upgrading a non-interactive reverse shell to a full TTY, and it is executed as root with a newly allocated pseudo-terminal. While pty.spawn can occasionally be used by administrators, the combination of inline-encoded command execution, root context, and an unexpected interactive shell on a video server makes malicious activity much more likely.\"\n}\n```",
+  "haiku_reference_response_sha256": "48642704c3cefcd3dd913e126be7410e21c74d382e071ae75bbc07bd0a880500",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "91dbbbf6c587d2d3868ce9fe1c13d02ae3efd86d7e28f963d0d53c8634129735",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 3, \"reason\": \"Ground truth T1059 appears in the candidate's list, but the candidate ranks it second after the sub-technique T1059.004, which is the first of ten predictions. Ground truth coverage among the first ten is complete, so the score is 4 by the anchor rule; however T1059 is present in position 2 within the top ten, so full coverage applies.\"}, \"prediction_evidence_support\": {\"score\": 3, \"reason\": \"The log shows python3 -c with a pty.spawn to /bin/bash, supporting T1059 and T1059.004/T1059.006 at the Python interpreter level. Predictions such as T1036, T1027, T1204.002 are weakly supported by the observed logs.\"}, \"explanation_grounding\": {\"score\": 3, \"reason\": \"The explanation references the actual python3 -c pty.spawn command and root execution, but it does not decode the hex argument explicitly and asserts 'attacker-driven' without noting the limitation of a single command sample.\"}, \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"Predictions of T1105, T1036, T1027, and T1204 are not connected to any stated reason in the explanation, so most of the list is unsupported by the given reasoning.\"}, \"confidence_evidence_support\": {\"score\": 3, \"reason\": \"Almost Certain: Attack is reasonably proportionate given a root-level pty.spawn of bash from python, though a single command log does not fully exclude legitimate admin use.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is not strict JSON, the explanation exceeds the 1-2 sentence limit only slightly but is fine, and the format audit shows parse failure. Substantive fields are present, so the score reflects formatting failure.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1059.004\", \"T1059\", \"T1059.006\", \"T1059.007\", \"T1105\", \"T1036\", \"T1078\", \"T1027\", \"T1204.002\", \"T1204.004\"], \"failure_labels\": [\"invalid_json\", \"unsupported_technique_predictions\", \"weak_prediction_reason_alignment\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": \"Almost Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Attack\", \"confidence_label_agreement\": 4, \"confidence_label_agreement_reason\": \"The candidate label exactly matches the independently warranted label given the root-level pty.spawn evidence.\", \"confidence_label_null_reason\": null}",
+  "response_hash": "631dacef5c0f8fada05cd7755f17568aa5911568d26667acc5df5f086a034ecd",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwPiSDVF3rM6Cnv9c2V",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 3, \"reason\": \"Ground truth T1059 appears in the candidate's list, but the candidate ranks it second after the sub-technique T1059.004, which is the first of ten predictions. Ground truth coverage among the first ten is complete, so the score is 4 by the anchor rule; however T1059 is present in position 2 within the top ten, so full coverage applies.\"}, \"prediction_evidence_support\": {\"score\": 3, \"reason\": \"The log shows python3 -c with a pty.spawn to /bin/bash, supporting T1059 and T1059.004/T1059.006 at the Python interpreter level. Predictions such as T1036, T1027, T1204.002 are weakly supported by the observed logs.\"}, \"explanation_grounding\": {\"score\": 3, \"reason\": \"The explanation references the actual python3 -c pty.spawn command and root execution, but it does not decode the hex argument explicitly and asserts 'attacker-driven' without noting the limitation of a single command sample.\"}, \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"Predictions of T1105, T1036, T1027, and T1204 are not connected to any stated reason in the explanation, so most of the list is unsupported by the given reasoning.\"}, \"confidence_evidence_support\": {\"score\": 3, \"reason\": \"Almost Certain: Attack is reasonably proportionate given a root-level pty.spawn of bash from python, though a single command log does not fully exclude legitimate admin use.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is not strict JSON, the explanation exceeds the 1-2 sentence limit only slightly but is fine, and the format audit shows parse failure. Substantive fields are present, so the score reflects formatting failure.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1059.004\", \"T1059\", \"T1059.006\", \"T1059.007\", \"T1105\", \"T1036\", \"T1078\", \"T1027\", \"T1204.002\", \"T1204.004\"], \"failure_labels\": [\"invalid_json\", \"unsupported_technique_predictions\", \"weak_prediction_reason_alignment\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": \"Almost Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Attack\", \"confidence_label_agreement\": 4, \"confidence_label_agreement_reason\": \"The candidate label exactly matches the independently warranted label given the root-level pty.spawn evidence.\", \"confidence_label_null_reason\": null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4218,
+      "output_tokens": 874,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4218,
+    "output_tokens": 874,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0004294,
+  "batch_api": true,
+  "elapsed_seconds": 9624.472799539566,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4218,
+  "output_tokens": 874,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 3, \"reason\": \"Ground truth T1059 appears in the candidate's list, but the candidate ranks it second after the sub-technique T1059.004, which is the first of ten predictions. Ground truth coverage among the first ten is complete, so the score is 4 by the anchor rule; however T1059 is present in position 2 within the top ten, so full coverage applies.\"}, \"prediction_evidence_support\": {\"score\": 3, \"reason\": \"The log shows python3 -c with a pty.spawn to /bin/bash, supporting T1059 and T1059.004/T1059.006 at the Python interpreter level. Predictions such as T1036, T1027, T1204.002 are weakly supported by the observed logs.\"}, \"explanation_grounding\": {\"score\": 3, \"reason\": \"The explanation references the actual python3 -c pty.spawn command and root execution, but it does not decode the hex argument explicitly and asserts 'attacker-driven' without noting the limitation of a single command sample.\"}, \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"Predictions of T1105, T1036, T1027, and T1204 are not connected to any stated reason in the explanation, so most of the list is unsupported by the given reasoning.\"}, \"confidence_evidence_support\": {\"score\": 3, \"reason\": \"Almost Certain: Attack is reasonably proportionate given a root-level pty.spawn of bash from python, though a single command log does not fully exclude legitimate admin use.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is not strict JSON, the explanation exceeds the 1-2 sentence limit only slightly but is fine, and the format audit shows parse failure. Substantive fields are present, so the score reflects formatting failure.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1059.004\", \"T1059\", \"T1059.006\", \"T1059.007\", \"T1105\", \"T1036\", \"T1078\", \"T1027\", \"T1204.002\", \"T1204.004\"], \"failure_labels\": [\"invalid_json\", \"unsupported_technique_predictions\", \"weak_prediction_reason_alignment\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": \"Almost Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Attack\", \"confidence_label_agreement\": 4, \"confidence_label_agreement_reason\": \"The candidate label exactly matches the independently warranted label given the root-level pty.spawn evidence.\", \"confidence_label_null_reason\": null}",
+  "judge_response_sha256": "631dacef5c0f8fada05cd7755f17568aa5911568d26667acc5df5f086a034ecd",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 3,
+        "reason": "Ground truth T1059 appears in the candidate's list, but the candidate ranks it second after the sub-technique T1059.004, which is the first of ten predictions. Ground truth coverage among the first ten is complete, so the score is 4 by the anchor rule; however T1059 is present in position 2 within the top ten, so full coverage applies."
+      },
+      "prediction_evidence_support": {
+        "score": 3,
+        "reason": "The log shows python3 -c with a pty.spawn to /bin/bash, supporting T1059 and T1059.004/T1059.006 at the Python interpreter level. Predictions such as T1036, T1027, T1204.002 are weakly supported by the observed logs."
+      },
+      "explanation_grounding": {
+        "score": 3,
+        "reason": "The explanation references the actual python3 -c pty.spawn command and root execution, but it does not decode the hex argument explicitly and asserts 'attacker-driven' without noting the limitation of a single command sample."
+      },
+      "prediction_reason_alignment": {
+        "score": 2,
+        "reason": "Predictions of T1105, T1036, T1027, and T1204 are not connected to any stated reason in the explanation, so most of the list is unsupported by the given reasoning."
+      },
+      "confidence_evidence_support": {
+        "score": 3,
+        "reason": "Almost Certain: Attack is reasonably proportionate given a root-level pty.spawn of bash from python, though a single command log does not fully exclude legitimate admin use."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "The response is not strict JSON, the explanation exceeds the 1-2 sentence limit only slightly but is fine, and the format audit shows parse failure. Substantive fields are present, so the score reflects formatting failure."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1059.004",
+      "T1059",
+      "T1059.006",
+      "T1059.007",
+      "T1105",
+      "T1036",
+      "T1078",
+      "T1027",
+      "T1204.002",
+      "T1204.004"
+    ],
+    "failure_labels": [
+      "invalid_json",
+      "unsupported_technique_predictions",
+      "weak_prediction_reason_alignment"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Almost Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 4,
+    "confidence_label_agreement_reason": "The candidate label exactly matches the independently warranted label given the root-level pty.spawn evidence.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 3,
+    "reason": "Ground truth T1059 appears in the candidate's list, but the candidate ranks it second after the sub-technique T1059.004, which is the first of ten predictions. Ground truth coverage among the first ten is complete, so the score is 4 by the anchor rule; however T1059 is present in position 2 within the top ten, so full coverage applies."
+  },
+  "score_prediction_evidence_support": {
+    "score": 3,
+    "reason": "The log shows python3 -c with a pty.spawn to /bin/bash, supporting T1059 and T1059.004/T1059.006 at the Python interpreter level. Predictions such as T1036, T1027, T1204.002 are weakly supported by the observed logs."
+  },
+  "score_explanation_grounding": {
+    "score": 3,
+    "reason": "The explanation references the actual python3 -c pty.spawn command and root execution, but it does not decode the hex argument explicitly and asserts 'attacker-driven' without noting the limitation of a single command sample."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 2,
+    "reason": "Predictions of T1105, T1036, T1027, and T1204 are not connected to any stated reason in the explanation, so most of the list is unsupported by the given reasoning."
+  },
+  "score_confidence_evidence_support": {
+    "score": 3,
+    "reason": "Almost Certain: Attack is reasonably proportionate given a root-level pty.spawn of bash from python, though a single command log does not fully exclude legitimate admin use."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "The response is not strict JSON, the explanation exceeds the 1-2 sentence limit only slightly but is fine, and the format audit shows parse failure. Substantive fields are present, so the score reflects formatting failure."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1059.004",
+    "T1059",
+    "T1059.006",
+    "T1059.007",
+    "T1105",
+    "T1036",
+    "T1078",
+    "T1027",
+    "T1204.002",
+    "T1204.004"
+  ],
+  "judge_failure_labels": [
+    "invalid_json",
+    "unsupported_technique_predictions",
+    "weak_prediction_reason_alignment"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Almost Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 4,
+  "confidence_label_agreement_reason": "The candidate label exactly matches the independently warranted label given the root-level pty.spawn evidence.",
+  "confidence_label_null_reason": null
+}

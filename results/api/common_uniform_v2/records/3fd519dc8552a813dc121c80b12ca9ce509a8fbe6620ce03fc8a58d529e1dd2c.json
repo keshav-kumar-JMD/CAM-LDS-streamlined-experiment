@@ -1,0 +1,277 @@
+{
+  "prompt_id": "804",
+  "scenario": "1",
+  "variant": "validaccount_sshkey",
+  "step": "26",
+  "split": "test",
+  "group_id": "[\"1\", \"26\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758711307.912:13613): arch=c000003e syscall=106 success=yes exit=0 a0=0 a1=55aba4efa520 a2=f98699fb36753500 a3=7f36cd5463c0 items=0 ppid=17325 pid=17372 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=8 comm=\"sshd\" exe=\"/usr/sbin/sshd\" subj==unconfined\u001dARCH=x86_64 SYSCALL=setgid AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1758711307.912:13613): proctitle=737368643A20726F6F74406E6F747479\n        type=CRED_REFR msg=audit(1758711307.916:13614): pid=17372 uid=0 auid=0 ses=8 subj==unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/sshd\" hostname=192.42.1.174 addr=192.42.1.174 terminal=ssh res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1758711307.916:13615): arch=c000003e syscall=59 success=yes exit=0 a0=55aba4ee39b0 a1=7ffdee4a39b0 a2=55aba4ee9180 a3=8 items=3 ppid=17325 pid=17372 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=8 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758711307.916:13615): argc=3 a0=\"bash\" a1=\"-c\" a2=636F6D6D616E64202D76206C73757362\n        type=PATH msg=audit(1758711307.916:13615): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758711307.916:13615): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758711307.916:13615): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758711307.916:13615): proctitle=737368643A20726F6F74406E6F747479",
+  "prompt_sha256": "badbf581c4001f08b9c6fe7f6ead5a60f1f0098323d6efd9768cffe8ad7212d5",
+  "ground_truth": "[\"T1120\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1033\", \"T1021.004\", \"T1059.004\", \"T1082\", \"T1018\", \"T1078\", \"T1049\", \"T1007\", \"T1087\", \"T1057\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show a successful root SSH session executing `bash -c \\\"command -v lsusb\\\"`, which is a simple utility/path check consistent with system or peripheral discovery but not inherently malicious. Root login over SSH may be administrative or attacker activity, but the provided artifacts alone do not establish compromise.\"}",
+  "teacher_response_sha256": "397a92d4c4f4d980729c3ad0e5bdbfda0706877c158f95f06012944f2915e352",
+  "teacher_confidence_label": "Neutral",
+  "model": "llama3b",
+  "condition": "explanation",
+  "candidate_status": "completed",
+  "candidate_record_id": "eaa71730cc7026312ed04a8fb8a9e888c7c79427786726764a0f535b73ede45b:804",
+  "candidate_response_raw": "{\"techniques\": [\"Remote Services\", \"Command Execution\", \"Shell/Interactive\", \"SSH Command Execution\", \"SSH Password Authentication\"], \"confidence\": \"Certain: Attack\", \"explanation\": \"The logs show an SSH root session executing `bash -c echo Hello` followed by normal bash execution, which is consistent with an interactive SSH shell command executed by an attacker. SSH password authentication and command execution directly map to remote services and command execution, with the simple `echo` command being a common indicator of interactive shell activity.\"}",
+  "candidate_response_sha256": "d9dd4431a76030dd1aae6bbb4f824748affe26f435b09da190c712792382396e",
+  "candidate_confidence_label_strict": "Certain: Attack",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "explanation",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "eaa71730cc7026312ed04a8fb8a9e888c7c79427786726764a0f535b73ede45b",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_adapter_sha256": "d4dd6ddf1ab4869e12ba8cef965c51eb9ffd26ea1c02fc3dcc84a4e2dde66167",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1169,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 108,
+  "candidate_elapsed_seconds": 5.441989715996897,
+  "candidate_output_tokens_per_second": 19.845682486780646,
+  "candidate_peak_allocated_bytes": 6697938944,
+  "candidate_peak_reserved_bytes": 9292480512,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": true,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "261f44fe81d14545abe96aec138e3ff77eebbc5b4b012ffe2e7de7aff1950d21",
+  "haiku_reference_response_raw": "Decoding the key artifacts: the hex argument `636F6D6D616E64202D76206C73757362` decodes to \"command -v lsusb\", and the proctitle `737368643A20726F6F74406E6F747479` decodes to \"sshd: root@notty\", indicating a non-interactive SSH session (typical of remote command execution). The session originates from 192.42.1.174, root logs in via SSH with pam_permit, and bash runs a discovery command (`command -v lsusb`) to check for USB device tooling.\n\n```json\n{\n  \"techniques\": [\"T1078\", \"T1021.004\", \"T1059.004\", \"T1082\", \"T1120\", \"T1087\", \"T1033\", \"T1518\", \"T1049\", \"T1083\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"Root SSH login from an external IP followed by a non-interactive 'sshd: root@notty' session executing 'bash -c \\\"command -v lsusb\\\"' suggests remote command execution and hardware reconnaissance, which is consistent with attacker discovery activity. However, root SSH sessions running simple administrative checks can also be legitimate, so the evidence is suggestive rather than conclusive.\"\n}\n```",
+  "haiku_reference_response_sha256": "54c5353693e439431bf09c79499794c6f7cd2b52727fcf0ce4225459437234f3",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "c0e9b670aea91d25c1c2e92b51ec7dbe6145aecfb4c9b292da3c0c305c61045e",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1120 (Peripheral Device Discovery). Candidate's predictions are Remote Services, Command Execution, Shell/Interactive, SSH Command Execution, SSH Password Authentication, using names rather than IDs; none match T1120 exactly (its IDs are absent). Coverage is 0.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"Remote Services and SSH-related techniques are partly supported by the SSH root session from 192.42.1.174 and sshd logs. However, the candidate misreads the hex argument as 'echo Hello' when it decodes to 'command -v lsusb', missing the peripheral-device discovery indicator, and 'SSH Password Authentication' is not evidenced (pam_permit, no password artifact).\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"Explanation cites an SSH root session and bash execution, which are real observations, but invents the decoded command ('echo Hello'), a factual error not supported by the logs. It also asserts attacker intent as certain without distinguishing inference.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Remote services and command execution are connected to the SSH session, a reasonable link, but the 'echo' basis for shell/command predictions rests on the misdecoded argument and the password authentication prediction lacks support.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"'Certain: Attack' is grossly disproportionate: the logs show a root SSH login with pam_permit and a single discovery-style command with no clear malicious artifacts, and the candidate acknowledges no limitations.\"},\"instruction_adherence\":{\"score\":2,\"reason\":\"Valid JSON with required fields, but the techniques list uses names instead of ATT&CK IDs as instructed, and the schema is not adherent.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"Remote Services\",\"Command Execution\",\"Shell/Interactive\",\"SSH Command Execution\",\"SSH Password Authentication\"],\"failure_labels\":[\"wrong_technique_id_format\",\"misdecoded_artifact\",\"unsupported_password_authentication_claim\",\"overconfident_attack_label\",\"no_matching_ground_truth_technique\"],\"prediction_similarity\":{\"score\":1,\"reason\":\"Candidate predictions overlap only loosely with the ground truth T1120 concept via remote/command execution themes, with no exact ID overlap.\"},\"reasoning_similarity\":{\"score\":1,\"reason\":\"Reference explanation identifies the hex-decoded 'command -v lsusb' discovery and the non-interactive session; candidate misses the discovery indicator and misstates the command as 'echo Hello'.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":2,\"confidence_label_agreement_reason\":\"Both are on the Attack side, but the candidate's 'Certain' is two steps from the warranted 'Somewhat Certain', a moderate difference given the ambiguous, mostly benign-looking root SSH login.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "dfb7633e808fc40d7e3ae7012e1874fc0e90deca5390568a98bb9115c2f4f2e3",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvrMewc6E7jpHDusK2q",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1120 (Peripheral Device Discovery). Candidate's predictions are Remote Services, Command Execution, Shell/Interactive, SSH Command Execution, SSH Password Authentication, using names rather than IDs; none match T1120 exactly (its IDs are absent). Coverage is 0.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"Remote Services and SSH-related techniques are partly supported by the SSH root session from 192.42.1.174 and sshd logs. However, the candidate misreads the hex argument as 'echo Hello' when it decodes to 'command -v lsusb', missing the peripheral-device discovery indicator, and 'SSH Password Authentication' is not evidenced (pam_permit, no password artifact).\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"Explanation cites an SSH root session and bash execution, which are real observations, but invents the decoded command ('echo Hello'), a factual error not supported by the logs. It also asserts attacker intent as certain without distinguishing inference.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Remote services and command execution are connected to the SSH session, a reasonable link, but the 'echo' basis for shell/command predictions rests on the misdecoded argument and the password authentication prediction lacks support.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"'Certain: Attack' is grossly disproportionate: the logs show a root SSH login with pam_permit and a single discovery-style command with no clear malicious artifacts, and the candidate acknowledges no limitations.\"},\"instruction_adherence\":{\"score\":2,\"reason\":\"Valid JSON with required fields, but the techniques list uses names instead of ATT&CK IDs as instructed, and the schema is not adherent.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"Remote Services\",\"Command Execution\",\"Shell/Interactive\",\"SSH Command Execution\",\"SSH Password Authentication\"],\"failure_labels\":[\"wrong_technique_id_format\",\"misdecoded_artifact\",\"unsupported_password_authentication_claim\",\"overconfident_attack_label\",\"no_matching_ground_truth_technique\"],\"prediction_similarity\":{\"score\":1,\"reason\":\"Candidate predictions overlap only loosely with the ground truth T1120 concept via remote/command execution themes, with no exact ID overlap.\"},\"reasoning_similarity\":{\"score\":1,\"reason\":\"Reference explanation identifies the hex-decoded 'command -v lsusb' discovery and the non-interactive session; candidate misses the discovery indicator and misstates the command as 'echo Hello'.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":2,\"confidence_label_agreement_reason\":\"Both are on the Attack side, but the candidate's 'Certain' is two steps from the warranted 'Somewhat Certain', a moderate difference given the ambiguous, mostly benign-looking root SSH login.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4019,
+      "output_tokens": 1079,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4019,
+    "output_tokens": 1079,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00047070000000000006,
+  "batch_api": true,
+  "elapsed_seconds": 20965.20791077614,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4019,
+  "output_tokens": 1079,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1120 (Peripheral Device Discovery). Candidate's predictions are Remote Services, Command Execution, Shell/Interactive, SSH Command Execution, SSH Password Authentication, using names rather than IDs; none match T1120 exactly (its IDs are absent). Coverage is 0.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"Remote Services and SSH-related techniques are partly supported by the SSH root session from 192.42.1.174 and sshd logs. However, the candidate misreads the hex argument as 'echo Hello' when it decodes to 'command -v lsusb', missing the peripheral-device discovery indicator, and 'SSH Password Authentication' is not evidenced (pam_permit, no password artifact).\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"Explanation cites an SSH root session and bash execution, which are real observations, but invents the decoded command ('echo Hello'), a factual error not supported by the logs. It also asserts attacker intent as certain without distinguishing inference.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Remote services and command execution are connected to the SSH session, a reasonable link, but the 'echo' basis for shell/command predictions rests on the misdecoded argument and the password authentication prediction lacks support.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"'Certain: Attack' is grossly disproportionate: the logs show a root SSH login with pam_permit and a single discovery-style command with no clear malicious artifacts, and the candidate acknowledges no limitations.\"},\"instruction_adherence\":{\"score\":2,\"reason\":\"Valid JSON with required fields, but the techniques list uses names instead of ATT&CK IDs as instructed, and the schema is not adherent.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"Remote Services\",\"Command Execution\",\"Shell/Interactive\",\"SSH Command Execution\",\"SSH Password Authentication\"],\"failure_labels\":[\"wrong_technique_id_format\",\"misdecoded_artifact\",\"unsupported_password_authentication_claim\",\"overconfident_attack_label\",\"no_matching_ground_truth_technique\"],\"prediction_similarity\":{\"score\":1,\"reason\":\"Candidate predictions overlap only loosely with the ground truth T1120 concept via remote/command execution themes, with no exact ID overlap.\"},\"reasoning_similarity\":{\"score\":1,\"reason\":\"Reference explanation identifies the hex-decoded 'command -v lsusb' discovery and the non-interactive session; candidate misses the discovery indicator and misstates the command as 'echo Hello'.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":2,\"confidence_label_agreement_reason\":\"Both are on the Attack side, but the candidate's 'Certain' is two steps from the warranted 'Somewhat Certain', a moderate difference given the ambiguous, mostly benign-looking root SSH login.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "dfb7633e808fc40d7e3ae7012e1874fc0e90deca5390568a98bb9115c2f4f2e3",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1120 (Peripheral Device Discovery). Candidate's predictions are Remote Services, Command Execution, Shell/Interactive, SSH Command Execution, SSH Password Authentication, using names rather than IDs; none match T1120 exactly (its IDs are absent). Coverage is 0."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "Remote Services and SSH-related techniques are partly supported by the SSH root session from 192.42.1.174 and sshd logs. However, the candidate misreads the hex argument as 'echo Hello' when it decodes to 'command -v lsusb', missing the peripheral-device discovery indicator, and 'SSH Password Authentication' is not evidenced (pam_permit, no password artifact)."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "Explanation cites an SSH root session and bash execution, which are real observations, but invents the decoded command ('echo Hello'), a factual error not supported by the logs. It also asserts attacker intent as certain without distinguishing inference."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Remote services and command execution are connected to the SSH session, a reasonable link, but the 'echo' basis for shell/command predictions rests on the misdecoded argument and the password authentication prediction lacks support."
+      },
+      "confidence_evidence_support": {
+        "score": 0,
+        "reason": "'Certain: Attack' is grossly disproportionate: the logs show a root SSH login with pam_permit and a single discovery-style command with no clear malicious artifacts, and the candidate acknowledges no limitations."
+      },
+      "instruction_adherence": {
+        "score": 2,
+        "reason": "Valid JSON with required fields, but the techniques list uses names instead of ATT&CK IDs as instructed, and the schema is not adherent."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "Remote Services",
+      "Command Execution",
+      "Shell/Interactive",
+      "SSH Command Execution",
+      "SSH Password Authentication"
+    ],
+    "failure_labels": [
+      "wrong_technique_id_format",
+      "misdecoded_artifact",
+      "unsupported_password_authentication_claim",
+      "overconfident_attack_label",
+      "no_matching_ground_truth_technique"
+    ],
+    "prediction_similarity": {
+      "score": 1,
+      "reason": "Candidate predictions overlap only loosely with the ground truth T1120 concept via remote/command execution themes, with no exact ID overlap."
+    },
+    "reasoning_similarity": {
+      "score": 1,
+      "reason": "Reference explanation identifies the hex-decoded 'command -v lsusb' discovery and the non-interactive session; candidate misses the discovery indicator and misstates the command as 'echo Hello'."
+    },
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": 2,
+    "confidence_label_agreement_reason": "Both are on the Attack side, but the candidate's 'Certain' is two steps from the warranted 'Somewhat Certain', a moderate difference given the ambiguous, mostly benign-looking root SSH login.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1120 (Peripheral Device Discovery). Candidate's predictions are Remote Services, Command Execution, Shell/Interactive, SSH Command Execution, SSH Password Authentication, using names rather than IDs; none match T1120 exactly (its IDs are absent). Coverage is 0."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "Remote Services and SSH-related techniques are partly supported by the SSH root session from 192.42.1.174 and sshd logs. However, the candidate misreads the hex argument as 'echo Hello' when it decodes to 'command -v lsusb', missing the peripheral-device discovery indicator, and 'SSH Password Authentication' is not evidenced (pam_permit, no password artifact)."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "Explanation cites an SSH root session and bash execution, which are real observations, but invents the decoded command ('echo Hello'), a factual error not supported by the logs. It also asserts attacker intent as certain without distinguishing inference."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Remote services and command execution are connected to the SSH session, a reasonable link, but the 'echo' basis for shell/command predictions rests on the misdecoded argument and the password authentication prediction lacks support."
+  },
+  "score_confidence_evidence_support": {
+    "score": 0,
+    "reason": "'Certain: Attack' is grossly disproportionate: the logs show a root SSH login with pam_permit and a single discovery-style command with no clear malicious artifacts, and the candidate acknowledges no limitations."
+  },
+  "score_instruction_adherence": {
+    "score": 2,
+    "reason": "Valid JSON with required fields, but the techniques list uses names instead of ATT&CK IDs as instructed, and the schema is not adherent."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "Remote Services",
+    "Command Execution",
+    "Shell/Interactive",
+    "SSH Command Execution",
+    "SSH Password Authentication"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_id_format",
+    "misdecoded_artifact",
+    "unsupported_password_authentication_claim",
+    "overconfident_attack_label",
+    "no_matching_ground_truth_technique"
+  ],
+  "judge_prediction_similarity": {
+    "score": 1,
+    "reason": "Candidate predictions overlap only loosely with the ground truth T1120 concept via remote/command execution themes, with no exact ID overlap."
+  },
+  "judge_reasoning_similarity": {
+    "score": 1,
+    "reason": "Reference explanation identifies the hex-decoded 'command -v lsusb' discovery and the non-interactive session; candidate misses the discovery indicator and misstates the command as 'echo Hello'."
+  },
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": 2,
+  "confidence_label_agreement_reason": "Both are on the Attack side, but the candidate's 'Certain' is two steps from the warranted 'Somewhat Certain', a moderate difference given the ambiguous, mostly benign-looking root SSH login.",
+  "confidence_label_null_reason": null
+}

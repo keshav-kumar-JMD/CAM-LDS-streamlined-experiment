@@ -1,0 +1,277 @@
+{
+  "prompt_id": "845",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "14",
+  "split": "train",
+  "group_id": "[\"2\", \"14\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 11:43:15 inetfw dnsmasq[734]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 11:43:15 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 11:43:15 inetfw dnsmasq[734]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 11:43:15 inetfw dnsmasq[734]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 11:43:15 inetfw dnsmasq[734]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759318995.716:5244): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c000948b2c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318995.716:5244): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318995.716:5244): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318995.716:5245): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c000948b4c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318995.716:5245): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318995.716:5245): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318995.716:5246): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c000948c0c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318995.716:5246): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759318995.716:5246): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "9fd7bff4fd6910bae472b39d5adb5646c639f043022f154b945b44b0f2216e88",
+  "ground_truth": "[\"T1070.004\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1566.002\", \"T1189\", \"T1071.001\", \"T1102\", \"T1090\", \"T1041\", \"T1105\", \"T1573\", \"T1036\", \"T1583.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The host resolves and connects to the typosquatted domain faaacebook.com over HTTPS, which is suspicious and consistent with phishing or malicious web infrastructure. However, the logs only show DNS resolution and an outbound connection from zmcontroller, without payload or execution evidence, so certainty is limited.\"}",
+  "teacher_response_sha256": "67fa07ae175a6143c397052227953ee3c7e18fa3fe9f0b16ea8f53f930fa5d68",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "mistral7b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203:845",
+  "candidate_response_raw": "1. T1086: Data From Local System (dnsmasq logs)\n2. T1087: Proxy Evasion (dnsmasq logs)\n3. T1071: Network Service Discovery (zmcontroller logs)\n4. T1021: Command and Scripting Interpreter (zmcontroller logs)\n5. T1055: Network Defense Evasion (dnsmasq logs)\n6. T1036: Credential Dumping (unset AUID)\n7. T1041: System Network Connections (zmcontroller logs)\n8. T1020: Obfuscated Files or Information (unset AUID)\n9. T1035: Network Information Discovery (zmcontroller logs)\n10. T1088: Lateral Movement (zmcontroller logs)\n\nconfidence: Almost Certain: Attack\nexplanation: The logs show a DNS query for facebook.com, followed by a connection attempt from the zmcontroller process to an external IP address (192.42.1.174), which is unusual behavior for a video server process. Additionally, the absence of an AUID suggests that the process may be running without proper authentication.",
+  "candidate_response_sha256": "245f6c3e43901e5617da8e740f33dbc64a551f22b579923e5cbca087fcecf342",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1707,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 281,
+  "candidate_elapsed_seconds": 9.327611666998564,
+  "candidate_output_tokens_per_second": 30.125610931487255,
+  "candidate_peak_allocated_bytes": 14954380288,
+  "candidate_peak_reserved_bytes": 21659385856,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "001e2781899c297408fe5bbe0e6004c6a5f4a6d0279f36029b3f4d861ea4041b",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1568.002\", \"T1071.004\", \"T1568\", \"T1071\", \"T1572\", \"T1048.003\", \"T1568.001\", \"T1090\", \"T1105\", \"T1036\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"A DNS query for the typosquatted domain 'faaacebook.com' (a lookalike of facebook.com) was resolved and then accessed over HTTPS (port 443), while a non-standard process 'zmcontroller' running as root with a group of 'fax' attempted DNS connections directly to an internal resolver and then a suspicious external IP, suggesting possible domain generation/fronting, DNS-based C2 or tunneling, and masquerading.\"\n}\n```",
+  "haiku_reference_response_sha256": "c5696ed3c9c944ea3b59eb4a582db5865c390c5ee3b08419c92b745603938ef8",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "2091178512c101819069585906e29051e846947c88aeeebd3322fce38e584160",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1070.004 (Indicator Removal: File Deletion). None of the candidate's ten predictions (T1086, T1087, T1071, T1021, T1055, T1036, T1041, T1020, T1035, T1088) match this ID; several IDs are also mislabeled relative to their ATT&CK names.\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The DNS query and the zmcontroller connection attempts are real log artifacts, but none of the predicted techniques (e.g., Lateral Movement, Credential Dumping, Proxy Evasion) are supported by these observations, and the mislabeled IDs undermine the claimed specificity.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites actual observations (DNS query for facebook.com, connection from zmcontroller to 192.42.1.174, missing AUID), but the 'unset AUID implies no authentication' inference is a stretch and the explanation does not mention the audit log entries or any deletion/removal artifact.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Predictions are paired with log sources, but the reasons do not logically connect to the named techniques (e.g., 'Credential Dumping' tied to unset AUID; 'Lateral Movement' tied to zmcontroller connections).\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"'Almost Certain: Attack' is stated, but the supporting evidence is weak: the logs show ordinary DNS resolution and failed/successful connects with no clear malicious action, so the confidence is overstated.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is not strict JSON (plain numbered list plus labeled lines), violating the required JSON schema; the technique list also includes descriptions rather than IDs only, and the explanation exceeds the 1-2 sentence brevity constraint slightly.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1086\", \"T1087\", \"T1071\", \"T1021\", \"T1055\", \"T1036\", \"T1041\", \"T1020\", \"T1035\", \"T1088\"], \"failure_labels\": [\"wrong_technique_ids\", \"mislabeled_technique_names\", \"non_json_output\", \"overconfident_attack_label\", \"weak_evidence_linkage\", \"included_descriptions_in_technique_list\"], \"prediction_similarity\": 1, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Almost Certain: Attack\", \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\", \"confidence_label_agreement\": 3, \"confidence_label_agreement_reason\": \"Candidate label 'Almost Certain: Attack' and warranted 'Somewhat Certain: Attack' are adjacent in the same Attack direction; the logs show only ambiguous network activity by a non-standard process, not a clear attack artifact.\", \"confidence_label_null_reason\": null}",
+  "response_hash": "7fc55b86b1d79a60563ca90143a81d0cef6ef69aed6bd03286862d8febf5cb2c",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwCTYTZbnWHNxrAMfpi",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1070.004 (Indicator Removal: File Deletion). None of the candidate's ten predictions (T1086, T1087, T1071, T1021, T1055, T1036, T1041, T1020, T1035, T1088) match this ID; several IDs are also mislabeled relative to their ATT&CK names.\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The DNS query and the zmcontroller connection attempts are real log artifacts, but none of the predicted techniques (e.g., Lateral Movement, Credential Dumping, Proxy Evasion) are supported by these observations, and the mislabeled IDs undermine the claimed specificity.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites actual observations (DNS query for facebook.com, connection from zmcontroller to 192.42.1.174, missing AUID), but the 'unset AUID implies no authentication' inference is a stretch and the explanation does not mention the audit log entries or any deletion/removal artifact.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Predictions are paired with log sources, but the reasons do not logically connect to the named techniques (e.g., 'Credential Dumping' tied to unset AUID; 'Lateral Movement' tied to zmcontroller connections).\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"'Almost Certain: Attack' is stated, but the supporting evidence is weak: the logs show ordinary DNS resolution and failed/successful connects with no clear malicious action, so the confidence is overstated.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is not strict JSON (plain numbered list plus labeled lines), violating the required JSON schema; the technique list also includes descriptions rather than IDs only, and the explanation exceeds the 1-2 sentence brevity constraint slightly.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1086\", \"T1087\", \"T1071\", \"T1021\", \"T1055\", \"T1036\", \"T1041\", \"T1020\", \"T1035\", \"T1088\"], \"failure_labels\": [\"wrong_technique_ids\", \"mislabeled_technique_names\", \"non_json_output\", \"overconfident_attack_label\", \"weak_evidence_linkage\", \"included_descriptions_in_technique_list\"], \"prediction_similarity\": 1, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Almost Certain: Attack\", \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\", \"confidence_label_agreement\": 3, \"confidence_label_agreement_reason\": \"Candidate label 'Almost Certain: Attack' and warranted 'Somewhat Certain: Attack' are adjacent in the same Attack direction; the logs show only ambiguous network activity by a non-standard process, not a clear attack artifact.\", \"confidence_label_null_reason\": null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4219,
+      "output_tokens": 1028,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4219,
+    "output_tokens": 1028,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00046795000000000007,
+  "batch_api": true,
+  "elapsed_seconds": 695.178394317627,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4219,
+  "output_tokens": 1028,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1070.004 (Indicator Removal: File Deletion). None of the candidate's ten predictions (T1086, T1087, T1071, T1021, T1055, T1036, T1041, T1020, T1035, T1088) match this ID; several IDs are also mislabeled relative to their ATT&CK names.\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The DNS query and the zmcontroller connection attempts are real log artifacts, but none of the predicted techniques (e.g., Lateral Movement, Credential Dumping, Proxy Evasion) are supported by these observations, and the mislabeled IDs undermine the claimed specificity.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites actual observations (DNS query for facebook.com, connection from zmcontroller to 192.42.1.174, missing AUID), but the 'unset AUID implies no authentication' inference is a stretch and the explanation does not mention the audit log entries or any deletion/removal artifact.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Predictions are paired with log sources, but the reasons do not logically connect to the named techniques (e.g., 'Credential Dumping' tied to unset AUID; 'Lateral Movement' tied to zmcontroller connections).\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"'Almost Certain: Attack' is stated, but the supporting evidence is weak: the logs show ordinary DNS resolution and failed/successful connects with no clear malicious action, so the confidence is overstated.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is not strict JSON (plain numbered list plus labeled lines), violating the required JSON schema; the technique list also includes descriptions rather than IDs only, and the explanation exceeds the 1-2 sentence brevity constraint slightly.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1086\", \"T1087\", \"T1071\", \"T1021\", \"T1055\", \"T1036\", \"T1041\", \"T1020\", \"T1035\", \"T1088\"], \"failure_labels\": [\"wrong_technique_ids\", \"mislabeled_technique_names\", \"non_json_output\", \"overconfident_attack_label\", \"weak_evidence_linkage\", \"included_descriptions_in_technique_list\"], \"prediction_similarity\": 1, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Almost Certain: Attack\", \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\", \"confidence_label_agreement\": 3, \"confidence_label_agreement_reason\": \"Candidate label 'Almost Certain: Attack' and warranted 'Somewhat Certain: Attack' are adjacent in the same Attack direction; the logs show only ambiguous network activity by a non-standard process, not a clear attack artifact.\", \"confidence_label_null_reason\": null}",
+  "judge_response_sha256": "7fc55b86b1d79a60563ca90143a81d0cef6ef69aed6bd03286862d8febf5cb2c",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1070.004 (Indicator Removal: File Deletion). None of the candidate's ten predictions (T1086, T1087, T1071, T1021, T1055, T1036, T1041, T1020, T1035, T1088) match this ID; several IDs are also mislabeled relative to their ATT&CK names."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "The DNS query and the zmcontroller connection attempts are real log artifacts, but none of the predicted techniques (e.g., Lateral Movement, Credential Dumping, Proxy Evasion) are supported by these observations, and the mislabeled IDs undermine the claimed specificity."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation cites actual observations (DNS query for facebook.com, connection from zmcontroller to 192.42.1.174, missing AUID), but the 'unset AUID implies no authentication' inference is a stretch and the explanation does not mention the audit log entries or any deletion/removal artifact."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Predictions are paired with log sources, but the reasons do not logically connect to the named techniques (e.g., 'Credential Dumping' tied to unset AUID; 'Lateral Movement' tied to zmcontroller connections)."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "'Almost Certain: Attack' is stated, but the supporting evidence is weak: the logs show ordinary DNS resolution and failed/successful connects with no clear malicious action, so the confidence is overstated."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Output is not strict JSON (plain numbered list plus labeled lines), violating the required JSON schema; the technique list also includes descriptions rather than IDs only, and the explanation exceeds the 1-2 sentence brevity constraint slightly."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1086",
+      "T1087",
+      "T1071",
+      "T1021",
+      "T1055",
+      "T1036",
+      "T1041",
+      "T1020",
+      "T1035",
+      "T1088"
+    ],
+    "failure_labels": [
+      "wrong_technique_ids",
+      "mislabeled_technique_names",
+      "non_json_output",
+      "overconfident_attack_label",
+      "weak_evidence_linkage",
+      "included_descriptions_in_technique_list"
+    ],
+    "prediction_similarity": 1,
+    "reasoning_similarity": 1,
+    "candidate_confidence_label": "Almost Certain: Attack",
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "Candidate label 'Almost Certain: Attack' and warranted 'Somewhat Certain: Attack' are adjacent in the same Attack direction; the logs show only ambiguous network activity by a non-standard process, not a clear attack artifact.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1070.004 (Indicator Removal: File Deletion). None of the candidate's ten predictions (T1086, T1087, T1071, T1021, T1055, T1036, T1041, T1020, T1035, T1088) match this ID; several IDs are also mislabeled relative to their ATT&CK names."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "The DNS query and the zmcontroller connection attempts are real log artifacts, but none of the predicted techniques (e.g., Lateral Movement, Credential Dumping, Proxy Evasion) are supported by these observations, and the mislabeled IDs undermine the claimed specificity."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation cites actual observations (DNS query for facebook.com, connection from zmcontroller to 192.42.1.174, missing AUID), but the 'unset AUID implies no authentication' inference is a stretch and the explanation does not mention the audit log entries or any deletion/removal artifact."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Predictions are paired with log sources, but the reasons do not logically connect to the named techniques (e.g., 'Credential Dumping' tied to unset AUID; 'Lateral Movement' tied to zmcontroller connections)."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "'Almost Certain: Attack' is stated, but the supporting evidence is weak: the logs show ordinary DNS resolution and failed/successful connects with no clear malicious action, so the confidence is overstated."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Output is not strict JSON (plain numbered list plus labeled lines), violating the required JSON schema; the technique list also includes descriptions rather than IDs only, and the explanation exceeds the 1-2 sentence brevity constraint slightly."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1086",
+    "T1087",
+    "T1071",
+    "T1021",
+    "T1055",
+    "T1036",
+    "T1041",
+    "T1020",
+    "T1035",
+    "T1088"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_ids",
+    "mislabeled_technique_names",
+    "non_json_output",
+    "overconfident_attack_label",
+    "weak_evidence_linkage",
+    "included_descriptions_in_technique_list"
+  ],
+  "judge_prediction_similarity": 1,
+  "judge_reasoning_similarity": 1,
+  "candidate_confidence_label": "Almost Certain: Attack",
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "Candidate label 'Almost Certain: Attack' and warranted 'Somewhat Certain: Attack' are adjacent in the same Attack direction; the logs show only ambiguous network activity by a non-standard process, not a clear attack artifact.",
+  "confidence_label_null_reason": null
+}

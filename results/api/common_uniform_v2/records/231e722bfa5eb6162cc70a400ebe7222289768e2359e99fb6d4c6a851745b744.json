@@ -1,0 +1,247 @@
+{
+  "prompt_id": "844",
+  "scenario": "2",
+  "variant": "cron",
+  "step": "13",
+  "split": "train",
+  "group_id": "[\"2\", \"13\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 10:33:03 inetfw dnsmasq[733]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 10:33:03 inetfw dnsmasq[733]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 10:33:03 inetfw dnsmasq[733]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 10:33:03 inetfw dnsmasq[733]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 10:33:03 inetfw dnsmasq[733]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759314783.241:5193): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c00032296c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314783.241:5193): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314783.241:5193): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314783.241:5194): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c00032298c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314783.241:5194): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314783.241:5194): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314783.249:5195): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c000322a2c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314783.249:5195): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759314783.249:5195): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "c484a2f8cecab4158acc0c132d12ac9e94aa22012e9429d144b31153e036172c",
+  "ground_truth": "[\"T1041\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1036.005\", \"T1102\", \"T1090\", \"T1566.002\", \"T1583.001\", \"T1584.001\", \"T1203\", \"T1190\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a root-running service process (`/usr/bin/zmcontroller`) resolving and connecting over HTTPS to `faaacebook.com`, a suspicious typosquatted domain resembling Facebook. This pattern is consistent with malicious command-and-control or web-based communication rather than normal server activity.\"}",
+  "teacher_response_sha256": "81b8e172a65844a01117ae554b379256a33b5b2e80569f3803da055cbaaa5f69",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "llama3b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "8d972aa104e73eee77cae5fd8ad0d51ba05ed930a8ddb187f420e3fe554b5f0f:844",
+  "candidate_response_raw": "Here is the classification of the provided system log data in JSON format:\n\n```\n{\n  \"techniques\": [\n    \"T1003: Use Alternate Credentials\",\n    \"T1210: Exploiting Vulnerabilities\",\n    \"T1211: Privilege Escursion\",\n    \"T1212: Lateral Movement\",\n    \"T1214: Network Service Use\",\n    \"T1215: Privilege Escursion via Misconfigured Services\",\n    \"T1216: Network Service Exploitation\",\n    \"T1217: Network Service Exploitation via Misconfigured Services\",\n    \"T1218: Network Service Exploitation via Misconfigured Services\",\n    \"T1219: Network Service Exploitation via Misconfigured Services\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The logs indicate a potential attack as the zmcontroller process is making DNS queries to faaacebook.com and forwarding the requests to 192.42.2.2, which is a suspicious activity. Additionally, the zmcontroller process is using the connect system call to establish a connection to 192.42.1.174 on port 443, which is a potential indicator of a lateral movement or privilege escalation attack.\"\n}\n```\n\nThe classification is based on the following observations:\n\n* The zmcontroller process is making DNS queries to faaacebook.com, which is a suspicious activity.\n* The zmcontroller process is forwarding the requests to 192.42.2.2, which is a potential indicator of a lateral movement or privilege escalation attack.\n* The zmcontroller process is using the connect system call to establish a connection to 192.42.1.174 on port 443, which is a potential indicator of a lateral movement or privilege escalation attack.\n\nThese observations suggest that the logs indicate a potential attack, specifically a lateral movement or privilege escalation attack. The confidence level is set to \"Certain: Attack\" due to the suspicious activity observed in the logs.",
+  "candidate_response_sha256": "1b36df4f6cf4c6a51582020c8ee267fc3201ac9b89206cd0d4c442af92ed5068",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "8d972aa104e73eee77cae5fd8ad0d51ba05ed930a8ddb187f420e3fe554b5f0f",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1261,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 403,
+  "candidate_elapsed_seconds": 11.512900494999485,
+  "candidate_output_tokens_per_second": 35.004211160779086,
+  "candidate_peak_allocated_bytes": 6676294144,
+  "candidate_peak_reserved_bytes": 9388949504,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "be140ae3c52ded31b6c0dccef71ef7cd5b6557348849d1ec8f3f72ddc4f2a742",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1071.004\", \"T1071.001\", \"T1568.002\", \"T1573.002\", \"T1090\", \"T1659\", \"T1016\", \"T1049\", \"T1571\", \"T1219\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The inetfw logs show a DNS query for 'faaacebook.com', a typosquat of facebook.com, resolved to an external IP (192.42.1.174), suggesting possible malicious domain resolution. The videoserver audit logs show the 'zmcontroller' process (not a typical Zoom/ZoneMinder-style controller name verified as legitimate) making DNS queries to the internal resolver 172.17.100.254 and then a direct connection to the same external IP 192.42.1.174 on port 443, which is consistent with command-and-control beaconing over HTTPS.\"\n}\n```",
+  "haiku_reference_response_sha256": "113b250f8d60c76b25792bd51556acb66a76323c323a070e955063080d71a95e",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "09f6fd1761200f8493de129aac8100a81711e5636ad8b0930f45e42084d17f6c",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions include T1003, T1210, T1211, T1212, T1214, T1215, T1216, T1217, T1218, T1219, none of which is T1041. Several IDs are also non-existent or mislabeled (e.g., T1211 and T1215 names are invented; T1214 is not Network Service Use), so the list is largely unreliable.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predictions such as Exploiting Vulnerabilities, Lateral Movement, and Privilege Escalation have no support in the logs, which show only DNS lookups and outbound connections from zmcontroller. The logs contain no exploit, credential access, or lateral movement artifacts.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"The explanation correctly cites zmcontroller DNS queries and a connect to 192.42.1.174:443, which are real observations. However, it misreads the forwarded query as a 'suspicious' lateral movement indicator and mislabels the resolver traffic, and it asserts facts (e.g., the DNS forward to 192.42.2.2 as lateral movement) that are inference presented as observation.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The chosen techniques (lateral movement, privilege escalation, exploitation) are not tied to the observed artifacts. The explanation's C2-like outbound HTTPS behaviour would point toward C2/exfiltration techniques, but the candidate does not predict them.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"The candidate asserts 'Certain: Attack' based on a DNS query and one outbound HTTPS connection from a process whose name is not itself verified as malicious. The logs show no strong attack indicators, so this certainty is grossly disproportionate.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"The response wraps JSON in prose and fences, and technique entries include descriptive text despite the instruction to print only IDs. Required fields are present, but the format is not strict JSON and includes non-ID descriptions. The explanation is roughly within length limits.\"},\"prediction_similarity\":null,\"reasoning_similarity\":null,\"failure_labels\":[\"wrong_technique_ids\",\"invented_technique_names\",\"overconfidence\",\"non_strict_json\",\"unsupported_lateral_movement_claim\"],\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Candidate and warranted labels are adjacent categories in the same Attack direction; the candidate is one step more confident than the evidence supports.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "7e8812c2f2a6cd1e74a2450af8237d67ed695869da16bd08f0be3d5f36402c71",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvi12VTTkyp3TSmz1f9",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions include T1003, T1210, T1211, T1212, T1214, T1215, T1216, T1217, T1218, T1219, none of which is T1041. Several IDs are also non-existent or mislabeled (e.g., T1211 and T1215 names are invented; T1214 is not Network Service Use), so the list is largely unreliable.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predictions such as Exploiting Vulnerabilities, Lateral Movement, and Privilege Escalation have no support in the logs, which show only DNS lookups and outbound connections from zmcontroller. The logs contain no exploit, credential access, or lateral movement artifacts.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"The explanation correctly cites zmcontroller DNS queries and a connect to 192.42.1.174:443, which are real observations. However, it misreads the forwarded query as a 'suspicious' lateral movement indicator and mislabels the resolver traffic, and it asserts facts (e.g., the DNS forward to 192.42.2.2 as lateral movement) that are inference presented as observation.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The chosen techniques (lateral movement, privilege escalation, exploitation) are not tied to the observed artifacts. The explanation's C2-like outbound HTTPS behaviour would point toward C2/exfiltration techniques, but the candidate does not predict them.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"The candidate asserts 'Certain: Attack' based on a DNS query and one outbound HTTPS connection from a process whose name is not itself verified as malicious. The logs show no strong attack indicators, so this certainty is grossly disproportionate.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"The response wraps JSON in prose and fences, and technique entries include descriptive text despite the instruction to print only IDs. Required fields are present, but the format is not strict JSON and includes non-ID descriptions. The explanation is roughly within length limits.\"},\"prediction_similarity\":null,\"reasoning_similarity\":null,\"failure_labels\":[\"wrong_technique_ids\",\"invented_technique_names\",\"overconfidence\",\"non_strict_json\",\"unsupported_lateral_movement_claim\"],\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Candidate and warranted labels are adjacent categories in the same Attack direction; the candidate is one step more confident than the evidence supports.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4552,
+      "output_tokens": 966,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4552,
+    "output_tokens": 966,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0004691,
+  "batch_api": true,
+  "elapsed_seconds": 5667.380735874176,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4552,
+  "output_tokens": 966,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions include T1003, T1210, T1211, T1212, T1214, T1215, T1216, T1217, T1218, T1219, none of which is T1041. Several IDs are also non-existent or mislabeled (e.g., T1211 and T1215 names are invented; T1214 is not Network Service Use), so the list is largely unreliable.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predictions such as Exploiting Vulnerabilities, Lateral Movement, and Privilege Escalation have no support in the logs, which show only DNS lookups and outbound connections from zmcontroller. The logs contain no exploit, credential access, or lateral movement artifacts.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"The explanation correctly cites zmcontroller DNS queries and a connect to 192.42.1.174:443, which are real observations. However, it misreads the forwarded query as a 'suspicious' lateral movement indicator and mislabels the resolver traffic, and it asserts facts (e.g., the DNS forward to 192.42.2.2 as lateral movement) that are inference presented as observation.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The chosen techniques (lateral movement, privilege escalation, exploitation) are not tied to the observed artifacts. The explanation's C2-like outbound HTTPS behaviour would point toward C2/exfiltration techniques, but the candidate does not predict them.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"The candidate asserts 'Certain: Attack' based on a DNS query and one outbound HTTPS connection from a process whose name is not itself verified as malicious. The logs show no strong attack indicators, so this certainty is grossly disproportionate.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"The response wraps JSON in prose and fences, and technique entries include descriptive text despite the instruction to print only IDs. Required fields are present, but the format is not strict JSON and includes non-ID descriptions. The explanation is roughly within length limits.\"},\"prediction_similarity\":null,\"reasoning_similarity\":null,\"failure_labels\":[\"wrong_technique_ids\",\"invented_technique_names\",\"overconfidence\",\"non_strict_json\",\"unsupported_lateral_movement_claim\"],\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Candidate and warranted labels are adjacent categories in the same Attack direction; the candidate is one step more confident than the evidence supports.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "7e8812c2f2a6cd1e74a2450af8237d67ed695869da16bd08f0be3d5f36402c71",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "technique_identification": {
+      "score": 0,
+      "reason": "Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions include T1003, T1210, T1211, T1212, T1214, T1215, T1216, T1217, T1218, T1219, none of which is T1041. Several IDs are also non-existent or mislabeled (e.g., T1211 and T1215 names are invented; T1214 is not Network Service Use), so the list is largely unreliable."
+    },
+    "prediction_evidence_support": {
+      "score": 0,
+      "reason": "Predictions such as Exploiting Vulnerabilities, Lateral Movement, and Privilege Escalation have no support in the logs, which show only DNS lookups and outbound connections from zmcontroller. The logs contain no exploit, credential access, or lateral movement artifacts."
+    },
+    "explanation_grounding": {
+      "score": 1,
+      "reason": "The explanation correctly cites zmcontroller DNS queries and a connect to 192.42.1.174:443, which are real observations. However, it misreads the forwarded query as a 'suspicious' lateral movement indicator and mislabels the resolver traffic, and it asserts facts (e.g., the DNS forward to 192.42.2.2 as lateral movement) that are inference presented as observation."
+    },
+    "prediction_reason_alignment": {
+      "score": 1,
+      "reason": "The chosen techniques (lateral movement, privilege escalation, exploitation) are not tied to the observed artifacts. The explanation's C2-like outbound HTTPS behaviour would point toward C2/exfiltration techniques, but the candidate does not predict them."
+    },
+    "confidence_evidence_support": {
+      "score": 0,
+      "reason": "The candidate asserts 'Certain: Attack' based on a DNS query and one outbound HTTPS connection from a process whose name is not itself verified as malicious. The logs show no strong attack indicators, so this certainty is grossly disproportionate."
+    },
+    "instruction_adherence": {
+      "score": 1,
+      "reason": "The response wraps JSON in prose and fences, and technique entries include descriptive text despite the instruction to print only IDs. Required fields are present, but the format is not strict JSON and includes non-ID descriptions. The explanation is roughly within length limits."
+    },
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "failure_labels": [
+      "wrong_technique_ids",
+      "invented_technique_names",
+      "overconfidence",
+      "non_strict_json",
+      "unsupported_lateral_movement_claim"
+    ],
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "Candidate and warranted labels are adjacent categories in the same Attack direction; the candidate is one step more confident than the evidence supports.",
+    "confidence_label_null_reason": null
+  },
+  "judge_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions include T1003, T1210, T1211, T1212, T1214, T1215, T1216, T1217, T1218, T1219, none of which is T1041. Several IDs are also non-existent or mislabeled (e.g., T1211 and T1215 names are invented; T1214 is not Network Service Use), so the list is largely unreliable."
+  },
+  "judge_prediction_evidence_support": {
+    "score": 0,
+    "reason": "Predictions such as Exploiting Vulnerabilities, Lateral Movement, and Privilege Escalation have no support in the logs, which show only DNS lookups and outbound connections from zmcontroller. The logs contain no exploit, credential access, or lateral movement artifacts."
+  },
+  "judge_explanation_grounding": {
+    "score": 1,
+    "reason": "The explanation correctly cites zmcontroller DNS queries and a connect to 192.42.1.174:443, which are real observations. However, it misreads the forwarded query as a 'suspicious' lateral movement indicator and mislabels the resolver traffic, and it asserts facts (e.g., the DNS forward to 192.42.2.2 as lateral movement) that are inference presented as observation."
+  },
+  "judge_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "The chosen techniques (lateral movement, privilege escalation, exploitation) are not tied to the observed artifacts. The explanation's C2-like outbound HTTPS behaviour would point toward C2/exfiltration techniques, but the candidate does not predict them."
+  },
+  "judge_confidence_evidence_support": {
+    "score": 0,
+    "reason": "The candidate asserts 'Certain: Attack' based on a DNS query and one outbound HTTPS connection from a process whose name is not itself verified as malicious. The logs show no strong attack indicators, so this certainty is grossly disproportionate."
+  },
+  "judge_instruction_adherence": {
+    "score": 1,
+    "reason": "The response wraps JSON in prose and fences, and technique entries include descriptive text despite the instruction to print only IDs. Required fields are present, but the format is not strict JSON and includes non-ID descriptions. The explanation is roughly within length limits."
+  },
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "judge_failure_labels": [
+    "wrong_technique_ids",
+    "invented_technique_names",
+    "overconfidence",
+    "non_strict_json",
+    "unsupported_lateral_movement_claim"
+  ],
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "Candidate and warranted labels are adjacent categories in the same Attack direction; the candidate is one step more confident than the evidence supports.",
+  "confidence_label_null_reason": null
+}

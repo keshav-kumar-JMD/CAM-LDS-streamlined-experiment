@@ -1,0 +1,279 @@
+{
+  "prompt_id": "476",
+  "scenario": "3",
+  "variant": "ssh_apt",
+  "step": "17",
+  "split": "train",
+  "group_id": "[\"3\", \"17\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1765535900.332:17075): item=0 name=\"/usr/local/sbin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765535900.332:17075): proctitle=64706B672D646562002D62006865616C7468636865636B64002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D325F616D6436342E646562\n        type=SYSCALL msg=audit(1765535900.332:17076): arch=c000003e syscall=59 success=no exit=-2 a0=7ffc346ce160 a1=5613c6adaae0 a2=7ffc346cea80 a3=7f7cd663a430 items=1 ppid=4794 pid=4797 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535900.332:17076): item=0 name=\"/usr/local/bin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765535900.332:17076): proctitle=64706B672D646562002D62006865616C7468636865636B64002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D325F616D6436342E646562\n        type=SYSCALL msg=audit(1765535900.332:17077): arch=c000003e syscall=59 success=no exit=-2 a0=7ffc346ce160 a1=5613c6adaae0 a2=7ffc346cea80 a3=7f7cd663a430 items=1 ppid=4794 pid=4797 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535900.332:17077): item=0 name=\"/usr/sbin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765535900.332:17077): proctitle=64706B672D646562002D62006865616C7468636865636B64002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D325F616D6436342E646562\n        type=SYSCALL msg=audit(1765535900.332:17078): arch=c000003e syscall=59 success=yes exit=0 a0=7ffc346ce160 a1=5613c6adaae0 a2=7ffc346cea80 a3=7f7cd663a430 items=2 ppid=4794 pid=4797 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"tar\" exe=\"/usr/bin/tar\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765535900.332:17078): argc=12 a0=\"tar\" a1=\"-cf\" a2=\"-\" a3=\"--format=gnu\" a4=\"--mtime\" a5=\"@1765535900\" a6=\"--clamp-mtime\" a7=\"--null\" a8=\"--no-unquote\" a9=\"--no-recursion\" a10=\"-T\" a11=\"-\"",
+  "prompt_sha256": "ee144efb0a7e16ba2b997aac2c34c5f61d66ea55355f50c0ae8778c48b6906c9",
+  "ground_truth": "[\"T1072\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1546.016\", \"T1059.004\", \"T1574.007\", \"T1036.005\", \"T1548.003\", \"T1105\", \"T1070.006\", \"T1564.001\", \"T1027.011\", \"T1072\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root execution of dpkg-deb building a Debian package named healthcheckd from a web directory, invoking tar as part of package creation; creating or modifying Linux packages can be used to establish persistence through malicious package maintainer scripts. While dpkg-deb activity may be legitimate packaging, the root context, custom service-like package name, and web path make it suspicious.\"}",
+  "teacher_response_sha256": "4251c182ea90b37d6716864c7799161ffa26a74d1728930ed36bfa7b2846c2c0",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "mistral7b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203:476",
+  "candidate_response_raw": "1. \"T1056.001: Command and Scripting Interpreter\"\n2. \"T1086: PowerShell\"\n3. \"T1055: Object Access\"\n4. \"T1105: Scheduled Task / Job\"\n5. \"T1001: Data Encoding\"\n6. \"T1057: Network Service Discovery\"\n7. \"T1088: Data Encryption for Impact\"\n8. \"T1085: Splitting and Reassembly\"\n9. \"T1070: User Account Discovery\"\n10. \"T1021: Credential Dumping\"\n\n\"confidence\": \"Almost Certain: Attack\"\n\n\"explanation\": The logs show multiple instances of the 'tar' command being executed with various options, such as '-cf', '--format=gnu', '--mtime', and '--clamp-mtime'. This could indicate an attacker attempting to archive and manipulate files, which is consistent with T1056.001: Command and Scripting Interpreter. The use of PowerShell (T1086) is suggested by the proctitle field, which contains a PowerShell process ID (PID). The '--null', '--no-unquote', and '--no-recursion' options in the 'tar' command could also be indicative of T1085: Splitting and Reassembly, as these options are often used to split large files into smaller parts for easier transfer. The '--mtime' option and the '@1765535900' argument suggest that the attacker may be attempting to manipulate file timestamps, which could be related to T1001: Data Encoding or T1021: Credential Dumping. The presence of scheduled tasks (T1105) and network service discovery (T1057) cannot be definitively determined from the provided logs, but they are possible based on the context of the attack.",
+  "candidate_response_sha256": "6ba5f078a883c882db94cb8d030513a37d7d254cc3143abcd3591edd20c8d3bd",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1969,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 463,
+  "candidate_elapsed_seconds": 14.921344507998583,
+  "candidate_output_tokens_per_second": 31.02937538583128,
+  "candidate_peak_allocated_bytes": 15006706176,
+  "candidate_peak_reserved_bytes": 21659385856,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "d2d7f17ccab6449bf870ee542deb86e8d9c605dcdadf643b73217adf261e2591",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1560\", \"T1074\", \"T1059\", \"T1550\", \"T1078\", \"T1543\", \"T1036\", \"T1105\", \"T1027\", \"T1083\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The activity is a Debian package build (dpkg-deb invoked on a healthcheckd .deb file) followed by a reproducible-build style tar archive creation (--mtime/--clamp-mtime/--null flags) run by the non-root user john via sudo-like escalation to root under a normal packaging workflow. The failed execve attempts against /usr/local/bin/tar and /usr/local/sbin/tar before the successful /usr/sbin/tar call reflect ordinary PATH lookup rather than malicious behavior.\"\n}\n```",
+  "haiku_reference_response_sha256": "9182544b495d30d9299015cd5d198300adaa982c808781711f63fc678aa834c5",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "3eb81f8515a31a41957d75c916dddc3a19b0a3ac600805f1b038029991c7334a",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1072 (Software Deployment Tools). The candidate's first ten predictions (T1056.001, T1086, T1055, T1105, T1001, T1057, T1088, T1085, T1070, T1021) do not include T1072. Several IDs are also mislabeled (e.g., T1055 as 'Object Access', T1021 as 'Credential Dumping', T1088 as 'Data Encryption for Impact').\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"Predictions such as PowerShell (T1086) are claimed from a 'PowerShell process ID' in the proctitle, but the proctitle is a hex-encoded dpkg-deb/tar command line with no PowerShell artifact. T1056.001 is a keylogging technique unsupported by any log content. Tar options are not evidence of splitting or data encoding.\"},\n    \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation correctly cites the tar flags and the '@1765535900' argument, but it invents a PowerShell PID, asserts attacker intent without support, and states that scheduled tasks and discovery are 'possible' without basis. Observations and inference are blended.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Some reasons link to observed tar options (archiving, timestamp manipulation), but the mapping to the chosen ATT&CK IDs is largely mismatched (e.g., timestamp manipulation mapped to T1001 Data Encoding or T1021 Credential Dumping).\"},\n    \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"The candidate's 'Almost Certain: Attack' label is contradicted by the logs, which show a routine dpkg-deb packaging workflow with reproducible-build tar flags and ordinary PATH lookup failures before success. The confidence is grossly disproportionate.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"The output is not strict JSON and lacks the required structure; it lists IDs with descriptions despite the instruction to print only IDs, and the explanation exceeds the 1-2 sentence limit.\"}\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1056.001\", \"T1086\", \"T1055\", \"T1105\", \"T1001\", \"T1057\", \"T1088\", \"T1085\", \"T1070\", \"T1021\"],\n  \"failure_labels\": [\"wrong_technique_ids\", \"mislabeled_technique_names\", \"hallucinated_evidence\", \"unsupported_attack_claim\", \"overconfident_attack_label\", \"format_violation\", \"verbose_output\"],\n  \"prediction_similarity\": 0,\n  \"reasoning_similarity\": 1,\n  \"candidate_confidence_label\": \"Almost Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": 0,\n  \"confidence_label_agreement_reason\": \"The candidate asserts attack with high confidence while the logs indicate a normal dpkg-deb/tar packaging workflow; this is an opposing high-confidence conclusion.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "5780e42f1d649d11669b343e97f1007fa6ed7e972e51b5adeec3a3ede5a26f78",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwAm4cQyzLN72fgLGLx",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1072 (Software Deployment Tools). The candidate's first ten predictions (T1056.001, T1086, T1055, T1105, T1001, T1057, T1088, T1085, T1070, T1021) do not include T1072. Several IDs are also mislabeled (e.g., T1055 as 'Object Access', T1021 as 'Credential Dumping', T1088 as 'Data Encryption for Impact').\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"Predictions such as PowerShell (T1086) are claimed from a 'PowerShell process ID' in the proctitle, but the proctitle is a hex-encoded dpkg-deb/tar command line with no PowerShell artifact. T1056.001 is a keylogging technique unsupported by any log content. Tar options are not evidence of splitting or data encoding.\"},\n    \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation correctly cites the tar flags and the '@1765535900' argument, but it invents a PowerShell PID, asserts attacker intent without support, and states that scheduled tasks and discovery are 'possible' without basis. Observations and inference are blended.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Some reasons link to observed tar options (archiving, timestamp manipulation), but the mapping to the chosen ATT&CK IDs is largely mismatched (e.g., timestamp manipulation mapped to T1001 Data Encoding or T1021 Credential Dumping).\"},\n    \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"The candidate's 'Almost Certain: Attack' label is contradicted by the logs, which show a routine dpkg-deb packaging workflow with reproducible-build tar flags and ordinary PATH lookup failures before success. The confidence is grossly disproportionate.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"The output is not strict JSON and lacks the required structure; it lists IDs with descriptions despite the instruction to print only IDs, and the explanation exceeds the 1-2 sentence limit.\"}\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1056.001\", \"T1086\", \"T1055\", \"T1105\", \"T1001\", \"T1057\", \"T1088\", \"T1085\", \"T1070\", \"T1021\"],\n  \"failure_labels\": [\"wrong_technique_ids\", \"mislabeled_technique_names\", \"hallucinated_evidence\", \"unsupported_attack_claim\", \"overconfident_attack_label\", \"format_violation\", \"verbose_output\"],\n  \"prediction_similarity\": 0,\n  \"reasoning_similarity\": 1,\n  \"candidate_confidence_label\": \"Almost Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": 0,\n  \"confidence_label_agreement_reason\": \"The candidate asserts attack with high confidence while the logs indicate a normal dpkg-deb/tar packaging workflow; this is an opposing high-confidence conclusion.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4582,
+      "output_tokens": 1106,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4582,
+    "output_tokens": 1106,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005056,
+  "batch_api": true,
+  "elapsed_seconds": 8853.403267621994,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4582,
+  "output_tokens": 1106,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1072 (Software Deployment Tools). The candidate's first ten predictions (T1056.001, T1086, T1055, T1105, T1001, T1057, T1088, T1085, T1070, T1021) do not include T1072. Several IDs are also mislabeled (e.g., T1055 as 'Object Access', T1021 as 'Credential Dumping', T1088 as 'Data Encryption for Impact').\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"Predictions such as PowerShell (T1086) are claimed from a 'PowerShell process ID' in the proctitle, but the proctitle is a hex-encoded dpkg-deb/tar command line with no PowerShell artifact. T1056.001 is a keylogging technique unsupported by any log content. Tar options are not evidence of splitting or data encoding.\"},\n    \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation correctly cites the tar flags and the '@1765535900' argument, but it invents a PowerShell PID, asserts attacker intent without support, and states that scheduled tasks and discovery are 'possible' without basis. Observations and inference are blended.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Some reasons link to observed tar options (archiving, timestamp manipulation), but the mapping to the chosen ATT&CK IDs is largely mismatched (e.g., timestamp manipulation mapped to T1001 Data Encoding or T1021 Credential Dumping).\"},\n    \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"The candidate's 'Almost Certain: Attack' label is contradicted by the logs, which show a routine dpkg-deb packaging workflow with reproducible-build tar flags and ordinary PATH lookup failures before success. The confidence is grossly disproportionate.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"The output is not strict JSON and lacks the required structure; it lists IDs with descriptions despite the instruction to print only IDs, and the explanation exceeds the 1-2 sentence limit.\"}\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1056.001\", \"T1086\", \"T1055\", \"T1105\", \"T1001\", \"T1057\", \"T1088\", \"T1085\", \"T1070\", \"T1021\"],\n  \"failure_labels\": [\"wrong_technique_ids\", \"mislabeled_technique_names\", \"hallucinated_evidence\", \"unsupported_attack_claim\", \"overconfident_attack_label\", \"format_violation\", \"verbose_output\"],\n  \"prediction_similarity\": 0,\n  \"reasoning_similarity\": 1,\n  \"candidate_confidence_label\": \"Almost Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": 0,\n  \"confidence_label_agreement_reason\": \"The candidate asserts attack with high confidence while the logs indicate a normal dpkg-deb/tar packaging workflow; this is an opposing high-confidence conclusion.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "5780e42f1d649d11669b343e97f1007fa6ed7e972e51b5adeec3a3ede5a26f78",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1072 (Software Deployment Tools). The candidate's first ten predictions (T1056.001, T1086, T1055, T1105, T1001, T1057, T1088, T1085, T1070, T1021) do not include T1072. Several IDs are also mislabeled (e.g., T1055 as 'Object Access', T1021 as 'Credential Dumping', T1088 as 'Data Encryption for Impact')."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "Predictions such as PowerShell (T1086) are claimed from a 'PowerShell process ID' in the proctitle, but the proctitle is a hex-encoded dpkg-deb/tar command line with no PowerShell artifact. T1056.001 is a keylogging technique unsupported by any log content. Tar options are not evidence of splitting or data encoding."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "The explanation correctly cites the tar flags and the '@1765535900' argument, but it invents a PowerShell PID, asserts attacker intent without support, and states that scheduled tasks and discovery are 'possible' without basis. Observations and inference are blended."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Some reasons link to observed tar options (archiving, timestamp manipulation), but the mapping to the chosen ATT&CK IDs is largely mismatched (e.g., timestamp manipulation mapped to T1001 Data Encoding or T1021 Credential Dumping)."
+      },
+      "confidence_evidence_support": {
+        "score": 0,
+        "reason": "The candidate's 'Almost Certain: Attack' label is contradicted by the logs, which show a routine dpkg-deb packaging workflow with reproducible-build tar flags and ordinary PATH lookup failures before success. The confidence is grossly disproportionate."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "The output is not strict JSON and lacks the required structure; it lists IDs with descriptions despite the instruction to print only IDs, and the explanation exceeds the 1-2 sentence limit."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1056.001",
+      "T1086",
+      "T1055",
+      "T1105",
+      "T1001",
+      "T1057",
+      "T1088",
+      "T1085",
+      "T1070",
+      "T1021"
+    ],
+    "failure_labels": [
+      "wrong_technique_ids",
+      "mislabeled_technique_names",
+      "hallucinated_evidence",
+      "unsupported_attack_claim",
+      "overconfident_attack_label",
+      "format_violation",
+      "verbose_output"
+    ],
+    "prediction_similarity": 0,
+    "reasoning_similarity": 1,
+    "candidate_confidence_label": "Almost Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": 0,
+    "confidence_label_agreement_reason": "The candidate asserts attack with high confidence while the logs indicate a normal dpkg-deb/tar packaging workflow; this is an opposing high-confidence conclusion.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1072 (Software Deployment Tools). The candidate's first ten predictions (T1056.001, T1086, T1055, T1105, T1001, T1057, T1088, T1085, T1070, T1021) do not include T1072. Several IDs are also mislabeled (e.g., T1055 as 'Object Access', T1021 as 'Credential Dumping', T1088 as 'Data Encryption for Impact')."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "Predictions such as PowerShell (T1086) are claimed from a 'PowerShell process ID' in the proctitle, but the proctitle is a hex-encoded dpkg-deb/tar command line with no PowerShell artifact. T1056.001 is a keylogging technique unsupported by any log content. Tar options are not evidence of splitting or data encoding."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "The explanation correctly cites the tar flags and the '@1765535900' argument, but it invents a PowerShell PID, asserts attacker intent without support, and states that scheduled tasks and discovery are 'possible' without basis. Observations and inference are blended."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Some reasons link to observed tar options (archiving, timestamp manipulation), but the mapping to the chosen ATT&CK IDs is largely mismatched (e.g., timestamp manipulation mapped to T1001 Data Encoding or T1021 Credential Dumping)."
+  },
+  "score_confidence_evidence_support": {
+    "score": 0,
+    "reason": "The candidate's 'Almost Certain: Attack' label is contradicted by the logs, which show a routine dpkg-deb packaging workflow with reproducible-build tar flags and ordinary PATH lookup failures before success. The confidence is grossly disproportionate."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "The output is not strict JSON and lacks the required structure; it lists IDs with descriptions despite the instruction to print only IDs, and the explanation exceeds the 1-2 sentence limit."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1056.001",
+    "T1086",
+    "T1055",
+    "T1105",
+    "T1001",
+    "T1057",
+    "T1088",
+    "T1085",
+    "T1070",
+    "T1021"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_ids",
+    "mislabeled_technique_names",
+    "hallucinated_evidence",
+    "unsupported_attack_claim",
+    "overconfident_attack_label",
+    "format_violation",
+    "verbose_output"
+  ],
+  "judge_prediction_similarity": 0,
+  "judge_reasoning_similarity": 1,
+  "candidate_confidence_label": "Almost Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": 0,
+  "confidence_label_agreement_reason": "The candidate asserts attack with high confidence while the logs indicate a normal dpkg-deb/tar packaging workflow; this is an opposing high-confidence conclusion.",
+  "confidence_label_null_reason": null
+}

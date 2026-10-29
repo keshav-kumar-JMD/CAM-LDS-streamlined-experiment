@@ -15,7 +15,8 @@ from streamlined.monitor import reasons
 from streamlined.receiver import handler,resolve
 from streamlined.transport import Mirror,safe_extract
 from streamlined.storage import Store
-from streamlined.api import APIRun,parse_judgment
+from streamlined.api import APIRun,parse_judgment,judge_jobs,COMMON_JUDGE_RUN,HAIKU_SELF_JUDGE_RUN
+from streamlined.rubrics import COMMON,rubric
 
 class CharacterTokenizer:
     eos_token='~'
@@ -54,6 +55,27 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(audit_response('```json\n{"a":1}\n```')['unexpected_text_present'])
         self.assertFalse(parse_judgment('nonsense')['judge_parseable'])
         self.assertEqual(parse_judgment('text {"scores":{"a":3}}')['score_a'],3)
+
+    def test_uniform_rubric_confidence_and_malformed_candidate(self):
+        self.assertIn('confidence_evidence_support',COMMON)
+        self.assertNotIn('uncertainty_handling',COMMON)
+        self.assertIn('confidence_label_agreement',rubric())
+        row={'prompt_id':'1','prompt_text':'prompt','prompt_sha256':'hash','ground_truth':['T1000'],
+             'model':'qwen','condition':'full','candidate_status':'completed',
+             'candidate_record_id':'candidate-one','candidate_response_raw':'not valid JSON',
+             'teacher_response_raw':'{}','teacher_confidence_label':'Neutral'}
+        jobs=judge_jobs([row]);self.assertEqual(len(jobs),1)
+        case=json.loads(jobs[0]['params']['messages'][0]['content'])
+        self.assertFalse(case['candidate_format_audit']['valid_json'])
+        self.assertEqual(case['candidate_response'],'not valid JSON')
+        self.assertNotIn('teacher_response_raw',case)
+        parsed=parse_judgment(json.dumps({'scores':{'confidence_evidence_support':3},
+            'candidate_confidence_label':'Somewhat Certain: Attack',
+            'judge_warranted_confidence_label':'Almost Certain: Attack',
+            'confidence_label_agreement':3,'confidence_label_agreement_reason':'adjacent',
+            'confidence_label_null_reason':None}))
+        self.assertEqual(parsed['candidate_confidence_label'],'Somewhat Certain: Attack')
+        self.assertEqual(parsed['confidence_label_agreement'],3)
 
     def test_csv_multiline_and_completed_immutable(self):
         with tempfile.TemporaryDirectory() as td:
@@ -107,13 +129,25 @@ class PipelineTests(unittest.TestCase):
 
     def test_api_receipt_retains_invalid_output_and_nulls(self):
         with tempfile.TemporaryDirectory() as td:
-            job={'identity':'one','metadata':{'prompt_id':'1','model':'qwen','condition':'full'},
+            job={'identity':'one','metadata':{'prompt_id':'1','model':'qwen','condition':'full',
+                 'candidate_valid_json':True,'teacher_confidence_label':'Neutral',
+                 'haiku_reference_response_raw':'reference'},
                  'params':{'model':'fake','max_tokens':10,'messages':[]}}
             run=APIRun(td,'common',[job],api=object());item=next(iter(run.jobs.values()))
             run.save_message(item,{'content':[{'type':'text','text':'not json'}], 'usage':{},'stop_reason':'end_turn'})
             self.assertEqual(run.counts()['completed'],1);self.assertFalse(run.eligible(True))
             self.assertEqual(run.store.rows[item['record_id']]['response_raw'],'not json')
             self.assertFalse(run.store.rows[item['record_id']]['judge_parseable'])
+            self.assertFalse(run.store.rows[item['record_id']]['judge_valid_json'])
+            self.assertTrue(run.store.rows[item['record_id']]['candidate_valid_json'])
+            self.assertEqual(run.store.rows[item['record_id']]['teacher_confidence_label'],'Neutral')
+
+    def test_changed_paid_request_manifest_is_not_reused(self):
+        with tempfile.TemporaryDirectory() as td:
+            one={'identity':'one','metadata':{'prompt_id':'1'},'params':{'model':'x','max_tokens':10}}
+            APIRun(td,COMMON_JUDGE_RUN,[one],api=object())
+            changed={'identity':'one','metadata':{'prompt_id':'1'},'params':{'model':'x','max_tokens':11}}
+            with self.assertRaises(ValueError):APIRun(td,COMMON_JUDGE_RUN,[changed],api=object())
 
     def test_ambiguous_paid_submission_is_held(self):
         class FakeBatches:

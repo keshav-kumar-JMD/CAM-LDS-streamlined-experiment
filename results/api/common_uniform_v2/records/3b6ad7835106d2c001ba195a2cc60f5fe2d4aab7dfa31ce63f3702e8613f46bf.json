@@ -1,0 +1,273 @@
+{
+  "prompt_id": "690",
+  "scenario": "3",
+  "variant": "ssh_healthcheck",
+  "step": "6",
+  "split": "train",
+  "group_id": "[\"3\", \"6\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765463417.984:15212): arch=c000003e syscall=59 success=yes exit=0 a0=5581aef9d130 a1=5581aef9d1b0 a2=5581af0acd70 a3=8 items=2 ppid=3324 pid=3357 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"cat\" exe=\"/usr/bin/cat\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765463417.984:15212): argc=2 a0=\"cat\" a1=\"/etc/shadow\"\n        type=PATH msg=audit(1765463417.984:15212): item=0 name=\"/usr/bin/cat\" inode=1568 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765463417.984:15212): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=79850 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765463417.984:15212): proctitle=636174002F6574632F736861646F77\n        type=SYSCALL msg=audit(1765463417.984:15213): arch=c000003e syscall=257 success=yes exit=3 a0=ffffff9c a1=7ffd83b977ce a2=0 a3=0 items=1 ppid=3324 pid=3357 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"cat\" exe=\"/usr/bin/cat\" subj=unconfined\u001dARCH=x86_64 SYSCALL=openat AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765463417.984:15213): item=0 name=\"/etc/shadow\" inode=1285 dev=fc:01 mode=0100640 ouid=0 ogid=42 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"shadow\"\n        type=PROCTITLE msg=audit(1765463417.984:15213): proctitle=636174002F6574632F736861646F77",
+  "prompt_sha256": "4adb82649d36a4b2a322a41a3e6c2a334c7c5572c74f5fd59e47108a7dd2bc34",
+  "ground_truth": "[\"T1003.008\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1003.008\", \"T1003\", \"T1552.001\", \"T1555\", \"T1087.001\", \"T1069.001\", \"T1548.003\", \"T1078\", \"T1202\", \"T1082\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show user 'john' executing 'cat /etc/shadow' as root and successfully opening the Linux shadow password file, which is a clear credential-dumping artifact. Accessing /etc/shadow directly is strongly associated with OS credential dumping rather than routine user behavior.\"}",
+  "teacher_response_sha256": "4db4421a5a66af333172a723add4c5f4b6527b75372272b02ac12abdaef50a1c",
+  "teacher_confidence_label": "Almost Certain: Attack",
+  "model": "qwen1b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "4bba9a34a3f47a18b781a1a29101d0aaf589bf5ba487d1a30560275555373425:690",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1003\",\n    \"T1005\",\n    \"T1006\",\n    \"T1007\",\n    \"T1008\",\n    \"T1009\",\n    \"T1010\",\n    \"T1011\",\n    \"T1012\",\n    \"T1013\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The logs contain system calls and path lookups that are typical for executing a command, which is a common technique in malware or unauthorized access attempts. The use of `cat` and `execve` indicates a potential malicious activity, and the path `/etc/shadow` suggests a potential attack on a sensitive system file.\"\n}\n```",
+  "candidate_response_sha256": "39c4c854ef4aa06d8868a8155546873f16ffcad1ce56c73e8205d77c1fe47ed1",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "4bba9a34a3f47a18b781a1a29101d0aaf589bf5ba487d1a30560275555373425",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1230,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 174,
+  "candidate_elapsed_seconds": 5.071920293998119,
+  "candidate_output_tokens_per_second": 34.30653281478097,
+  "candidate_peak_allocated_bytes": 3214068736,
+  "candidate_peak_reserved_bytes": 5899288576,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "381ad0ef8f9783fc0767a3d2e0aa99521b7bbf4160b370cb8e77e96af75ac5a9",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1003.008\", \"T1078\", \"T1548.003\", \"T1552.001\", \"T1005\", \"T1070.002\", \"T1087.001\", \"T1083\", \"T1059.004\", \"T1555\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"A non-root user 'john' (auid=1002) escalated to root via sudo/su (uid=0, euid=0 with a parent shell at ppid=3324) and executed 'cat /etc/shadow', then opened /etc/shadow via openat, which is a classic credential dumping of password hashes. Reading the shadow file is not routine activity for an interactive user and strongly indicates credential access.\"\n}\n```",
+  "haiku_reference_response_sha256": "bc9c0a045e138f92e700e1d2157b5b17a8787dadd46d74bbc9660ab85f9f107e",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "f3af5cbd74f6e85538c1afa4a9ae28125afc7dcfa62a5304efc17c1974f7fb26",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\n      \"score\": 1,\n      \"reason\": \"Ground truth is T1003.008. The candidate's first ten predictions are T1003 through T1013, which includes the parent T1003 but not the exact subtechnique T1003.008. Exact-ID coverage is 0 of 1, so the score is 0 under the exact-ID rule; the parent-only match does not count as exact coverage.\"\n    },\n    \"prediction_evidence_support\": {\n      \"score\": 2,\n      \"reason\": \"T1003 (OS Credential Dumping) is supported by the cat /etc/shadow execution and openat of /etc/shadow. The remaining predictions T1005 through T1013 (Data from Local System, Network Service Discovery, Remote System Discovery, Software Discovery, etc.) have little or no support in the logs and appear to be a padded numeric sequence rather than evidence-based picks.\"\n    },\n    \"explanation_grounding\": {\n      \"score\": 2,\n      \"reason\": \"The explanation references execve, openat, cat, and /etc/shadow, which are real observations. However, it says 'system calls and path lookups that are typical for executing a command' and 'malware or unauthorized access attempts' without tying to specific fields. It also asserts malicious intent generically and does not note the privilege context (auid=john, uid=root) that is central to the evidence.\"\n    },\n    \"prediction_reason_alignment\": {\n      \"score\": 1,\n      \"reason\": \"The explanation justifies attack classification and mentions shadow file access, which aligns with T1003 credential access. But it provides no reasoning for the other nine techniques, which are not connected to any artifact in the logs.\"\n    },\n    \"confidence_evidence_support\": {\n      \"score\": 2,\n      \"reason\": \"Recovered label is Certain: Attack. Reading /etc/shadow via cat by a non-root auid is a strong indicator, but the candidate does not acknowledge the possibility of legitimate administrative access, and the ten-technique list is weakly supported, so 'Certain' is overconfident.\"\n    },\n    \"instruction_adherence\": {\n      \"score\": 1,\n      \"reason\": \"The response is wrapped in a code fence and is not strict JSON, violating the requested output format. The technique list contains ten IDs, which satisfies length, and the explanation is a brief two sentences, but the list is largely unsupported filler.\"\n    }\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1003\", \"T1005\", \"T1006\", \"T1007\", \"T1008\", \"T1009\", \"T1010\", \"T1011\", \"T1012\", \"T1013\"],\n  \"failure_labels\": [\"exact_subtechnique_missed\", \"overconfident_label\", \"unsupported_padded_techniques\", \"non_strict_json_output\"],\n  \"prediction_similarity\": 2,\n  \"reasoning_similarity\": 2,\n  \"candidate_confidence_label\": \"Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction, adjacent category.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "e42e4e80f1e78a678617155935e2867748e393dc95731a9fc790d871bf43cd35",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTuqLPu4c5gDoh99V94c",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\n      \"score\": 1,\n      \"reason\": \"Ground truth is T1003.008. The candidate's first ten predictions are T1003 through T1013, which includes the parent T1003 but not the exact subtechnique T1003.008. Exact-ID coverage is 0 of 1, so the score is 0 under the exact-ID rule; the parent-only match does not count as exact coverage.\"\n    },\n    \"prediction_evidence_support\": {\n      \"score\": 2,\n      \"reason\": \"T1003 (OS Credential Dumping) is supported by the cat /etc/shadow execution and openat of /etc/shadow. The remaining predictions T1005 through T1013 (Data from Local System, Network Service Discovery, Remote System Discovery, Software Discovery, etc.) have little or no support in the logs and appear to be a padded numeric sequence rather than evidence-based picks.\"\n    },\n    \"explanation_grounding\": {\n      \"score\": 2,\n      \"reason\": \"The explanation references execve, openat, cat, and /etc/shadow, which are real observations. However, it says 'system calls and path lookups that are typical for executing a command' and 'malware or unauthorized access attempts' without tying to specific fields. It also asserts malicious intent generically and does not note the privilege context (auid=john, uid=root) that is central to the evidence.\"\n    },\n    \"prediction_reason_alignment\": {\n      \"score\": 1,\n      \"reason\": \"The explanation justifies attack classification and mentions shadow file access, which aligns with T1003 credential access. But it provides no reasoning for the other nine techniques, which are not connected to any artifact in the logs.\"\n    },\n    \"confidence_evidence_support\": {\n      \"score\": 2,\n      \"reason\": \"Recovered label is Certain: Attack. Reading /etc/shadow via cat by a non-root auid is a strong indicator, but the candidate does not acknowledge the possibility of legitimate administrative access, and the ten-technique list is weakly supported, so 'Certain' is overconfident.\"\n    },\n    \"instruction_adherence\": {\n      \"score\": 1,\n      \"reason\": \"The response is wrapped in a code fence and is not strict JSON, violating the requested output format. The technique list contains ten IDs, which satisfies length, and the explanation is a brief two sentences, but the list is largely unsupported filler.\"\n    }\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1003\", \"T1005\", \"T1006\", \"T1007\", \"T1008\", \"T1009\", \"T1010\", \"T1011\", \"T1012\", \"T1013\"],\n  \"failure_labels\": [\"exact_subtechnique_missed\", \"overconfident_label\", \"unsupported_padded_techniques\", \"non_strict_json_output\"],\n  \"prediction_similarity\": 2,\n  \"reasoning_similarity\": 2,\n  \"candidate_confidence_label\": \"Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction, adjacent category.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3729,
+      "output_tokens": 1101,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3729,
+    "output_tokens": 1101,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00046170000000000006,
+  "batch_api": true,
+  "elapsed_seconds": 26707.10986804962,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3729,
+  "output_tokens": 1101,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\n      \"score\": 1,\n      \"reason\": \"Ground truth is T1003.008. The candidate's first ten predictions are T1003 through T1013, which includes the parent T1003 but not the exact subtechnique T1003.008. Exact-ID coverage is 0 of 1, so the score is 0 under the exact-ID rule; the parent-only match does not count as exact coverage.\"\n    },\n    \"prediction_evidence_support\": {\n      \"score\": 2,\n      \"reason\": \"T1003 (OS Credential Dumping) is supported by the cat /etc/shadow execution and openat of /etc/shadow. The remaining predictions T1005 through T1013 (Data from Local System, Network Service Discovery, Remote System Discovery, Software Discovery, etc.) have little or no support in the logs and appear to be a padded numeric sequence rather than evidence-based picks.\"\n    },\n    \"explanation_grounding\": {\n      \"score\": 2,\n      \"reason\": \"The explanation references execve, openat, cat, and /etc/shadow, which are real observations. However, it says 'system calls and path lookups that are typical for executing a command' and 'malware or unauthorized access attempts' without tying to specific fields. It also asserts malicious intent generically and does not note the privilege context (auid=john, uid=root) that is central to the evidence.\"\n    },\n    \"prediction_reason_alignment\": {\n      \"score\": 1,\n      \"reason\": \"The explanation justifies attack classification and mentions shadow file access, which aligns with T1003 credential access. But it provides no reasoning for the other nine techniques, which are not connected to any artifact in the logs.\"\n    },\n    \"confidence_evidence_support\": {\n      \"score\": 2,\n      \"reason\": \"Recovered label is Certain: Attack. Reading /etc/shadow via cat by a non-root auid is a strong indicator, but the candidate does not acknowledge the possibility of legitimate administrative access, and the ten-technique list is weakly supported, so 'Certain' is overconfident.\"\n    },\n    \"instruction_adherence\": {\n      \"score\": 1,\n      \"reason\": \"The response is wrapped in a code fence and is not strict JSON, violating the requested output format. The technique list contains ten IDs, which satisfies length, and the explanation is a brief two sentences, but the list is largely unsupported filler.\"\n    }\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1003\", \"T1005\", \"T1006\", \"T1007\", \"T1008\", \"T1009\", \"T1010\", \"T1011\", \"T1012\", \"T1013\"],\n  \"failure_labels\": [\"exact_subtechnique_missed\", \"overconfident_label\", \"unsupported_padded_techniques\", \"non_strict_json_output\"],\n  \"prediction_similarity\": 2,\n  \"reasoning_similarity\": 2,\n  \"candidate_confidence_label\": \"Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction, adjacent category.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "e42e4e80f1e78a678617155935e2867748e393dc95731a9fc790d871bf43cd35",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 1,
+        "reason": "Ground truth is T1003.008. The candidate's first ten predictions are T1003 through T1013, which includes the parent T1003 but not the exact subtechnique T1003.008. Exact-ID coverage is 0 of 1, so the score is 0 under the exact-ID rule; the parent-only match does not count as exact coverage."
+      },
+      "prediction_evidence_support": {
+        "score": 2,
+        "reason": "T1003 (OS Credential Dumping) is supported by the cat /etc/shadow execution and openat of /etc/shadow. The remaining predictions T1005 through T1013 (Data from Local System, Network Service Discovery, Remote System Discovery, Software Discovery, etc.) have little or no support in the logs and appear to be a padded numeric sequence rather than evidence-based picks."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation references execve, openat, cat, and /etc/shadow, which are real observations. However, it says 'system calls and path lookups that are typical for executing a command' and 'malware or unauthorized access attempts' without tying to specific fields. It also asserts malicious intent generically and does not note the privilege context (auid=john, uid=root) that is central to the evidence."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "The explanation justifies attack classification and mentions shadow file access, which aligns with T1003 credential access. But it provides no reasoning for the other nine techniques, which are not connected to any artifact in the logs."
+      },
+      "confidence_evidence_support": {
+        "score": 2,
+        "reason": "Recovered label is Certain: Attack. Reading /etc/shadow via cat by a non-root auid is a strong indicator, but the candidate does not acknowledge the possibility of legitimate administrative access, and the ten-technique list is weakly supported, so 'Certain' is overconfident."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "The response is wrapped in a code fence and is not strict JSON, violating the requested output format. The technique list contains ten IDs, which satisfies length, and the explanation is a brief two sentences, but the list is largely unsupported filler."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1003",
+      "T1005",
+      "T1006",
+      "T1007",
+      "T1008",
+      "T1009",
+      "T1010",
+      "T1011",
+      "T1012",
+      "T1013"
+    ],
+    "failure_labels": [
+      "exact_subtechnique_missed",
+      "overconfident_label",
+      "unsupported_padded_techniques",
+      "non_strict_json_output"
+    ],
+    "prediction_similarity": 2,
+    "reasoning_similarity": 2,
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction, adjacent category.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 1,
+    "reason": "Ground truth is T1003.008. The candidate's first ten predictions are T1003 through T1013, which includes the parent T1003 but not the exact subtechnique T1003.008. Exact-ID coverage is 0 of 1, so the score is 0 under the exact-ID rule; the parent-only match does not count as exact coverage."
+  },
+  "score_prediction_evidence_support": {
+    "score": 2,
+    "reason": "T1003 (OS Credential Dumping) is supported by the cat /etc/shadow execution and openat of /etc/shadow. The remaining predictions T1005 through T1013 (Data from Local System, Network Service Discovery, Remote System Discovery, Software Discovery, etc.) have little or no support in the logs and appear to be a padded numeric sequence rather than evidence-based picks."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation references execve, openat, cat, and /etc/shadow, which are real observations. However, it says 'system calls and path lookups that are typical for executing a command' and 'malware or unauthorized access attempts' without tying to specific fields. It also asserts malicious intent generically and does not note the privilege context (auid=john, uid=root) that is central to the evidence."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "The explanation justifies attack classification and mentions shadow file access, which aligns with T1003 credential access. But it provides no reasoning for the other nine techniques, which are not connected to any artifact in the logs."
+  },
+  "score_confidence_evidence_support": {
+    "score": 2,
+    "reason": "Recovered label is Certain: Attack. Reading /etc/shadow via cat by a non-root auid is a strong indicator, but the candidate does not acknowledge the possibility of legitimate administrative access, and the ten-technique list is weakly supported, so 'Certain' is overconfident."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "The response is wrapped in a code fence and is not strict JSON, violating the requested output format. The technique list contains ten IDs, which satisfies length, and the explanation is a brief two sentences, but the list is largely unsupported filler."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1003",
+    "T1005",
+    "T1006",
+    "T1007",
+    "T1008",
+    "T1009",
+    "T1010",
+    "T1011",
+    "T1012",
+    "T1013"
+  ],
+  "judge_failure_labels": [
+    "exact_subtechnique_missed",
+    "overconfident_label",
+    "unsupported_padded_techniques",
+    "non_strict_json_output"
+  ],
+  "judge_prediction_similarity": 2,
+  "judge_reasoning_similarity": 2,
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction, adjacent category.",
+  "confidence_label_null_reason": null
+}

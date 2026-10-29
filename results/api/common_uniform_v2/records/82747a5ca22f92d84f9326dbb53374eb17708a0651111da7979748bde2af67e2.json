@@ -1,0 +1,279 @@
+{
+  "prompt_id": "485",
+  "scenario": "3",
+  "variant": "ssh_apt",
+  "step": "28",
+  "split": "train",
+  "group_id": "[\"3\", \"28\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nlinuxshare:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765536486.804:6104): arch=c000003e syscall=59 success=yes exit=0 a0=55fbaf4e08f0 a1=55fbaf4e0850 a2=55fbaf4e0130 a3=16f5eb4aaf8ff5c9 items=3 ppid=2520 pid=2528 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=13 comm=\"cat\" exe=\"/usr/bin/cat\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765536486.804:6104): argc=2 a0=\"cat\" a1=\"/etc/passwd\"\n        type=PATH msg=audit(1765536486.804:6104): item=0 name=\"/usr/bin/cat\" inode=564 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765536486.804:6104): item=1 name=\"/usr/bin/cat\" inode=564 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765536486.804:6104): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=2058 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765536486.804:6104): proctitle=636174002F6574632F706173737764",
+  "prompt_sha256": "d04531485af0bff61314857d6b5007061206c249f0d5efd8e8983e8f94a97704",
+  "ground_truth": "[\"T1087.001\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1003.008\", \"T1087.001\", \"T1087\", \"T1012\", \"T1082\", \"T1033\", \"T1059.004\", \"T1217\", \"T1005\", \"T1552.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The log shows root executing `cat /etc/passwd`, which reads local account information from a sensitive system file. While this can be normal administrative activity, in an ATT&CK context it most directly maps to OS credential/account discovery via `/etc/passwd`.\"}",
+  "teacher_response_sha256": "24ac99082f6c42c4b111d25526a1e197aef18a382335a8901125fe96efd37579",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "qwen1b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "4bba9a34a3f47a18b781a1a29101d0aaf589bf5ba487d1a30560275555373425:485",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1003\",\n    \"T1005\",\n    \"T1006\",\n    \"T1007\",\n    \"T1008\",\n    \"T1009\",\n    \"T1010\",\n    \"T1011\",\n    \"T1012\",\n    \"T1013\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The logs contain system calls and path information that are typical for executing a command, such as 'cat /etc/passwd'. This indicates that the system is being used to execute a malicious command, which is a common technique in attack scenarios.\"\n}\n```",
+  "candidate_response_sha256": "b2c4cbbcba3dd1d384550260e1cdc1dc197992a86eee884d7534525b37b49d8b",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "4bba9a34a3f47a18b781a1a29101d0aaf589bf5ba487d1a30560275555373425",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 955,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 158,
+  "candidate_elapsed_seconds": 4.58481523500086,
+  "candidate_output_tokens_per_second": 34.46158501520735,
+  "candidate_peak_allocated_bytes": 3188710912,
+  "candidate_peak_reserved_bytes": 5878317056,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "ee612c8a8aa446d039e6b70529550a3720a0e59ae61fcd21bfd07014f81e4d8b",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1003.008\", \"T1087.001\", \"T1005\", \"T1552.001\", \"T1083\", \"T1059.004\", \"T1057\", \"T1033\", \"T1078\", \"T1070\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The audit log shows a root-level execution of /usr/bin/cat reading /etc/passwd, a common administrative or diagnostic action (e.g., checking user accounts) that is also a classic credential/account discovery pattern. Since the activity occurs from an interactive pts0 terminal session under root with no accompanying suspicious artifacts (no network activity, persistence, or unusual parent process), it is more consistent with normal administrative behavior, though the root context and target file warrant review.\"\n}\n```",
+  "haiku_reference_response_sha256": "0fd355bbb83e8e9b6f3ff15d0d9459c7066bebddd983e0307ce2ad1c0e2e72f3",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "c142f523fa5ae1a9ed4b962a39d1ff5b2c84ed7a646a2de3d835b29231efa094",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1087.001. The candidate's first ten predictions are T1003 through T1013; T1087.001 is absent, so coverage is 0.\"},\n    \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs show cat reading /etc/passwd as root in a pts0 session, which weakly relates to credential/account discovery. The listed IDs (T1006, T1007, T1008, T1009, T1011, T1012, T1013) have no support in the logs and look like a sequential filler list rather than evidence-based predictions.\"},\n    \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation cites a cat command and system calls, which are present. It then calls the activity an attack and says it is 'a common technique in attack scenarios' without distinguishing observation from inference. It does not address the interactive terminal or lack of other suspicious artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"The explanation supports a generic command-execution rationale, but none of the ten IDs is connected to a specific reason. Most are unrelated to reading /etc/passwd.\"},\n    \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"'Certain: Attack' is grossly disproportionate. Reading /etc/passwd via cat in an interactive root terminal has many benign explanations, and the candidate acknowledges no limitations.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is wrapped in a code fence and is not strict JSON, though the required fields are recoverable. The technique list is padded to ten entries with unsupported IDs, and the explanation is roughly 2 sentences as requested.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [\"T1003\", \"T1005\", \"T1006\", \"T1007\", \"T1008\", \"T1009\", \"T1010\", \"T1011\", \"T1012\", \"T1013\"],\n  \"failure_labels\": [\"overconfident_attack_label\", \"unsupported_technique_predictions\", \"ground_truth_technique_missing\", \"non_strict_json_output\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": 0,\n  \"confidence_label_agreement_reason\": \"The candidate asserts Certain: Attack, while the evidence (an interactive root cat of /etc/passwd with no other suspicious artifacts) warrants a Normal-leaning label. The directions are opposed at high confidence, so this scores 0.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "2d2234faadc06b50d5d55c35c30ac4e12d9a3df9d63e75b8b445b50b4a9f9a65",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTunk66GXpzPvuYNbKmx",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1087.001. The candidate's first ten predictions are T1003 through T1013; T1087.001 is absent, so coverage is 0.\"},\n    \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs show cat reading /etc/passwd as root in a pts0 session, which weakly relates to credential/account discovery. The listed IDs (T1006, T1007, T1008, T1009, T1011, T1012, T1013) have no support in the logs and look like a sequential filler list rather than evidence-based predictions.\"},\n    \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation cites a cat command and system calls, which are present. It then calls the activity an attack and says it is 'a common technique in attack scenarios' without distinguishing observation from inference. It does not address the interactive terminal or lack of other suspicious artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"The explanation supports a generic command-execution rationale, but none of the ten IDs is connected to a specific reason. Most are unrelated to reading /etc/passwd.\"},\n    \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"'Certain: Attack' is grossly disproportionate. Reading /etc/passwd via cat in an interactive root terminal has many benign explanations, and the candidate acknowledges no limitations.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is wrapped in a code fence and is not strict JSON, though the required fields are recoverable. The technique list is padded to ten entries with unsupported IDs, and the explanation is roughly 2 sentences as requested.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [\"T1003\", \"T1005\", \"T1006\", \"T1007\", \"T1008\", \"T1009\", \"T1010\", \"T1011\", \"T1012\", \"T1013\"],\n  \"failure_labels\": [\"overconfident_attack_label\", \"unsupported_technique_predictions\", \"ground_truth_technique_missing\", \"non_strict_json_output\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": 0,\n  \"confidence_label_agreement_reason\": \"The candidate asserts Certain: Attack, while the evidence (an interactive root cat of /etc/passwd with no other suspicious artifacts) warrants a Normal-leaning label. The directions are opposed at high confidence, so this scores 0.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3404,
+      "output_tokens": 999,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3404,
+    "output_tokens": 999,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00041995000000000004,
+  "batch_api": true,
+  "elapsed_seconds": 2197.748468399048,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3404,
+  "output_tokens": 999,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1087.001. The candidate's first ten predictions are T1003 through T1013; T1087.001 is absent, so coverage is 0.\"},\n    \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs show cat reading /etc/passwd as root in a pts0 session, which weakly relates to credential/account discovery. The listed IDs (T1006, T1007, T1008, T1009, T1011, T1012, T1013) have no support in the logs and look like a sequential filler list rather than evidence-based predictions.\"},\n    \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation cites a cat command and system calls, which are present. It then calls the activity an attack and says it is 'a common technique in attack scenarios' without distinguishing observation from inference. It does not address the interactive terminal or lack of other suspicious artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"The explanation supports a generic command-execution rationale, but none of the ten IDs is connected to a specific reason. Most are unrelated to reading /etc/passwd.\"},\n    \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"'Certain: Attack' is grossly disproportionate. Reading /etc/passwd via cat in an interactive root terminal has many benign explanations, and the candidate acknowledges no limitations.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is wrapped in a code fence and is not strict JSON, though the required fields are recoverable. The technique list is padded to ten entries with unsupported IDs, and the explanation is roughly 2 sentences as requested.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [\"T1003\", \"T1005\", \"T1006\", \"T1007\", \"T1008\", \"T1009\", \"T1010\", \"T1011\", \"T1012\", \"T1013\"],\n  \"failure_labels\": [\"overconfident_attack_label\", \"unsupported_technique_predictions\", \"ground_truth_technique_missing\", \"non_strict_json_output\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": 0,\n  \"confidence_label_agreement_reason\": \"The candidate asserts Certain: Attack, while the evidence (an interactive root cat of /etc/passwd with no other suspicious artifacts) warrants a Normal-leaning label. The directions are opposed at high confidence, so this scores 0.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "2d2234faadc06b50d5d55c35c30ac4e12d9a3df9d63e75b8b445b50b4a9f9a65",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1087.001. The candidate's first ten predictions are T1003 through T1013; T1087.001 is absent, so coverage is 0."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "The logs show cat reading /etc/passwd as root in a pts0 session, which weakly relates to credential/account discovery. The listed IDs (T1006, T1007, T1008, T1009, T1011, T1012, T1013) have no support in the logs and look like a sequential filler list rather than evidence-based predictions."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "The explanation cites a cat command and system calls, which are present. It then calls the activity an attack and says it is 'a common technique in attack scenarios' without distinguishing observation from inference. It does not address the interactive terminal or lack of other suspicious artifacts."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "The explanation supports a generic command-execution rationale, but none of the ten IDs is connected to a specific reason. Most are unrelated to reading /etc/passwd."
+      },
+      "confidence_evidence_support": {
+        "score": 0,
+        "reason": "'Certain: Attack' is grossly disproportionate. Reading /etc/passwd via cat in an interactive root terminal has many benign explanations, and the candidate acknowledges no limitations."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "The response is wrapped in a code fence and is not strict JSON, though the required fields are recoverable. The technique list is padded to ten entries with unsupported IDs, and the explanation is roughly 2 sentences as requested."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "No comparison response was provided for similarity scoring.",
+      "reasoning_similarity": "No comparison response was provided for similarity scoring."
+    },
+    "extracted_predictions": [
+      "T1003",
+      "T1005",
+      "T1006",
+      "T1007",
+      "T1008",
+      "T1009",
+      "T1010",
+      "T1011",
+      "T1012",
+      "T1013"
+    ],
+    "failure_labels": [
+      "overconfident_attack_label",
+      "unsupported_technique_predictions",
+      "ground_truth_technique_missing",
+      "non_strict_json_output"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": 0,
+    "confidence_label_agreement_reason": "The candidate asserts Certain: Attack, while the evidence (an interactive root cat of /etc/passwd with no other suspicious artifacts) warrants a Normal-leaning label. The directions are opposed at high confidence, so this scores 0.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1087.001. The candidate's first ten predictions are T1003 through T1013; T1087.001 is absent, so coverage is 0."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "The logs show cat reading /etc/passwd as root in a pts0 session, which weakly relates to credential/account discovery. The listed IDs (T1006, T1007, T1008, T1009, T1011, T1012, T1013) have no support in the logs and look like a sequential filler list rather than evidence-based predictions."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "The explanation cites a cat command and system calls, which are present. It then calls the activity an attack and says it is 'a common technique in attack scenarios' without distinguishing observation from inference. It does not address the interactive terminal or lack of other suspicious artifacts."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "The explanation supports a generic command-execution rationale, but none of the ten IDs is connected to a specific reason. Most are unrelated to reading /etc/passwd."
+  },
+  "score_confidence_evidence_support": {
+    "score": 0,
+    "reason": "'Certain: Attack' is grossly disproportionate. Reading /etc/passwd via cat in an interactive root terminal has many benign explanations, and the candidate acknowledges no limitations."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "The response is wrapped in a code fence and is not strict JSON, though the required fields are recoverable. The technique list is padded to ten entries with unsupported IDs, and the explanation is roughly 2 sentences as requested."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No comparison response was provided for similarity scoring.",
+    "reasoning_similarity": "No comparison response was provided for similarity scoring."
+  },
+  "judge_extracted_predictions": [
+    "T1003",
+    "T1005",
+    "T1006",
+    "T1007",
+    "T1008",
+    "T1009",
+    "T1010",
+    "T1011",
+    "T1012",
+    "T1013"
+  ],
+  "judge_failure_labels": [
+    "overconfident_attack_label",
+    "unsupported_technique_predictions",
+    "ground_truth_technique_missing",
+    "non_strict_json_output"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": 0,
+  "confidence_label_agreement_reason": "The candidate asserts Certain: Attack, while the evidence (an interactive root cat of /etc/passwd with no other suspicious artifacts) warrants a Normal-leaning label. The directions are opposed at high confidence, so this scores 0.",
+  "confidence_label_null_reason": null
+}

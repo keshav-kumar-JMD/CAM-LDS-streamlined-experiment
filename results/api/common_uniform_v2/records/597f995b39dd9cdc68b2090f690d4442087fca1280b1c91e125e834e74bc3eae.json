@@ -1,0 +1,243 @@
+{
+  "prompt_id": "387",
+  "scenario": "7",
+  "variant": "",
+  "step": "11",
+  "split": "validation",
+  "group_id": "[\"7\", \"11\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ndocker:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1768992250.932:5609): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c00008b2ec a2=10 a3=0 items=0 ppid=3689 pid=3717 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=31 comm=\"tool\" exe=\"/opt/tool\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1768992250.932:5609): saddr=020000357F0000350000000000000000\u001dSADDR={ saddr_fam=inet laddr=127.0.0.53 lport=53 }\n        type=PROCTITLE msg=audit(1768992250.932:5609): proctitle=\"/opt/tool\"\n        type=SYSCALL msg=audit(1768992250.932:5610): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c00008b34c a2=10 a3=0 items=0 ppid=3689 pid=3717 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=31 comm=\"tool\" exe=\"/opt/tool\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1768992250.932:5610): saddr=020000357F0000350000000000000000\u001dSADDR={ saddr_fam=inet laddr=127.0.0.53 lport=53 }\n        type=PROCTITLE msg=audit(1768992250.932:5610): proctitle=\"/opt/tool\"\n        type=SYSCALL msg=audit(1768992250.939:5611): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c00008b3ac a2=10 a3=0 items=0 ppid=3689 pid=3717 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=31 comm=\"tool\" exe=\"/opt/tool\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1768992250.939:5611): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1768992250.939:5611): proctitle=\"/opt/tool\"\ninetfw:\n    logs/log/syslog:\n        Jan 21 10:44:11 inetfw dnsmasq[737]: query[AAAA] faaacebook.com from 172.17.100.125\n        Jan 21 10:44:11 inetfw dnsmasq[737]: cached faaacebook.com is NODATA-IPv6\n        Jan 21 10:44:11 inetfw dnsmasq[737]: query[A] faaacebook.com from 172.17.100.125\n        Jan 21 10:44:11 inetfw dnsmasq[737]: forwarded faaacebook.com to 192.42.2.2\n        Jan 21 10:44:11 inetfw dnsmasq[737]: reply faaacebook.com is 192.42.1.174",
+  "prompt_sha256": "9e49761fd5d93518b91933cdc30f04bedf16462e05d600662484180ac5ce9c5c",
+  "ground_truth": "[\"T1083\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1568.003\", \"T1071.004\", \"T1102\", \"T1090\", \"T1573\", \"T1041\", \"T1105\", \"T1071.001\", \"T1583.001\", \"T1584.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show an unusual executable /opt/tool running as root resolving a typosquatted domain, faaacebook.com, via DNS and then attempting an outbound HTTPS connection to the resolved IP 192.42.1.174. This pattern is consistent with malware using a domain/DNS-based rendezvous or command-and-control endpoint rather than normal user activity.\"}",
+  "teacher_response_sha256": "eda91e3d32eaaef73633df1558f7db02091c00a3fe81f272ed0572f68a3ccf48",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "hermes",
+  "condition": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "0b6fa8a7eecc10fd5310ebe209bf4c7d11acb075c6cf141706092383887930f0:387",
+  "candidate_response_raw": "{\"techniques\": \"T1059.004\", \"confidence\": \"Somewhat Certain: Attack\"}",
+  "candidate_response_sha256": "679bc058c882c24e132411f2037dd2efe9eb4893a10f9ebaec87fcd0d491c962",
+  "candidate_confidence_label_strict": "Somewhat Certain: Attack",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "technique",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "0b6fa8a7eecc10fd5310ebe209bf4c7d11acb075c6cf141706092383887930f0",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "2d6acc4b2aeb1ffcbc0f88b3f3435be75e921dbe52824ec99d62675dc461d6ad",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1484,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 27,
+  "candidate_elapsed_seconds": 1.153364517999762,
+  "candidate_output_tokens_per_second": 23.409771653826418,
+  "candidate_peak_allocated_bytes": 4120930816,
+  "candidate_peak_reserved_bytes": 10554966016,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "811360f0ffc3e7fda6837ba7cbbfbefe6e72a7ac2d5aec6364f6c9a53025d7f8",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1071.004\",\n    \"T1568.002\",\n    \"T1071.001\",\n    \"T1572\",\n    \"T1048.003\",\n    \"T1568\",\n    \"T1043\",\n    \"T1583.001\",\n    \"T1571\",\n    \"T1059\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"An unsigned binary at /opt/tool running as root repeatedly attempts raw socket connections, including a connection to 192.42.1.174:443 that fails with ECONNREFUSED (exit=-115), while the same host queries the typosquatted domain 'faaacebook.com' (a misspelling of facebook.com) that resolves to that same external IP, indicating likely command-and-control or malicious domain communication with DGA/typosquat-style infrastructure.\"\n}\n```",
+  "haiku_reference_response_sha256": "c30fa54cccbfffe6e65d908275aa22bb539ef277a33b2173b2fe23f39d59047b",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "b83b6c4a73a3bb186b0a49c9e5acdecbffc2a0271acaa42f114c047bf6040b56",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 1,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only ground-truth ID is T1083 (File and Directory Discovery). The candidate's sole prediction, T1059.004 (Unix Shell), is not T1083 and is not supported by the logs, which show no shell execution.\",\n    \"prediction_evidence_support\": \"The logs show /opt/tool making repeated connect() calls to 127.0.0.53:53 and 192.42.1.174:443 and DNS queries for faaacebook.com. Nothing in the logs points to shell command execution, so T1059.004 is weakly supported at best.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all, so nothing is grounded or justified.\",\n    \"prediction_reason_alignment\": \"No explanation is given, so no prediction is connected to any stated reason.\",\n    \"confidence_evidence_support\": \"The candidate's 'Somewhat Certain: Attack' label is recoverable. Without any explanation or limitations it is not clearly justified, though an attack direction is defensible given the suspicious unsigned binary, root-level network activity, and typosquatted domain.\",\n    \"instruction_adherence\": \"The output is valid JSON but omits the required 'explanation' field and returns 'techniques' as a bare string rather than a list of up to ten IDs.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"Not applicable: no comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"Not applicable: no comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\"],\n  \"failure_labels\": [\"missing_explanation\", \"missing_required_field\", \"incorrect_technique_prediction\", \"malformed_techniques_field\", \"unsupported_technique_claim\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"The candidate and warranted labels are adjacent within the Attack direction. The logs show an unsigned root-level binary making raw network connections and resolving a typosquatted domain, which supports a stronger attack label than the candidate gave.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "2e87015a6d0ee154ee610bedc551bd2d7ac3b6763d0089045de86a58272b5ef6",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv4QGBQFwFTRLjt61KG",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 1,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only ground-truth ID is T1083 (File and Directory Discovery). The candidate's sole prediction, T1059.004 (Unix Shell), is not T1083 and is not supported by the logs, which show no shell execution.\",\n    \"prediction_evidence_support\": \"The logs show /opt/tool making repeated connect() calls to 127.0.0.53:53 and 192.42.1.174:443 and DNS queries for faaacebook.com. Nothing in the logs points to shell command execution, so T1059.004 is weakly supported at best.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all, so nothing is grounded or justified.\",\n    \"prediction_reason_alignment\": \"No explanation is given, so no prediction is connected to any stated reason.\",\n    \"confidence_evidence_support\": \"The candidate's 'Somewhat Certain: Attack' label is recoverable. Without any explanation or limitations it is not clearly justified, though an attack direction is defensible given the suspicious unsigned binary, root-level network activity, and typosquatted domain.\",\n    \"instruction_adherence\": \"The output is valid JSON but omits the required 'explanation' field and returns 'techniques' as a bare string rather than a list of up to ten IDs.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"Not applicable: no comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"Not applicable: no comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\"],\n  \"failure_labels\": [\"missing_explanation\", \"missing_required_field\", \"incorrect_technique_prediction\", \"malformed_techniques_field\", \"unsupported_technique_claim\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"The candidate and warranted labels are adjacent within the Attack direction. The logs show an unsigned root-level binary making raw network connections and resolving a typosquatted domain, which supports a stronger attack label than the candidate gave.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3824,
+      "output_tokens": 917,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3824,
+    "output_tokens": 917,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00042045000000000006,
+  "batch_api": true,
+  "elapsed_seconds": 28608.150455474854,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3824,
+  "output_tokens": 917,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 1,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only ground-truth ID is T1083 (File and Directory Discovery). The candidate's sole prediction, T1059.004 (Unix Shell), is not T1083 and is not supported by the logs, which show no shell execution.\",\n    \"prediction_evidence_support\": \"The logs show /opt/tool making repeated connect() calls to 127.0.0.53:53 and 192.42.1.174:443 and DNS queries for faaacebook.com. Nothing in the logs points to shell command execution, so T1059.004 is weakly supported at best.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all, so nothing is grounded or justified.\",\n    \"prediction_reason_alignment\": \"No explanation is given, so no prediction is connected to any stated reason.\",\n    \"confidence_evidence_support\": \"The candidate's 'Somewhat Certain: Attack' label is recoverable. Without any explanation or limitations it is not clearly justified, though an attack direction is defensible given the suspicious unsigned binary, root-level network activity, and typosquatted domain.\",\n    \"instruction_adherence\": \"The output is valid JSON but omits the required 'explanation' field and returns 'techniques' as a bare string rather than a list of up to ten IDs.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"Not applicable: no comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"Not applicable: no comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\"],\n  \"failure_labels\": [\"missing_explanation\", \"missing_required_field\", \"incorrect_technique_prediction\", \"malformed_techniques_field\", \"unsupported_technique_claim\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"The candidate and warranted labels are adjacent within the Attack direction. The logs show an unsigned root-level binary making raw network connections and resolving a typosquatted domain, which supports a stronger attack label than the candidate gave.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "2e87015a6d0ee154ee610bedc551bd2d7ac3b6763d0089045de86a58272b5ef6",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 1,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": 1,
+      "instruction_adherence": 1
+    },
+    "reasons": {
+      "technique_identification": "The only ground-truth ID is T1083 (File and Directory Discovery). The candidate's sole prediction, T1059.004 (Unix Shell), is not T1083 and is not supported by the logs, which show no shell execution.",
+      "prediction_evidence_support": "The logs show /opt/tool making repeated connect() calls to 127.0.0.53:53 and 192.42.1.174:443 and DNS queries for faaacebook.com. Nothing in the logs points to shell command execution, so T1059.004 is weakly supported at best.",
+      "explanation_grounding": "The candidate provides no explanation field at all, so nothing is grounded or justified.",
+      "prediction_reason_alignment": "No explanation is given, so no prediction is connected to any stated reason.",
+      "confidence_evidence_support": "The candidate's 'Somewhat Certain: Attack' label is recoverable. Without any explanation or limitations it is not clearly justified, though an attack direction is defensible given the suspicious unsigned binary, root-level network activity, and typosquatted domain.",
+      "instruction_adherence": "The output is valid JSON but omits the required 'explanation' field and returns 'techniques' as a bare string rather than a list of up to ten IDs."
+    },
+    "null_reasons": {
+      "prediction_similarity": "Not applicable: no comparison response was provided for similarity scoring.",
+      "reasoning_similarity": "Not applicable: no comparison response was provided for similarity scoring."
+    },
+    "extracted_predictions": [
+      "T1059.004"
+    ],
+    "failure_labels": [
+      "missing_explanation",
+      "missing_required_field",
+      "incorrect_technique_prediction",
+      "malformed_techniques_field",
+      "unsupported_technique_claim"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "The candidate and warranted labels are adjacent within the Attack direction. The logs show an unsigned root-level binary making raw network connections and resolving a typosquatted domain, which supports a stronger attack label than the candidate gave.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 1,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": 1,
+  "score_instruction_adherence": 1,
+  "judge_reasons": {
+    "technique_identification": "The only ground-truth ID is T1083 (File and Directory Discovery). The candidate's sole prediction, T1059.004 (Unix Shell), is not T1083 and is not supported by the logs, which show no shell execution.",
+    "prediction_evidence_support": "The logs show /opt/tool making repeated connect() calls to 127.0.0.53:53 and 192.42.1.174:443 and DNS queries for faaacebook.com. Nothing in the logs points to shell command execution, so T1059.004 is weakly supported at best.",
+    "explanation_grounding": "The candidate provides no explanation field at all, so nothing is grounded or justified.",
+    "prediction_reason_alignment": "No explanation is given, so no prediction is connected to any stated reason.",
+    "confidence_evidence_support": "The candidate's 'Somewhat Certain: Attack' label is recoverable. Without any explanation or limitations it is not clearly justified, though an attack direction is defensible given the suspicious unsigned binary, root-level network activity, and typosquatted domain.",
+    "instruction_adherence": "The output is valid JSON but omits the required 'explanation' field and returns 'techniques' as a bare string rather than a list of up to ten IDs."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "Not applicable: no comparison response was provided for similarity scoring.",
+    "reasoning_similarity": "Not applicable: no comparison response was provided for similarity scoring."
+  },
+  "judge_extracted_predictions": [
+    "T1059.004"
+  ],
+  "judge_failure_labels": [
+    "missing_explanation",
+    "missing_required_field",
+    "incorrect_technique_prediction",
+    "malformed_techniques_field",
+    "unsupported_technique_claim"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "The candidate and warranted labels are adjacent within the Attack direction. The logs show an unsigned root-level binary making raw network connections and resolving a typosquatted domain, which supports a stronger attack label than the candidate gave.",
+  "confidence_label_null_reason": null
+}

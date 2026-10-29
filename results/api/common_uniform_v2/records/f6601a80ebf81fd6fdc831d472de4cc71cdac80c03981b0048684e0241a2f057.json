@@ -1,0 +1,263 @@
+{
+  "prompt_id": "221",
+  "scenario": "1",
+  "variant": "cron_pam",
+  "step": "33",
+  "split": "train",
+  "group_id": "[\"1\", \"33\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758706328.838:13736): arch=c000003e syscall=59 success=yes exit=0 a0=55fe01cd11c0 a1=55fe01ccf550 a2=55fe01cd1a80 a3=fffffffffffff286 items=3 ppid=17399 pid=17407 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=8 comm=\"stty\" exe=\"/usr/bin/stty\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758706328.838:13736): argc=5 a0=\"stty\" a1=\"rows\" a2=\"38\" a3=\"columns\" a4=\"116\"\n        type=PATH msg=audit(1758706328.838:13736): item=0 name=\"/usr/bin/stty\" inode=845 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758706328.838:13736): item=1 name=\"/usr/bin/stty\" inode=845 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758706328.838:13736): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758706328.838:13736): proctitle=7374747900726F777300333800636F6C756D6E7300313136",
+  "prompt_sha256": "5bb5d7e033d75b91b3ca3fb6fde69ecc5d3ee65e8f66b449f49d79ad789ad914",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1027.010\", \"T1105\", \"T1078\", \"T1036\", \"T1562.001\", \"T1053.003\", \"T1548.003\", \"T1021.004\", \"T1082\"], \"confidence\": \"Almost Certain: Normal\", \"explanation\": \"The log only shows root executing /usr/bin/stty with arguments to set terminal rows and columns on a pts session, which is common shell/interactive terminal behavior. There are no suspicious artifacts such as payload execution, persistence changes, network activity, or privilege abuse beyond an already-root session.\"}",
+  "teacher_response_sha256": "5fa0d93bd0913b41af8fbeddcb22e90d2740b424b6fcfcec109462581e29646a",
+  "teacher_confidence_label": "Almost Certain: Normal",
+  "model": "hermes",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b:221",
+  "candidate_response_raw": "{\n  \"techniques\": [\n    \"SYSCALL\",\n    \"EXECVE\",\n    \"PATH\",\n    \"PROCTITLE\"\n  ],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The logs contain information about a system call (SYSCALL) and an executable file (EXECVE) being executed on the host. The PATH log entry points to a directory containing a system library (lib64/ld-linux-x86-64.so.2), which is a common entry point for system calls and executables. The PROCTITLE log entry provides a system-proc title (7374747900726F777300333800636F6C756D6E7300313136) that is consistent with a Linux system call. This suggests that the logs may indicate an attack, as the attacker is attempting to execute a system call or executable file on the host.\"\n}",
+  "candidate_response_sha256": "6acd635d1555bb721b31e43b06b953578b54888444c7146725ec5ed124d13463",
+  "candidate_confidence_label_strict": "Somewhat Certain: Attack",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 983,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 214,
+  "candidate_elapsed_seconds": 5.206266784000036,
+  "candidate_output_tokens_per_second": 41.10430926391776,
+  "candidate_peak_allocated_bytes": 3968223232,
+  "candidate_peak_reserved_bytes": 9992929280,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": true,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "55eb8bd7d8993e7dc1a4c2579a441b7670360bf73752bd23fbf8a4e99708303a",
+  "haiku_reference_response_raw": "Decoding the PROCTITLE hex: \"stty\\0rows\\038\\0columns\\0116\", which matches the EXECVE record. The command is `stty rows 38 columns 116`, run by root from a pts terminal (ppid 17399, ses=8). This is a routine terminal-window-size adjustment, typically performed by a shell, SSH session, or terminal multiplexer when resizing the pseudo-terminal. It is a benign, interactive-user action with no network activity, no file writes, no privilege escalation, and no suspicious parent process or unusual path.\n\n```json\n{\n  \"techniques\": [\n    \"T1059.004\",\n    \"T1059\",\n    \"T1082\",\n    \"T1106\",\n    \"T1033\",\n    \"T1569\",\n    \"T1569.002\",\n    \"T1222\",\n    \"T1548\",\n    \"T1078\"\n  ],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The audit records show a single execution of /usr/bin/stty with arguments 'rows 38 columns 116' on a pts terminal, which is the standard way a shell or SSH session adjusts terminal dimensions. No suspicious behavior such as file drops, network activity, unusual parent processes, or privilege escalation artifacts is present, so the activity is consistent with normal interactive administration.\"\n}\n```",
+  "haiku_reference_response_sha256": "11b315b95609567c359e0cbfa7f4f79e6fc6e9472e3d9c10159b051bed9771c3",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "7359e491aa650a4a3fc2be895dd021f2849ab3822565a8aa67dfd3c4233e5974",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059; the candidate's listed techniques are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID match.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"Predictions name log record types that do exist in the logs, but they are not ATT&CK techniques, so support for any technique claim is weak. Execve of stty is at least partly supported by the EXECVE record, but the specificity claimed is not meaningful.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"Explanation cites real artifacts (SYSCALL, EXECVE, PATH, lib64 loader) but misreads PROCTITLE as an opaque 'system-proc title' rather than decoding it to 'stty rows 38 columns 116', and invents an attacker-intent claim not supported by the logs.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Predictions are record types rather than techniques, and the reasoning links them to an attack narrative that the artifacts do not establish; alignment to appropriate reasons is weak.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Candidate labels the activity as Somewhat Certain: Attack, but the logs show a benign stty terminal-resize command run by root from a pts terminal with no suspicious indicators; the attack lean is poorly supported.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Valid JSON with required fields, but the techniques field contains log record types rather than ATT&CK IDs, violating the core task requirement; schema is not fully adherent per the format audit.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"SYSCALL\",\"EXECVE\",\"PATH\",\"PROCTITLE\"],\"failure_labels\":[\"wrong_identifier_type\",\"no_attack_technique_ids\",\"misinterpreted_proctitle\",\"unsupported_attack_inference\",\"wrong_confidence_direction\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":0,\"confidence_label_agreement_reason\":\"Candidate leans toward Attack while the logs show a routine stty terminal-size command by root on a pts terminal; this is an opposing directional conclusion, though not high-confidence on the candidate side, so scored as a major directional disagreement.\",\"confidence_label_null_reason\":\"\"}",
+  "response_hash": "f0357d8f5eb173d3e50546349e555851c2fcfb836cfc7be74154ec7c81ab8cce",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTuy1oRoXbPTFTrXmQET",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059; the candidate's listed techniques are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID match.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"Predictions name log record types that do exist in the logs, but they are not ATT&CK techniques, so support for any technique claim is weak. Execve of stty is at least partly supported by the EXECVE record, but the specificity claimed is not meaningful.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"Explanation cites real artifacts (SYSCALL, EXECVE, PATH, lib64 loader) but misreads PROCTITLE as an opaque 'system-proc title' rather than decoding it to 'stty rows 38 columns 116', and invents an attacker-intent claim not supported by the logs.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Predictions are record types rather than techniques, and the reasoning links them to an attack narrative that the artifacts do not establish; alignment to appropriate reasons is weak.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Candidate labels the activity as Somewhat Certain: Attack, but the logs show a benign stty terminal-resize command run by root from a pts terminal with no suspicious indicators; the attack lean is poorly supported.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Valid JSON with required fields, but the techniques field contains log record types rather than ATT&CK IDs, violating the core task requirement; schema is not fully adherent per the format audit.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"SYSCALL\",\"EXECVE\",\"PATH\",\"PROCTITLE\"],\"failure_labels\":[\"wrong_identifier_type\",\"no_attack_technique_ids\",\"misinterpreted_proctitle\",\"unsupported_attack_inference\",\"wrong_confidence_direction\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":0,\"confidence_label_agreement_reason\":\"Candidate leans toward Attack while the logs show a routine stty terminal-size command by root on a pts terminal; this is an opposing directional conclusion, though not high-confidence on the candidate side, so scored as a major directional disagreement.\",\"confidence_label_null_reason\":\"\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3664,
+      "output_tokens": 881,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3664,
+    "output_tokens": 881,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00040345,
+  "batch_api": true,
+  "elapsed_seconds": 5914.768974781036,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3664,
+  "output_tokens": 881,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059; the candidate's listed techniques are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID match.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"Predictions name log record types that do exist in the logs, but they are not ATT&CK techniques, so support for any technique claim is weak. Execve of stty is at least partly supported by the EXECVE record, but the specificity claimed is not meaningful.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"Explanation cites real artifacts (SYSCALL, EXECVE, PATH, lib64 loader) but misreads PROCTITLE as an opaque 'system-proc title' rather than decoding it to 'stty rows 38 columns 116', and invents an attacker-intent claim not supported by the logs.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Predictions are record types rather than techniques, and the reasoning links them to an attack narrative that the artifacts do not establish; alignment to appropriate reasons is weak.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Candidate labels the activity as Somewhat Certain: Attack, but the logs show a benign stty terminal-resize command run by root from a pts terminal with no suspicious indicators; the attack lean is poorly supported.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Valid JSON with required fields, but the techniques field contains log record types rather than ATT&CK IDs, violating the core task requirement; schema is not fully adherent per the format audit.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"SYSCALL\",\"EXECVE\",\"PATH\",\"PROCTITLE\"],\"failure_labels\":[\"wrong_identifier_type\",\"no_attack_technique_ids\",\"misinterpreted_proctitle\",\"unsupported_attack_inference\",\"wrong_confidence_direction\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":0,\"confidence_label_agreement_reason\":\"Candidate leans toward Attack while the logs show a routine stty terminal-size command by root on a pts terminal; this is an opposing directional conclusion, though not high-confidence on the candidate side, so scored as a major directional disagreement.\",\"confidence_label_null_reason\":\"\"}",
+  "judge_response_sha256": "f0357d8f5eb173d3e50546349e555851c2fcfb836cfc7be74154ec7c81ab8cce",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1059; the candidate's listed techniques are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID match."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "Predictions name log record types that do exist in the logs, but they are not ATT&CK techniques, so support for any technique claim is weak. Execve of stty is at least partly supported by the EXECVE record, but the specificity claimed is not meaningful."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "Explanation cites real artifacts (SYSCALL, EXECVE, PATH, lib64 loader) but misreads PROCTITLE as an opaque 'system-proc title' rather than decoding it to 'stty rows 38 columns 116', and invents an attacker-intent claim not supported by the logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Predictions are record types rather than techniques, and the reasoning links them to an attack narrative that the artifacts do not establish; alignment to appropriate reasons is weak."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "Candidate labels the activity as Somewhat Certain: Attack, but the logs show a benign stty terminal-resize command run by root from a pts terminal with no suspicious indicators; the attack lean is poorly supported."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Valid JSON with required fields, but the techniques field contains log record types rather than ATT&CK IDs, violating the core task requirement; schema is not fully adherent per the format audit."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "SYSCALL",
+      "EXECVE",
+      "PATH",
+      "PROCTITLE"
+    ],
+    "failure_labels": [
+      "wrong_identifier_type",
+      "no_attack_technique_ids",
+      "misinterpreted_proctitle",
+      "unsupported_attack_inference",
+      "wrong_confidence_direction"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": 0,
+    "confidence_label_agreement_reason": "Candidate leans toward Attack while the logs show a routine stty terminal-size command by root on a pts terminal; this is an opposing directional conclusion, though not high-confidence on the candidate side, so scored as a major directional disagreement.",
+    "confidence_label_null_reason": ""
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1059; the candidate's listed techniques are SYSCALL, EXECVE, PATH, PROCTITLE, which are log record types, not ATT&CK technique IDs. No exact-ID match."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "Predictions name log record types that do exist in the logs, but they are not ATT&CK techniques, so support for any technique claim is weak. Execve of stty is at least partly supported by the EXECVE record, but the specificity claimed is not meaningful."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "Explanation cites real artifacts (SYSCALL, EXECVE, PATH, lib64 loader) but misreads PROCTITLE as an opaque 'system-proc title' rather than decoding it to 'stty rows 38 columns 116', and invents an attacker-intent claim not supported by the logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Predictions are record types rather than techniques, and the reasoning links them to an attack narrative that the artifacts do not establish; alignment to appropriate reasons is weak."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "Candidate labels the activity as Somewhat Certain: Attack, but the logs show a benign stty terminal-resize command run by root from a pts terminal with no suspicious indicators; the attack lean is poorly supported."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Valid JSON with required fields, but the techniques field contains log record types rather than ATT&CK IDs, violating the core task requirement; schema is not fully adherent per the format audit."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "SYSCALL",
+    "EXECVE",
+    "PATH",
+    "PROCTITLE"
+  ],
+  "judge_failure_labels": [
+    "wrong_identifier_type",
+    "no_attack_technique_ids",
+    "misinterpreted_proctitle",
+    "unsupported_attack_inference",
+    "wrong_confidence_direction"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": 0,
+  "confidence_label_agreement_reason": "Candidate leans toward Attack while the logs show a routine stty terminal-size command by root on a pts terminal; this is an opposing directional conclusion, though not high-confidence on the candidate side, so scored as a major directional disagreement.",
+  "confidence_label_null_reason": ""
+}

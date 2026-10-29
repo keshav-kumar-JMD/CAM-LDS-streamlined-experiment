@@ -1,0 +1,277 @@
+{
+  "prompt_id": "87",
+  "scenario": "3",
+  "variant": "vnc_puppet",
+  "step": "26",
+  "split": "train",
+  "group_id": "[\"3\", \"26\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nlinuxshare:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765741862.652:3236): arch=c000003e syscall=59 success=yes exit=0 a0=5567f3e0d530 a1=5567f3e0d920 a2=5567f3e0d2b0 a3=0 items=2 ppid=2215 pid=2235 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"ld-linux-x86-64\" exe=\"/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765741862.652:3236): argc=4 a0=\"/lib64/ld-linux-x86-64.so.2\" a1=\"/opt/donotcry\" a2=\"encrypt\" a3=\"/media/data/Images\"\n        type=PATH msg=audit(1765741862.652:3236): item=0 name=\"/lib64/ld-linux-x86-64.so.2\" inode=2058 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765741862.652:3236): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=6381 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765741862.652:3236): proctitle=2F6C696236342F6C642D6C696E75782D7838362D36342E736F2E32002F6F70742F646F6E6F7463727900656E6372797074002F6D656469612F646174612F496D61676573",
+  "prompt_sha256": "e61b147f05c9d3300138c2c83af96f38d2ffc1f11bf41a9e94b817672301e7be",
+  "ground_truth": "[\"T1486\", \"T1565.001\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1486\", \"T1202\", \"T1059\", \"T1106\", \"T1036\", \"T1564\", \"T1070\", \"T1490\", \"T1027\", \"T1222\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The audit log shows root executing /opt/donotcry with the argument \\\"encrypt\\\" against /media/data/Images, strongly indicating ransomware-style file encryption. Execution via the dynamic linker /lib64/ld-linux-x86-64.so.2 may also be an attempt to proxy or evade normal execution monitoring.\"}",
+  "teacher_response_sha256": "5c3718ccf6e03fb5e2ae8a7c3c61076861f78533e3f981343c72d4ae50555b3c",
+  "teacher_confidence_label": "Almost Certain: Attack",
+  "model": "mistral7b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203:87",
+  "candidate_response_raw": "1. T1086: Process Injection (Certain: Attack)\n2. T1055: Command & Scripting Interpreter (Certain: Attack)\n3. T1130: Remote File Copy (Almost Certain: Attack)\n4. T1021: Obfuscated Files or Information (Somewhat Certain: Attack)\n5. T1005: Anti-Forensics (Somewhat Certain: Attack)\n6. T1077: Network Worm (Neutral)\n7. T1087: System Services Discovery (Neutral)\n8. T1001: Data from Removable Media (Neutral)\n9. T1036: Credential Dumping (Neutral)\n10. T1059: Lateral Movement (Neutral)\n\nThe logs indicate an executable (/opt/donotcry) being run with the command \"encrypt\" and passing arguments \"/media/data/Images\". The process is using the system library (/lib64/ld-linux-x86-64.so.2) and the proctitle contains a base64 encoded string, which could be an obfuscated command or data. The user executing the command is root, which is unusual for normal system activity. These artifacts suggest that the logs correspond to an attack.",
+  "candidate_response_sha256": "09b8e603b5e98c77f512003d512e1c3b9b62f952e20d8029d890a9f2ce2b5a31",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1095,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 318,
+  "candidate_elapsed_seconds": 10.209385213999667,
+  "candidate_output_tokens_per_second": 31.14781089501266,
+  "candidate_peak_allocated_bytes": 14782594560,
+  "candidate_peak_reserved_bytes": 20245905408,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "19903e7d78a91d09211a46347ec4d39d9eef103ec42e974e992fcc5d3321a4b4",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1486\", \"T1204.002\", \"T1059.004\", \"T1548\", \"T1036.005\", \"T1027\", \"T1083\", \"T1005\", \"T1222.002\", \"T1562.001\"],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The audit log shows root executing /opt/donotcry with the argument 'encrypt' targeting /media/data/Images, which matches ransomware-style bulk file encryption (the binary name and the 'do not cry' naming are typical of ransomware). The execution is invoked via the dynamic loader (/lib64/ld-linux-x86-64.so.2), a common evasion pattern to launch a binary while bypassing direct execution checks.\"\n}\n```",
+  "haiku_reference_response_sha256": "1ac46ea978c4e72d55ff9d119d25ea388703f195dfbf00c847d45862eff2ce4b",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "7c9c07585c908094ba785e12aff910e2c53b53b7c730fb21dbb39db1ef462645",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Neither ground-truth ID (T1486, T1565.001) appears among the candidate's first ten predictions; the list contains mislabeled IDs (e.g., T1086 is not Process Injection, T1055 is not Command & Scripting Interpreter, T1005 is not Anti-Forensics).\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"The log shows /opt/donotcry run with 'encrypt' on /media/data/Images, which supports encryption-of-data predictions, but most listed techniques (lateral movement, credential dumping, worm, removable media) have no support in the logs and several IDs are mismatched to their names.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"The explanation cites real artifacts (binary path, 'encrypt' argument, Images path, root user, base64-like proctitle), but calls the proctitle a base64 command without decoding it and misses the clear ransomware-style indicator of the binary name; it also overstates the interpretation of root as unusual.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The explanation supports attack status but does not connect the specific technique IDs to the observed artifacts; the top-ranked techniques are unrelated to the explanation's points.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Attack is well supported, but the candidate gives 'Certain' labels to techniques that have no evidence in the logs, and the top-level explanation does not justify that level of certainty for the chosen techniques.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"The response is not strict JSON, omits the required fields structure, and adds prose outside the requested format; it also gives technique names with IDs and confidence labels inline rather than only IDs.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1086\",\"T1055\",\"T1130\",\"T1021\",\"T1005\",\"T1077\",\"T1087\",\"T1001\",\"T1036\",\"T1059\"],\"failure_labels\":[\"wrong_technique_ids\",\"mismatched_technique_names\",\"missed_ground_truth_techniques\",\"non_json_output\",\"format_violation\",\"unsupported_technique_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Certain: Attack\",\"confidence_label_agreement\":4,\"confidence_label_agreement_reason\":\"The candidate's top-level conclusion (Attack, certain) matches the warranted label given the clear encrypt-on-Images activity by an unknown binary.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "449615b6347bcad7285b1f94bfb31326dc9040ed7d4e59b723f4d5e8d184465a",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTw1FMgRC3LCbxzaM7FG",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Neither ground-truth ID (T1486, T1565.001) appears among the candidate's first ten predictions; the list contains mislabeled IDs (e.g., T1086 is not Process Injection, T1055 is not Command & Scripting Interpreter, T1005 is not Anti-Forensics).\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"The log shows /opt/donotcry run with 'encrypt' on /media/data/Images, which supports encryption-of-data predictions, but most listed techniques (lateral movement, credential dumping, worm, removable media) have no support in the logs and several IDs are mismatched to their names.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"The explanation cites real artifacts (binary path, 'encrypt' argument, Images path, root user, base64-like proctitle), but calls the proctitle a base64 command without decoding it and misses the clear ransomware-style indicator of the binary name; it also overstates the interpretation of root as unusual.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The explanation supports attack status but does not connect the specific technique IDs to the observed artifacts; the top-ranked techniques are unrelated to the explanation's points.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Attack is well supported, but the candidate gives 'Certain' labels to techniques that have no evidence in the logs, and the top-level explanation does not justify that level of certainty for the chosen techniques.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"The response is not strict JSON, omits the required fields structure, and adds prose outside the requested format; it also gives technique names with IDs and confidence labels inline rather than only IDs.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1086\",\"T1055\",\"T1130\",\"T1021\",\"T1005\",\"T1077\",\"T1087\",\"T1001\",\"T1036\",\"T1059\"],\"failure_labels\":[\"wrong_technique_ids\",\"mismatched_technique_names\",\"missed_ground_truth_techniques\",\"non_json_output\",\"format_violation\",\"unsupported_technique_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Certain: Attack\",\"confidence_label_agreement\":4,\"confidence_label_agreement_reason\":\"The candidate's top-level conclusion (Attack, certain) matches the warranted label given the clear encrypt-on-Images activity by an unknown binary.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3541,
+      "output_tokens": 887,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3541,
+    "output_tokens": 887,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0003988,
+  "batch_api": true,
+  "elapsed_seconds": 15279.452456235886,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3541,
+  "output_tokens": 887,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Neither ground-truth ID (T1486, T1565.001) appears among the candidate's first ten predictions; the list contains mislabeled IDs (e.g., T1086 is not Process Injection, T1055 is not Command & Scripting Interpreter, T1005 is not Anti-Forensics).\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"The log shows /opt/donotcry run with 'encrypt' on /media/data/Images, which supports encryption-of-data predictions, but most listed techniques (lateral movement, credential dumping, worm, removable media) have no support in the logs and several IDs are mismatched to their names.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"The explanation cites real artifacts (binary path, 'encrypt' argument, Images path, root user, base64-like proctitle), but calls the proctitle a base64 command without decoding it and misses the clear ransomware-style indicator of the binary name; it also overstates the interpretation of root as unusual.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The explanation supports attack status but does not connect the specific technique IDs to the observed artifacts; the top-ranked techniques are unrelated to the explanation's points.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Attack is well supported, but the candidate gives 'Certain' labels to techniques that have no evidence in the logs, and the top-level explanation does not justify that level of certainty for the chosen techniques.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"The response is not strict JSON, omits the required fields structure, and adds prose outside the requested format; it also gives technique names with IDs and confidence labels inline rather than only IDs.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1086\",\"T1055\",\"T1130\",\"T1021\",\"T1005\",\"T1077\",\"T1087\",\"T1001\",\"T1036\",\"T1059\"],\"failure_labels\":[\"wrong_technique_ids\",\"mismatched_technique_names\",\"missed_ground_truth_techniques\",\"non_json_output\",\"format_violation\",\"unsupported_technique_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Certain: Attack\",\"confidence_label_agreement\":4,\"confidence_label_agreement_reason\":\"The candidate's top-level conclusion (Attack, certain) matches the warranted label given the clear encrypt-on-Images activity by an unknown binary.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "449615b6347bcad7285b1f94bfb31326dc9040ed7d4e59b723f4d5e8d184465a",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Neither ground-truth ID (T1486, T1565.001) appears among the candidate's first ten predictions; the list contains mislabeled IDs (e.g., T1086 is not Process Injection, T1055 is not Command & Scripting Interpreter, T1005 is not Anti-Forensics)."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "The log shows /opt/donotcry run with 'encrypt' on /media/data/Images, which supports encryption-of-data predictions, but most listed techniques (lateral movement, credential dumping, worm, removable media) have no support in the logs and several IDs are mismatched to their names."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation cites real artifacts (binary path, 'encrypt' argument, Images path, root user, base64-like proctitle), but calls the proctitle a base64 command without decoding it and misses the clear ransomware-style indicator of the binary name; it also overstates the interpretation of root as unusual."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "The explanation supports attack status but does not connect the specific technique IDs to the observed artifacts; the top-ranked techniques are unrelated to the explanation's points."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "Attack is well supported, but the candidate gives 'Certain' labels to techniques that have no evidence in the logs, and the top-level explanation does not justify that level of certainty for the chosen techniques."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "The response is not strict JSON, omits the required fields structure, and adds prose outside the requested format; it also gives technique names with IDs and confidence labels inline rather than only IDs."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1086",
+      "T1055",
+      "T1130",
+      "T1021",
+      "T1005",
+      "T1077",
+      "T1087",
+      "T1001",
+      "T1036",
+      "T1059"
+    ],
+    "failure_labels": [
+      "wrong_technique_ids",
+      "mismatched_technique_names",
+      "missed_ground_truth_techniques",
+      "non_json_output",
+      "format_violation",
+      "unsupported_technique_predictions"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": 4,
+    "confidence_label_agreement_reason": "The candidate's top-level conclusion (Attack, certain) matches the warranted label given the clear encrypt-on-Images activity by an unknown binary.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Neither ground-truth ID (T1486, T1565.001) appears among the candidate's first ten predictions; the list contains mislabeled IDs (e.g., T1086 is not Process Injection, T1055 is not Command & Scripting Interpreter, T1005 is not Anti-Forensics)."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "The log shows /opt/donotcry run with 'encrypt' on /media/data/Images, which supports encryption-of-data predictions, but most listed techniques (lateral movement, credential dumping, worm, removable media) have no support in the logs and several IDs are mismatched to their names."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation cites real artifacts (binary path, 'encrypt' argument, Images path, root user, base64-like proctitle), but calls the proctitle a base64 command without decoding it and misses the clear ransomware-style indicator of the binary name; it also overstates the interpretation of root as unusual."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "The explanation supports attack status but does not connect the specific technique IDs to the observed artifacts; the top-ranked techniques are unrelated to the explanation's points."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "Attack is well supported, but the candidate gives 'Certain' labels to techniques that have no evidence in the logs, and the top-level explanation does not justify that level of certainty for the chosen techniques."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "The response is not strict JSON, omits the required fields structure, and adds prose outside the requested format; it also gives technique names with IDs and confidence labels inline rather than only IDs."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1086",
+    "T1055",
+    "T1130",
+    "T1021",
+    "T1005",
+    "T1077",
+    "T1087",
+    "T1001",
+    "T1036",
+    "T1059"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_ids",
+    "mismatched_technique_names",
+    "missed_ground_truth_techniques",
+    "non_json_output",
+    "format_violation",
+    "unsupported_technique_predictions"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": 4,
+  "confidence_label_agreement_reason": "The candidate's top-level conclusion (Attack, certain) matches the warranted label given the clear encrypt-on-Images activity by an unknown binary.",
+  "confidence_label_null_reason": null
+}

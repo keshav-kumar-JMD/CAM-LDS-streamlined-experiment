@@ -1,0 +1,367 @@
+{
+  "prompt_id": "779",
+  "scenario": "6",
+  "variant": "screensharing_cron",
+  "step": "59",
+  "split": "train",
+  "group_id": "[\"6\", \"59\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1765387598.008:95999): proctitle=2F62696E2F7368002F7573722F62696E2F776869636800707974686F6E33\n        type=SYSCALL msg=audit(1765387598.008:96000): arch=c000003e syscall=59 success=yes exit=0 a0=5583b8168a50 a1=5583b817c060 a2=5583b81ea1c0 a3=8 items=2 ppid=23500 pid=23502 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts1 ses=1 comm=\"python3\" exe=\"/usr/bin/python3.10\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=EXECVE msg=audit(1765387598.008:96000): argc=2 a0=\"/usr/bin/python3\" a1=\"-\"\n        type=PATH msg=audit(1765387598.008:96000): item=0 name=\"/usr/bin/python3\" inode=6304 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765387598.008:96000): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=82044 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765387598.008:96000): proctitle=2F7573722F62696E2F707974686F6E33002D\n        type=SYSCALL msg=audit(1765387598.032:96001): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=7fff40353f30 a2=10 a3=564605efa739 items=0 ppid=23500 pid=23502 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts1 ses=1 comm=\"python3\" exe=\"/usr/bin/python3.10\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=SOCKADDR msg=audit(1765387598.032:96001): saddr=0200115BC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=4443 }\n        type=PROCTITLE msg=audit(1765387598.032:96001): proctitle=2F7573722F62696E2F707974686F6E33002D\n        type=SYSCALL msg=audit(1765387598.972:96121): arch=c000003e syscall=59 success=yes exit=0 a0=7f5374518ef0 a1=7f53737e7090 a2=7f53737e6f90 a3=8 items=3 ppid=23506 pid=23531 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=(none) ses=1 comm=\"ldconfig\" exe=\"/usr/bin/dash\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"",
+  "prompt_sha256": "e9c26b46614b25a2f387a0d149eab5a3f4f40b2a59f76ecb60ea3b6b3952864d",
+  "ground_truth": "[\"T1219\", \"T1059.004\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.006\", \"T1059.004\", \"T1071\", \"T1095\", \"T1105\", \"T1571\", \"T1059\", \"T1102\", \"T1219\", \"T1021\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show /usr/bin/python3 executed with '-' to read code from stdin followed immediately by a network connect to 192.42.1.174:4443, which is characteristic of a Python-based reverse shell or payload. The interactive TTY context and subsequent shell-related process activity further support malicious command execution rather than normal user activity.\"}",
+  "teacher_response_sha256": "5976df6c8424d718d22dbb8e031c0cc52cac785dd331558e1030525a4cbbe0f7",
+  "teacher_confidence_label": "Almost Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:779",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    1,  // MITRE ATT&CK Technique 1: \"Command Injection\"\n    2,  // MITRE ATT&CK Technique 2: \"Command Execution\"\n    3,  // MITRE ATT&CK Technique 3: \"File Execution\"\n    4,  // MITRE ATT&CK Technique 4: \"Process Escalation\"\n    5,  // MITRE ATT&CK Technique 5: \"File Upload\"\n    6,  // MITRE ATT&CK Technique 6: \"Command Execution\"\n    7,  // MITRE ATT&CK Technique 7: \"Command Injection\"\n    8,  // MITRE ATT&CK Technique 8: \"File Upload\"\n    9,  // MITRE ATT&CK Technique 9: \"Process Escalation\"\n    10, // MITRE ATT&CK Technique 10: \"Command Injection\"\n    11,  // MITRE ATT&CK Technique 11: \"Command Execution\"\n    12,  // MITRE ATT&CK Technique 12: \"File Upload\"\n    13,  // MITRE ATT&CK Technique 13: \"Process Escalation\"\n    14,  // MITRE ATT&CK Technique 14: \"Command Injection\"\n    15,  // MITRE ATT&CK Technique 15: \"File Upload\"\n    16,  // MITRE ATT&CK Technique 16: \"Process Escalation\"\n    17,  // MITRE ATT&CK Technique 17: \"Command Injection\"\n    18,  // MITRE ATT&CK Technique 18: \"File Upload\"\n    19,  // MITRE ATT&CK Technique 19: \"Process Escalation\"\n    20,  // MITRE ATT&CK Technique 20: \"Command Injection\"\n    21,  // MITRE ATT&CK Technique 21: \"File Upload\"\n    22,  // MITRE ATT&CK Technique 22: \"Process Escalation\"\n    23,  // MITRE ATT&CK Technique 23: \"Command Injection\"\n    24,  // MITRE ATT&CK Technique 24: \"File Upload\"\n    25,  // MITRE ATT&CK Technique 25: \"Process Escalation\"\n    26,  // MITRE ATT&CK Technique 26: \"Command Injection\"\n    27,  // MITRE ATT&CK Technique 27: \"File Upload\"\n    28,  // MITRE ATT&CK Technique 28: \"Process Escalation\"\n    29,  // MITRE ATT&CK Technique 29: \"Command Injection\"\n    30,  // MITRE ATT&CK Technique 30: \"File Upload\"\n    31,  // MITRE ATT&CK Technique 31: \"Process Escalation\"\n    32,  // MITRE ATT&CK Technique 32: \"Command Injection\"\n    33,  // MITRE ATT&CK Technique 33: \"File Upload\"\n    34,  // MITRE ATT&CK Technique 34: \"Process Escalation\"\n    35,  // MITRE ATT&CK Technique 35: \"Command Injection\"\n    36,  // MITRE ATT&CK Technique 36: \"File Upload\"\n    37,  // MITRE ATT&CK Technique 37: \"Process Escalation\"\n    38,  // MITRE ATT&CK Technique 38: \"Command Injection\"\n    39,  // MITRE ATT&CK Technique 39: \"File Upload\"\n    40,  // MITRE ATT&CK Technique 40: \"Process Escalation\"\n    41,  // MITRE ATT&CK Technique 41: \"Command Injection\"\n    42,  // MITRE ATT&CK Technique 42: \"File Upload\"\n    43,  // MITRE ATT&CK Technique 43: \"Process Escalation\"\n    44,  // MITRE ATT&CK Technique 44: \"Command Injection\"\n    45,  // MITRE ATT&CK Technique 45: \"File Upload\"\n    46,  // MITRE ATT&CK Technique 46: \"Process Escalation\"\n    47,  // MITRE ATT&CK Technique 47: \"Command Injection\"\n    48,  // MITRE ATT&CK Technique 48: \"File Upload\"\n    49,  // MITRE ATT&CK Technique 49: \"Process Escalation\"\n    50,  // MITRE ATT&CK Technique 50: \"Command Injection\"\n    51,  // MITRE ATT&CK Technique 51: \"File Upload\"\n    52,  // MITRE ATT&CK Technique 52: \"",
+  "candidate_response_sha256": "d571816fb3aa104d835447bec8ebc892ed2ecd4b3461940295d51700221656b0",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1307,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 109.4704162629987,
+  "candidate_output_tokens_per_second": 9.354125387994115,
+  "candidate_peak_allocated_bytes": 5077180416,
+  "candidate_peak_reserved_bytes": 6008340480,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "cd729d05c26c1ba0dac79e0badf229e6130d8c3f5c5ab535a97893552bbb49d8",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.006\", \"T1571\", \"T1071.001\", \"T1059.004\", \"T1105\", \"T1036\", \"T1573\", \"T1048\", \"T1027\", \"T1041\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"A non-root user 'judy' spawned python3 via a shell (proctitle '/bin/sh /usr/bin/which python3') and then immediately made an outbound connect() from python3 to a non-standard external port (192.42.1.174:4443), which is characteristic of a reverse shell or C2 callback. The ldconfig execution shortly after is consistent with a payload setting up its environment, though it could also be benign.\"\n}\n```",
+  "haiku_reference_response_sha256": "d43e18ba76586b6fef141fe3c42039030d040c69180fb7d422cdefa3ec3c75ab",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "49e433b630edf02a82a8332f9fdfed239960c27c37b33a97073b0acff10fd24a",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth IDs T1219 and T1059.004 do not appear anywhere in the candidate. The candidate lists bare integers 1-52 rather than ATT&CK IDs, so no exact-ID coverage is possible.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"The predicted items are integers with invented names (e.g., 'Command Injection', 'File Upload') that are not valid ATT&CK technique IDs and are unsupported by the logs; the list is also a repetitive degenerate pattern.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"The candidate provides no explanation field at all; the response is truncated mid-list and contains no reasoning tied to the supplied observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No explanation is provided and the technique predictions are not connected to any log artifact.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No confidence label is recoverable from the candidate; the response never states a confidence estimate.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, is truncated, lacks confidence and explanation fields, uses integers rather than ATT&CK IDs, and produces a repetitive list rather than a top-10 ranking.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response.\",\"confidence_label_agreement\":\"No candidate confidence label is recoverable from the response.\"},\"extracted_predictions\":[{\"rank\":1,\"id\":\"1\",\"name_given\":\"Command Injection\"},{\"rank\":2,\"id\":\"2\",\"name_given\":\"Command Execution\"},{\"rank\":3,\"id\":\"3\",\"name_given\":\"File Execution\"},{\"rank\":4,\"id\":\"4\",\"name_given\":\"Process Escalation\"},{\"rank\":5,\"id\":\"5\",\"name_given\":\"File Upload\"},{\"rank\":6,\"id\":\"6\",\"name_given\":\"Command Execution\"},{\"rank\":7,\"id\":\"7\",\"name_given\":\"Command Injection\"},{\"rank\":8,\"id\":\"8\",\"name_given\":\"File Upload\"},{\"rank\":9,\"id\":\"9\",\"name_given\":\"Process Escalation\"},{\"rank\":10,\"id\":\"10\",\"name_given\":\"Command Injection\"}],\"failure_labels\":[\"invalid_json\",\"truncated_output\",\"non_attack_id_identifiers\",\"missing_confidence_field\",\"missing_explanation_field\",\"hallucinated_technique_names\",\"degenerate_repetition\",\"ground_truth_not_covered\"],\"prediction_similarity\":0,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no confidence field or substantive confidence statement.\"}",
+  "response_hash": "78a9c2015ad81aec428288ca9548f82f155e3e12975f1b58ab768196981c3064",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvKmfxJ55GZkbdezCJh",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth IDs T1219 and T1059.004 do not appear anywhere in the candidate. The candidate lists bare integers 1-52 rather than ATT&CK IDs, so no exact-ID coverage is possible.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"The predicted items are integers with invented names (e.g., 'Command Injection', 'File Upload') that are not valid ATT&CK technique IDs and are unsupported by the logs; the list is also a repetitive degenerate pattern.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"The candidate provides no explanation field at all; the response is truncated mid-list and contains no reasoning tied to the supplied observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No explanation is provided and the technique predictions are not connected to any log artifact.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No confidence label is recoverable from the candidate; the response never states a confidence estimate.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, is truncated, lacks confidence and explanation fields, uses integers rather than ATT&CK IDs, and produces a repetitive list rather than a top-10 ranking.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response.\",\"confidence_label_agreement\":\"No candidate confidence label is recoverable from the response.\"},\"extracted_predictions\":[{\"rank\":1,\"id\":\"1\",\"name_given\":\"Command Injection\"},{\"rank\":2,\"id\":\"2\",\"name_given\":\"Command Execution\"},{\"rank\":3,\"id\":\"3\",\"name_given\":\"File Execution\"},{\"rank\":4,\"id\":\"4\",\"name_given\":\"Process Escalation\"},{\"rank\":5,\"id\":\"5\",\"name_given\":\"File Upload\"},{\"rank\":6,\"id\":\"6\",\"name_given\":\"Command Execution\"},{\"rank\":7,\"id\":\"7\",\"name_given\":\"Command Injection\"},{\"rank\":8,\"id\":\"8\",\"name_given\":\"File Upload\"},{\"rank\":9,\"id\":\"9\",\"name_given\":\"Process Escalation\"},{\"rank\":10,\"id\":\"10\",\"name_given\":\"Command Injection\"}],\"failure_labels\":[\"invalid_json\",\"truncated_output\",\"non_attack_id_identifiers\",\"missing_confidence_field\",\"missing_explanation_field\",\"hallucinated_technique_names\",\"degenerate_repetition\",\"ground_truth_not_covered\"],\"prediction_similarity\":0,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no confidence field or substantive confidence statement.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 5516,
+      "output_tokens": 1011,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 5516,
+    "output_tokens": 1011,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005285499999999999,
+  "batch_api": true,
+  "elapsed_seconds": 25177.40167570114,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5516,
+  "output_tokens": 1011,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth IDs T1219 and T1059.004 do not appear anywhere in the candidate. The candidate lists bare integers 1-52 rather than ATT&CK IDs, so no exact-ID coverage is possible.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"The predicted items are integers with invented names (e.g., 'Command Injection', 'File Upload') that are not valid ATT&CK technique IDs and are unsupported by the logs; the list is also a repetitive degenerate pattern.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"The candidate provides no explanation field at all; the response is truncated mid-list and contains no reasoning tied to the supplied observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No explanation is provided and the technique predictions are not connected to any log artifact.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No confidence label is recoverable from the candidate; the response never states a confidence estimate.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, is truncated, lacks confidence and explanation fields, uses integers rather than ATT&CK IDs, and produces a repetitive list rather than a top-10 ranking.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response.\",\"confidence_label_agreement\":\"No candidate confidence label is recoverable from the response.\"},\"extracted_predictions\":[{\"rank\":1,\"id\":\"1\",\"name_given\":\"Command Injection\"},{\"rank\":2,\"id\":\"2\",\"name_given\":\"Command Execution\"},{\"rank\":3,\"id\":\"3\",\"name_given\":\"File Execution\"},{\"rank\":4,\"id\":\"4\",\"name_given\":\"Process Escalation\"},{\"rank\":5,\"id\":\"5\",\"name_given\":\"File Upload\"},{\"rank\":6,\"id\":\"6\",\"name_given\":\"Command Execution\"},{\"rank\":7,\"id\":\"7\",\"name_given\":\"Command Injection\"},{\"rank\":8,\"id\":\"8\",\"name_given\":\"File Upload\"},{\"rank\":9,\"id\":\"9\",\"name_given\":\"Process Escalation\"},{\"rank\":10,\"id\":\"10\",\"name_given\":\"Command Injection\"}],\"failure_labels\":[\"invalid_json\",\"truncated_output\",\"non_attack_id_identifiers\",\"missing_confidence_field\",\"missing_explanation_field\",\"hallucinated_technique_names\",\"degenerate_repetition\",\"ground_truth_not_covered\"],\"prediction_similarity\":0,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no confidence field or substantive confidence statement.\"}",
+  "judge_response_sha256": "78a9c2015ad81aec428288ca9548f82f155e3e12975f1b58ab768196981c3064",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth IDs T1219 and T1059.004 do not appear anywhere in the candidate. The candidate lists bare integers 1-52 rather than ATT&CK IDs, so no exact-ID coverage is possible."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "The predicted items are integers with invented names (e.g., 'Command Injection', 'File Upload') that are not valid ATT&CK technique IDs and are unsupported by the logs; the list is also a repetitive degenerate pattern."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "The candidate provides no explanation field at all; the response is truncated mid-list and contains no reasoning tied to the supplied observations."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No explanation is provided and the technique predictions are not connected to any log artifact."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No confidence label is recoverable from the candidate; the response never states a confidence estimate."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON, is truncated, lacks confidence and explanation fields, uses integers rather than ATT&CK IDs, and produces a repetitive list rather than a top-10 ranking."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable from the response."
+    },
+    "extracted_predictions": [
+      {
+        "rank": 1,
+        "id": "1",
+        "name_given": "Command Injection"
+      },
+      {
+        "rank": 2,
+        "id": "2",
+        "name_given": "Command Execution"
+      },
+      {
+        "rank": 3,
+        "id": "3",
+        "name_given": "File Execution"
+      },
+      {
+        "rank": 4,
+        "id": "4",
+        "name_given": "Process Escalation"
+      },
+      {
+        "rank": 5,
+        "id": "5",
+        "name_given": "File Upload"
+      },
+      {
+        "rank": 6,
+        "id": "6",
+        "name_given": "Command Execution"
+      },
+      {
+        "rank": 7,
+        "id": "7",
+        "name_given": "Command Injection"
+      },
+      {
+        "rank": 8,
+        "id": "8",
+        "name_given": "File Upload"
+      },
+      {
+        "rank": 9,
+        "id": "9",
+        "name_given": "Process Escalation"
+      },
+      {
+        "rank": 10,
+        "id": "10",
+        "name_given": "Command Injection"
+      }
+    ],
+    "failure_labels": [
+      "invalid_json",
+      "truncated_output",
+      "non_attack_id_identifiers",
+      "missing_confidence_field",
+      "missing_explanation_field",
+      "hallucinated_technique_names",
+      "degenerate_repetition",
+      "ground_truth_not_covered"
+    ],
+    "prediction_similarity": 0,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence field or substantive confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth IDs T1219 and T1059.004 do not appear anywhere in the candidate. The candidate lists bare integers 1-52 rather than ATT&CK IDs, so no exact-ID coverage is possible."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "The predicted items are integers with invented names (e.g., 'Command Injection', 'File Upload') that are not valid ATT&CK technique IDs and are unsupported by the logs; the list is also a repetitive degenerate pattern."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "The candidate provides no explanation field at all; the response is truncated mid-list and contains no reasoning tied to the supplied observations."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No explanation is provided and the technique predictions are not connected to any log artifact."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No confidence label is recoverable from the candidate; the response never states a confidence estimate."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON, is truncated, lacks confidence and explanation fields, uses integers rather than ATT&CK IDs, and produces a repetitive list rather than a top-10 ranking."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_extracted_predictions": [
+    {
+      "rank": 1,
+      "id": "1",
+      "name_given": "Command Injection"
+    },
+    {
+      "rank": 2,
+      "id": "2",
+      "name_given": "Command Execution"
+    },
+    {
+      "rank": 3,
+      "id": "3",
+      "name_given": "File Execution"
+    },
+    {
+      "rank": 4,
+      "id": "4",
+      "name_given": "Process Escalation"
+    },
+    {
+      "rank": 5,
+      "id": "5",
+      "name_given": "File Upload"
+    },
+    {
+      "rank": 6,
+      "id": "6",
+      "name_given": "Command Execution"
+    },
+    {
+      "rank": 7,
+      "id": "7",
+      "name_given": "Command Injection"
+    },
+    {
+      "rank": 8,
+      "id": "8",
+      "name_given": "File Upload"
+    },
+    {
+      "rank": 9,
+      "id": "9",
+      "name_given": "Process Escalation"
+    },
+    {
+      "rank": 10,
+      "id": "10",
+      "name_given": "Command Injection"
+    }
+  ],
+  "judge_failure_labels": [
+    "invalid_json",
+    "truncated_output",
+    "non_attack_id_identifiers",
+    "missing_confidence_field",
+    "missing_explanation_field",
+    "hallucinated_technique_names",
+    "degenerate_repetition",
+    "ground_truth_not_covered"
+  ],
+  "judge_prediction_similarity": 0,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence field or substantive confidence statement."
+}

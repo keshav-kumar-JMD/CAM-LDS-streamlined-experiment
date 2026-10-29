@@ -1,0 +1,101 @@
+{
+  "prompt_id": "200",
+  "scenario": "1",
+  "variant": "cron_pam",
+  "step": "10",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758704807.886:4732): arch=c000003e syscall=59 success=yes exit=0 a0=558e348625c0 a1=558e34860120 a2=558e34862e80 a3=fffffffffffff286 items=3 ppid=2970 pid=2977 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"stty\" exe=\"/usr/bin/stty\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1758704807.886:4732): argc=5 a0=\"stty\" a1=\"rows\" a2=\"38\" a3=\"columns\" a4=\"116\"\n        type=PATH msg=audit(1758704807.886:4732): item=0 name=\"/usr/bin/stty\" inode=845 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758704807.886:4732): item=1 name=\"/usr/bin/stty\" inode=845 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758704807.886:4732): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758704807.886:4732): proctitle=7374747900726F777300333800636F6C756D6E7300313136",
+  "prompt_sha256": "0f45a26c6ac761a26e5dd8f5823b9a52e5ffca2db3cc36ed2b91304488ba30a7",
+  "source_row": "2180",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1505.003\", \"T1190\", \"T1100\", \"T1021.004\", \"T1136\", \"T1087\", \"T1033\", \"T1057\"], \"confidence\": \"Neutral\", \"explanation\": \"The log only shows www-data executing /usr/bin/stty to set terminal rows and columns on a pts, which can occur during interactive shell/PTY setup after web compromise but is not inherently malicious by itself. The www-data context and tty interaction are suspicious for a web server, but there are insufficient artifacts to confirm an attack.\"}",
+  "teacher_response_sha256": "944461226d22d957b8827e08ca9da3500e363b75ef2b07362dbb8003c92af4b6",
+  "source_value_text": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1505.003\", \"T1190\", \"T1100\", \"T1021.004\", \"T1136\", \"T1087\", \"T1033\", \"T1057\"], \"confidence\": \"Neutral\", \"explanation\": \"The log only shows www-data executing /usr/bin/stty to set terminal rows and columns on a pts, which can occur during interactive shell/PTY setup after web compromise but is not inherently malicious by itself. The www-data context and tty interaction are suspicious for a web server, but there are insufficient artifacts to confirm an attack.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"1\", \"10\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1059\"]",
+  "model": "haiku",
+  "condition": "haiku",
+  "record_id": "3fdf2909c77fb8f6ca2c5d31d9a74ce6463855a3e08bcc77d581252b76b7339b",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1059\", \"T1082\", \"T1033\", \"T1059.006\", \"T1204\", \"T1505.003\", \"T1190\", \"T1069\", \"T1074\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The audit log shows the www-data web server account (UID 33) executing the 'stty' binary with terminal size arguments (rows 38, columns 116) and no interactive login session (auid unset, ses=4294967295), which is a classic sign of a reverse or web shell upgrading to a fully interactive TTY. Although stty with terminal dimensions can occur legitimately in some web-based terminal applications, its execution by a web service account outside an expected admin context is suspicious.\"\n}\n```",
+  "response_hash": "464dc2a8c0c71592711ca993e31f0fe19ee37e02c95581bd537ac6947ade5667",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTtNVXx2JsRz3Jisxb7x",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1059\", \"T1082\", \"T1033\", \"T1059.006\", \"T1204\", \"T1505.003\", \"T1190\", \"T1069\", \"T1074\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The audit log shows the www-data web server account (UID 33) executing the 'stty' binary with terminal size arguments (rows 38, columns 116) and no interactive login session (auid unset, ses=4294967295), which is a classic sign of a reverse or web shell upgrading to a fully interactive TTY. Although stty with terminal dimensions can occur legitimately in some web-based terminal applications, its execution by a web service account outside an expected admin context is suspicious.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 1213,
+      "output_tokens": 256,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 1213,
+    "output_tokens": 256,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00012465,
+  "batch_api": true,
+  "elapsed_seconds": 180.8390827178955,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 1213,
+  "output_tokens": 256,
+  "wire_max_tokens": 128000,
+  "api_request_id": null,
+  "response_empty": false,
+  "valid_json": false,
+  "schema_adherent": false,
+  "required_fields_present": false,
+  "unexpected_text_present": true,
+  "parse_error": "Whole response is not strict JSON",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1059\", \"T1082\", \"T1033\", \"T1059.006\", \"T1204\", \"T1505.003\", \"T1190\", \"T1069\", \"T1074\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The audit log shows the www-data web server account (UID 33) executing the 'stty' binary with terminal size arguments (rows 38, columns 116) and no interactive login session (auid unset, ses=4294967295), which is a classic sign of a reverse or web shell upgrading to a fully interactive TTY. Although stty with terminal dimensions can occur legitimately in some web-based terminal applications, its execution by a web service account outside an expected admin context is suspicious.\"\n}\n```",
+  "haiku_reference_finish_reason": "end_turn",
+  "haiku_reference_response_empty": false,
+  "haiku_reference_valid_json": false,
+  "haiku_reference_schema_adherent": false,
+  "haiku_reference_required_fields_present": false,
+  "haiku_reference_unexpected_text_present": true,
+  "haiku_reference_parse_error": "Whole response is not strict JSON"
+}

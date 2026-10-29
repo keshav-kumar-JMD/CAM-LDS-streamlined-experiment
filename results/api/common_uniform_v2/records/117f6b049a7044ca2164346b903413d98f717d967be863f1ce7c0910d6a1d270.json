@@ -1,0 +1,273 @@
+{
+  "prompt_id": "40",
+  "scenario": "1",
+  "variant": "racecondition_pam",
+  "step": "50",
+  "split": "test",
+  "group_id": "[\"1\", \"50\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765032938.192:13206): arch=c000003e syscall=59 success=yes exit=0 a0=5652f6c58820 a1=5652f6c5b130 a2=5652f6c27e80 a3=fffffffffffff286 items=3 ppid=2958 pid=17194 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"mkdir\" exe=\"/usr/bin/mkdir\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1765032938.192:13206): argc=2 a0=\"mkdir\" a1=\"log\"\n        type=PATH msg=audit(1765032938.192:13206): item=0 name=\"/usr/bin/mkdir\" inode=830 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765032938.192:13206): item=1 name=\"/usr/bin/mkdir\" inode=830 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765032938.192:13206): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765032938.192:13206): proctitle=6D6B646972006C6F67",
+  "prompt_sha256": "09a60c64510e9d002eec450b3192f424cb0b11731d48166be9ba8e0ddef802a6",
+  "ground_truth": "[\"T1546\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1105\", \"T1059\", \"T1505.003\", \"T1190\", \"T1036\", \"T1070.004\", \"T1027\", \"T1053.003\", \"T1204\", \"T1136\"], \"confidence\": \"Neutral\", \"explanation\": \"The log only shows the www-data user executing /usr/bin/mkdir with argument \\\"log\\\" from a pseudo-terminal, which could be part of web-server activity or an interactive post-compromise session. There are insufficient artifacts to confidently identify a specific attack technique beyond generic command execution/file staging context.\"}",
+  "teacher_response_sha256": "5fde8934a7bae8bf02e280cf7abe129e493f44fd4a49f54d0bf869b4a9c33215",
+  "teacher_confidence_label": "Neutral",
+  "model": "qwen7b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "e1c2fda3f39f077e7f74012fd0d51fd621931088ea87e57d546b6d20fd8c066c:40",
+  "candidate_response_raw": "```json\n{\n    \"techniques\": [\n        \"T1059\",\n        \"T1078\",\n        \"T1064\",\n        \"T1068\",\n        \"T1075\",\n        \"T1077\",\n        \"T1076\",\n        \"T1074\",\n        \"T1073\",\n        \"T1072\"\n    ],\n    \"confidence\": \"Somewhat Certain: Attack\",\n    \"explanation\": \"The logs show a process running with elevated privileges (UID=root) attempting to execute the 'mkdir' command, which is a common technique for creating directories. This behavior is often associated with initial access or lateral movement techniques in the MITRE ATT&CK framework, indicating potential malicious activity.\"\n}\n```",
+  "candidate_response_sha256": "c5665415b31b3310fe71ccfe6876904eece9af305a72b2fbbc9018986d1a5699",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "qwen7b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "e1c2fda3f39f077e7f74012fd0d51fd621931088ea87e57d546b6d20fd8c066c",
+  "candidate_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 983,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 169,
+  "candidate_elapsed_seconds": 4.978397414000938,
+  "candidate_output_tokens_per_second": 33.94666715933823,
+  "candidate_peak_allocated_bytes": 15481683968,
+  "candidate_peak_reserved_bytes": 18897436672,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "ba650b8ae3d8e2ef9101a9bc09cbe91129ba05c58f4412f99fe3e3a50f7829ca",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1059\", \"T1505.003\", \"T1190\", \"T1543\", \"T1136\", \"T1574\", \"T1070\", \"T1036\", \"T1078\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The web server account www-data (UID 33) executing mkdir with the argument 'log' from a non-interactive context (no tty/login session, auid unset) suggests a web application process being abused for command execution, e.g., via a webshell or command injection. Creating directories in a web-accessible location is a common staging step, though a routine application-initiated mkdir of a log directory could also explain this single event.\"\n}\n```",
+  "haiku_reference_response_sha256": "60db8397d78918604530c1ae2a073e21406f9fcd51717b8d70bb078b5e8a372e",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "e5adf7825c90dcdd0470cbd66595ba9d7db557f5126b656d8be4c65e9b738147",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1546; none of the candidate's ten IDs (T1059, T1078, T1064, T1068, T1075, T1077, T1076, T1074, T1073, T1072) match it.\"},\n    \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs show www-data running mkdir with argument 'log' under no login session, which weakly supports a web-service-context action, but the listed IDs (e.g., T1068 privilege escalation, T1078 valid accounts, T1077/T1076/T1074-T1072 which are mostly unrelated or nonexistent) are not tied to observed artifacts.\"},\n    \"explanation_grounding\": {\"score\": 1, \"reason\": \"Explanation cites UID=root, but the logs show UID=33 (www-data) with EUID/SUID www-data; the root claim is a factual error. It does not invent additional artifacts beyond that, but misstates the key observation.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Explanation argues initial access/lateral movement, yet most listed techniques are not linked to any stated reason; T1068 and T1078 are mentioned only implicitly, and the rest are unexplained.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"Somewhat Certain: Attack is a moderate label for a single, plausibly benign mkdir event, but the explanation's false root-privilege premise undermines the calibration.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"Response is wrapped in a code fence and fails strict JSON parsing per the audit; the techniques list contains likely nonexistent or invalid IDs (T1072-T1077 range is mostly unrelated), and the explanation exceeds the requested brevity only slightly.\"}\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1059\", \"T1078\", \"T1064\", \"T1068\", \"T1075\", \"T1077\", \"T1076\", \"T1074\", \"T1073\", \"T1072\"],\n  \"failure_labels\": [\"wrong_technique_coverage\", \"factual_misreading_uid\", \"invalid_or_implausible_ids\", \"non_strict_json\"],\n  \"prediction_similarity\": 1,\n  \"reasoning_similarity\": 1,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Neutral\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"Candidate says Somewhat Certain: Attack; the evidence (single routine-looking mkdir of a 'log' directory by www-data, no interactive session) warrants Neutral or at most Somewhat Certain: Attack, so this is a moderate difference involving Neutral.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "1d6b0e9146ada817329e1cc3bdc48178904ad8dbdc958943c485ce985254b17b",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwUKLYXbRMgXCCtxNns",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1546; none of the candidate's ten IDs (T1059, T1078, T1064, T1068, T1075, T1077, T1076, T1074, T1073, T1072) match it.\"},\n    \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs show www-data running mkdir with argument 'log' under no login session, which weakly supports a web-service-context action, but the listed IDs (e.g., T1068 privilege escalation, T1078 valid accounts, T1077/T1076/T1074-T1072 which are mostly unrelated or nonexistent) are not tied to observed artifacts.\"},\n    \"explanation_grounding\": {\"score\": 1, \"reason\": \"Explanation cites UID=root, but the logs show UID=33 (www-data) with EUID/SUID www-data; the root claim is a factual error. It does not invent additional artifacts beyond that, but misstates the key observation.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Explanation argues initial access/lateral movement, yet most listed techniques are not linked to any stated reason; T1068 and T1078 are mentioned only implicitly, and the rest are unexplained.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"Somewhat Certain: Attack is a moderate label for a single, plausibly benign mkdir event, but the explanation's false root-privilege premise undermines the calibration.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"Response is wrapped in a code fence and fails strict JSON parsing per the audit; the techniques list contains likely nonexistent or invalid IDs (T1072-T1077 range is mostly unrelated), and the explanation exceeds the requested brevity only slightly.\"}\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1059\", \"T1078\", \"T1064\", \"T1068\", \"T1075\", \"T1077\", \"T1076\", \"T1074\", \"T1073\", \"T1072\"],\n  \"failure_labels\": [\"wrong_technique_coverage\", \"factual_misreading_uid\", \"invalid_or_implausible_ids\", \"non_strict_json\"],\n  \"prediction_similarity\": 1,\n  \"reasoning_similarity\": 1,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Neutral\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"Candidate says Somewhat Certain: Attack; the evidence (single routine-looking mkdir of a 'log' directory by www-data, no interactive session) warrants Neutral or at most Somewhat Certain: Attack, so this is a moderate difference involving Neutral.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3409,
+      "output_tokens": 980,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3409,
+    "output_tokens": 980,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00041545000000000004,
+  "batch_api": true,
+  "elapsed_seconds": 20003.010138988495,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3409,
+  "output_tokens": 980,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1546; none of the candidate's ten IDs (T1059, T1078, T1064, T1068, T1075, T1077, T1076, T1074, T1073, T1072) match it.\"},\n    \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs show www-data running mkdir with argument 'log' under no login session, which weakly supports a web-service-context action, but the listed IDs (e.g., T1068 privilege escalation, T1078 valid accounts, T1077/T1076/T1074-T1072 which are mostly unrelated or nonexistent) are not tied to observed artifacts.\"},\n    \"explanation_grounding\": {\"score\": 1, \"reason\": \"Explanation cites UID=root, but the logs show UID=33 (www-data) with EUID/SUID www-data; the root claim is a factual error. It does not invent additional artifacts beyond that, but misstates the key observation.\"},\n    \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Explanation argues initial access/lateral movement, yet most listed techniques are not linked to any stated reason; T1068 and T1078 are mentioned only implicitly, and the rest are unexplained.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"Somewhat Certain: Attack is a moderate label for a single, plausibly benign mkdir event, but the explanation's false root-privilege premise undermines the calibration.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"Response is wrapped in a code fence and fails strict JSON parsing per the audit; the techniques list contains likely nonexistent or invalid IDs (T1072-T1077 range is mostly unrelated), and the explanation exceeds the requested brevity only slightly.\"}\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1059\", \"T1078\", \"T1064\", \"T1068\", \"T1075\", \"T1077\", \"T1076\", \"T1074\", \"T1073\", \"T1072\"],\n  \"failure_labels\": [\"wrong_technique_coverage\", \"factual_misreading_uid\", \"invalid_or_implausible_ids\", \"non_strict_json\"],\n  \"prediction_similarity\": 1,\n  \"reasoning_similarity\": 1,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Neutral\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"Candidate says Somewhat Certain: Attack; the evidence (single routine-looking mkdir of a 'log' directory by www-data, no interactive session) warrants Neutral or at most Somewhat Certain: Attack, so this is a moderate difference involving Neutral.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "1d6b0e9146ada817329e1cc3bdc48178904ad8dbdc958943c485ce985254b17b",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1546; none of the candidate's ten IDs (T1059, T1078, T1064, T1068, T1075, T1077, T1076, T1074, T1073, T1072) match it."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "The logs show www-data running mkdir with argument 'log' under no login session, which weakly supports a web-service-context action, but the listed IDs (e.g., T1068 privilege escalation, T1078 valid accounts, T1077/T1076/T1074-T1072 which are mostly unrelated or nonexistent) are not tied to observed artifacts."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "Explanation cites UID=root, but the logs show UID=33 (www-data) with EUID/SUID www-data; the root claim is a factual error. It does not invent additional artifacts beyond that, but misstates the key observation."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Explanation argues initial access/lateral movement, yet most listed techniques are not linked to any stated reason; T1068 and T1078 are mentioned only implicitly, and the rest are unexplained."
+      },
+      "confidence_evidence_support": {
+        "score": 2,
+        "reason": "Somewhat Certain: Attack is a moderate label for a single, plausibly benign mkdir event, but the explanation's false root-privilege premise undermines the calibration."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Response is wrapped in a code fence and fails strict JSON parsing per the audit; the techniques list contains likely nonexistent or invalid IDs (T1072-T1077 range is mostly unrelated), and the explanation exceeds the requested brevity only slightly."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1059",
+      "T1078",
+      "T1064",
+      "T1068",
+      "T1075",
+      "T1077",
+      "T1076",
+      "T1074",
+      "T1073",
+      "T1072"
+    ],
+    "failure_labels": [
+      "wrong_technique_coverage",
+      "factual_misreading_uid",
+      "invalid_or_implausible_ids",
+      "non_strict_json"
+    ],
+    "prediction_similarity": 1,
+    "reasoning_similarity": 1,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Neutral",
+    "confidence_label_agreement": 2,
+    "confidence_label_agreement_reason": "Candidate says Somewhat Certain: Attack; the evidence (single routine-looking mkdir of a 'log' directory by www-data, no interactive session) warrants Neutral or at most Somewhat Certain: Attack, so this is a moderate difference involving Neutral.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1546; none of the candidate's ten IDs (T1059, T1078, T1064, T1068, T1075, T1077, T1076, T1074, T1073, T1072) match it."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "The logs show www-data running mkdir with argument 'log' under no login session, which weakly supports a web-service-context action, but the listed IDs (e.g., T1068 privilege escalation, T1078 valid accounts, T1077/T1076/T1074-T1072 which are mostly unrelated or nonexistent) are not tied to observed artifacts."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "Explanation cites UID=root, but the logs show UID=33 (www-data) with EUID/SUID www-data; the root claim is a factual error. It does not invent additional artifacts beyond that, but misstates the key observation."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Explanation argues initial access/lateral movement, yet most listed techniques are not linked to any stated reason; T1068 and T1078 are mentioned only implicitly, and the rest are unexplained."
+  },
+  "score_confidence_evidence_support": {
+    "score": 2,
+    "reason": "Somewhat Certain: Attack is a moderate label for a single, plausibly benign mkdir event, but the explanation's false root-privilege premise undermines the calibration."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Response is wrapped in a code fence and fails strict JSON parsing per the audit; the techniques list contains likely nonexistent or invalid IDs (T1072-T1077 range is mostly unrelated), and the explanation exceeds the requested brevity only slightly."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1059",
+    "T1078",
+    "T1064",
+    "T1068",
+    "T1075",
+    "T1077",
+    "T1076",
+    "T1074",
+    "T1073",
+    "T1072"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_coverage",
+    "factual_misreading_uid",
+    "invalid_or_implausible_ids",
+    "non_strict_json"
+  ],
+  "judge_prediction_similarity": 1,
+  "judge_reasoning_similarity": 1,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Neutral",
+  "confidence_label_agreement": 2,
+  "confidence_label_agreement_reason": "Candidate says Somewhat Certain: Attack; the evidence (single routine-looking mkdir of a 'log' directory by www-data, no interactive session) warrants Neutral or at most Somewhat Certain: Attack, so this is a moderate difference involving Neutral.",
+  "confidence_label_null_reason": null
+}

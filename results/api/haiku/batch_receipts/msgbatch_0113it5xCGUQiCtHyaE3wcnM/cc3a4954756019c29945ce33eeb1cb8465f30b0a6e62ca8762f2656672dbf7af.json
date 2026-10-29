@@ -1,0 +1,41 @@
+{
+  "custom_id": "757045e8fc7d11122c1dabe1237190e2ee04f54b74c44e7b2ed3f846fdd28319",
+  "result": {
+    "message": {
+      "id": "msg_011CgTtVECf2vv3CmipzLBjv",
+      "container": null,
+      "content": [
+        {
+          "citations": null,
+          "text": "Decoding the key artifacts first: the EXECVE arguments decode (hex) to `s/#!/bin/sh/#!/bin/sh\\n/usr/bin/zmcontrollerr &\\n/` and the proctitle decodes to `sh: root@notty`. This means a root shell spawned `sed -i` to perform an in-place edit of `/usr/share/awffull/awffull`, injecting a line that inserts a new shebang/command (`/usr/bin/zmcontroller &`) into an existing script. The subsequent SYSCALL 82 (rename) shows sed's atomic in-place replacement of the modified file. Modifying a system web-stats script to add a background command that executes on each run is a classic persistence/code-injection pattern, and the unusual binary name `zmcontrollerr` (near-duplicate of a legitimate-looking name) reinforces suspicion.\n\n```json\n{\n  \"techniques\": [\n    \"T1543\",\n    \"T1505.003\",\n    \"T1053\",\n    \"T1059.004\",\n    \"T1565.001\",\n    \"T1036.005\",\n    \"T1222.002\",\n    \"T1078\",\n    \"T1562\",\n    \"T1070\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"A root shell ran `sed -i` to inject a `/usr/bin/zmcontrollerr &` command into the existing script /usr/share/awffull/awffull, followed by an atomic rename, which is a persistence-style script tampering pattern (the injected binary name is also a near-lookalike of a legitimate control tool). Routine administrative edits are unlikely to add an unexpected background binary invocation to a third-party web-stats script.\"\n}\n```",
+          "type": "text"
+        }
+      ],
+      "model": "claude-haiku-5-5",
+      "role": "assistant",
+      "stop_details": null,
+      "stop_reason": "end_turn",
+      "stop_sequence": null,
+      "type": "message",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "global",
+        "input_tokens": 1875,
+        "output_tokens": 564,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "server_tool_use": null,
+        "service_tier": "batch",
+        "speed": "standard"
+      },
+      "diagnostics": null
+    },
+    "type": "succeeded"
+  }
+}

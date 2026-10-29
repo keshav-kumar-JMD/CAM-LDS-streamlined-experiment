@@ -1,0 +1,281 @@
+{
+  "prompt_id": "819",
+  "scenario": "1",
+  "variant": "pwnkit_pam",
+  "step": "36",
+  "split": "train",
+  "group_id": "[\"1\", \"36\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/auth.log:\n        Sep 22 08:00:39 videoserver pkexec[17157]: www-data: The value for the SHELL variable was not found the /etc/shells file [USER=root] [TTY=/dev/pts/0] [CWD=/tmp] [COMMAND=GCONV_PATH=./.pkexec PATH=GCONV_PATH=. CHARSET=pkexec SHELL=pkexec]\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758528039.278:13197): arch=c000003e syscall=59 success=yes exit=0 a0=55ef9fc6a8d0 a1=55ef9fc6b1c0 a2=55ef9fc742e0 a3=fffffffffffff286 items=3 ppid=17157 pid=17160 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"locale\" exe=\"/usr/bin/locale\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758528039.278:13197): argc=1 a0=\"locale\"\n        type=PATH msg=audit(1758528039.278:13197): item=0 name=\"/usr/bin/locale\" inode=1919 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758528039.278:13197): item=1 name=\"/usr/bin/locale\" inode=1919 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758528039.278:13197): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758528039.278:13197): proctitle=\"locale\"\n        type=SYSCALL msg=audit(1758528039.278:13198): arch=c000003e syscall=257 success=yes exit=4 a0=ffffff9c a1=55ef9fc645f0 a2=0 a3=0 items=1 ppid=3047 pid=17157 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=openat AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1758528039.278:13198): item=0 name=\"/etc/profile.d/bash_completion.sh\" inode=9147 dev=fe:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758528039.278:13198): proctitle=\"./PwnKit\"\n        type=SYSCALL msg=audit(1758528039.290:13199): arch=c000003e syscall=257 success=yes exit=4 a0=ffffff9c a1=55ef9fc73070 a2=0 a3=0 items=1 ppid=3047 pid=17157 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=openat AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"",
+  "prompt_sha256": "f7e20f4d6eb4ae5ed8f11a35dcad4455cb6bfc54813bad07a2f731d721777dcd",
+  "ground_truth": "[\"T1068\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1068\", \"T1548.003\", \"T1574.006\", \"T1203\", \"T1059.004\", \"T1036.005\", \"T1574.007\", \"T1574.008\", \"T1611\", \"T1078\"], \"confidence\": \"Certain: Attack\", \"explanation\": \"The logs show execution of a PwnKit/pkexec exploit from /tmp using malicious environment variables such as GCONV_PATH, CHARSET, and SHELL=pkexec, resulting in root context execution. This is a clear local privilege escalation via exploitation of the pkexec vulnerability rather than normal administrative activity.\"}",
+  "teacher_response_sha256": "9ea1111a684ec2c41a3415d756a62ee1221872d3cdcf1f49f851fa2c6e6497b6",
+  "teacher_confidence_label": "Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:819",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"TTP-1.1: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.2: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.3: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.4: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.5: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.6: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.7: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.8: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.9: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.10: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.11: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.12: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.13: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.14: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.15: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.16: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.17: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.18: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.19: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.20: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.21: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.22: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.23: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.24: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.25: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.26: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.27: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.28: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.29: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.30: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.31: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.32: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.33: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.34: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.35: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.36: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.37: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.38: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.39: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.40: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.41: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.42: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.43: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.44: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.45: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.46: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.47: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.48: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.49: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.50: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.51: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.52: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.53: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.54: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.55: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1.56: Use of shellcode to execute arbitrary commands\",\n    \"TTP-1",
+  "candidate_response_sha256": "34dc11f5708581b91d9ad576a84cf1235d84bab86a0c7c8a502a16d11db0bfe9",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1370,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 109.59827723700073,
+  "candidate_output_tokens_per_second": 9.34321255602998,
+  "candidate_peak_allocated_bytes": 5090410496,
+  "candidate_peak_reserved_bytes": 6008340480,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "9474dc914adc522e6512bcfded3b22063d6ef7099a5d7852c5ae1d6460f98cae",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1068\", \"T1548.001\", \"T1059.004\", \"T1083\", \"T1036\", \"T1078\", \"T1564\", \"T1057\", \"T1574.006\", \"T1202\"],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The www-data web service account invokes pkexec with a malformed environment (GCONV_PATH=./.pkexec, CHARSET=pkexec) from /tmp, and the process title is \\\"./PwnKit\\\", which is the known CVE-2021-4034 polkit local privilege escalation exploit. The audit trail then shows the resulting root-owned process spawning locale and opening bash completion files, confirming a successful escalation from www-data to root.\"\n}\n```",
+  "haiku_reference_response_sha256": "194b6b25bfc45227c44dc3e370f7796798fb0aaf56a83c53aff37fdc1795698b",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "1006d94aa83109c908e7993e6c82fcc05f7c293ad77435b92e8705b93cde8822",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1068. The candidate's first ten predictions are all the same placeholder string 'TTP-1.x: Use of shellcode to execute arbitrary commands' with no valid ATT&CK IDs, so no exact-ID coverage. The list is also truncated mid-stream.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"The placeholder entries are not ATT&CK technique IDs and are not tied to any supplied observation; the shellcode claim is unsupported by the logs, which show pkexec and PwnKit process titles, not shellcode execution.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is present in the recovered content; the candidate output consists only of the truncated technique list.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No explanation is given linking predictions to reasons; the predictions themselves are non-ATT&CK placeholders.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No confidence label appears anywhere in the candidate response.\"},\"extracted_predictions\":[\"TTP-1.1: Use of shellcode to execute arbitrary commands\",\"TTP-1.2: Use of shellcode to execute arbitrary commands\",\"TTP-1.3: Use of shellcode to execute arbitrary commands\",\"TTP-1.4: Use of shellcode to execute arbitrary commands\",\"TTP-1.5: Use of shellcode to execute arbitrary commands\",\"TTP-1.6: Use of shellcode to execute arbitrary commands\",\"TTP-1.7: Use of shellcode to execute arbitrary commands\",\"TTP-1.8: Use of shellcode to execute arbitrary commands\",\"TTP-1.9: Use of shellcode to execute arbitrary commands\",\"TTP-1.10: Use of shellcode to execute arbitrary commands\"],\"failure_labels\":[\"invalid_technique_ids\",\"placeholder_output\",\"missing_explanation\",\"missing_confidence\",\"truncated_output\",\"unsupported_claims\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no confidence field or clearly expressed confidence label; it is truncated before any such field.\",\"instruction_adherence\":{\"score\":0,\"reason\":\"Does not produce the requested JSON object with techniques, confidence, and explanation fields; output is a truncated repetitive placeholder list of non-ATT&CK strings.\"}}",
+  "response_hash": "2a42ce69cc696583efd642b7beb6152bbc430779920faf7e31e68c74adf5fa7c",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvKnixHPDiLmCzGCLX2",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1068. The candidate's first ten predictions are all the same placeholder string 'TTP-1.x: Use of shellcode to execute arbitrary commands' with no valid ATT&CK IDs, so no exact-ID coverage. The list is also truncated mid-stream.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"The placeholder entries are not ATT&CK technique IDs and are not tied to any supplied observation; the shellcode claim is unsupported by the logs, which show pkexec and PwnKit process titles, not shellcode execution.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is present in the recovered content; the candidate output consists only of the truncated technique list.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No explanation is given linking predictions to reasons; the predictions themselves are non-ATT&CK placeholders.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No confidence label appears anywhere in the candidate response.\"},\"extracted_predictions\":[\"TTP-1.1: Use of shellcode to execute arbitrary commands\",\"TTP-1.2: Use of shellcode to execute arbitrary commands\",\"TTP-1.3: Use of shellcode to execute arbitrary commands\",\"TTP-1.4: Use of shellcode to execute arbitrary commands\",\"TTP-1.5: Use of shellcode to execute arbitrary commands\",\"TTP-1.6: Use of shellcode to execute arbitrary commands\",\"TTP-1.7: Use of shellcode to execute arbitrary commands\",\"TTP-1.8: Use of shellcode to execute arbitrary commands\",\"TTP-1.9: Use of shellcode to execute arbitrary commands\",\"TTP-1.10: Use of shellcode to execute arbitrary commands\"],\"failure_labels\":[\"invalid_technique_ids\",\"placeholder_output\",\"missing_explanation\",\"missing_confidence\",\"truncated_output\",\"unsupported_claims\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no confidence field or clearly expressed confidence label; it is truncated before any such field.\",\"instruction_adherence\":{\"score\":0,\"reason\":\"Does not produce the requested JSON object with techniques, confidence, and explanation fields; output is a truncated repetitive placeholder list of non-ATT&CK strings.\"}}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 5920,
+      "output_tokens": 973,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 5920,
+    "output_tokens": 973,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00053925,
+  "batch_api": true,
+  "elapsed_seconds": 3457.874411582947,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5920,
+  "output_tokens": 973,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1068. The candidate's first ten predictions are all the same placeholder string 'TTP-1.x: Use of shellcode to execute arbitrary commands' with no valid ATT&CK IDs, so no exact-ID coverage. The list is also truncated mid-stream.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"The placeholder entries are not ATT&CK technique IDs and are not tied to any supplied observation; the shellcode claim is unsupported by the logs, which show pkexec and PwnKit process titles, not shellcode execution.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is present in the recovered content; the candidate output consists only of the truncated technique list.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No explanation is given linking predictions to reasons; the predictions themselves are non-ATT&CK placeholders.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No confidence label appears anywhere in the candidate response.\"},\"extracted_predictions\":[\"TTP-1.1: Use of shellcode to execute arbitrary commands\",\"TTP-1.2: Use of shellcode to execute arbitrary commands\",\"TTP-1.3: Use of shellcode to execute arbitrary commands\",\"TTP-1.4: Use of shellcode to execute arbitrary commands\",\"TTP-1.5: Use of shellcode to execute arbitrary commands\",\"TTP-1.6: Use of shellcode to execute arbitrary commands\",\"TTP-1.7: Use of shellcode to execute arbitrary commands\",\"TTP-1.8: Use of shellcode to execute arbitrary commands\",\"TTP-1.9: Use of shellcode to execute arbitrary commands\",\"TTP-1.10: Use of shellcode to execute arbitrary commands\"],\"failure_labels\":[\"invalid_technique_ids\",\"placeholder_output\",\"missing_explanation\",\"missing_confidence\",\"truncated_output\",\"unsupported_claims\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no confidence field or clearly expressed confidence label; it is truncated before any such field.\",\"instruction_adherence\":{\"score\":0,\"reason\":\"Does not produce the requested JSON object with techniques, confidence, and explanation fields; output is a truncated repetitive placeholder list of non-ATT&CK strings.\"}}",
+  "judge_response_sha256": "2a42ce69cc696583efd642b7beb6152bbc430779920faf7e31e68c74adf5fa7c",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1068. The candidate's first ten predictions are all the same placeholder string 'TTP-1.x: Use of shellcode to execute arbitrary commands' with no valid ATT&CK IDs, so no exact-ID coverage. The list is also truncated mid-stream."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "The placeholder entries are not ATT&CK technique IDs and are not tied to any supplied observation; the shellcode claim is unsupported by the logs, which show pkexec and PwnKit process titles, not shellcode execution."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field is present in the recovered content; the candidate output consists only of the truncated technique list."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No explanation is given linking predictions to reasons; the predictions themselves are non-ATT&CK placeholders."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No confidence label appears anywhere in the candidate response."
+    },
+    "extracted_predictions": [
+      "TTP-1.1: Use of shellcode to execute arbitrary commands",
+      "TTP-1.2: Use of shellcode to execute arbitrary commands",
+      "TTP-1.3: Use of shellcode to execute arbitrary commands",
+      "TTP-1.4: Use of shellcode to execute arbitrary commands",
+      "TTP-1.5: Use of shellcode to execute arbitrary commands",
+      "TTP-1.6: Use of shellcode to execute arbitrary commands",
+      "TTP-1.7: Use of shellcode to execute arbitrary commands",
+      "TTP-1.8: Use of shellcode to execute arbitrary commands",
+      "TTP-1.9: Use of shellcode to execute arbitrary commands",
+      "TTP-1.10: Use of shellcode to execute arbitrary commands"
+    ],
+    "failure_labels": [
+      "invalid_technique_ids",
+      "placeholder_output",
+      "missing_explanation",
+      "missing_confidence",
+      "truncated_output",
+      "unsupported_claims"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence field or clearly expressed confidence label; it is truncated before any such field.",
+    "instruction_adherence": {
+      "score": 0,
+      "reason": "Does not produce the requested JSON object with techniques, confidence, and explanation fields; output is a truncated repetitive placeholder list of non-ATT&CK strings."
+    }
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1068. The candidate's first ten predictions are all the same placeholder string 'TTP-1.x: Use of shellcode to execute arbitrary commands' with no valid ATT&CK IDs, so no exact-ID coverage. The list is also truncated mid-stream."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "The placeholder entries are not ATT&CK technique IDs and are not tied to any supplied observation; the shellcode claim is unsupported by the logs, which show pkexec and PwnKit process titles, not shellcode execution."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field is present in the recovered content; the candidate output consists only of the truncated technique list."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No explanation is given linking predictions to reasons; the predictions themselves are non-ATT&CK placeholders."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No confidence label appears anywhere in the candidate response."
+  },
+  "judge_extracted_predictions": [
+    "TTP-1.1: Use of shellcode to execute arbitrary commands",
+    "TTP-1.2: Use of shellcode to execute arbitrary commands",
+    "TTP-1.3: Use of shellcode to execute arbitrary commands",
+    "TTP-1.4: Use of shellcode to execute arbitrary commands",
+    "TTP-1.5: Use of shellcode to execute arbitrary commands",
+    "TTP-1.6: Use of shellcode to execute arbitrary commands",
+    "TTP-1.7: Use of shellcode to execute arbitrary commands",
+    "TTP-1.8: Use of shellcode to execute arbitrary commands",
+    "TTP-1.9: Use of shellcode to execute arbitrary commands",
+    "TTP-1.10: Use of shellcode to execute arbitrary commands"
+  ],
+  "judge_failure_labels": [
+    "invalid_technique_ids",
+    "placeholder_output",
+    "missing_explanation",
+    "missing_confidence",
+    "truncated_output",
+    "unsupported_claims"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence field or clearly expressed confidence label; it is truncated before any such field.",
+  "judge_instruction_adherence": {
+    "score": 0,
+    "reason": "Does not produce the requested JSON object with techniques, confidence, and explanation fields; output is a truncated repetitive placeholder list of non-ATT&CK strings."
+  }
+}

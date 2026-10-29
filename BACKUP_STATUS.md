@@ -1,32 +1,33 @@
-# Streamlined experiment backup
+# Backup status
 
-Snapshot date: 27 October 2026 (Australia/Brisbane).
+This repository is the portable backup of the streamlined CAM-LDS experiment. It includes source code, notebooks, frozen manifests and tokenizers, prepared datasets, response records, telemetry, and completed LoRA adapter archives.
 
-## Complete SFT evaluations
+## Included completed SFT adapters
 
-All four final adapters and all 140 validation plus 145 test rows are complete for bitnet2b, hermes, llama3b, mistral7b, qwen1b and qwen7b.
+- BitNet 2B: technique, explanation, joint and full
+- Hermes: technique, explanation, joint and full
+- Llama 3B: technique, explanation, joint and full
+- Mistral 7B: technique, explanation, joint and full
+- Qwen 1B: technique, explanation, joint and full
+- Qwen 7B: technique, explanation, joint and full
 
-## Complete untreated evaluations
+The final adapter ZIP files are stored with Git LFS. Base-model weights are excluded because the frozen Hugging Face repository and revision are recorded and can be downloaded again.
 
-- bitnet2b: 990/990 finalized rows (847 completed responses; 143 context-unsupported records)
-- hermes: 990/990 finalized rows
-- llama3b: 990/990 finalized rows
-- mistral7b: 990/990 finalized rows
-- qwen1b: 990/990 finalized rows
-- qwen7b: 990/990 finalized rows
+All six model families have complete technique, explanation, joint, and full
+adapter archives: 24 adapters in total.
 
-## Incomplete, resumable untreated evaluations
+## Completed API evaluation
 
-None in this snapshot. Untreated models without a result folder have not started.
+- Haiku reference responses: 990 completed
+- Uniform common judgments: 12,449 completed
+- Haiku self-evaluations: 285 completed
 
-## Resume and artifact policy
+## Excluded transient data
 
-- All 24 final SFT adapter archives are included through Git LFS.
-- No trainer checkpoints are included because every SFT condition has a final adapter.
-- Incomplete inference resumes from `results/<model>/untreated_hf/all/records/`.
-- Completed runs retain their canonical response CSVs without redundant atomic ledgers.
-- Base weights, caches, runtime/tunnel state, partial uploads, environments and secrets are excluded.
+- Python virtual environments
+- Downloaded base-model caches
+- Superseded trainer checkpoints for models that already have final adapters
+- Receiver tokens, heartbeat files, tunnel state and partial uploads
+- Claude and Hugging Face credentials
 
-## Report-grade telemetry
-
-`telemetry/final_run_inventory.json` indexes 78 selected structured records containing runtime, model/cache load, training/inference time, software, GPU/CUDA/driver, utilisation, power, energy, peak memory and token totals where available. Incomplete-run logs are retained separately. Manual Colab billing data: not present in the source experiment.
+The original parent `secret/` directory is outside this repository and must never be committed.

@@ -1,0 +1,41 @@
+{
+  "custom_id": "c4a5c1dd3315d6507d1c832bfd2399a42c531505a159b0ee4f6deaf1588e7835",
+  "result": {
+    "message": {
+      "id": "msg_011CgTtQoDP1pmZpSXzz87Dy",
+      "container": null,
+      "content": [
+        {
+          "citations": null,
+          "text": "Decoding the hex in the EXECVE record gives: `/bin/bash -c lesecho\\ -p0x22\\ -d0x22\\ -e\\\\\\\\\\ -n0x3b\\ -n0x20\\ ... -- \\.sh`. This is a bash command that builds a string via `echo` with many hex-encoded character escapes (`-n0x3b`, `-n0x20`, etc.), a classic obfuscation pattern used to hide a command, then pipes/executes the result. The preceding PATH/PROCTITLE record shows `/usr/bin/rm` being run on `/root/README.txt`, suggesting deletion of a file in root's home directory. Running as root, with the obfuscated shell invocation and a file deletion of a user-facing file, points toward malicious activity.\n\n```json\n{\n  \"techniques\": [\n    \"T1027\",\n    \"T1059.004\",\n    \"T1140\",\n    \"T1070.004\",\n    \"T1222.002\",\n    \"T1564\",\n    \"T1036\",\n    \"T1078\",\n    \"T1546\",\n    \"T1622\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The execve of bash with a long, hex-encoded echo string (building characters via -n0x.. escapes and piping into a shell) is a strong obfuscation signature, and it runs as root. It is accompanied by an rm of /root/README.txt, indicating destructive file removal.\"\n}\n```",
+          "type": "text"
+        }
+      ],
+      "model": "claude-haiku-5-5",
+      "role": "assistant",
+      "stop_details": null,
+      "stop_reason": "end_turn",
+      "stop_sequence": null,
+      "type": "message",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "global",
+        "input_tokens": 2181,
+        "output_tokens": 472,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "server_tool_use": null,
+        "service_tier": "batch",
+        "speed": "standard"
+      },
+      "diagnostics": null
+    },
+    "type": "succeeded"
+  }
+}

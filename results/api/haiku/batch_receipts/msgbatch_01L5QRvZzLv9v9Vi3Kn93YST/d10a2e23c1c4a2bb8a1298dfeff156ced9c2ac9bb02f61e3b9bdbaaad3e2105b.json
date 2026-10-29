@@ -1,0 +1,41 @@
+{
+  "custom_id": "3857bc97fc0450d07107c9b79cc7f2c33f7734b58fb574d7d4a19a7e4d157f40",
+  "result": {
+    "message": {
+      "id": "msg_011CgTtVFbVcnPLGrLQzqHDP",
+      "container": null,
+      "content": [
+        {
+          "citations": null,
+          "text": "Decoding the hex in the EXECVE argument reveals `cat /proc/*/cmdline | xargs bash -c` style activity, i.e., a shell pipeline that reads process command-line data (`/proc/*/cmdline`) and feeds it into a new bash instance. The `a2` hex decodes to `cat  | xargs bash -c` with the trailing ASCII shown in the proctitle (`bash -c cat  | xargs bash -c`). Piping process memory/cmdline contents into `bash -c` is a pattern associated with credential harvesting from process arguments and with executing dynamically assembled commands, and it runs as root with no auid set, consistent with a remotely spawned or privilege-escalated shell.\n\n```json\n{\n  \"techniques\": [\n    \"T1059.004\",\n    \"T1057\",\n    \"T1552.003\",\n    \"T1059\",\n    \"T1083\",\n    \"T1082\",\n    \"T1033\",\n    \"T1569\",\n    \"T1543\",\n    \"T1078\"\n  ],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"A root bash process (auid unset, indicating no interactive login session) executes a pipeline that reads /proc process cmdline data via cat and passes it to xargs bash -c, which is a classic pattern for harvesting credentials from process arguments and executing dynamically built commands. Although the pipeline could be legitimate administrative or monitoring scripting, the unset login UID and root context make it more likely to be attacker activity.\"\n}\n```",
+          "type": "text"
+        }
+      ],
+      "model": "claude-haiku-5-5",
+      "role": "assistant",
+      "stop_details": null,
+      "stop_reason": "end_turn",
+      "stop_sequence": null,
+      "type": "message",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "global",
+        "input_tokens": 1830,
+        "output_tokens": 499,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "server_tool_use": null,
+        "service_tier": "batch",
+        "speed": "standard"
+      },
+      "diagnostics": null
+    },
+    "type": "succeeded"
+  }
+}

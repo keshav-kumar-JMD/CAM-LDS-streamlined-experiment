@@ -1,0 +1,243 @@
+{
+  "prompt_id": "218",
+  "scenario": "1",
+  "variant": "racecondition_pam",
+  "step": "17",
+  "split": "validation",
+  "group_id": "[\"1\", \"17\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1765034642.024:14275): item=0 name=\"/usr/bin/python3\" inode=5914 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765034642.024:14275): item=1 name=\"/usr/bin/python3\" inode=6206 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765034642.024:14275): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765034642.024:14275): proctitle=707974686F6E33002D6300696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=SYSCALL msg=audit(1765034642.056:14276): arch=c000003e syscall=59 success=yes exit=0 a0=7f21475e1f20 a1=7f21476751b0 a2=7fffcdd8c9f8 a3=fffffffffffff28e items=3 ppid=17581 pid=17582 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=12 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765034642.056:14276): argc=1 a0=\"/bin/bash\"\n        type=PATH msg=audit(1765034642.056:14276): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765034642.056:14276): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765034642.056:14276): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765034642.056:14276): proctitle=\"/bin/bash\"",
+  "prompt_sha256": "c810f29e732a11f1e77a2842e2ee51d90e126a60ab2e6e2e30b8aa4fd62b5fca",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059.006\", \"T1059\", \"T1611\", \"T1055\", \"T1105\", \"T1021.004\", \"T1219\", \"T1098\", \"T1548\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit logs show python3 executing an inline command `import pty; pty.spawn(\\\"/bin/bash\\\")`, which is a common method to upgrade a remote or constrained shell to an interactive TTY. While spawning bash via Python can be legitimate during administration, this pattern is strongly associated with post-exploitation shell interaction.\"}",
+  "teacher_response_sha256": "497d55243a20ab62286d38a67db8436ed94c79cb0108a0034bd7d74ddfdf201b",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "hermes",
+  "condition": "explanation",
+  "candidate_status": "completed",
+  "candidate_record_id": "98d79d1d541c860c4a6546fc6ca4568e63af0257f1e521685a154121e792007d:218",
+  "candidate_response_raw": "{\"techniques\": \"bash shell execution via /bin/bash\", \"confidence\": \"Certain: Attack\"}",
+  "candidate_response_sha256": "9685fc9a88a9f7fcec0b159420e333247af09ee049b85402cf248f694c565656",
+  "candidate_confidence_label_strict": "Certain: Attack",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "explanation",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "98d79d1d541c860c4a6546fc6ca4568e63af0257f1e521685a154121e792007d",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "42eb7069b478d105ce585c2b0ef26b4e7f5c1c229f6999888d2e6e15c8ff3534",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1393,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 22,
+  "candidate_elapsed_seconds": 0.9231905409997125,
+  "candidate_output_tokens_per_second": 23.830400142722922,
+  "candidate_peak_allocated_bytes": 4087327232,
+  "candidate_peak_reserved_bytes": 9021947904,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "fa853e26d9160dd3fc36b48eab6e455d51ecd7ee3b9b2913a5aa2095374295e6",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1059.006\", \"T1059\", \"T1571\", \"T1190\", \"T1205\", \"T1569\", \"T1543\", \"T1078\", \"T1218\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"A root-owned Python 3 interpreter is launched with an inline script (-c) that imports pty and calls pty.spawn('/bin/bash'), which spawns an interactive root bash shell attached to pts1 on a videoserver host. This is a classic reverse/bind shell or TTY upgrade pattern used by attackers to gain interactive command execution, and it is not typical of routine administrative or service activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "25edaf01262a282df1058483033e84a402b07496afea07684abf6c3fb351c595",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "e7935db32578b09e83826fefc1d94bfe6174b022b9443072638763dc242cb3b8",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 2,\n    \"prediction_evidence_support\": 3,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 3,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1059. The candidate's techniques field is a free-text phrase ('bash shell execution via /bin/bash') with no ATT&CK ID, so exact-ID coverage is zero. Under strict exact-ID matching this would be 0, but the description clearly maps to T1059 (Command and Scripting Interpreter) in substance, so I score it as partial recovery of the intended concept rather than an exact-ID match.\",\n    \"prediction_evidence_support\": \"The bash execution via /bin/bash is directly supported by the EXECVE record (a0=\\\"/bin/bash\\\") and the SYSCALL execve with comm=bash on pts1. The claim is specific to the observed artifact, though it is not in the required ID form.\",\n    \"explanation_grounding\": \"No explanation field was provided, so there is no grounding to assess.\",\n    \"prediction_reason_alignment\": \"No explanation or reasoning links the predicted technique to any observation, so alignment cannot be established.\",\n    \"confidence_evidence_support\": \"Certain: Attack is stated without any explanation or acknowledged limitation. The logs show a root bash spawn on a pty, which is suggestive but not conclusive on its own (it could be routine admin use), so 'Certain' is over-confident.\",\n    \"instruction_adherence\": \"Required fields 'techniques' (as a list of IDs), 'confidence' (valid), and 'explanation' are not satisfied. The techniques field is not a list of IDs and the explanation is missing. The JSON is otherwise valid.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response or explanation was provided for similarity scoring.\",\n    \"confidence_label_agreement\": null\n  },\n  \"extracted_predictions\": [\n    \"bash shell execution via /bin/bash (no ATT&CK ID given; maps in substance to T1059)\"\n  ],\n  \"failure_labels\": [\n    \"missing_required_field_explanation\",\n    \"non_id_technique_output\",\n    \"missing_technique_id\",\n    \"overconfident_without_justification\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction and adjacent category.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "6f1aa46a8cfd6286ce860b09437e59136add8fd6c9c74538e472a0820026c44d",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv6212PNYtFB6V6NXfP",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 2,\n    \"prediction_evidence_support\": 3,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 3,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1059. The candidate's techniques field is a free-text phrase ('bash shell execution via /bin/bash') with no ATT&CK ID, so exact-ID coverage is zero. Under strict exact-ID matching this would be 0, but the description clearly maps to T1059 (Command and Scripting Interpreter) in substance, so I score it as partial recovery of the intended concept rather than an exact-ID match.\",\n    \"prediction_evidence_support\": \"The bash execution via /bin/bash is directly supported by the EXECVE record (a0=\\\"/bin/bash\\\") and the SYSCALL execve with comm=bash on pts1. The claim is specific to the observed artifact, though it is not in the required ID form.\",\n    \"explanation_grounding\": \"No explanation field was provided, so there is no grounding to assess.\",\n    \"prediction_reason_alignment\": \"No explanation or reasoning links the predicted technique to any observation, so alignment cannot be established.\",\n    \"confidence_evidence_support\": \"Certain: Attack is stated without any explanation or acknowledged limitation. The logs show a root bash spawn on a pty, which is suggestive but not conclusive on its own (it could be routine admin use), so 'Certain' is over-confident.\",\n    \"instruction_adherence\": \"Required fields 'techniques' (as a list of IDs), 'confidence' (valid), and 'explanation' are not satisfied. The techniques field is not a list of IDs and the explanation is missing. The JSON is otherwise valid.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response or explanation was provided for similarity scoring.\",\n    \"confidence_label_agreement\": null\n  },\n  \"extracted_predictions\": [\n    \"bash shell execution via /bin/bash (no ATT&CK ID given; maps in substance to T1059)\"\n  ],\n  \"failure_labels\": [\n    \"missing_required_field_explanation\",\n    \"non_id_technique_output\",\n    \"missing_technique_id\",\n    \"overconfident_without_justification\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction and adjacent category.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3696,
+      "output_tokens": 1013,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3696,
+    "output_tokens": 1013,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00043805,
+  "batch_api": true,
+  "elapsed_seconds": 48884.16375660896,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3696,
+  "output_tokens": 1013,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 2,\n    \"prediction_evidence_support\": 3,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 3,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1059. The candidate's techniques field is a free-text phrase ('bash shell execution via /bin/bash') with no ATT&CK ID, so exact-ID coverage is zero. Under strict exact-ID matching this would be 0, but the description clearly maps to T1059 (Command and Scripting Interpreter) in substance, so I score it as partial recovery of the intended concept rather than an exact-ID match.\",\n    \"prediction_evidence_support\": \"The bash execution via /bin/bash is directly supported by the EXECVE record (a0=\\\"/bin/bash\\\") and the SYSCALL execve with comm=bash on pts1. The claim is specific to the observed artifact, though it is not in the required ID form.\",\n    \"explanation_grounding\": \"No explanation field was provided, so there is no grounding to assess.\",\n    \"prediction_reason_alignment\": \"No explanation or reasoning links the predicted technique to any observation, so alignment cannot be established.\",\n    \"confidence_evidence_support\": \"Certain: Attack is stated without any explanation or acknowledged limitation. The logs show a root bash spawn on a pty, which is suggestive but not conclusive on its own (it could be routine admin use), so 'Certain' is over-confident.\",\n    \"instruction_adherence\": \"Required fields 'techniques' (as a list of IDs), 'confidence' (valid), and 'explanation' are not satisfied. The techniques field is not a list of IDs and the explanation is missing. The JSON is otherwise valid.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response or explanation was provided for similarity scoring.\",\n    \"confidence_label_agreement\": null\n  },\n  \"extracted_predictions\": [\n    \"bash shell execution via /bin/bash (no ATT&CK ID given; maps in substance to T1059)\"\n  ],\n  \"failure_labels\": [\n    \"missing_required_field_explanation\",\n    \"non_id_technique_output\",\n    \"missing_technique_id\",\n    \"overconfident_without_justification\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction and adjacent category.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "6f1aa46a8cfd6286ce860b09437e59136add8fd6c9c74538e472a0820026c44d",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 2,
+      "prediction_evidence_support": 3,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": 3,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "Ground truth is T1059. The candidate's techniques field is a free-text phrase ('bash shell execution via /bin/bash') with no ATT&CK ID, so exact-ID coverage is zero. Under strict exact-ID matching this would be 0, but the description clearly maps to T1059 (Command and Scripting Interpreter) in substance, so I score it as partial recovery of the intended concept rather than an exact-ID match.",
+      "prediction_evidence_support": "The bash execution via /bin/bash is directly supported by the EXECVE record (a0=\"/bin/bash\") and the SYSCALL execve with comm=bash on pts1. The claim is specific to the observed artifact, though it is not in the required ID form.",
+      "explanation_grounding": "No explanation field was provided, so there is no grounding to assess.",
+      "prediction_reason_alignment": "No explanation or reasoning links the predicted technique to any observation, so alignment cannot be established.",
+      "confidence_evidence_support": "Certain: Attack is stated without any explanation or acknowledged limitation. The logs show a root bash spawn on a pty, which is suggestive but not conclusive on its own (it could be routine admin use), so 'Certain' is over-confident.",
+      "instruction_adherence": "Required fields 'techniques' (as a list of IDs), 'confidence' (valid), and 'explanation' are not satisfied. The techniques field is not a list of IDs and the explanation is missing. The JSON is otherwise valid."
+    },
+    "null_reasons": {
+      "prediction_similarity": "No comparison response was provided for similarity scoring.",
+      "reasoning_similarity": "No comparison response or explanation was provided for similarity scoring.",
+      "confidence_label_agreement": null
+    },
+    "extracted_predictions": [
+      "bash shell execution via /bin/bash (no ATT&CK ID given; maps in substance to T1059)"
+    ],
+    "failure_labels": [
+      "missing_required_field_explanation",
+      "non_id_technique_output",
+      "missing_technique_id",
+      "overconfident_without_justification"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction and adjacent category.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": 2,
+  "score_prediction_evidence_support": 3,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": 3,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "Ground truth is T1059. The candidate's techniques field is a free-text phrase ('bash shell execution via /bin/bash') with no ATT&CK ID, so exact-ID coverage is zero. Under strict exact-ID matching this would be 0, but the description clearly maps to T1059 (Command and Scripting Interpreter) in substance, so I score it as partial recovery of the intended concept rather than an exact-ID match.",
+    "prediction_evidence_support": "The bash execution via /bin/bash is directly supported by the EXECVE record (a0=\"/bin/bash\") and the SYSCALL execve with comm=bash on pts1. The claim is specific to the observed artifact, though it is not in the required ID form.",
+    "explanation_grounding": "No explanation field was provided, so there is no grounding to assess.",
+    "prediction_reason_alignment": "No explanation or reasoning links the predicted technique to any observation, so alignment cannot be established.",
+    "confidence_evidence_support": "Certain: Attack is stated without any explanation or acknowledged limitation. The logs show a root bash spawn on a pty, which is suggestive but not conclusive on its own (it could be routine admin use), so 'Certain' is over-confident.",
+    "instruction_adherence": "Required fields 'techniques' (as a list of IDs), 'confidence' (valid), and 'explanation' are not satisfied. The techniques field is not a list of IDs and the explanation is missing. The JSON is otherwise valid."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No comparison response was provided for similarity scoring.",
+    "reasoning_similarity": "No comparison response or explanation was provided for similarity scoring.",
+    "confidence_label_agreement": null
+  },
+  "judge_extracted_predictions": [
+    "bash shell execution via /bin/bash (no ATT&CK ID given; maps in substance to T1059)"
+  ],
+  "judge_failure_labels": [
+    "missing_required_field_explanation",
+    "non_id_technique_output",
+    "missing_technique_id",
+    "overconfident_without_justification"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "Candidate says Certain: Attack; warranted label is Almost Certain: Attack. Same Attack direction and adjacent category.",
+  "confidence_label_null_reason": null
+}

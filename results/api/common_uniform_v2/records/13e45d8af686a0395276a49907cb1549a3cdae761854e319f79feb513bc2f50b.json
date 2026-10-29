@@ -1,0 +1,293 @@
+{
+  "prompt_id": "834",
+  "scenario": "1",
+  "variant": "sudo_pam",
+  "step": "53",
+  "split": "train",
+  "group_id": "[\"1\", \"53\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/auth.log:\n        Sep 22 14:06:29 videoserver sudo: www-data : TTY=pts/0 ; PWD=/tmp ; USER=root ; COMMAND=/usr/bin/dmesg -H\n        Sep 22 14:06:29 videoserver sudo: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=33)\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1758549989.168:12891): item=0 name=\"/usr/bin/sudo\" inode=26845 dev=fe:01 mode=0104755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758549989.168:12891): item=1 name=\"/usr/bin/sudo\" inode=26845 dev=fe:01 mode=0104755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758549989.168:12891): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758549989.168:12891): proctitle=7375646F00646D657367002D48\n        type=SYSCALL msg=audit(1758549989.176:12892): arch=c000003e syscall=257 success=yes exit=5 a0=ffffff9c a1=7f3f7f59dcec a2=0 a3=0 items=1 ppid=2634 pid=16835 auid=4294967295 uid=0 gid=33 euid=1 suid=0 fsuid=1 egid=0 sgid=33 fsgid=0 tty=pts0 ses=4294967295 comm=\"sudo\" exe=\"/usr/bin/sudo\" subj==unconfined\u001dARCH=x86_64 SYSCALL=openat AUID=\"unset\" UID=\"root\" GID=\"www-data\" EUID=\"daemon\" SUID=\"root\" FSUID=\"daemon\" EGID=\"root\" SGID=\"www-data\" FSGID=\"root\"\n        type=PATH msg=audit(1758549989.176:12892): item=0 name=\"/etc/sudoers\" inode=26841 dev=fe:01 mode=0100440 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758549989.176:12892): proctitle=7375646F00646D657367002D48\n        type=SYSCALL msg=audit(1758549989.180:12893): arch=c000003e syscall=257 success=yes exit=6 a0=ffffff9c a1=7f3f7f5c8176 a2=80000 a3=0 items=1 ppid=2634 pid=16835 auid=4294967295 uid=33 gid=33 euid=0 suid=0 fsuid=0 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"sudo\" exe=\"/usr/bin/sudo\" subj==unconfined\u001dARCH=x86_64 SYSCALL=openat AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=PATH msg=audit(1758549989.180:12893): item=0 name=\"/etc/shadow\" inode=30247 dev=fe:01 mode=0100640 ouid=0 ogid=42 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"shadow\"\n        type=PROCTITLE msg=audit(1758549989.180:12893): proctitle=7375646F00646D657367002D48\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-09-22T14:06:29.467+0000\",\"rule\":{\"level\":4,\"description\":\"First time user executed sudo.\",\"id\":\"5403\",\"firedtimes\":1,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758549989.11731782\",\"full_log\":\"Sep 22 14:06:29 videoserver sudo[16835]: www-data : TTY=pts/0 ; PWD=/tmp ; USER=root ; COMMAND=/usr/bin/dmesg -H\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 22 14:06:29\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"www-data\",\"dstuser\":\"root\",\"tty\":\"pts/0\",\"pwd\":\"/tmp\",\"command\":\"/usr/bin/dmesg -H\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-09-22T14:06:29.479+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":1,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758549989.11732106\",\"full_log\":\"Sep 22 14:06:29 videoserver sudo[16835]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=33)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 22 14:06:29\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"33\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-09-22T14:06:29.568+0000\",\"rule\":{\"level\":4,\"description\":\"First time user executed sudo.\",\"id\":\"5403\",\"firedtimes\":2,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758549989.11732544\",\"full_log\":\"Sep 22 14:06:29 videoserver sudo: www-data : TTY=pts/0 ; PWD=/tmp ; USER=root ; COMMAND=/usr/bin/dmesg -H\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 22 14:06:29\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"www-data\",\"dstuser\":\"root\",\"tty\":\"pts/0\",\"pwd\":\"/tmp\",\"command\":\"/usr/bin/dmesg -H\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-09-22T14:06:29.568+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":2,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758549989.11732870\",\"full_log\":\"Sep 22 14:06:29 videoserver sudo: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=33)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 22 14:06:29\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"33\"},\"location\":\"/var/log/auth.log\"}",
+  "prompt_sha256": "aa2efa99726238746cb60d364749cf2a80b1337380a13e87dcf10ea8a3ca4498",
+  "ground_truth": "[\"T1548.003\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1548.003\", \"T1068\", \"T1059.004\", \"T1007\", \"T1082\", \"T1033\", \"T1016\", \"T1203\", \"T1190\", \"T1059\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show the web service account www-data running sudo from /tmp to execute /usr/bin/dmesg -H as root, which is highly unusual for normal service behavior and suggests attempted privilege escalation via sudo. The command itself is reconnaissance-oriented, but the key behavior is abuse of sudo/setuid elevation to gain root privileges.\"}",
+  "teacher_response_sha256": "c19b443927de082a4a65a24e652f77fb3fe7304ae909600b07f7ba88b88d31e0",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "llama3b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "8d972aa104e73eee77cae5fd8ad0d51ba05ed930a8ddb187f420e3fe554b5f0f:834",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1190\", \n    \"T1210\", \n    \"T1211\", \n    \"T1212\", \n    \"T1213\", \n    \"T1214\", \n    \"T1215\", \n    \"T1216\", \n    \"T1217\", \n    \"T1218\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The logs indicate an attack due to the presence of suspicious sudo commands and PAM login sessions. The use of sudo with elevated privileges and the creation of new PAM sessions suggest a potential attack on the system.\"\n}\n```\n\nExplanation:\n\n* The presence of suspicious sudo commands (e.g., `sudo: www-data : TTY=pts/0 ; PWD=/tmp ; USER=root ; COMMAND=/usr/bin/dmesg -H`) and PAM login sessions (e.g., `pam_unix(sudo:session): session opened for user root(uid=0) by (uid=33)`) suggest a potential attack on the system.\n* The use of sudo with elevated privileges (e.g., `sudo: www-data : TTY=pts/0 ; PWD=/tmp ; USER=root ; COMMAND=/usr/bin/dmesg -H`) is a common technique used by attackers to gain elevated privileges on the system.\n* The creation of new PAM sessions (e.g., `pam_unix(sudo:session): session opened for user root(uid=0) by (uid=33)`) suggests that the attacker is attempting to create a new login session with elevated privileges.\n* The presence of suspicious system calls (e.g., `SYSCALL=openat`) and file system modifications (e.g., `PATH` and `AUDIT` messages) further supports the conclusion that the logs indicate an attack.\n\nNote: The confidence level is set to \"Certain: Attack\" because the logs contain clear indicators of a potential attack, including suspicious sudo commands and PAM login sessions. However, it's always possible that the logs may be misinterpreted or that the attack may be a false positive.",
+  "candidate_response_sha256": "b64e590df079907edc8855f3f0a8cf3c1b3a8f5dab62c09d40f7ad54ddb1d7d6",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "8d972aa104e73eee77cae5fd8ad0d51ba05ed930a8ddb187f420e3fe554b5f0f",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 2349,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 442,
+  "candidate_elapsed_seconds": 12.759265940998375,
+  "candidate_output_tokens_per_second": 34.641491292986935,
+  "candidate_peak_allocated_bytes": 6879735808,
+  "candidate_peak_reserved_bytes": 9388949504,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "9515c5f7e20ef058098c460e1ee2688368c35b455ec2b403e1fb3611ece57986",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1548.003\",\n    \"T1068\",\n    \"T1548\",\n    \"T1078\",\n    \"T1059.004\",\n    \"T1082\",\n    \"T1005\",\n    \"T1546\",\n    \"T1543\",\n    \"T1222\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The web server service account www-data (uid 33) was used to run sudo as root to execute /usr/bin/dmesg from a /tmp working directory, and the audit log shows sudo reading /etc/shadow with effective root privileges, which is highly anomalous for a web service account and consistent with privilege escalation via sudo misconfiguration or abuse. The combination of a web user, a temporary directory, and access to credential material points strongly to malicious activity rather than routine administration.\"\n}\n```",
+  "haiku_reference_response_sha256": "427eb36e61176e30dbbdb5f5b6ce0234826ad5c86b4a72963e5cbd06b3c13418",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "d77b3bfd89d489341c2c7043d603d3e5af8f145da1e9db6c961270168b62157c",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1548.003. The candidate's ten predictions are T1190, T1210 through T1218; T1548.003 does not appear, so coverage is zero.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"The logs do show www-data running sudo as root from /tmp and reading /etc/shadow, which supports privilege escalation generally, but the listed IDs (T1210-T1218 lateral movement/persistence/defense evasion families, T1190 exploit public-facing app) are not specifically supported by the observations.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"The explanation cites actual log artifacts (www-data sudo, dmesg, pam session, openat syscalls, PATH messages) and mostly accurately describes them, though it overstates that PAM sessions and sudo use are suspicious without distinguishing inference clearly and mislabels the sequence as 'suspicious' without detail on /etc/shadow access.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The explanation justifies sudo abuse for elevated privileges, which aligns with T1548 family, but none of the actual predicted IDs are tied to specific reasons; the sequential T1210-T1218 list appears unmotivated.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Candidate label is Certain: Attack, which is overconfident given ambiguity (dmesg run via sudo by a web user could be a misconfigured or test action) and the candidate's own note acknowledges possible false positives while still claiming certainty.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is fenced JSON followed by substantial extra prose and a note, violating the requested valid-JSON-only format; the explanation also exceeds the 1-2 sentence limit and the techniques list is an unjustified sequence.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1190\",\"T1210\",\"T1211\",\"T1212\",\"T1213\",\"T1214\",\"T1215\",\"T1216\",\"T1217\",\"T1218\"],\"failure_labels\":[\"missed_ground_truth_technique\",\"unsupported_technique_sequence\",\"overconfident_label\",\"format_violation_extra_prose\",\"verbose_explanation\"],\"prediction_similarity\":{\"score\":1,\"reason\":\"Predictions share no IDs with the reference list except none; only conceptual overlap in privilege escalation family is absent in ID form, so little overlap.\"},\"reasoning_similarity\":{\"score\":2,\"reason\":\"Both identify sudo execution by www-data as root and privilege escalation concern, but the candidate omits /etc/shadow emphasis in its framing and draws a different, less specific conclusion.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":{\"score\":3,\"reason\":\"Certain: Attack and Almost Certain: Attack are adjacent in the same Attack direction.\"},\"confidence_label_agreement_reason\":\"Same attack direction, one step apart; candidate is somewhat overconfident relative to the evidence.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "9de0f166f3cd6fc8248c4aaa05ebff273bacb864d32bd57ee323593a89c88ca4",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTviMwqRpYsUDVj1eTgx",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1548.003. The candidate's ten predictions are T1190, T1210 through T1218; T1548.003 does not appear, so coverage is zero.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"The logs do show www-data running sudo as root from /tmp and reading /etc/shadow, which supports privilege escalation generally, but the listed IDs (T1210-T1218 lateral movement/persistence/defense evasion families, T1190 exploit public-facing app) are not specifically supported by the observations.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"The explanation cites actual log artifacts (www-data sudo, dmesg, pam session, openat syscalls, PATH messages) and mostly accurately describes them, though it overstates that PAM sessions and sudo use are suspicious without distinguishing inference clearly and mislabels the sequence as 'suspicious' without detail on /etc/shadow access.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The explanation justifies sudo abuse for elevated privileges, which aligns with T1548 family, but none of the actual predicted IDs are tied to specific reasons; the sequential T1210-T1218 list appears unmotivated.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Candidate label is Certain: Attack, which is overconfident given ambiguity (dmesg run via sudo by a web user could be a misconfigured or test action) and the candidate's own note acknowledges possible false positives while still claiming certainty.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is fenced JSON followed by substantial extra prose and a note, violating the requested valid-JSON-only format; the explanation also exceeds the 1-2 sentence limit and the techniques list is an unjustified sequence.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1190\",\"T1210\",\"T1211\",\"T1212\",\"T1213\",\"T1214\",\"T1215\",\"T1216\",\"T1217\",\"T1218\"],\"failure_labels\":[\"missed_ground_truth_technique\",\"unsupported_technique_sequence\",\"overconfident_label\",\"format_violation_extra_prose\",\"verbose_explanation\"],\"prediction_similarity\":{\"score\":1,\"reason\":\"Predictions share no IDs with the reference list except none; only conceptual overlap in privilege escalation family is absent in ID form, so little overlap.\"},\"reasoning_similarity\":{\"score\":2,\"reason\":\"Both identify sudo execution by www-data as root and privilege escalation concern, but the candidate omits /etc/shadow emphasis in its framing and draws a different, less specific conclusion.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":{\"score\":3,\"reason\":\"Certain: Attack and Almost Certain: Attack are adjacent in the same Attack direction.\"},\"confidence_label_agreement_reason\":\"Same attack direction, one step apart; candidate is somewhat overconfident relative to the evidence.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 6901,
+      "output_tokens": 1070,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 6901,
+    "output_tokens": 1070,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00061255,
+  "batch_api": true,
+  "elapsed_seconds": 29703.426124811172,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 6901,
+  "output_tokens": 1070,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1548.003. The candidate's ten predictions are T1190, T1210 through T1218; T1548.003 does not appear, so coverage is zero.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"The logs do show www-data running sudo as root from /tmp and reading /etc/shadow, which supports privilege escalation generally, but the listed IDs (T1210-T1218 lateral movement/persistence/defense evasion families, T1190 exploit public-facing app) are not specifically supported by the observations.\"},\"explanation_grounding\":{\"score\":2,\"reason\":\"The explanation cites actual log artifacts (www-data sudo, dmesg, pam session, openat syscalls, PATH messages) and mostly accurately describes them, though it overstates that PAM sessions and sudo use are suspicious without distinguishing inference clearly and mislabels the sequence as 'suspicious' without detail on /etc/shadow access.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"The explanation justifies sudo abuse for elevated privileges, which aligns with T1548 family, but none of the actual predicted IDs are tied to specific reasons; the sequential T1210-T1218 list appears unmotivated.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Candidate label is Certain: Attack, which is overconfident given ambiguity (dmesg run via sudo by a web user could be a misconfigured or test action) and the candidate's own note acknowledges possible false positives while still claiming certainty.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is fenced JSON followed by substantial extra prose and a note, violating the requested valid-JSON-only format; the explanation also exceeds the 1-2 sentence limit and the techniques list is an unjustified sequence.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1190\",\"T1210\",\"T1211\",\"T1212\",\"T1213\",\"T1214\",\"T1215\",\"T1216\",\"T1217\",\"T1218\"],\"failure_labels\":[\"missed_ground_truth_technique\",\"unsupported_technique_sequence\",\"overconfident_label\",\"format_violation_extra_prose\",\"verbose_explanation\"],\"prediction_similarity\":{\"score\":1,\"reason\":\"Predictions share no IDs with the reference list except none; only conceptual overlap in privilege escalation family is absent in ID form, so little overlap.\"},\"reasoning_similarity\":{\"score\":2,\"reason\":\"Both identify sudo execution by www-data as root and privilege escalation concern, but the candidate omits /etc/shadow emphasis in its framing and draws a different, less specific conclusion.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":{\"score\":3,\"reason\":\"Certain: Attack and Almost Certain: Attack are adjacent in the same Attack direction.\"},\"confidence_label_agreement_reason\":\"Same attack direction, one step apart; candidate is somewhat overconfident relative to the evidence.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "9de0f166f3cd6fc8248c4aaa05ebff273bacb864d32bd57ee323593a89c88ca4",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1548.003. The candidate's ten predictions are T1190, T1210 through T1218; T1548.003 does not appear, so coverage is zero."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "The logs do show www-data running sudo as root from /tmp and reading /etc/shadow, which supports privilege escalation generally, but the listed IDs (T1210-T1218 lateral movement/persistence/defense evasion families, T1190 exploit public-facing app) are not specifically supported by the observations."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation cites actual log artifacts (www-data sudo, dmesg, pam session, openat syscalls, PATH messages) and mostly accurately describes them, though it overstates that PAM sessions and sudo use are suspicious without distinguishing inference clearly and mislabels the sequence as 'suspicious' without detail on /etc/shadow access."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "The explanation justifies sudo abuse for elevated privileges, which aligns with T1548 family, but none of the actual predicted IDs are tied to specific reasons; the sequential T1210-T1218 list appears unmotivated."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "Candidate label is Certain: Attack, which is overconfident given ambiguity (dmesg run via sudo by a web user could be a misconfigured or test action) and the candidate's own note acknowledges possible false positives while still claiming certainty."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Output is fenced JSON followed by substantial extra prose and a note, violating the requested valid-JSON-only format; the explanation also exceeds the 1-2 sentence limit and the techniques list is an unjustified sequence."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1190",
+      "T1210",
+      "T1211",
+      "T1212",
+      "T1213",
+      "T1214",
+      "T1215",
+      "T1216",
+      "T1217",
+      "T1218"
+    ],
+    "failure_labels": [
+      "missed_ground_truth_technique",
+      "unsupported_technique_sequence",
+      "overconfident_label",
+      "format_violation_extra_prose",
+      "verbose_explanation"
+    ],
+    "prediction_similarity": {
+      "score": 1,
+      "reason": "Predictions share no IDs with the reference list except none; only conceptual overlap in privilege escalation family is absent in ID form, so little overlap."
+    },
+    "reasoning_similarity": {
+      "score": 2,
+      "reason": "Both identify sudo execution by www-data as root and privilege escalation concern, but the candidate omits /etc/shadow emphasis in its framing and draws a different, less specific conclusion."
+    },
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": {
+      "score": 3,
+      "reason": "Certain: Attack and Almost Certain: Attack are adjacent in the same Attack direction."
+    },
+    "confidence_label_agreement_reason": "Same attack direction, one step apart; candidate is somewhat overconfident relative to the evidence.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1548.003. The candidate's ten predictions are T1190, T1210 through T1218; T1548.003 does not appear, so coverage is zero."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "The logs do show www-data running sudo as root from /tmp and reading /etc/shadow, which supports privilege escalation generally, but the listed IDs (T1210-T1218 lateral movement/persistence/defense evasion families, T1190 exploit public-facing app) are not specifically supported by the observations."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation cites actual log artifacts (www-data sudo, dmesg, pam session, openat syscalls, PATH messages) and mostly accurately describes them, though it overstates that PAM sessions and sudo use are suspicious without distinguishing inference clearly and mislabels the sequence as 'suspicious' without detail on /etc/shadow access."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "The explanation justifies sudo abuse for elevated privileges, which aligns with T1548 family, but none of the actual predicted IDs are tied to specific reasons; the sequential T1210-T1218 list appears unmotivated."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "Candidate label is Certain: Attack, which is overconfident given ambiguity (dmesg run via sudo by a web user could be a misconfigured or test action) and the candidate's own note acknowledges possible false positives while still claiming certainty."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Output is fenced JSON followed by substantial extra prose and a note, violating the requested valid-JSON-only format; the explanation also exceeds the 1-2 sentence limit and the techniques list is an unjustified sequence."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1190",
+    "T1210",
+    "T1211",
+    "T1212",
+    "T1213",
+    "T1214",
+    "T1215",
+    "T1216",
+    "T1217",
+    "T1218"
+  ],
+  "judge_failure_labels": [
+    "missed_ground_truth_technique",
+    "unsupported_technique_sequence",
+    "overconfident_label",
+    "format_violation_extra_prose",
+    "verbose_explanation"
+  ],
+  "judge_prediction_similarity": {
+    "score": 1,
+    "reason": "Predictions share no IDs with the reference list except none; only conceptual overlap in privilege escalation family is absent in ID form, so little overlap."
+  },
+  "judge_reasoning_similarity": {
+    "score": 2,
+    "reason": "Both identify sudo execution by www-data as root and privilege escalation concern, but the candidate omits /etc/shadow emphasis in its framing and draws a different, less specific conclusion."
+  },
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": {
+    "score": 3,
+    "reason": "Certain: Attack and Almost Certain: Attack are adjacent in the same Attack direction."
+  },
+  "confidence_label_agreement_reason": "Same attack direction, one step apart; candidate is somewhat overconfident relative to the evidence.",
+  "confidence_label_null_reason": null
+}

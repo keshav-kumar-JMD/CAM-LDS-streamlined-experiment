@@ -1,0 +1,269 @@
+{
+  "prompt_id": "596",
+  "scenario": "1",
+  "variant": "cron_localaccount",
+  "step": "10",
+  "split": "test",
+  "group_id": "[\"1\", \"10\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758700449.832:4800): arch=c000003e syscall=59 success=yes exit=0 a0=5626e92215c0 a1=5626e921f120 a2=5626e9221e80 a3=fffffffffffff286 items=3 ppid=3026 pid=3033 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"stty\" exe=\"/usr/bin/stty\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1758700449.832:4800): argc=5 a0=\"stty\" a1=\"rows\" a2=\"38\" a3=\"columns\" a4=\"116\"\n        type=PATH msg=audit(1758700449.832:4800): item=0 name=\"/usr/bin/stty\" inode=845 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758700449.832:4800): item=1 name=\"/usr/bin/stty\" inode=845 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758700449.832:4800): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758700449.832:4800): proctitle=7374747900726F777300333800636F6C756D6E7300313136",
+  "prompt_sha256": "a421543e1ee1fe4230dd20e50bb7173f68873fb16b832d8afdf864a61bd906c0",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1100\", \"T1059\", \"T1021.004\", \"T1219\", \"T1036\", \"T1562.003\", \"T1078\", \"T1133\", \"T1082\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit log shows /usr/bin/stty being executed by the web server account www-data with an unset audit session on a pseudo-terminal to set rows/columns, which is commonly seen during interactive reverse shell TTY stabilization. While stty itself can be benign, execution under www-data in this context suggests an attacker-operated shell.\"}",
+  "teacher_response_sha256": "6c8f3696ef114243b8729e8688e5263a0cb9298f4d066e8f2a9b62acd61be57e",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "qwen7b",
+  "condition": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "8c5dc808ed1e8745ae5381a92f5d5a8e19931d5d46dfc2f58dd52d30a24eff6a:596",
+  "candidate_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1033\", \"T1078\", \"T1082\", \"T1059.006\", \"T1059.003\", \"T1059.005\", \"T1059.002\", \"T1059.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show the web server user www-data executing stty to set terminal rows and columns to 38x116, which is a common size for a terminal emulator. While this can be normal for web-based terminal access, the unusual dimensions and the web server context suggest it may be related to remote terminal access or command execution.\"}",
+  "candidate_response_sha256": "9fe32dfa37bfa4173ad788eaaab1d55c5c3c319912d7dd48d349afe73e5ee0ed",
+  "candidate_confidence_label_strict": "Somewhat Certain: Attack",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "qwen7b",
+  "candidate_condition": "joint",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "8c5dc808ed1e8745ae5381a92f5d5a8e19931d5d46dfc2f58dd52d30a24eff6a",
+  "candidate_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "candidate_adapter_sha256": "af72c83767941fc11be6ec95fa0873ba46b73b05f291c2243abe1a6983a075b5",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1026,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 184,
+  "candidate_elapsed_seconds": 9.268823612997949,
+  "candidate_output_tokens_per_second": 19.851494394819564,
+  "candidate_peak_allocated_bytes": 15542555136,
+  "candidate_peak_reserved_bytes": 19281215488,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": true,
+  "candidate_required_fields_present": true,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "7af369139bc067bf0292852f5a4ef54a2d55fb88020f5aa6c875d212ad02270d",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1059\", \"T1059.006\", \"T1082\", \"T1047\", \"T1036\", \"T1021\", \"T1569\", \"T1543\", \"T1090\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The web server account www-data (UID 33) spawning /usr/bin/stty with terminal-sizing arguments (rows 38, columns 116) is unusual for a web service and is a classic sign of an interactive shell being stabilized after a reverse shell or webshell was obtained, as attackers commonly run 'stty rows/columns' to fix terminal dimensions. However, stty is also occasionally invoked legitimately by applications that manage pseudo-terminals, so the evidence is suggestive rather than conclusive.\"\n}\n```",
+  "haiku_reference_response_sha256": "f4b9dd709b36eb936b896de9a1a4390cd407da3a05de5e65a498e353a0f63404",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "abbe09578de8cfbdaa83dfd8fc271576f63e35e58d71028e87a32857b26a86a5",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 3, \"reason\": \"Ground truth is T1059. The candidate's first ten predictions include T1059, T1059.004, T1059.006, T1059.003, T1059.005, T1059.002, T1059.001, T1033, T1078, T1082. Since only one ground-truth ID exists and it appears in the top ten, coverage is complete, though the candidate's list is dominated by subtechniques which are not individually supported.\"}, \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"The logs show www-data running stty with rows/columns arguments, which supports a shell/terminal context and thus T1059 broadly. Support for specific subtechniques like T1059.004 (Unix shell) is plausible, but T1059.003/.005/.006/.002/.001 (Windows cmd, VBScript, Python, AppleScript, PowerShell) have no supporting artifact. T1033, T1078 are weakly supported at best.\"}, \"explanation_grounding\": {\"score\": 3, \"reason\": \"Explanation accurately cites www-data executing stty with 38x116 terminal size. It distinguishes the observed pattern from the inference of remote terminal access. It does not invent facts, though it asserts 116x38 is 'a common size' without support.\"}, \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"The explanation supports terminal/command execution generally, which aligns with T1059, but does not justify the many sub-ID predictions or the discovery/account techniques (T1033, T1078, T1082) that are included.\"}, \"confidence_evidence_support\": {\"score\": 3, \"reason\": \"Somewhat Certain: Attack is proportionate given the unusual web-server user running a terminal-sizing command, while acknowledging the benign possibility of web-based terminal access.\"}, \"instruction_adherence\": {\"score\": 3, \"reason\": \"Valid JSON with all required fields, ten techniques, a valid confidence label, and a short explanation. The explanation is slightly longer than required but within 1-2 sentences.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1059.004\", \"T1059\", \"T1033\", \"T1078\", \"T1082\", \"T1059.006\", \"T1059.003\", \"T1059.005\", \"T1059.002\", \"T1059.001\"], \"failure_labels\": [\"over-enumeration of subtechniques without artifact support\", \"weak support for discovery and valid-account predictions\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": \"Somewhat Certain: Attack\", \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\", \"confidence_label_agreement\": 4, \"confidence_label_agreement_reason\": \"Candidate label matches the independently warranted label exactly.\", \"confidence_label_null_reason\": null}",
+  "response_hash": "24f74f87aa3085c159d187728d4ca10516220df9c00401123f0159f93e66d525",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwu14u3ZRi96kHvB33g",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 3, \"reason\": \"Ground truth is T1059. The candidate's first ten predictions include T1059, T1059.004, T1059.006, T1059.003, T1059.005, T1059.002, T1059.001, T1033, T1078, T1082. Since only one ground-truth ID exists and it appears in the top ten, coverage is complete, though the candidate's list is dominated by subtechniques which are not individually supported.\"}, \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"The logs show www-data running stty with rows/columns arguments, which supports a shell/terminal context and thus T1059 broadly. Support for specific subtechniques like T1059.004 (Unix shell) is plausible, but T1059.003/.005/.006/.002/.001 (Windows cmd, VBScript, Python, AppleScript, PowerShell) have no supporting artifact. T1033, T1078 are weakly supported at best.\"}, \"explanation_grounding\": {\"score\": 3, \"reason\": \"Explanation accurately cites www-data executing stty with 38x116 terminal size. It distinguishes the observed pattern from the inference of remote terminal access. It does not invent facts, though it asserts 116x38 is 'a common size' without support.\"}, \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"The explanation supports terminal/command execution generally, which aligns with T1059, but does not justify the many sub-ID predictions or the discovery/account techniques (T1033, T1078, T1082) that are included.\"}, \"confidence_evidence_support\": {\"score\": 3, \"reason\": \"Somewhat Certain: Attack is proportionate given the unusual web-server user running a terminal-sizing command, while acknowledging the benign possibility of web-based terminal access.\"}, \"instruction_adherence\": {\"score\": 3, \"reason\": \"Valid JSON with all required fields, ten techniques, a valid confidence label, and a short explanation. The explanation is slightly longer than required but within 1-2 sentences.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1059.004\", \"T1059\", \"T1033\", \"T1078\", \"T1082\", \"T1059.006\", \"T1059.003\", \"T1059.005\", \"T1059.002\", \"T1059.001\"], \"failure_labels\": [\"over-enumeration of subtechniques without artifact support\", \"weak support for discovery and valid-account predictions\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": \"Somewhat Certain: Attack\", \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\", \"confidence_label_agreement\": 4, \"confidence_label_agreement_reason\": \"Candidate label matches the independently warranted label exactly.\", \"confidence_label_null_reason\": null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3425,
+      "output_tokens": 951,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3425,
+    "output_tokens": 951,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000409,
+  "batch_api": true,
+  "elapsed_seconds": 7510.414649963379,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3425,
+  "output_tokens": 951,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 3, \"reason\": \"Ground truth is T1059. The candidate's first ten predictions include T1059, T1059.004, T1059.006, T1059.003, T1059.005, T1059.002, T1059.001, T1033, T1078, T1082. Since only one ground-truth ID exists and it appears in the top ten, coverage is complete, though the candidate's list is dominated by subtechniques which are not individually supported.\"}, \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"The logs show www-data running stty with rows/columns arguments, which supports a shell/terminal context and thus T1059 broadly. Support for specific subtechniques like T1059.004 (Unix shell) is plausible, but T1059.003/.005/.006/.002/.001 (Windows cmd, VBScript, Python, AppleScript, PowerShell) have no supporting artifact. T1033, T1078 are weakly supported at best.\"}, \"explanation_grounding\": {\"score\": 3, \"reason\": \"Explanation accurately cites www-data executing stty with 38x116 terminal size. It distinguishes the observed pattern from the inference of remote terminal access. It does not invent facts, though it asserts 116x38 is 'a common size' without support.\"}, \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"The explanation supports terminal/command execution generally, which aligns with T1059, but does not justify the many sub-ID predictions or the discovery/account techniques (T1033, T1078, T1082) that are included.\"}, \"confidence_evidence_support\": {\"score\": 3, \"reason\": \"Somewhat Certain: Attack is proportionate given the unusual web-server user running a terminal-sizing command, while acknowledging the benign possibility of web-based terminal access.\"}, \"instruction_adherence\": {\"score\": 3, \"reason\": \"Valid JSON with all required fields, ten techniques, a valid confidence label, and a short explanation. The explanation is slightly longer than required but within 1-2 sentences.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1059.004\", \"T1059\", \"T1033\", \"T1078\", \"T1082\", \"T1059.006\", \"T1059.003\", \"T1059.005\", \"T1059.002\", \"T1059.001\"], \"failure_labels\": [\"over-enumeration of subtechniques without artifact support\", \"weak support for discovery and valid-account predictions\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": \"Somewhat Certain: Attack\", \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\", \"confidence_label_agreement\": 4, \"confidence_label_agreement_reason\": \"Candidate label matches the independently warranted label exactly.\", \"confidence_label_null_reason\": null}",
+  "judge_response_sha256": "24f74f87aa3085c159d187728d4ca10516220df9c00401123f0159f93e66d525",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 3,
+        "reason": "Ground truth is T1059. The candidate's first ten predictions include T1059, T1059.004, T1059.006, T1059.003, T1059.005, T1059.002, T1059.001, T1033, T1078, T1082. Since only one ground-truth ID exists and it appears in the top ten, coverage is complete, though the candidate's list is dominated by subtechniques which are not individually supported."
+      },
+      "prediction_evidence_support": {
+        "score": 2,
+        "reason": "The logs show www-data running stty with rows/columns arguments, which supports a shell/terminal context and thus T1059 broadly. Support for specific subtechniques like T1059.004 (Unix shell) is plausible, but T1059.003/.005/.006/.002/.001 (Windows cmd, VBScript, Python, AppleScript, PowerShell) have no supporting artifact. T1033, T1078 are weakly supported at best."
+      },
+      "explanation_grounding": {
+        "score": 3,
+        "reason": "Explanation accurately cites www-data executing stty with 38x116 terminal size. It distinguishes the observed pattern from the inference of remote terminal access. It does not invent facts, though it asserts 116x38 is 'a common size' without support."
+      },
+      "prediction_reason_alignment": {
+        "score": 2,
+        "reason": "The explanation supports terminal/command execution generally, which aligns with T1059, but does not justify the many sub-ID predictions or the discovery/account techniques (T1033, T1078, T1082) that are included."
+      },
+      "confidence_evidence_support": {
+        "score": 3,
+        "reason": "Somewhat Certain: Attack is proportionate given the unusual web-server user running a terminal-sizing command, while acknowledging the benign possibility of web-based terminal access."
+      },
+      "instruction_adherence": {
+        "score": 3,
+        "reason": "Valid JSON with all required fields, ten techniques, a valid confidence label, and a short explanation. The explanation is slightly longer than required but within 1-2 sentences."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1059.004",
+      "T1059",
+      "T1033",
+      "T1078",
+      "T1082",
+      "T1059.006",
+      "T1059.003",
+      "T1059.005",
+      "T1059.002",
+      "T1059.001"
+    ],
+    "failure_labels": [
+      "over-enumeration of subtechniques without artifact support",
+      "weak support for discovery and valid-account predictions"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": 4,
+    "confidence_label_agreement_reason": "Candidate label matches the independently warranted label exactly.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 3,
+    "reason": "Ground truth is T1059. The candidate's first ten predictions include T1059, T1059.004, T1059.006, T1059.003, T1059.005, T1059.002, T1059.001, T1033, T1078, T1082. Since only one ground-truth ID exists and it appears in the top ten, coverage is complete, though the candidate's list is dominated by subtechniques which are not individually supported."
+  },
+  "score_prediction_evidence_support": {
+    "score": 2,
+    "reason": "The logs show www-data running stty with rows/columns arguments, which supports a shell/terminal context and thus T1059 broadly. Support for specific subtechniques like T1059.004 (Unix shell) is plausible, but T1059.003/.005/.006/.002/.001 (Windows cmd, VBScript, Python, AppleScript, PowerShell) have no supporting artifact. T1033, T1078 are weakly supported at best."
+  },
+  "score_explanation_grounding": {
+    "score": 3,
+    "reason": "Explanation accurately cites www-data executing stty with 38x116 terminal size. It distinguishes the observed pattern from the inference of remote terminal access. It does not invent facts, though it asserts 116x38 is 'a common size' without support."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 2,
+    "reason": "The explanation supports terminal/command execution generally, which aligns with T1059, but does not justify the many sub-ID predictions or the discovery/account techniques (T1033, T1078, T1082) that are included."
+  },
+  "score_confidence_evidence_support": {
+    "score": 3,
+    "reason": "Somewhat Certain: Attack is proportionate given the unusual web-server user running a terminal-sizing command, while acknowledging the benign possibility of web-based terminal access."
+  },
+  "score_instruction_adherence": {
+    "score": 3,
+    "reason": "Valid JSON with all required fields, ten techniques, a valid confidence label, and a short explanation. The explanation is slightly longer than required but within 1-2 sentences."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1059.004",
+    "T1059",
+    "T1033",
+    "T1078",
+    "T1082",
+    "T1059.006",
+    "T1059.003",
+    "T1059.005",
+    "T1059.002",
+    "T1059.001"
+  ],
+  "judge_failure_labels": [
+    "over-enumeration of subtechniques without artifact support",
+    "weak support for discovery and valid-account predictions"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": 4,
+  "confidence_label_agreement_reason": "Candidate label matches the independently warranted label exactly.",
+  "confidence_label_null_reason": null
+}

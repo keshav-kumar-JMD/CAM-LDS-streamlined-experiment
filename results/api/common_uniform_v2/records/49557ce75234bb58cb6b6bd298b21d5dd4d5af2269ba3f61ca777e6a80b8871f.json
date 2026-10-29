@@ -1,0 +1,273 @@
+{
+  "prompt_id": "72",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "28",
+  "split": "test",
+  "group_id": "[\"2\", \"28\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/syslog:\n        Oct  1 11:39:25 videoserver systemd[1]: Reloading.\n        Oct  1 11:39:26 videoserver systemd[1]: Configuration file /lib/systemd/system/zoneminder.service is marked world-writable. Please remove world writability permission bits. Proceeding anyway.\n    logs/log/daemon.log:\n        Oct  1 11:39:25 videoserver systemd[1]: Reloading.\n        Oct  1 11:39:26 videoserver systemd[1]: Configuration file /lib/systemd/system/zoneminder.service is marked world-writable. Please remove world writability permission bits. Proceeding anyway.\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1759318765.828:4831): item=1 name=\"/usr/bin/systemctl\" inode=16453 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318765.828:4831): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318765.828:4831): proctitle=737368643A20726F6F74407074732F30\n        type=SYSCALL msg=audit(1759318765.828:4832): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=5600f19d50d0 a2=17 a3=7ffca27b7ef4 items=1 ppid=2880 pid=3024 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"systemctl\" exe=\"/usr/bin/systemctl\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759318765.828:4832): saddr=01002F72756E2F73797374656D642F7072697661746500\u001dSADDR={ saddr_fam=local path=/run/systemd/private }\n        type=PATH msg=audit(1759318765.828:4832): item=0 name=\"/run/systemd/private\" inode=282 dev=00:17 mode=0140777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318765.828:4832): proctitle=737368643A20726F6F74407074732F30\n        type=SYSCALL msg=audit(1759318765.880:4842): arch=c000003e syscall=59 success=yes exit=0 a0=5610a3f0bd60 a1=7fffb3ac59b0 a2=5610a3f0f9d0 a3=0 items=3 ppid=3026 pid=3030 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"systemd-cryptse\" exe=\"/usr/lib/systemd/system-generators/systemd-cryptsetup-generator\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759318765.880:4842): argc=4 a0=\"/usr/lib/systemd/system-generators/systemd-cryptsetup-generator\" a1=\"/run/systemd/generator\" a2=\"/run/systemd/generator.early\" a3=\"/run/systemd/generator.late\"\n        type=PATH msg=audit(1759318765.880:4842): item=0 name=\"/usr/lib/systemd/system-generators/systemd-cryptsetup-generator\" inode=16659 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "30446340f89e3276e99cfccbe6b0bc49c93267a2e7e4ade992742ac177f7ba77",
+  "ground_truth": "[\"T1543.002\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1543.002\", \"T1574.010\", \"T1222.002\", \"T1036.005\", \"T1562.001\", \"T1059.004\", \"T1078\", \"T1548.003\", \"T1105\", \"T1027\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show systemd being reloaded via root SSH while `/lib/systemd/system/zoneminder.service` is world-writable, which is a suspicious service configuration weakness consistent with systemd service persistence or hijacking. Although only a reload and warning are shown, world-writable system service files are unusual and may indicate tampering or preparation for persistence.\"}",
+  "teacher_response_sha256": "671c20bb813740a623dda106eb88924adc27fc37e771d0e8daf45d62f255af29",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "mistral7b",
+  "condition": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "84e1c751e8683f56bb5ed622764f1814edbbb2193bff9ba96f270c1872a76ae1:72",
+  "candidate_response_raw": "{ \"techniques\": [\"T1543.003\", \"T1543\", \"T1059.004\", \"T1059\", \"T1070.004\", \"T1036\", \"T1027\", \"T1005\", \"T1053\", \"T1082.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root executing `systemctl reload zoneminder.service`, which is consistent with systemd service reloading/configuration modification. Zoneminder is a surveillance software, and reloading a service from a world-writable configuration file can be used to modify or inject malicious behavior. However, the evidence is limited to a single configuration reload event, so the certainty is moderate.\" }",
+  "candidate_response_sha256": "93b178d620b634fc687a7ba880038ef1ecf62d196f009d8c92e0836241b83041",
+  "candidate_confidence_label_strict": "Somewhat Certain: Attack",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "joint",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "84e1c751e8683f56bb5ed622764f1814edbbb2193bff9ba96f270c1872a76ae1",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_adapter_sha256": "61200e033717e929636f3fad85373040743b618ecf9f82b058baebbc7a32e4a3",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1833,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 196,
+  "candidate_elapsed_seconds": 10.926205748997745,
+  "candidate_output_tokens_per_second": 17.938523628660295,
+  "candidate_peak_allocated_bytes": 15005459456,
+  "candidate_peak_reserved_bytes": 18171822080,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": true,
+  "candidate_required_fields_present": true,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "c6a08a95f4c6eaec26f0200fd3ec5493f4cbf91d9093c6a91a48295282ae8a29",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1543.002\", \"T1059.004\", \"T1053.006\", \"T1036\", \"T1574.010\", \"T1222.002\", \"T1562.001\", \"T1569.002\", \"T1078\", \"T1548\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show routine systemd daemon reloads, the standard systemd-cryptsetup-generator executing during boot/reload, and systemctl communicating with /run/systemd/private, all run by root as expected system behavior. The only anomaly is a world-writable warning on zoneminder.service, which is a misconfiguration worth remediating rather than evidence of an active attack.\"\n}\n```",
+  "haiku_reference_response_sha256": "37c7ae6dc528b46187d50ac0d828dfe5654ba66d7a64e9b5feb202992417dfc1",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "6da6b6dc6a31e2a47fb4c88d97392fddc9adf6a1ed3d5375de67c75fb6719700",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 2, \"reason\": \"Ground truth is T1543.002. Candidate lists T1543.003 and T1543 (parent of 002/003 but not the exact ID), so exact-ID coverage is 0 of 1 among the predicted list... ground truth T1543.002 is absent from the ten predictions, so coverage is 0.\"}, \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"Predicting T1543 family (service creation/modification) is partly supported by the world-writable zoneminder.service unit file and systemd reload, but the 'systemctl reload' interpretation of the logs is loose; many other predictions (T1005, T1027, T1070.004, T1082.001) lack support in the logs.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"Explanation cites root executing systemctl and the zoneminder service and world-writable warning, which are real. However it misstates the event as a 'systemctl reload zoneminder.service' command and does not mention the systemd-cryptsetup-generator execve, which is the dominant artifact.\"}, \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"Top prediction T1543.003 is connected to the service-modification reasoning, which is appropriate, but the broader list is not tied to specific artifacts.\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"Candidate labels 'Somewhat Certain: Attack' based on a single benign-looking reload and a world-writable warning that is a misconfiguration; the logs look like routine systemd activity, so attack confidence is disproportionate.\"}, \"instruction_adherence\": {\"score\": 3, \"reason\": \"Valid JSON with all required fields, a 10-item technique list, a recognized confidence label, and a brief explanation; the explanation is slightly over-long but within reason.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1543.003\", \"T1543\", \"T1059.004\", \"T1059\", \"T1070.004\", \"T1036\", \"T1027\", \"T1005\", \"T1053\", \"T1082.001\"], \"failure_labels\": [\"exact_id_miss\", \"over_attack_confidence\", \"unsupported_technique_breadth\", \"log_misreading\"], \"prediction_similarity\": 2, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Somewhat Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": 0, \"confidence_label_agreement_reason\": \"Candidate asserts attack with moderate certainty while the logs show routine root systemd activity; directions opposed at the Attack/Normal level, which is a major disagreement.\", \"confidence_label_null_reason\": null}",
+  "response_hash": "c41d8869a829ade75d9610c36e0ecba07706359d0707d658168d99e9449fc5f3",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwPfRtGtWBwdQBzpbM3",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 2, \"reason\": \"Ground truth is T1543.002. Candidate lists T1543.003 and T1543 (parent of 002/003 but not the exact ID), so exact-ID coverage is 0 of 1 among the predicted list... ground truth T1543.002 is absent from the ten predictions, so coverage is 0.\"}, \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"Predicting T1543 family (service creation/modification) is partly supported by the world-writable zoneminder.service unit file and systemd reload, but the 'systemctl reload' interpretation of the logs is loose; many other predictions (T1005, T1027, T1070.004, T1082.001) lack support in the logs.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"Explanation cites root executing systemctl and the zoneminder service and world-writable warning, which are real. However it misstates the event as a 'systemctl reload zoneminder.service' command and does not mention the systemd-cryptsetup-generator execve, which is the dominant artifact.\"}, \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"Top prediction T1543.003 is connected to the service-modification reasoning, which is appropriate, but the broader list is not tied to specific artifacts.\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"Candidate labels 'Somewhat Certain: Attack' based on a single benign-looking reload and a world-writable warning that is a misconfiguration; the logs look like routine systemd activity, so attack confidence is disproportionate.\"}, \"instruction_adherence\": {\"score\": 3, \"reason\": \"Valid JSON with all required fields, a 10-item technique list, a recognized confidence label, and a brief explanation; the explanation is slightly over-long but within reason.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1543.003\", \"T1543\", \"T1059.004\", \"T1059\", \"T1070.004\", \"T1036\", \"T1027\", \"T1005\", \"T1053\", \"T1082.001\"], \"failure_labels\": [\"exact_id_miss\", \"over_attack_confidence\", \"unsupported_technique_breadth\", \"log_misreading\"], \"prediction_similarity\": 2, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Somewhat Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": 0, \"confidence_label_agreement_reason\": \"Candidate asserts attack with moderate certainty while the logs show routine root systemd activity; directions opposed at the Attack/Normal level, which is a major disagreement.\", \"confidence_label_null_reason\": null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4308,
+      "output_tokens": 925,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4308,
+    "output_tokens": 925,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00044665,
+  "batch_api": true,
+  "elapsed_seconds": 29987.86035013199,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4308,
+  "output_tokens": 925,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 2, \"reason\": \"Ground truth is T1543.002. Candidate lists T1543.003 and T1543 (parent of 002/003 but not the exact ID), so exact-ID coverage is 0 of 1 among the predicted list... ground truth T1543.002 is absent from the ten predictions, so coverage is 0.\"}, \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"Predicting T1543 family (service creation/modification) is partly supported by the world-writable zoneminder.service unit file and systemd reload, but the 'systemctl reload' interpretation of the logs is loose; many other predictions (T1005, T1027, T1070.004, T1082.001) lack support in the logs.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"Explanation cites root executing systemctl and the zoneminder service and world-writable warning, which are real. However it misstates the event as a 'systemctl reload zoneminder.service' command and does not mention the systemd-cryptsetup-generator execve, which is the dominant artifact.\"}, \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"Top prediction T1543.003 is connected to the service-modification reasoning, which is appropriate, but the broader list is not tied to specific artifacts.\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"Candidate labels 'Somewhat Certain: Attack' based on a single benign-looking reload and a world-writable warning that is a misconfiguration; the logs look like routine systemd activity, so attack confidence is disproportionate.\"}, \"instruction_adherence\": {\"score\": 3, \"reason\": \"Valid JSON with all required fields, a 10-item technique list, a recognized confidence label, and a brief explanation; the explanation is slightly over-long but within reason.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1543.003\", \"T1543\", \"T1059.004\", \"T1059\", \"T1070.004\", \"T1036\", \"T1027\", \"T1005\", \"T1053\", \"T1082.001\"], \"failure_labels\": [\"exact_id_miss\", \"over_attack_confidence\", \"unsupported_technique_breadth\", \"log_misreading\"], \"prediction_similarity\": 2, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Somewhat Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": 0, \"confidence_label_agreement_reason\": \"Candidate asserts attack with moderate certainty while the logs show routine root systemd activity; directions opposed at the Attack/Normal level, which is a major disagreement.\", \"confidence_label_null_reason\": null}",
+  "judge_response_sha256": "c41d8869a829ade75d9610c36e0ecba07706359d0707d658168d99e9449fc5f3",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 2,
+        "reason": "Ground truth is T1543.002. Candidate lists T1543.003 and T1543 (parent of 002/003 but not the exact ID), so exact-ID coverage is 0 of 1 among the predicted list... ground truth T1543.002 is absent from the ten predictions, so coverage is 0."
+      },
+      "prediction_evidence_support": {
+        "score": 2,
+        "reason": "Predicting T1543 family (service creation/modification) is partly supported by the world-writable zoneminder.service unit file and systemd reload, but the 'systemctl reload' interpretation of the logs is loose; many other predictions (T1005, T1027, T1070.004, T1082.001) lack support in the logs."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "Explanation cites root executing systemctl and the zoneminder service and world-writable warning, which are real. However it misstates the event as a 'systemctl reload zoneminder.service' command and does not mention the systemd-cryptsetup-generator execve, which is the dominant artifact."
+      },
+      "prediction_reason_alignment": {
+        "score": 2,
+        "reason": "Top prediction T1543.003 is connected to the service-modification reasoning, which is appropriate, but the broader list is not tied to specific artifacts."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "Candidate labels 'Somewhat Certain: Attack' based on a single benign-looking reload and a world-writable warning that is a misconfiguration; the logs look like routine systemd activity, so attack confidence is disproportionate."
+      },
+      "instruction_adherence": {
+        "score": 3,
+        "reason": "Valid JSON with all required fields, a 10-item technique list, a recognized confidence label, and a brief explanation; the explanation is slightly over-long but within reason."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1543.003",
+      "T1543",
+      "T1059.004",
+      "T1059",
+      "T1070.004",
+      "T1036",
+      "T1027",
+      "T1005",
+      "T1053",
+      "T1082.001"
+    ],
+    "failure_labels": [
+      "exact_id_miss",
+      "over_attack_confidence",
+      "unsupported_technique_breadth",
+      "log_misreading"
+    ],
+    "prediction_similarity": 2,
+    "reasoning_similarity": 1,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": 0,
+    "confidence_label_agreement_reason": "Candidate asserts attack with moderate certainty while the logs show routine root systemd activity; directions opposed at the Attack/Normal level, which is a major disagreement.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 2,
+    "reason": "Ground truth is T1543.002. Candidate lists T1543.003 and T1543 (parent of 002/003 but not the exact ID), so exact-ID coverage is 0 of 1 among the predicted list... ground truth T1543.002 is absent from the ten predictions, so coverage is 0."
+  },
+  "score_prediction_evidence_support": {
+    "score": 2,
+    "reason": "Predicting T1543 family (service creation/modification) is partly supported by the world-writable zoneminder.service unit file and systemd reload, but the 'systemctl reload' interpretation of the logs is loose; many other predictions (T1005, T1027, T1070.004, T1082.001) lack support in the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "Explanation cites root executing systemctl and the zoneminder service and world-writable warning, which are real. However it misstates the event as a 'systemctl reload zoneminder.service' command and does not mention the systemd-cryptsetup-generator execve, which is the dominant artifact."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 2,
+    "reason": "Top prediction T1543.003 is connected to the service-modification reasoning, which is appropriate, but the broader list is not tied to specific artifacts."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "Candidate labels 'Somewhat Certain: Attack' based on a single benign-looking reload and a world-writable warning that is a misconfiguration; the logs look like routine systemd activity, so attack confidence is disproportionate."
+  },
+  "score_instruction_adherence": {
+    "score": 3,
+    "reason": "Valid JSON with all required fields, a 10-item technique list, a recognized confidence label, and a brief explanation; the explanation is slightly over-long but within reason."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1543.003",
+    "T1543",
+    "T1059.004",
+    "T1059",
+    "T1070.004",
+    "T1036",
+    "T1027",
+    "T1005",
+    "T1053",
+    "T1082.001"
+  ],
+  "judge_failure_labels": [
+    "exact_id_miss",
+    "over_attack_confidence",
+    "unsupported_technique_breadth",
+    "log_misreading"
+  ],
+  "judge_prediction_similarity": 2,
+  "judge_reasoning_similarity": 1,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": 0,
+  "confidence_label_agreement_reason": "Candidate asserts attack with moderate certainty while the logs show routine root systemd activity; directions opposed at the Attack/Normal level, which is a major disagreement.",
+  "confidence_label_null_reason": null
+}

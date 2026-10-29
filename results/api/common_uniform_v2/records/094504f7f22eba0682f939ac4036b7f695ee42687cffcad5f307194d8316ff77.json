@@ -1,0 +1,267 @@
+{
+  "prompt_id": "88",
+  "scenario": "3",
+  "variant": "ssh_puppet",
+  "step": "27",
+  "split": "validation",
+  "group_id": "[\"3\", \"27\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nlinuxshare:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765544064.640:3035): arch=c000003e syscall=59 success=yes exit=0 a0=55662a1379e0 a1=55662a137a60 a2=55662a1372b0 a3=b842b33936233152 items=3 ppid=2115 pid=2119 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"find\" exe=\"/usr/bin/find\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765544064.640:3035): argc=2 a0=\"find\" a1=\"/media/data/Images\"\n        type=PATH msg=audit(1765544064.640:3035): item=0 name=\"/usr/bin/find\" inode=1449 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765544064.640:3035): item=1 name=\"/usr/bin/find\" inode=1449 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765544064.640:3035): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=2058 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765544064.640:3035): proctitle=66696E64002F6D656469612F646174612F496D61676573",
+  "prompt_sha256": "15f1e9cbc222aaf3c48116d3115ce1d74f5dbb61bcaf833a29ba5337c83aa445",
+  "ground_truth": "[\"T1018\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1083\", \"T1005\", \"T1217\", \"T1082\", \"T1033\", \"T1049\", \"T1057\", \"T1069\", \"T1204\", \"T1106\"], \"confidence\": \"Neutral\", \"explanation\": \"The log shows root executing the standard Linux `find` utility against `/media/data/Images`, which is consistent with file and directory discovery. This can be part of reconnaissance/staging, but the single benign-looking command lacks clear malicious indicators.\"}",
+  "teacher_response_sha256": "c328a456680d400ce296ffba761a4cdd0bbcaf2c382c30e7c932b63af267500c",
+  "teacher_confidence_label": "Neutral",
+  "model": "mistral7b",
+  "condition": "explanation",
+  "candidate_status": "completed",
+  "candidate_record_id": "adbe49b44452ca4701685c00d3556d9f7404b80082948111204b8365cde1b371:88",
+  "candidate_response_raw": "\"techniques\": [\"File and Directory Discovery\", \"Linux/Unix File System Discovery\", \"Collection: File and Directory Discovery\", \"Collection: Host-based Indicators\", \"Collection: System Network Configuration\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit log shows root executing `find /media/data/Images`, which is consistent with file/directory discovery on removable media. While this can be legitimate administration, the specific path and command pattern is commonly used for host-based discovery and collection.\"",
+  "candidate_response_sha256": "317314c55925aa24cfe7825fba058539bcdba4f941edcc2fb99933c627fb8e9d",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "explanation",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "adbe49b44452ca4701685c00d3556d9f7404b80082948111204b8365cde1b371",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_adapter_sha256": "1667859baf2c123936f0bb42f2aff2d687a4dd34397bc8a4f8665bd97cf632aa",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1064,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 123,
+  "candidate_elapsed_seconds": 6.93329924599675,
+  "candidate_output_tokens_per_second": 17.740471835399223,
+  "candidate_peak_allocated_bytes": 14798344704,
+  "candidate_peak_reserved_bytes": 18209570816,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "2a0b84f5d404baee0d6ff7ccab6b4ea12ad3c33f7a2ec39ba2672c6ea5be6623",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1083\", \"T1613\", \"T1005\", \"T1039\", \"T1082\", \"T1057\", \"T1135\", \"T1018\", \"T1036\", \"T1059\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The log shows a single execution of /usr/bin/find by root with a benign argument (\\\"/media/data/Images\\\"), a standard legitimate binary with no suspicious parent process, encoded commands, or unusual paths. The activity resembles routine administrative file enumeration, though running as root against a data directory leaves some room for reconnaissance or data discovery.\"\n}\n```",
+  "haiku_reference_response_sha256": "d91ef54e246be74e360c016135720f5c039333f70d83b7e2ae18850cda549f94",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "f1f790803ff3b00b6489aaa2f87e6dc1a88bc8cf077515f0b75e0219d6fda551",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":2,\"reason\":\"Ground truth is T1018 (Remote System Discovery). Candidate's list uses names rather than IDs, so exact-ID matching fails for all predictions; no T1018 match is possible. Coverage by exact ID is 0 of 1, but the rubric's exact-ID requirement and the candidate's non-ID format mean the strict score is 0. The candidate's 'Linux/Unix File System Discovery' and 'File and Directory Discovery' are related to T1083 rather than T1018.\"},\"prediction_evidence_support\":{\"score\":2,\"reason\":\"The log shows a single find command on /media/data/Images as root, which supports file/directory discovery (T1083-like) but not remote system discovery. Predictions like 'Collection: Host-based Indicators' and 'System Network Configuration' lack support in the logs.\"},\"explanation_grounding\":{\"score\":3,\"reason\":\"Explanation accurately cites the find command and path from the audit log and distinguishes legitimate admin use from discovery, though it adds 'removable media' which is an inference not directly in the logs.\"},\"prediction_reason_alignment\":{\"score\":2,\"reason\":\"File discovery is reasonably linked to the find command, but network-related and collection predictions are not connected to any observed artifact.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"'Somewhat Certain: Attack' is asserted while the explanation concedes the activity may be legitimate administration, and a single benign find lacks attack indicators; the confidence is somewhat over-stated.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is not valid JSON, lacks enclosing braces, uses technique names instead of IDs, and provides a list with more than the requested format; the explanation is brief but the format requirements are not met.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"File and Directory Discovery\",\"Linux/Unix File System Discovery\",\"Collection: File and Directory Discovery\",\"Collection: Host-based Indicators\",\"Collection: System Network Configuration\"],\"failure_labels\":[\"non_id_technique_names\",\"invalid_json_format\",\"missing_braces\",\"technique_mismatch_T1018\",\"overconfident_attack_label\",\"unsupported_network_collection_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Somewhat Certain: Normal\",\"confidence_label_agreement\":2,\"confidence_label_agreement_reason\":\"Candidate asserts Attack direction while the warranted label is Normal (a single benign find command with no attack indicators); the directional disagreement is moderate because the candidate hedges that it may be legitimate administration.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "e250c05a7a51efcde8fd23fc8229dd835601e7b5e279b808d2cd95cf2c003fd1",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwRKabgU79ZZABCyuJJ",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":2,\"reason\":\"Ground truth is T1018 (Remote System Discovery). Candidate's list uses names rather than IDs, so exact-ID matching fails for all predictions; no T1018 match is possible. Coverage by exact ID is 0 of 1, but the rubric's exact-ID requirement and the candidate's non-ID format mean the strict score is 0. The candidate's 'Linux/Unix File System Discovery' and 'File and Directory Discovery' are related to T1083 rather than T1018.\"},\"prediction_evidence_support\":{\"score\":2,\"reason\":\"The log shows a single find command on /media/data/Images as root, which supports file/directory discovery (T1083-like) but not remote system discovery. Predictions like 'Collection: Host-based Indicators' and 'System Network Configuration' lack support in the logs.\"},\"explanation_grounding\":{\"score\":3,\"reason\":\"Explanation accurately cites the find command and path from the audit log and distinguishes legitimate admin use from discovery, though it adds 'removable media' which is an inference not directly in the logs.\"},\"prediction_reason_alignment\":{\"score\":2,\"reason\":\"File discovery is reasonably linked to the find command, but network-related and collection predictions are not connected to any observed artifact.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"'Somewhat Certain: Attack' is asserted while the explanation concedes the activity may be legitimate administration, and a single benign find lacks attack indicators; the confidence is somewhat over-stated.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is not valid JSON, lacks enclosing braces, uses technique names instead of IDs, and provides a list with more than the requested format; the explanation is brief but the format requirements are not met.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"File and Directory Discovery\",\"Linux/Unix File System Discovery\",\"Collection: File and Directory Discovery\",\"Collection: Host-based Indicators\",\"Collection: System Network Configuration\"],\"failure_labels\":[\"non_id_technique_names\",\"invalid_json_format\",\"missing_braces\",\"technique_mismatch_T1018\",\"overconfident_attack_label\",\"unsupported_network_collection_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Somewhat Certain: Normal\",\"confidence_label_agreement\":2,\"confidence_label_agreement_reason\":\"Candidate asserts Attack direction while the warranted label is Normal (a single benign find command with no attack indicators); the directional disagreement is moderate because the candidate hedges that it may be legitimate administration.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3317,
+      "output_tokens": 947,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3317,
+    "output_tokens": 947,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00040260000000000003,
+  "batch_api": true,
+  "elapsed_seconds": 36436.148429870605,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3317,
+  "output_tokens": 947,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":2,\"reason\":\"Ground truth is T1018 (Remote System Discovery). Candidate's list uses names rather than IDs, so exact-ID matching fails for all predictions; no T1018 match is possible. Coverage by exact ID is 0 of 1, but the rubric's exact-ID requirement and the candidate's non-ID format mean the strict score is 0. The candidate's 'Linux/Unix File System Discovery' and 'File and Directory Discovery' are related to T1083 rather than T1018.\"},\"prediction_evidence_support\":{\"score\":2,\"reason\":\"The log shows a single find command on /media/data/Images as root, which supports file/directory discovery (T1083-like) but not remote system discovery. Predictions like 'Collection: Host-based Indicators' and 'System Network Configuration' lack support in the logs.\"},\"explanation_grounding\":{\"score\":3,\"reason\":\"Explanation accurately cites the find command and path from the audit log and distinguishes legitimate admin use from discovery, though it adds 'removable media' which is an inference not directly in the logs.\"},\"prediction_reason_alignment\":{\"score\":2,\"reason\":\"File discovery is reasonably linked to the find command, but network-related and collection predictions are not connected to any observed artifact.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"'Somewhat Certain: Attack' is asserted while the explanation concedes the activity may be legitimate administration, and a single benign find lacks attack indicators; the confidence is somewhat over-stated.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is not valid JSON, lacks enclosing braces, uses technique names instead of IDs, and provides a list with more than the requested format; the explanation is brief but the format requirements are not met.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"File and Directory Discovery\",\"Linux/Unix File System Discovery\",\"Collection: File and Directory Discovery\",\"Collection: Host-based Indicators\",\"Collection: System Network Configuration\"],\"failure_labels\":[\"non_id_technique_names\",\"invalid_json_format\",\"missing_braces\",\"technique_mismatch_T1018\",\"overconfident_attack_label\",\"unsupported_network_collection_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Somewhat Certain: Normal\",\"confidence_label_agreement\":2,\"confidence_label_agreement_reason\":\"Candidate asserts Attack direction while the warranted label is Normal (a single benign find command with no attack indicators); the directional disagreement is moderate because the candidate hedges that it may be legitimate administration.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "e250c05a7a51efcde8fd23fc8229dd835601e7b5e279b808d2cd95cf2c003fd1",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 2,
+        "reason": "Ground truth is T1018 (Remote System Discovery). Candidate's list uses names rather than IDs, so exact-ID matching fails for all predictions; no T1018 match is possible. Coverage by exact ID is 0 of 1, but the rubric's exact-ID requirement and the candidate's non-ID format mean the strict score is 0. The candidate's 'Linux/Unix File System Discovery' and 'File and Directory Discovery' are related to T1083 rather than T1018."
+      },
+      "prediction_evidence_support": {
+        "score": 2,
+        "reason": "The log shows a single find command on /media/data/Images as root, which supports file/directory discovery (T1083-like) but not remote system discovery. Predictions like 'Collection: Host-based Indicators' and 'System Network Configuration' lack support in the logs."
+      },
+      "explanation_grounding": {
+        "score": 3,
+        "reason": "Explanation accurately cites the find command and path from the audit log and distinguishes legitimate admin use from discovery, though it adds 'removable media' which is an inference not directly in the logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 2,
+        "reason": "File discovery is reasonably linked to the find command, but network-related and collection predictions are not connected to any observed artifact."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "'Somewhat Certain: Attack' is asserted while the explanation concedes the activity may be legitimate administration, and a single benign find lacks attack indicators; the confidence is somewhat over-stated."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Output is not valid JSON, lacks enclosing braces, uses technique names instead of IDs, and provides a list with more than the requested format; the explanation is brief but the format requirements are not met."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "File and Directory Discovery",
+      "Linux/Unix File System Discovery",
+      "Collection: File and Directory Discovery",
+      "Collection: Host-based Indicators",
+      "Collection: System Network Configuration"
+    ],
+    "failure_labels": [
+      "non_id_technique_names",
+      "invalid_json_format",
+      "missing_braces",
+      "technique_mismatch_T1018",
+      "overconfident_attack_label",
+      "unsupported_network_collection_predictions"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": 2,
+    "confidence_label_agreement_reason": "Candidate asserts Attack direction while the warranted label is Normal (a single benign find command with no attack indicators); the directional disagreement is moderate because the candidate hedges that it may be legitimate administration.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 2,
+    "reason": "Ground truth is T1018 (Remote System Discovery). Candidate's list uses names rather than IDs, so exact-ID matching fails for all predictions; no T1018 match is possible. Coverage by exact ID is 0 of 1, but the rubric's exact-ID requirement and the candidate's non-ID format mean the strict score is 0. The candidate's 'Linux/Unix File System Discovery' and 'File and Directory Discovery' are related to T1083 rather than T1018."
+  },
+  "score_prediction_evidence_support": {
+    "score": 2,
+    "reason": "The log shows a single find command on /media/data/Images as root, which supports file/directory discovery (T1083-like) but not remote system discovery. Predictions like 'Collection: Host-based Indicators' and 'System Network Configuration' lack support in the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 3,
+    "reason": "Explanation accurately cites the find command and path from the audit log and distinguishes legitimate admin use from discovery, though it adds 'removable media' which is an inference not directly in the logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 2,
+    "reason": "File discovery is reasonably linked to the find command, but network-related and collection predictions are not connected to any observed artifact."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "'Somewhat Certain: Attack' is asserted while the explanation concedes the activity may be legitimate administration, and a single benign find lacks attack indicators; the confidence is somewhat over-stated."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Output is not valid JSON, lacks enclosing braces, uses technique names instead of IDs, and provides a list with more than the requested format; the explanation is brief but the format requirements are not met."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "File and Directory Discovery",
+    "Linux/Unix File System Discovery",
+    "Collection: File and Directory Discovery",
+    "Collection: Host-based Indicators",
+    "Collection: System Network Configuration"
+  ],
+  "judge_failure_labels": [
+    "non_id_technique_names",
+    "invalid_json_format",
+    "missing_braces",
+    "technique_mismatch_T1018",
+    "overconfident_attack_label",
+    "unsupported_network_collection_predictions"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": 2,
+  "confidence_label_agreement_reason": "Candidate asserts Attack direction while the warranted label is Normal (a single benign find command with no attack indicators); the directional disagreement is moderate because the candidate hedges that it may be legitimate administration.",
+  "confidence_label_null_reason": null
+}

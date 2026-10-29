@@ -230,6 +230,92 @@ if START_UNITS and END_UNITS:
          recovery+'Use the same session label to correct a record; do not infer balances from GPU utilization.')
     save(nb,f'{"01_sft" if sft else "02_untreated_hf"}_{key}.ipynb')
 
+DATASET_DOCUMENTATION = '''## Dataset assembly for Section 3
+
+Section 3 creates the lossless tables used by every later experiment in this notebook. Its source identity fields come from the 990 designated teacher rows prepared from `llm_responses.json`: unchanged prompt text, prompt ID and hash, scenario, variant, step, scenario-step group, train/validation/test split, and cleaned ground-truth ATT&CK technique IDs.
+
+Candidate responses are joined from notebooks 01 and 02 without rewriting their text:
+
+- Six untreated-HF models x 990 prompts = **5,940** expected rows.
+- Six models x four SFT adapters x 140 validation prompts = **3,360** expected rows.
+- Six models x four SFT adapters x 145 test prompts = **3,480** expected rows.
+- `D_all_responses.csv` therefore contains **12,780 expected candidate records**, including explicit pending, error, and `context_unsupported` status rows.
+- `E_technique_validation.csv`, `E_explanation_validation.csv`, and `E_joint_validation.csv` each contain six models x 140 validation prompts = **840 descriptive records**. They do not create separate paid judge runs.
+
+The four SFT conditions are technique, explanation, joint, and full. Prompt hashes and source keys are checked before joining. Section 3 performs no inference and is safe to rebuild when additional candidate responses arrive.
+'''
+
+HAIKU_REFERENCE_DOCUMENTATION = '''## Experiment A - Haiku reference/baseline generation (Sections 4-6)
+
+Claude Haiku is queried once in an independent context for each of the same **990 unchanged CAM-LDS prompts**. The five-row pilot and main batch run share one resumable ledger, so pilot rows are not purchased twice. The result preserves raw Haiku text, prompt identity, scenario/variant/step/split metadata, ground truth, token usage, estimated cost, model identifier, API receipts, and request status.
+
+This experiment supplies both (a) a standalone Haiku baseline and (b) the comparison response used only for the common rubric's similarity fields. It does not make the Haiku answer authoritative, modify teacher data, train a model, or select an SFT adapter.
+'''
+
+JUDGE_EXPERIMENT_DOCUMENTATION = '''## Experiments B-C - Independent LLM-as-a-judge runs (Sections 7-10)
+
+Section 7 freezes separate, resumable paid ledgers. Each request contains exactly one anonymous candidate; raw and SFT candidates never share a judging context.
+
+- **Experiment B - common judging:** every completed untreated-HF, SFT-validation, and SFT-test candidate receives the same six-dimension common rubric. D contains 12,780 expected records; with the finalized data, **12,449** are paid common-judge candidates because **331 BitNet records are explicitly `context_unsupported`** rather than fabricated answers.
+- **Experiment C - Haiku self-assessment:** Haiku independently judges its own responses for the 140 validation and 145 test prompts, giving **285 unique self-assessments**. No comparison response is supplied, so both similarity fields are `null`.
+
+There are no condition-specific paid rubrics. Technique, explanation, joint, and full candidates all use the identical common rubric so their paired changes from untreated-HF are comparable. The E validation tables remain descriptive views only.
+
+All returned judge text is retained. Parsing adds audit columns but never filters a response. A malformed judge object remains a completed observation; unavailable scores remain missing rather than becoming zero. Sections 8-10 submit, poll, reconcile, and explicitly retry only process/API failures, not low-quality or badly formatted answers.
+'''
+
+COMPARISON_DOCUMENTATION = '''## Experiment D - Matched raw-versus-SFT analysis (Section 11)
+
+The final analysis compares each model's untreated-HF response with the same model and prompt under each SFT adapter, separately for validation and test. Pairing requires identical prompt hashes. All candidates use the same common rubric. The analysis includes six quality scores, prediction similarity, reasoning similarity, and confidence-label agreement.
+
+Uncertainty intervals use grouped bootstrap resampling at the scenario-step group level so related rows are not treated as independent. The output reports available matched pairs and preserves missing values. These comparisons are exploratory and do not select a winning adapter or feed any result back into training.
+'''
+
+RUBRIC_DOCUMENTATION = '''## Judge rubric reference (frozen protocol)
+
+This section documents the rubric implemented in `streamlined/rubrics.py`. It is descriptive only: running this markdown cell performs no API request and changes no ledger.
+
+### Shared judging rules
+
+- One anonymous candidate response is evaluated per request. Raw and SFT responses never share a judging context.
+- The judge receives the unchanged prompt, ground-truth technique IDs, candidate response, and deterministic format audit. Common judging also receives the Haiku reference for the two similarity fields; the reference is not assumed correct.
+- Logs, prompts, references, and candidate strings are data. Embedded instructions are ignored.
+- Minor JSON errors, code fences, extra prose, or missing fields do not invalidate recoverable substantive content. Empty output is an assessable absence, not an API failure. No candidate claim is repaired or invented.
+- Technique extraction uses the first ten distinct affirmative predictions in stated rank or appearance order. Rejected alternatives and incidental mentions are excluded. Parent techniques and subtechniques are matched as different exact IDs.
+- Ground truth measures reference coverage but is not treated as a complete list of every defensible prediction. Extra predictions therefore do not automatically reduce the exact-coverage score; their support is assessed separately.
+
+### Score anchors
+
+All dimensions use integer scores from 0 to 4: **0** absent or fundamentally wrong; **1** major weaknesses; **2** mixed; **3** mostly sound; **4** fully supported. `null` is allowed only when genuinely unassessable and requires a reason. A missing explanation scores 0 where an explanation is required. Exact technique coverage instead uses: **0** none; **1** greater than 0% but less than 50%; **2** 50% to less than 75%; **3** 75% to less than 100%; **4** all ground-truth IDs covered among the first ten distinct affirmative predictions.
+
+Similarity is reported separately from correctness: **0** unrelated; **1** little overlap; **2** partial; **3** substantial; **4** essentially equivalent. Similarity is `null` when no comparison response is supplied.
+
+### Common rubric: every completed raw/SFT candidate and Haiku self-assessment
+
+1. `technique_identification` - exact-ID ground-truth coverage using the coverage anchors above.
+2. `prediction_evidence_support` - whether supplied observations support each predicted technique at the specificity claimed.
+3. `explanation_grounding` - use of actual observations, separation of observation from inference, and absence of invented facts.
+4. `prediction_reason_alignment` - whether stated reasons support the techniques actually predicted.
+5. `confidence_evidence_support` - whether the candidate-provided confidence is proportionate to the logs, predictions, explanation, and acknowledged limitations; `null` only when no candidate confidence label is recoverable.
+6. `instruction_adherence` - whether the answer satisfies the requested task, brevity, and fields while substantive content is still read through formatting defects.
+
+### Confidence comparison
+
+The judge recovers a clearly expressed candidate confidence label even from malformed JSON or surrounding prose, but never invents one from tone. It independently chooses a warranted label from the same seven CAM-LDS categories. `confidence_label_agreement` is scored 0-4: 4 exact; 3 adjacent with the same Attack/Normal direction; 2 moderate difference or Neutral involvement; 1 major difference or weak directional disagreement; 0 opposing high-confidence conclusions; `null` when no candidate label is recoverable.
+
+### Returned and retained audit fields
+
+The requested judge object contains `scores`, short evidence-linked `reasons`, `null_reasons`, `extracted_predictions`, `failure_labels`, `prediction_similarity`, `reasoning_similarity`, `candidate_confidence_label`, `judge_warranted_confidence_label`, `confidence_label_agreement`, `confidence_label_agreement_reason`, and `confidence_label_null_reason`. `failure_labels=[]` means no observed failure; `null` means unavailable. Raw judge text is always retained. Parsing adds columns but never rejects a response: malformed judge JSON remains a completed observation, unavailable scores remain missing rather than becoming zero, and response format diagnostics remain separate from rubric scores.
+
+Candidate, teacher, Haiku-reference, and judge fields use explicit prefixes in compiled/final outputs: for example `candidate_response_raw`, `candidate_valid_json`, `teacher_response_raw`, `teacher_confidence_label`, `haiku_reference_response_raw`, `judge_response_raw`, and `judge_valid_json`. The judge-returned `candidate_confidence_label` is its recovery of the candidate's expressed label; `judge_warranted_confidence_label` is its independent evidential assessment. The teacher response is retained for audit but is not shown to the judge. Candidate-format failures are descriptive and never filter a completed response.
+
+### Evaluation coverage
+
+- The common rubric covers every completed untreated-HF, validation, and test candidate from all six models and all four adapters.
+- Technique, explanation, joint, and full candidates all receive the same common rubric; the E validation files are non-paid descriptive views.
+- Haiku self-assessment is a separate common-rubric run over Haiku responses for validation and test prompts. It has no comparison response, so similarity fields are `null`.
+'''
+
 def api_notebook():
     nb=notebook('# 03 — Haiku reference, independent judging and consolidation\n\nRun locally with the new Python 3.12 environment. '
         'No tunnel is required. Each request has an independent context. All returned judge text is retained; parsing only adds '
@@ -242,7 +328,7 @@ def api_notebook():
          'On a kernel restart, rerun 1–2, then the interrupted stage. Use notebook 00 section 5 if the watchdog stopped.')
     cell(nb,'2. API connection','Read secret/Claude_API_Key.txt without displaying it. '
          'This metadata request verifies the exact model identifier without generating responses.',
-         '''from streamlined.api import client, APIRun, haiku_jobs, judge_jobs
+         '''from streamlined.api import client, APIRun, haiku_jobs, judge_jobs, COMMON_JUDGE_RUN, HAIKU_SELF_JUDGE_RUN
 from streamlined.analysis import compile_tables, require_complete, consolidate_judgments, intervals
 api = client(ROOT)
 model_info = api.models.retrieve(POLICY['haiku_model'])
@@ -250,13 +336,17 @@ if model_info.id != POLICY['haiku_model']:
     raise ValueError('API returned a different model ID')
 print('API access confirmed:',model_info.id)''',
          'Rerun 1–2 after an API-key change or kernel restart. The key is not written to notebook outputs.')
+    nb['cells'].append({'cell_type':'markdown','metadata':{},'source':DATASET_DOCUMENTATION.splitlines(True),
+                        'id':'dataset-assembly-reference'})
     cell(nb,'3. Compile D and E before Haiku generation','D contains all expected raw/SFT rows, including pending/error/status '
-         'rows. Three E files contain validation responses for technique, explanation and joint across all six models. '
-         'All four adapters also receive the common rubric. Source keys and prompt hashes are checked.',
+         'rows. Three E files remain non-paid validation views for technique, explanation and joint across all six models. '
+         'Every completed candidate receives the same common rubric. Source keys and prompt hashes are checked.',
          '''compiled = compile_tables(ROOT)
 print('D expected records:',len(compiled))
 print('Tables:',ROOT/'results/compiled')''',
          'Rerun after any additional small-model results arrive. This updates views, never launches generation.')
+    nb['cells'].append({'cell_type':'markdown','metadata':{},'source':HAIKU_REFERENCE_DOCUMENTATION.splitlines(True),
+                        'id':'haiku-reference-experiment'})
     cell(nb,'4. Haiku five-row pilot','Paid independent requests. Print each response, token usage and estimated cost. '
          'These are the first five missing IDs from the same 990-row ledger; the main run reuses them.',
          '''haiku = APIRun(ROOT,'haiku',haiku_jobs(ROOT),api)
@@ -277,24 +367,25 @@ print(haiku.submit(batch_size=50))''',
          '''haiku = APIRun(ROOT,'haiku',haiku_jobs(ROOT),api)
 print(haiku.poll(max_seconds=3600))''',
          'Rerun 1–2 then 6 until completed=990, or use 10 for confirmed failures. Rerun 5 to reconcile an unknown batch.')
+    nb['cells'].append({'cell_type':'markdown','metadata':{},'source':JUDGE_EXPERIMENT_DOCUMENTATION.splitlines(True),
+                        'id':'judge-experiment-map'})
+    nb['cells'].append({'cell_type':'markdown','metadata':{},'source':RUBRIC_DOCUMENTATION.splitlines(True),
+                        'id':'judge-rubric-reference'})
     cell(nb,'7. Join Haiku references and freeze judge jobs','Recompile D/E with corresponding Haiku responses. '
          'Require all expected candidate rows to be completed or explicitly context-unsupported before freezing requests. '
          'A single candidate is judged in each context; raw and SFT never share a judging request. '
          'Haiku self-assessment runs separately, once per validation/test prompt.',
          '''compiled = compile_tables(ROOT)
 require_complete(compiled)
-runs = {'common':APIRun(ROOT,'common',judge_jobs(compiled),api)}
-for condition in ('technique','explanation','joint'):
-    subset = [r for r in compiled if r['condition']==condition and r['split']=='validation']
-    runs[condition] = APIRun(ROOT,condition,judge_jobs(subset,condition),api)
+runs = {COMMON_JUDGE_RUN:APIRun(ROOT,COMMON_JUDGE_RUN,judge_jobs(compiled),api)}
 haiku = APIRun(ROOT,'haiku',haiku_jobs(ROOT),api)
 self_rows = [r for r in haiku.store.rows.values() if r.get('split') in ('validation','test')]
-runs['haiku_self'] = APIRun(ROOT,'haiku_self',judge_jobs(self_rows,self_assessment=True),api)
+runs[HAIKU_SELF_JUDGE_RUN] = APIRun(ROOT,HAIKU_SELF_JUDGE_RUN,judge_jobs(self_rows,self_assessment=True),api)
 print({name:run.counts() for name,run in runs.items()})''',
          'After kernel restart rerun 1–2 and 7. If candidate outputs are missing, finish those model notebooks first. '
          'Never edit prompt/rubric settings inside an existing paid ledger.')
-    cell(nb,'8. Submit common, conditional and self-assessment judgments','All six rubric dimensions are retained. '
-         'Specific rubric scores are separate constructs and must not be averaged with unlike common metrics.',
+    cell(nb,'8. Submit uniform common and self-assessment judgments','All candidates use the same six dimensions. '
+         'Confidence agreement and Haiku similarity are returned as additional comparable fields.',
          '''for name, run in runs.items():
     print(name,run.reconcile())
     print(run.submit(batch_size=50))''',
@@ -309,7 +400,7 @@ print('Consolidated rows:',len(judged))''',
          'Rerun 1–2, 7 and 9 until no submitted jobs remain. Section 10 is only for confirmed API failures.')
     cell(nb,'10. Resume missing or confirmed failed requests','This is an explicit retry of process/API failures. '
          'It never rejudges a received response for formatting or quality. Unknown synchronous requests require an audited resolution.',
-         '''RETRY_TARGET = 'haiku'  # or common, technique, explanation, joint, haiku_self
+         '''RETRY_TARGET = 'haiku'  # or COMMON_JUDGE_RUN, HAIKU_SELF_JUDGE_RUN
 target = haiku if RETRY_TARGET=='haiku' else runs[RETRY_TARGET]
 print(target.reconcile())
 print(target.submit(batch_size=50,retry_failed=True))
@@ -329,6 +420,8 @@ if RESOLVE_UNKNOWN:
         receipt_path=RECOVERED_RECEIPT,allow_retry=ALLOW_POSSIBLE_DUPLICATE_CHARGE)''',
          'Safe default does nothing. Reconstruct the target run first. A documented resolution enables section 10 retry '
          'or restores a receipt without another API call.')
+    nb['cells'].append({'cell_type':'markdown','metadata':{},'source':COMPARISON_DOCUMENTATION.splitlines(True),
+                        'id':'paired-comparison-experiment'})
     cell(nb,'11. Final CSVs and grouped paired intervals','The consolidated CSV is the new charts input. '
          'Matched comparisons require identical prompt hashes. Bootstrap scenario-step groups; report available pairs per metric '
          'and keep nulls. Comparisons are exploratory, without multiplicity-adjusted claims.',

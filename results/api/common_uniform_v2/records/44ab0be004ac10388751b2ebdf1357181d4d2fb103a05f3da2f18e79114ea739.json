@@ -1,0 +1,243 @@
+{
+  "prompt_id": "62",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "3",
+  "split": "train",
+  "group_id": "[\"2\", \"3\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1759318540.664:4655): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318540.664:4655): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318540.664:4655): proctitle=737368643A20726F6F74406E6F747479\n        type=SYSCALL msg=audit(1759318540.668:4656): arch=c000003e syscall=59 success=yes exit=0 a0=55ed0c38e0e0 a1=55ed0c38d7f0 a2=55ed0c37e2c0 a3=fffffffffffff286 items=3 ppid=2880 pid=2930 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"sftp-server\" exe=\"/usr/lib/openssh/sftp-server\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759318540.668:4656): argc=1 a0=\"/usr/lib/openssh/sftp-server\"\n        type=PATH msg=audit(1759318540.668:4656): item=0 name=\"/usr/lib/openssh/sftp-server\" inode=26712 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318540.668:4656): item=1 name=\"/usr/lib/openssh/sftp-server\" inode=26712 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318540.668:4656): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318540.668:4656): proctitle=737368643A20726F6F74406E6F747479\n        type=SYSCALL msg=audit(1759318540.672:4657): arch=c000003e syscall=90 success=yes exit=0 a0=55be1b82e860 a1=1ed a2=7ffc4b4d4020 a3=55be1ae45667 items=1 ppid=2880 pid=2930 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"sftp-server\" exe=\"/usr/lib/openssh/sftp-server\" subj==unconfined\u001dARCH=x86_64 SYSCALL=chmod AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"",
+  "prompt_sha256": "2c479f33d89e05f4e47cb041070756026e2f8e2a93b1c11b0e5cf7d8d6bafc05",
+  "ground_truth": "[\"T1105\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1222.002\", \"T1105\", \"T1021.004\", \"T1021.002\", \"T1078\", \"T1059.004\", \"T1106\", \"T1030\", \"T1564.001\", \"T1570\"], \"confidence\": \"Neutral\", \"explanation\": \"The audit records show a root SSH/SFTP session executing /usr/lib/openssh/sftp-server followed by a chmod syscall, which most directly maps to Linux file permission modification. However, SFTP chmod operations by root can occur during legitimate administration or file transfer activity, and the logs do not show enough malicious context to determine an attack with high confidence.\"}",
+  "teacher_response_sha256": "7961c56882416406daceb9ca9841bb920036897a9e58dcd8752644920587a5cd",
+  "teacher_confidence_label": "Neutral",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:62",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command\",\n    \"Run Command",
+  "candidate_response_sha256": "8e005cdaa162688c8166e5f3e1d07b58f07d5cab6e0a513ea5799c9185f120b4",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1257,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 108.74279282800126,
+  "candidate_output_tokens_per_second": 9.41671602659372,
+  "candidate_peak_allocated_bytes": 5071484416,
+  "candidate_peak_reserved_bytes": 6452936704,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "407ecfdfebf678909c75a7d88890d1798e689cda97d487d8fd5595b0907b7712",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1021.004\", \"T1105\", \"T1222.002\", \"T1059.004\", \"T1078\", \"T1070.004\", \"T1087\", \"T1083\", \"T1564\", \"T1036\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show root logging in over SSH and spawning /usr/lib/openssh/sftp-server (a standard OpenSSH subsystem for SFTP file transfers) followed by a chmod syscall, which is typical of legitimate administrative file management. However, root-level SFTP activity and permission changes are sensitive enough that the sequence could also reflect post-compromise file staging or permission manipulation, so the assessment is not fully certain.\"\n}\n```",
+  "haiku_reference_response_sha256": "c036ed76e364df2e9e4a3bbdcb0b84465f7ed0d40b4ad7faf88272f1330ef049",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "352860868a5af7633dab844c12d7c2ab3ce360127ec8255a52950163604baac7",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only ground-truth ID is T1105. The candidate's techniques list contains no ATT&CK IDs; it repeats the name 'Run Command' roughly 200 times, so no exact-ID match exists among the ten extracted predictions.\",\n    \"prediction_evidence_support\": \"'Run Command' is not an ATT&CK technique name or ID, and repeated identical entries add no classification. Nothing in the logs (sftp-server execution, chmod syscall) supports a command-execution prediction at the claimed specificity, though the logs do not clearly support T1105 either.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all. Missing explanation scores 0.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, and the predictions are not connected to any stated reasoning. Scores 0.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate response, so this dimension is unassessable.\",\n    \"instruction_adherence\": \"The response is not valid JSON, is fenced and truncated mid-list, lists the top-10 field with hundreds of repeated non-ID entries, and omits the confidence and explanation fields. The required schema is not satisfied.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable; the confidence field is absent and the response is truncated.\"\n  },\n  \"extracted_predictions\": [\"Run Command\"],\n  \"failure_labels\": [\"invalid_json\", \"non_id_technique_names\", \"repetitive_degenerate_output\", \"truncated_output\", \"missing_confidence\", \"missing_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or confidence wording; the output is truncated repetitive text.\"\n}\n```",
+  "response_hash": "5c29a095522641d7710e0a16ecc4d181525eab39fcf1386c840dd926f052e535",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvEqQYUnhzjFq5wf8YN",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only ground-truth ID is T1105. The candidate's techniques list contains no ATT&CK IDs; it repeats the name 'Run Command' roughly 200 times, so no exact-ID match exists among the ten extracted predictions.\",\n    \"prediction_evidence_support\": \"'Run Command' is not an ATT&CK technique name or ID, and repeated identical entries add no classification. Nothing in the logs (sftp-server execution, chmod syscall) supports a command-execution prediction at the claimed specificity, though the logs do not clearly support T1105 either.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all. Missing explanation scores 0.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, and the predictions are not connected to any stated reasoning. Scores 0.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate response, so this dimension is unassessable.\",\n    \"instruction_adherence\": \"The response is not valid JSON, is fenced and truncated mid-list, lists the top-10 field with hundreds of repeated non-ID entries, and omits the confidence and explanation fields. The required schema is not satisfied.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable; the confidence field is absent and the response is truncated.\"\n  },\n  \"extracted_predictions\": [\"Run Command\"],\n  \"failure_labels\": [\"invalid_json\", \"non_id_technique_names\", \"repetitive_degenerate_output\", \"truncated_output\", \"missing_confidence\", \"missing_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or confidence wording; the output is truncated repetitive text.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 6108,
+      "output_tokens": 845,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 6108,
+    "output_tokens": 845,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005166500000000001,
+  "batch_api": true,
+  "elapsed_seconds": 39230.33911418915,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 6108,
+  "output_tokens": 845,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only ground-truth ID is T1105. The candidate's techniques list contains no ATT&CK IDs; it repeats the name 'Run Command' roughly 200 times, so no exact-ID match exists among the ten extracted predictions.\",\n    \"prediction_evidence_support\": \"'Run Command' is not an ATT&CK technique name or ID, and repeated identical entries add no classification. Nothing in the logs (sftp-server execution, chmod syscall) supports a command-execution prediction at the claimed specificity, though the logs do not clearly support T1105 either.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all. Missing explanation scores 0.\",\n    \"prediction_reason_alignment\": \"No explanation is provided, and the predictions are not connected to any stated reasoning. Scores 0.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate response, so this dimension is unassessable.\",\n    \"instruction_adherence\": \"The response is not valid JSON, is fenced and truncated mid-list, lists the top-10 field with hundreds of repeated non-ID entries, and omits the confidence and explanation fields. The required schema is not satisfied.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable; the confidence field is absent and the response is truncated.\"\n  },\n  \"extracted_predictions\": [\"Run Command\"],\n  \"failure_labels\": [\"invalid_json\", \"non_id_technique_names\", \"repetitive_degenerate_output\", \"truncated_output\", \"missing_confidence\", \"missing_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or confidence wording; the output is truncated repetitive text.\"\n}\n```",
+  "judge_response_sha256": "5c29a095522641d7710e0a16ecc4d181525eab39fcf1386c840dd926f052e535",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 0,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": null,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "The only ground-truth ID is T1105. The candidate's techniques list contains no ATT&CK IDs; it repeats the name 'Run Command' roughly 200 times, so no exact-ID match exists among the ten extracted predictions.",
+      "prediction_evidence_support": "'Run Command' is not an ATT&CK technique name or ID, and repeated identical entries add no classification. Nothing in the logs (sftp-server execution, chmod syscall) supports a command-execution prediction at the claimed specificity, though the logs do not clearly support T1105 either.",
+      "explanation_grounding": "The candidate provides no explanation field at all. Missing explanation scores 0.",
+      "prediction_reason_alignment": "No explanation is provided, and the predictions are not connected to any stated reasoning. Scores 0.",
+      "confidence_evidence_support": "No confidence label is recoverable from the candidate response, so this dimension is unassessable.",
+      "instruction_adherence": "The response is not valid JSON, is fenced and truncated mid-list, lists the top-10 field with hundreds of repeated non-ID entries, and omits the confidence and explanation fields. The required schema is not satisfied."
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable; the confidence field is absent and the response is truncated."
+    },
+    "extracted_predictions": [
+      "Run Command"
+    ],
+    "failure_labels": [
+      "invalid_json",
+      "non_id_technique_names",
+      "repetitive_degenerate_output",
+      "truncated_output",
+      "missing_confidence",
+      "missing_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence field or confidence wording; the output is truncated repetitive text."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 0,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "The only ground-truth ID is T1105. The candidate's techniques list contains no ATT&CK IDs; it repeats the name 'Run Command' roughly 200 times, so no exact-ID match exists among the ten extracted predictions.",
+    "prediction_evidence_support": "'Run Command' is not an ATT&CK technique name or ID, and repeated identical entries add no classification. Nothing in the logs (sftp-server execution, chmod syscall) supports a command-execution prediction at the claimed specificity, though the logs do not clearly support T1105 either.",
+    "explanation_grounding": "The candidate provides no explanation field at all. Missing explanation scores 0.",
+    "prediction_reason_alignment": "No explanation is provided, and the predictions are not connected to any stated reasoning. Scores 0.",
+    "confidence_evidence_support": "No confidence label is recoverable from the candidate response, so this dimension is unassessable.",
+    "instruction_adherence": "The response is not valid JSON, is fenced and truncated mid-list, lists the top-10 field with hundreds of repeated non-ID entries, and omits the confidence and explanation fields. The required schema is not satisfied."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable; the confidence field is absent and the response is truncated."
+  },
+  "judge_extracted_predictions": [
+    "Run Command"
+  ],
+  "judge_failure_labels": [
+    "invalid_json",
+    "non_id_technique_names",
+    "repetitive_degenerate_output",
+    "truncated_output",
+    "missing_confidence",
+    "missing_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence field or confidence wording; the output is truncated repetitive text."
+}

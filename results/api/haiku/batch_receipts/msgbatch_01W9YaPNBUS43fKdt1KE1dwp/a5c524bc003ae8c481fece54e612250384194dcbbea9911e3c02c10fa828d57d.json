@@ -1,0 +1,41 @@
+{
+  "custom_id": "af4071390aeb741c4c63456fb56124ab70565ce82ddd87ccbeac6b54e7734206",
+  "result": {
+    "message": {
+      "id": "msg_011CgTtNZKf3TjK6LVjq9Byb",
+      "container": null,
+      "content": [
+        {
+          "citations": null,
+          "text": "Decoding the key artifacts first: the `proctitle` field \"737368643A20726F6F74406E6F747479\" is hex for \"sshd: root@notty\", indicating an SSH session by root without a TTY, typical of remote command execution. The EXECVE arguments decode to `sed -i 's/#!/bin/sh/#!/bin/sh\\n/usr/bin/zmcontrolleer \\&\\n/' /usr/share/awffull/awffull`, which uses in-place sed to modify a script that is executed by the system and inject a line launching an unknown binary (`/usr/bin/zmcontrolleer`) that is run in the background. The subsequent `rename` syscall shows the sed temp file being swapped over the original, a classic in-place file tampering and persistence pattern. Running as root over SSH, modifying a web-stats script (awffull) to add a background process, and using a misspelled/masquerading binary name are strongly suspicious.\n\n```json\n{\n  \"techniques\": [\n    \"T1543\",\n    \"T1505\",\n    \"T1059.004\",\n    \"T1222.002\",\n    \"T1036.005\",\n    \"T1021.004\",\n    \"T1078\",\n    \"T1574.010\",\n    \"T1070\",\n    \"T1548\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"Root SSH session (sshd: root@notty) runs in-place sed on /usr/share/awffull/awffull to inject a background launch of an unusual binary (/usr/bin/zmcontrolleer), followed by a rename that replaces the original file, indicating tampering and persistence. Legitimate administrative edits to a log-analysis script would not typically inject background execution of an unfamiliar binary.\"\n}\n```",
+          "type": "text"
+        }
+      ],
+      "model": "claude-haiku-5-5",
+      "role": "assistant",
+      "stop_details": null,
+      "stop_reason": "end_turn",
+      "stop_sequence": null,
+      "type": "message",
+      "usage": {
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 0,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "inference_geo": "global",
+        "input_tokens": 1875,
+        "output_tokens": 571,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "server_tool_use": null,
+        "service_tier": "batch",
+        "speed": "standard"
+      },
+      "diagnostics": null
+    },
+    "type": "succeeded"
+  }
+}

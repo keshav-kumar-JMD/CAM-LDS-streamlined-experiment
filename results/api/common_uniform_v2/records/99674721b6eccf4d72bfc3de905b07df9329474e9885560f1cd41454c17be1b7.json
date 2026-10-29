@@ -1,0 +1,289 @@
+{
+  "prompt_id": "829",
+  "scenario": "1",
+  "variant": "racecondition_pam",
+  "step": "46",
+  "split": "train",
+  "group_id": "[\"1\", \"46\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765032225.120:4742): arch=c000003e syscall=59 success=yes exit=0 a0=5652f6c28340 a1=5652f6c28130 a2=5652f6c27e80 a3=fffffffffffff286 items=3 ppid=2958 pid=2971 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"chmod\" exe=\"/usr/bin/chmod\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1765032225.120:4742): argc=3 a0=\"chmod\" a1=\"+x\" a2=\"logrotten\"\n        type=PATH msg=audit(1765032225.120:4742): item=0 name=\"/usr/bin/chmod\" inode=811 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765032225.120:4742): item=1 name=\"/usr/bin/chmod\" inode=811 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765032225.120:4742): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765032225.120:4742): proctitle=63686D6F64002B78006C6F67726F7474656E",
+  "prompt_sha256": "711e165660e4250453aa11b88231c0af681eaa40d9bce6fc43719b226b734658",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1222.002\", \"T1059.004\", \"T1105\", \"T1203\", \"T1068\", \"T1505.003\", \"T1059\", \"T1036.005\", \"T1070.004\", \"T1027\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The log shows the web server user www-data executing chmod +x on a file named \\\"logrotten\\\", making it executable. This is suspicious in a web-server context and the filename resembles known exploit tooling, but the single event does not by itself prove malicious execution.\"}",
+  "teacher_response_sha256": "74fef26f30793e92ccd57a28760bf5b0229d1f158e622b0a6aa7662bc7a251d2",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "mistral7b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203:829",
+  "candidate_response_raw": "1. T1086: PowerShell - \"Certain: Attack\"\n   Explanation: The use of the \"chmod\" command to modify file permissions is often associated with PowerShell-based attacks. The execution of \"/usr/bin/chmod\" and the absence of a specific command line argument suggests that a PowerShell script might be involved.\n\n2. T1055: Command and Scripting Interpreter - \"Certain: Attack\"\n   Explanation: The execution of a command interpreter (e.g., \"/usr/bin/chmod\") is a common tactic used by attackers to execute malicious scripts or commands.\n\n3. T1027: Obfuscated Files or Information - \"Somewhat Certain: Attack\"\n   Explanation: The use of \"+x\" as an argument to the \"chmod\" command can be an attempt to obfuscate the file, making it executable without revealing its purpose.\n\n4. T1085: Scheduled Task/Job - \"Neutral\"\n   Explanation: The absence of specific scheduling information in the logs makes it difficult to determine if this is part of a scheduled task or job.\n\n5. T1059: Network Service Scanning - \"Neutral\"\n   Explanation: The logs do not provide any information about network activity, so it is unclear if this is related to network service scanning.\n\n6. T1088: Data From Local System - \"Neutral\"\n   Explanation: The logs do not indicate that data is being exfiltrated from the local system, so it is unclear if this is related to data collection.\n\n7. T1105: Lateral Movement - \"Neutral\"\n   Explanation: The logs do not provide any information about lateral movement within the network, so it is unclear if this is related to lateral movement.\n\n8. T1078: Valid Accounts - \"Neutral\"\n   Explanation: The logs do not provide any information about account usage, so it is unclear if this is related to the use of valid accounts.\n\n9. T1036: Credential Dumping - \"Neutral\"\n   Explanation: The logs do not indicate any credential dumping activity, so it is unclear if this is related to credential theft.\n\n10. T1110: Exfiltration Over Command and Control - \"Neutral\"\n    Explanation: The logs do not provide any information about data exfiltration over command and control channels, so it is unclear if this is related to data exfiltration.\n\nThe logs indicate an attacker using a PowerShell script to modify file permissions, potentially to execute malicious code or obfuscate files. However, more context is needed to determine the full scope of the attack.",
+  "candidate_response_sha256": "686c1e845a8b31fd43d3442191e40e3649157534d0b9e9d8b0d0dcdbe49a093e",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1077,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 648,
+  "candidate_elapsed_seconds": 20.959007926001505,
+  "candidate_output_tokens_per_second": 30.917493914208535,
+  "candidate_peak_allocated_bytes": 14775287296,
+  "candidate_peak_reserved_bytes": 21659385856,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "dbcaa908cd55a49f453924cc8c999306bf71bf0fc669c0993441fcb68d944db5",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1222.002\", \"T1059.004\", \"T1105\", \"T1036\", \"T1548\", \"T1068\", \"T1078\", \"T1543\", \"T1190\", \"T1505.003\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"A web server service account (www-data, UID 33) with no login session (auid unset, ses unset) executes chmod +x on a file named 'logrotten', which closely resembles the 'logrotten' local privilege escalation exploit and indicates an attacker making a dropped payload executable from a web-facing context. Legitimate www-data activity rarely changes execute permissions on arbitrary, non-application-named binaries outside normal deployment workflows.\"\n}\n```",
+  "haiku_reference_response_sha256": "418d261bb8c7c9ce19882a20f5fd56547cf1cad74c7b6741a549022ff1014e48",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "dd0352f909a1078e479d5bcd268f6cc5f97a1461247490e074c8824102627cfa",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":1,\"reason\":\"Ground truth is T1059. Candidate's first ten IDs include T1059 only at rank 5, labeled 'Network Service Scanning', which is a mismatched name. The exact ID T1059 is present, so coverage is 1 of 10 predictions (10%), which is greater than 0 but under 50%.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"Several predictions lack support: T1086 (PowerShell) and T1085/T1088/T1105/T1078/T1036/T1110 are unrelated to the logs, which show only a chmod +x execve by www-data. T1055 and T1027 are weakly supported. Candidate's assertion of PowerShell is contradicted by the logs showing /usr/bin/chmod.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"The explanation mentions chmod and www-data-like activity but invents a PowerShell script involvement and misnames IDs. It does not cite the www-data UID/unset auid or the 'logrotten' argument as key indicators, and the final summary asserts a PowerShell-based attack that the logs do not show.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Several reasons are mismatched to their technique names (e.g., T1059 described as network service scanning, T1036 as credential dumping, T1110 as exfiltration). Only the chmod/execution reasoning loosely aligns with T1059 and T1055.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"The candidate labels 'Certain: Attack' on the first two predictions and mixes 'Neutral' across the rest. The explanation does not establish certainty; it even says more context is needed, so the top-tier label is overconfident relative to the evidence.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is a numbered prose list, not the requested JSON object with techniques, confidence, and explanation fields. The per-technique confidence labels and overall format deviate from the schema, and techniques are given with names rather than IDs only.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1086\",\"T1055\",\"T1027\",\"T1085\",\"T1059\",\"T1088\",\"T1105\",\"T1078\",\"T1036\",\"T1110\"],\"failure_labels\":[\"format_violation_not_json\",\"technique_id_name_mismatch\",\"unsupported_powershell_claim\",\"overconfident_certain_attack_label\",\"mostly_neutral_predictions_without_evidence\",\"missed_key_indicators_www_data_logrotten\"],\"prediction_similarity\":{\"score\":1,\"reason\":\"Only T1059 overlaps with the Haiku reference in the first ten predictions at the exact-ID level, and the Haiku list has no shared IDs beyond T1059 absent from the candidate's list; little overlap.\"},\"reasoning_similarity\":{\"score\":1,\"reason\":\"Haiku reasoning centers on www-data executing chmod +x on 'logrotten' as a privilege escalation exploit indicator; the candidate reasons about PowerShell and generic chmod obfuscation, with little conceptual overlap.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Candidate's 'Certain: Attack' and the warranted 'Almost Certain: Attack' are adjacent categories in the same Attack direction.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "04af92a9d0fa97efa03179f790bc902af425d23ace71571c8c06e3dcc72fe8aa",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwCZQgVV5ZzN4XNoDyc",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":1,\"reason\":\"Ground truth is T1059. Candidate's first ten IDs include T1059 only at rank 5, labeled 'Network Service Scanning', which is a mismatched name. The exact ID T1059 is present, so coverage is 1 of 10 predictions (10%), which is greater than 0 but under 50%.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"Several predictions lack support: T1086 (PowerShell) and T1085/T1088/T1105/T1078/T1036/T1110 are unrelated to the logs, which show only a chmod +x execve by www-data. T1055 and T1027 are weakly supported. Candidate's assertion of PowerShell is contradicted by the logs showing /usr/bin/chmod.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"The explanation mentions chmod and www-data-like activity but invents a PowerShell script involvement and misnames IDs. It does not cite the www-data UID/unset auid or the 'logrotten' argument as key indicators, and the final summary asserts a PowerShell-based attack that the logs do not show.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Several reasons are mismatched to their technique names (e.g., T1059 described as network service scanning, T1036 as credential dumping, T1110 as exfiltration). Only the chmod/execution reasoning loosely aligns with T1059 and T1055.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"The candidate labels 'Certain: Attack' on the first two predictions and mixes 'Neutral' across the rest. The explanation does not establish certainty; it even says more context is needed, so the top-tier label is overconfident relative to the evidence.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is a numbered prose list, not the requested JSON object with techniques, confidence, and explanation fields. The per-technique confidence labels and overall format deviate from the schema, and techniques are given with names rather than IDs only.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1086\",\"T1055\",\"T1027\",\"T1085\",\"T1059\",\"T1088\",\"T1105\",\"T1078\",\"T1036\",\"T1110\"],\"failure_labels\":[\"format_violation_not_json\",\"technique_id_name_mismatch\",\"unsupported_powershell_claim\",\"overconfident_certain_attack_label\",\"mostly_neutral_predictions_without_evidence\",\"missed_key_indicators_www_data_logrotten\"],\"prediction_similarity\":{\"score\":1,\"reason\":\"Only T1059 overlaps with the Haiku reference in the first ten predictions at the exact-ID level, and the Haiku list has no shared IDs beyond T1059 absent from the candidate's list; little overlap.\"},\"reasoning_similarity\":{\"score\":1,\"reason\":\"Haiku reasoning centers on www-data executing chmod +x on 'logrotten' as a privilege escalation exploit indicator; the candidate reasons about PowerShell and generic chmod obfuscation, with little conceptual overlap.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Candidate's 'Certain: Attack' and the warranted 'Almost Certain: Attack' are adjacent categories in the same Attack direction.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4052,
+      "output_tokens": 1177,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4052,
+    "output_tokens": 1177,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0004968500000000001,
+  "batch_api": true,
+  "elapsed_seconds": 699.8928465843201,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4052,
+  "output_tokens": 1177,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":1,\"reason\":\"Ground truth is T1059. Candidate's first ten IDs include T1059 only at rank 5, labeled 'Network Service Scanning', which is a mismatched name. The exact ID T1059 is present, so coverage is 1 of 10 predictions (10%), which is greater than 0 but under 50%.\"},\"prediction_evidence_support\":{\"score\":1,\"reason\":\"Several predictions lack support: T1086 (PowerShell) and T1085/T1088/T1105/T1078/T1036/T1110 are unrelated to the logs, which show only a chmod +x execve by www-data. T1055 and T1027 are weakly supported. Candidate's assertion of PowerShell is contradicted by the logs showing /usr/bin/chmod.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"The explanation mentions chmod and www-data-like activity but invents a PowerShell script involvement and misnames IDs. It does not cite the www-data UID/unset auid or the 'logrotten' argument as key indicators, and the final summary asserts a PowerShell-based attack that the logs do not show.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Several reasons are mismatched to their technique names (e.g., T1059 described as network service scanning, T1036 as credential dumping, T1110 as exfiltration). Only the chmod/execution reasoning loosely aligns with T1059 and T1055.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"The candidate labels 'Certain: Attack' on the first two predictions and mixes 'Neutral' across the rest. The explanation does not establish certainty; it even says more context is needed, so the top-tier label is overconfident relative to the evidence.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is a numbered prose list, not the requested JSON object with techniques, confidence, and explanation fields. The per-technique confidence labels and overall format deviate from the schema, and techniques are given with names rather than IDs only.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1086\",\"T1055\",\"T1027\",\"T1085\",\"T1059\",\"T1088\",\"T1105\",\"T1078\",\"T1036\",\"T1110\"],\"failure_labels\":[\"format_violation_not_json\",\"technique_id_name_mismatch\",\"unsupported_powershell_claim\",\"overconfident_certain_attack_label\",\"mostly_neutral_predictions_without_evidence\",\"missed_key_indicators_www_data_logrotten\"],\"prediction_similarity\":{\"score\":1,\"reason\":\"Only T1059 overlaps with the Haiku reference in the first ten predictions at the exact-ID level, and the Haiku list has no shared IDs beyond T1059 absent from the candidate's list; little overlap.\"},\"reasoning_similarity\":{\"score\":1,\"reason\":\"Haiku reasoning centers on www-data executing chmod +x on 'logrotten' as a privilege escalation exploit indicator; the candidate reasons about PowerShell and generic chmod obfuscation, with little conceptual overlap.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Candidate's 'Certain: Attack' and the warranted 'Almost Certain: Attack' are adjacent categories in the same Attack direction.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "04af92a9d0fa97efa03179f790bc902af425d23ace71571c8c06e3dcc72fe8aa",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 1,
+        "reason": "Ground truth is T1059. Candidate's first ten IDs include T1059 only at rank 5, labeled 'Network Service Scanning', which is a mismatched name. The exact ID T1059 is present, so coverage is 1 of 10 predictions (10%), which is greater than 0 but under 50%."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "Several predictions lack support: T1086 (PowerShell) and T1085/T1088/T1105/T1078/T1036/T1110 are unrelated to the logs, which show only a chmod +x execve by www-data. T1055 and T1027 are weakly supported. Candidate's assertion of PowerShell is contradicted by the logs showing /usr/bin/chmod."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "The explanation mentions chmod and www-data-like activity but invents a PowerShell script involvement and misnames IDs. It does not cite the www-data UID/unset auid or the 'logrotten' argument as key indicators, and the final summary asserts a PowerShell-based attack that the logs do not show."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Several reasons are mismatched to their technique names (e.g., T1059 described as network service scanning, T1036 as credential dumping, T1110 as exfiltration). Only the chmod/execution reasoning loosely aligns with T1059 and T1055."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "The candidate labels 'Certain: Attack' on the first two predictions and mixes 'Neutral' across the rest. The explanation does not establish certainty; it even says more context is needed, so the top-tier label is overconfident relative to the evidence."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Output is a numbered prose list, not the requested JSON object with techniques, confidence, and explanation fields. The per-technique confidence labels and overall format deviate from the schema, and techniques are given with names rather than IDs only."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1086",
+      "T1055",
+      "T1027",
+      "T1085",
+      "T1059",
+      "T1088",
+      "T1105",
+      "T1078",
+      "T1036",
+      "T1110"
+    ],
+    "failure_labels": [
+      "format_violation_not_json",
+      "technique_id_name_mismatch",
+      "unsupported_powershell_claim",
+      "overconfident_certain_attack_label",
+      "mostly_neutral_predictions_without_evidence",
+      "missed_key_indicators_www_data_logrotten"
+    ],
+    "prediction_similarity": {
+      "score": 1,
+      "reason": "Only T1059 overlaps with the Haiku reference in the first ten predictions at the exact-ID level, and the Haiku list has no shared IDs beyond T1059 absent from the candidate's list; little overlap."
+    },
+    "reasoning_similarity": {
+      "score": 1,
+      "reason": "Haiku reasoning centers on www-data executing chmod +x on 'logrotten' as a privilege escalation exploit indicator; the candidate reasons about PowerShell and generic chmod obfuscation, with little conceptual overlap."
+    },
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "Candidate's 'Certain: Attack' and the warranted 'Almost Certain: Attack' are adjacent categories in the same Attack direction.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 1,
+    "reason": "Ground truth is T1059. Candidate's first ten IDs include T1059 only at rank 5, labeled 'Network Service Scanning', which is a mismatched name. The exact ID T1059 is present, so coverage is 1 of 10 predictions (10%), which is greater than 0 but under 50%."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "Several predictions lack support: T1086 (PowerShell) and T1085/T1088/T1105/T1078/T1036/T1110 are unrelated to the logs, which show only a chmod +x execve by www-data. T1055 and T1027 are weakly supported. Candidate's assertion of PowerShell is contradicted by the logs showing /usr/bin/chmod."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "The explanation mentions chmod and www-data-like activity but invents a PowerShell script involvement and misnames IDs. It does not cite the www-data UID/unset auid or the 'logrotten' argument as key indicators, and the final summary asserts a PowerShell-based attack that the logs do not show."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Several reasons are mismatched to their technique names (e.g., T1059 described as network service scanning, T1036 as credential dumping, T1110 as exfiltration). Only the chmod/execution reasoning loosely aligns with T1059 and T1055."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "The candidate labels 'Certain: Attack' on the first two predictions and mixes 'Neutral' across the rest. The explanation does not establish certainty; it even says more context is needed, so the top-tier label is overconfident relative to the evidence."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Output is a numbered prose list, not the requested JSON object with techniques, confidence, and explanation fields. The per-technique confidence labels and overall format deviate from the schema, and techniques are given with names rather than IDs only."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1086",
+    "T1055",
+    "T1027",
+    "T1085",
+    "T1059",
+    "T1088",
+    "T1105",
+    "T1078",
+    "T1036",
+    "T1110"
+  ],
+  "judge_failure_labels": [
+    "format_violation_not_json",
+    "technique_id_name_mismatch",
+    "unsupported_powershell_claim",
+    "overconfident_certain_attack_label",
+    "mostly_neutral_predictions_without_evidence",
+    "missed_key_indicators_www_data_logrotten"
+  ],
+  "judge_prediction_similarity": {
+    "score": 1,
+    "reason": "Only T1059 overlaps with the Haiku reference in the first ten predictions at the exact-ID level, and the Haiku list has no shared IDs beyond T1059 absent from the candidate's list; little overlap."
+  },
+  "judge_reasoning_similarity": {
+    "score": 1,
+    "reason": "Haiku reasoning centers on www-data executing chmod +x on 'logrotten' as a privilege escalation exploit indicator; the candidate reasons about PowerShell and generic chmod obfuscation, with little conceptual overlap."
+  },
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "Candidate's 'Certain: Attack' and the warranted 'Almost Certain: Attack' are adjacent categories in the same Attack direction.",
+  "confidence_label_null_reason": null
+}

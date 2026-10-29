@@ -1,0 +1,239 @@
+{
+  "prompt_id": "580",
+  "scenario": "6",
+  "variant": "screensharing_binary",
+  "step": "57",
+  "split": "validation",
+  "group_id": "[\"6\", \"57\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/audit/audit.log:\n        type=EXECVE msg=audit(1765380934.228:104442): argc=4 a0=\"ln\" a1=\"-sf\" a2=\"/home/judy/.local/share/firefox/firefox-startup\" a3=\"/home/judy/.local/bin/firefox\"\n        type=PATH msg=audit(1765380934.228:104442): item=0 name=\"/usr/bin/ln\" inode=1579 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765380934.228:104442): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=82044 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765380934.228:104442): proctitle=6C6E002D7366002F686F6D652F6A7564792F2E6C6F63616C2F73686172652F66697265666F782F66697265666F782D73746172747570002F686F6D652F6A7564792F2E6C6F63616C2F62696E2F66697265666F78\n        type=SYSCALL msg=audit(1765380934.228:104443): arch=c000003e syscall=264 success=yes exit=0 a0=ffffff9c a1=7fff02115840 a2=ffffff9c a3=7fff0211622b items=5 ppid=10238 pid=25088 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts1 ses=1 comm=\"ln\" exe=\"/usr/bin/ln\" subj=unconfined\u001dARCH=x86_64 SYSCALL=renameat AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=0 name=\"/home/judy/.local/bin/\" inode=517264 dev=fc:01 mode=040755 ouid=1002 ogid=1002 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=1 name=\"/home/judy/.local/bin/\" inode=517264 dev=fc:01 mode=040755 ouid=1002 ogid=1002 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=2 name=\"/home/judy/.local/bin/Cu1HScbk\" inode=517596 dev=fc:01 mode=0120777 ouid=1002 ogid=1002 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=3 name=\"/home/judy/.local/bin/firefox\" inode=517271 dev=fc:01 mode=0120777 ouid=1002 ogid=1002 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=4 name=\"/home/judy/.local/bin/firefox\" inode=517596 dev=fc:01 mode=0120777 ouid=1002 ogid=1002 rdev=00:00 nametype=CREATE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"",
+  "prompt_sha256": "cab249b5260653ac02ae7bbfd3252c7ffcb5e4bd00e56324332686a8c08d233f",
+  "ground_truth": "[\"T1574.008\", \"T1219\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1574.007\", \"T1574\", \"T1036.005\", \"T1036\", \"T1547.001\", \"T1546\", \"T1059.004\", \"T1105\", \"T1204.002\", \"T1564.001\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show user judy forcefully creating/replacing a symlink named ~/.local/bin/firefox pointing to ~/.local/share/firefox/firefox-startup, which suggests interception of executions of the legitimate firefox command via a user-writable PATH location. This is consistent with execution flow hijacking/path interception and masquerading as a common application rather than normal Firefox behavior.\"}",
+  "teacher_response_sha256": "794e687f18f8db324d79e78d2a7c4a13d2f87f3e8287ea3ac982817ac35dbc77",
+  "teacher_confidence_label": "Almost Certain: Attack",
+  "model": "hermes",
+  "condition": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "0b6fa8a7eecc10fd5310ebe209bf4c7d11acb075c6cf141706092383887930f0:580",
+  "candidate_response_raw": "{\"techniques\": \"T1053.004\", \"confidence\": \"99.99999999999999\"}",
+  "candidate_response_sha256": "c342313e7c23885c3700b0fb02d92c61d1df7fbfd3ce3a2e5259046521bd98ff",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "technique",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "0b6fa8a7eecc10fd5310ebe209bf4c7d11acb075c6cf141706092383887930f0",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "2d6acc4b2aeb1ffcbc0f88b3f3435be75e921dbe52824ec99d62675dc461d6ad",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1679,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 39,
+  "candidate_elapsed_seconds": 1.6687128109997502,
+  "candidate_output_tokens_per_second": 23.371307359134214,
+  "candidate_peak_allocated_bytes": 4156712960,
+  "candidate_peak_reserved_bytes": 10554966016,
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "115649f92970ed8cb8adf3b97fe3add193ba2a6a430b10bf9faa727c75697dce",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1574.010\", \"T1036.005\", \"T1036\", \"T1574\", \"T1547.013\", \"T1564\", \"T1222.002\", \"T1027\", \"T1070.004\", \"T1553.004\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show user 'judy' running 'ln -sf' to replace the existing ~/.local/bin/firefox with a symlink to a generated firefox-startup script, which is a common and benign way to wrap or relocate a user-local application launcher. The file deletion and recreation within the user's own directory and the absence of privilege escalation, network activity, or unusual binaries lean toward normal behavior, though the replacement of a binary-named file in a user PATH directory keeps some suspicion open.\"\n}\n```",
+  "haiku_reference_response_sha256": "430e55bfef369f1c461ae288e5cfdb32749baa8e34e8ef7fec0c1cb25b13995c",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "14b084b7b90648211b210999976186db6e9211b9179ae8227e5940cad9e762a6",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only candidate prediction is T1053.004 (Cron/at-style scheduled task), which does not match ground-truth T1574.008 or T1219. No ground-truth ID is covered.\",\n    \"prediction_evidence_support\": \"The logs show an ln -sf replacing ~/.local/bin/firefox in a user directory. Nothing in them involves scheduled jobs or cron, so T1053.004 has no support in the observations.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all, so there is nothing to ground.\",\n    \"prediction_reason_alignment\": \"No explanation is given to link the technique prediction to any reason. Missing explanation scores 0.\",\n    \"confidence_evidence_support\": \"The recovered confidence value is the numeric string '99.99999999999999', which is not one of the seven permitted categories and is not a clearly expressed label. No categorical label is recoverable, so this is null.\",\n    \"instruction_adherence\": \"The response uses 'techniques' as a bare string rather than a list, omits the required 'explanation' field, and puts a non-categorical numeric value in 'confidence'. Required fields are missing and the schema is violated.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label from the seven allowed categories is recoverable; the value is a numeric string.\"\n  },\n  \"extracted_predictions\": [\"T1053.004\"],\n  \"failure_labels\": [\"wrong_technique_ids\", \"missing_explanation\", \"schema_violation\", \"invalid_confidence_value\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No recoverable categorical candidate label exists to compare against the independently warranted label.\",\n  \"confidence_label_null_reason\": \"The candidate confidence is a numeric value ('99.99999999999999') rather than one of the seven categories, and no label is expressed elsewhere in the response.\"\n}\n```",
+  "response_hash": "cb72aa371add021a529aada81422ad24003a5a87f5d08e442c8a2f3878362950",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv4BB81zWQEW1dxt2cD",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only candidate prediction is T1053.004 (Cron/at-style scheduled task), which does not match ground-truth T1574.008 or T1219. No ground-truth ID is covered.\",\n    \"prediction_evidence_support\": \"The logs show an ln -sf replacing ~/.local/bin/firefox in a user directory. Nothing in them involves scheduled jobs or cron, so T1053.004 has no support in the observations.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all, so there is nothing to ground.\",\n    \"prediction_reason_alignment\": \"No explanation is given to link the technique prediction to any reason. Missing explanation scores 0.\",\n    \"confidence_evidence_support\": \"The recovered confidence value is the numeric string '99.99999999999999', which is not one of the seven permitted categories and is not a clearly expressed label. No categorical label is recoverable, so this is null.\",\n    \"instruction_adherence\": \"The response uses 'techniques' as a bare string rather than a list, omits the required 'explanation' field, and puts a non-categorical numeric value in 'confidence'. Required fields are missing and the schema is violated.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label from the seven allowed categories is recoverable; the value is a numeric string.\"\n  },\n  \"extracted_predictions\": [\"T1053.004\"],\n  \"failure_labels\": [\"wrong_technique_ids\", \"missing_explanation\", \"schema_violation\", \"invalid_confidence_value\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No recoverable categorical candidate label exists to compare against the independently warranted label.\",\n  \"confidence_label_null_reason\": \"The candidate confidence is a numeric value ('99.99999999999999') rather than one of the seven categories, and no label is expressed elsewhere in the response.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3996,
+      "output_tokens": 836,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3996,
+    "output_tokens": 836,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0004088,
+  "batch_api": true,
+  "elapsed_seconds": 25825.63520383835,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3996,
+  "output_tokens": 836,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only candidate prediction is T1053.004 (Cron/at-style scheduled task), which does not match ground-truth T1574.008 or T1219. No ground-truth ID is covered.\",\n    \"prediction_evidence_support\": \"The logs show an ln -sf replacing ~/.local/bin/firefox in a user directory. Nothing in them involves scheduled jobs or cron, so T1053.004 has no support in the observations.\",\n    \"explanation_grounding\": \"The candidate provides no explanation field at all, so there is nothing to ground.\",\n    \"prediction_reason_alignment\": \"No explanation is given to link the technique prediction to any reason. Missing explanation scores 0.\",\n    \"confidence_evidence_support\": \"The recovered confidence value is the numeric string '99.99999999999999', which is not one of the seven permitted categories and is not a clearly expressed label. No categorical label is recoverable, so this is null.\",\n    \"instruction_adherence\": \"The response uses 'techniques' as a bare string rather than a list, omits the required 'explanation' field, and puts a non-categorical numeric value in 'confidence'. Required fields are missing and the schema is violated.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label from the seven allowed categories is recoverable; the value is a numeric string.\"\n  },\n  \"extracted_predictions\": [\"T1053.004\"],\n  \"failure_labels\": [\"wrong_technique_ids\", \"missing_explanation\", \"schema_violation\", \"invalid_confidence_value\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No recoverable categorical candidate label exists to compare against the independently warranted label.\",\n  \"confidence_label_null_reason\": \"The candidate confidence is a numeric value ('99.99999999999999') rather than one of the seven categories, and no label is expressed elsewhere in the response.\"\n}\n```",
+  "judge_response_sha256": "cb72aa371add021a529aada81422ad24003a5a87f5d08e442c8a2f3878362950",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 0,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": null,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "The only candidate prediction is T1053.004 (Cron/at-style scheduled task), which does not match ground-truth T1574.008 or T1219. No ground-truth ID is covered.",
+      "prediction_evidence_support": "The logs show an ln -sf replacing ~/.local/bin/firefox in a user directory. Nothing in them involves scheduled jobs or cron, so T1053.004 has no support in the observations.",
+      "explanation_grounding": "The candidate provides no explanation field at all, so there is nothing to ground.",
+      "prediction_reason_alignment": "No explanation is given to link the technique prediction to any reason. Missing explanation scores 0.",
+      "confidence_evidence_support": "The recovered confidence value is the numeric string '99.99999999999999', which is not one of the seven permitted categories and is not a clearly expressed label. No categorical label is recoverable, so this is null.",
+      "instruction_adherence": "The response uses 'techniques' as a bare string rather than a list, omits the required 'explanation' field, and puts a non-categorical numeric value in 'confidence'. Required fields are missing and the schema is violated."
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label from the seven allowed categories is recoverable; the value is a numeric string."
+    },
+    "extracted_predictions": [
+      "T1053.004"
+    ],
+    "failure_labels": [
+      "wrong_technique_ids",
+      "missing_explanation",
+      "schema_violation",
+      "invalid_confidence_value"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No recoverable categorical candidate label exists to compare against the independently warranted label.",
+    "confidence_label_null_reason": "The candidate confidence is a numeric value ('99.99999999999999') rather than one of the seven categories, and no label is expressed elsewhere in the response."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 0,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "The only candidate prediction is T1053.004 (Cron/at-style scheduled task), which does not match ground-truth T1574.008 or T1219. No ground-truth ID is covered.",
+    "prediction_evidence_support": "The logs show an ln -sf replacing ~/.local/bin/firefox in a user directory. Nothing in them involves scheduled jobs or cron, so T1053.004 has no support in the observations.",
+    "explanation_grounding": "The candidate provides no explanation field at all, so there is nothing to ground.",
+    "prediction_reason_alignment": "No explanation is given to link the technique prediction to any reason. Missing explanation scores 0.",
+    "confidence_evidence_support": "The recovered confidence value is the numeric string '99.99999999999999', which is not one of the seven permitted categories and is not a clearly expressed label. No categorical label is recoverable, so this is null.",
+    "instruction_adherence": "The response uses 'techniques' as a bare string rather than a list, omits the required 'explanation' field, and puts a non-categorical numeric value in 'confidence'. Required fields are missing and the schema is violated."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label from the seven allowed categories is recoverable; the value is a numeric string."
+  },
+  "judge_extracted_predictions": [
+    "T1053.004"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_ids",
+    "missing_explanation",
+    "schema_violation",
+    "invalid_confidence_value"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No recoverable categorical candidate label exists to compare against the independently warranted label.",
+  "confidence_label_null_reason": "The candidate confidence is a numeric value ('99.99999999999999') rather than one of the seven categories, and no label is expressed elsewhere in the response."
+}

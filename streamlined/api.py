@@ -14,6 +14,10 @@ from .storage import Store
 from .telemetry import cost
 from .rubrics import rubric
 
+COMMON_JUDGE_RUN = 'common_uniform_v2'
+HAIKU_SELF_JUDGE_RUN = 'haiku_self_uniform_v2'
+JUDGE_PROTOCOL = 'uniform_common_v2_confidence_agreement'
+
 def client(root):
     import anthropic
     return anthropic.Anthropic(api_key=secret(root,'Claude_API_Key.txt'),max_retries=0,timeout=900)
@@ -28,18 +32,27 @@ def haiku_jobs(root):
                                'messages':[{'role':'user','content':row['prompt_text']}]}})
     return jobs
 
-def judge_jobs(rows,kind='common',self_assessment=False):
+def judge_jobs(rows,self_assessment=False):
     jobs=[]
     for row in rows:
-        if row.get('status')!='completed':continue # Status rows remain in D/E and coverage, not fabricated answers.
-        candidate=row.get('response_raw','')
+        if row.get('candidate_status',row.get('status'))!='completed':continue
+        # Audit quality never controls inclusion: every completed candidate is judged verbatim.
+        candidate=row.get('candidate_response_raw',row.get('response_raw',''))
+        candidate_audit=audit_response(candidate)
         case={'prompt':row['prompt_text'],'ground_truth':row['ground_truth'],
-              'candidate_response':candidate,'format_audit':audit_response(candidate)}
-        if not self_assessment:case['haiku_reference_response']=row.get('haiku_response','')
-        jobs.append({'identity':f'judge:{kind}:{row["record_id"]}', 'metadata':dict(row,rubric_kind=kind,
-            candidate_record_id=row['record_id'],candidate_response_raw=candidate,candidate_response_sha256=digest(candidate)),
+              'candidate_response':candidate,'candidate_format_audit':candidate_audit}
+        if not self_assessment:
+            case['haiku_reference_response']=row.get('haiku_reference_response_raw',row.get('haiku_response',''))
+        candidate_record_id=row.get('candidate_record_id',row.get('record_id',''))
+        metadata=dict(row,judge_protocol=JUDGE_PROTOCOL,
+            candidate_status=row.get('candidate_status',row.get('status','')),
+            candidate_record_id=candidate_record_id,candidate_response_raw=candidate,
+            candidate_response_sha256=digest(candidate),
+            **{'candidate_'+key:value for key,value in candidate_audit.items()})
+        jobs.append({'identity':f'judge:{JUDGE_PROTOCOL}:{candidate_record_id}',
+            'metadata':metadata,
             'params':{'model':POLICY['haiku_model'],'max_tokens':POLICY['judge_max_tokens'],
-                'thinking':POLICY['haiku_thinking'],'system':rubric(kind),
+                'thinking':POLICY['haiku_thinking'],'system':rubric(),
                 'messages':[{'role':'user','content':json.dumps(case,ensure_ascii=False)}]}})
     return jobs
 
@@ -56,10 +69,13 @@ def parse_judgment(text):
                     if isinstance(value,dict):obj=value;break
                 except ValueError:pass
     result={'judge_parseable':isinstance(obj,dict),'judge_parsed':obj}
+    direct={'candidate_confidence_label','judge_warranted_confidence_label',
+            'confidence_label_agreement','confidence_label_agreement_reason','confidence_label_null_reason'}
     if isinstance(obj,dict):
         for name,value in obj.items():
             if name=='scores' and isinstance(value,dict):
                 for metric,score in value.items():result['score_'+metric]=score
+            elif name in direct:result[name]=value
             else:result['judge_'+name]=value
     return result
 
@@ -97,6 +113,7 @@ class APIRun:
         response=message.model_dump() if hasattr(message,'model_dump') else message
         text=''.join(b.get('text','') for b in response.get('content',[]) if b.get('type')=='text')
         usage=response.get('usage',{});previous=self.store.rows.get(job['record_id'],{})
+        audit=audit_response(text)
         out=dict(job['metadata'],record_id=job['record_id'],status='completed',response_raw=text,
             response_hash=digest(text),finish_reason=response.get('stop_reason'),
             response_truncated=response.get('stop_reason')=='max_tokens',api_response=response,
@@ -104,8 +121,18 @@ class APIRun:
             elapsed_seconds=seconds,latency_note='batch completion delay; inference latency unavailable' if batch else 'request wall time',
             attempt_count=previous.get('attempt_count',1),input_tokens=usage.get('input_tokens'),
             output_tokens=usage.get('output_tokens'),wire_max_tokens=job['params']['max_tokens'],
-            api_request_id=getattr(message,'_request_id',None),**audit_response(text))
-        if self.name!='haiku':out.update(parse_judgment(text))
+            api_request_id=getattr(message,'_request_id',None))
+        if self.name=='haiku':
+            out.update(audit)
+            out.update(haiku_reference_response_raw=text,
+                       haiku_reference_finish_reason=response.get('stop_reason'),
+                       **{'haiku_reference_'+key:value for key,value in audit.items()})
+        else:
+            out.update(judge_response_raw=text,judge_response_sha256=digest(text),
+                       judge_finish_reason=response.get('stop_reason'),
+                       judge_response_truncated=response.get('stop_reason')=='max_tokens',
+                       **{'judge_'+key:value for key,value in audit.items()})
+            out.update(parse_judgment(text))
         self.store.put(out)
     def pilot(self,size=5,retry_failed=False):
         with FileLock(str(self.folder/'run.lock'),timeout=0),Heartbeat(self.root,'api/'+self.name+'/pilot',stall_seconds=1200) as hb:

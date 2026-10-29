@@ -1,0 +1,285 @@
+{
+  "prompt_id": "413",
+  "scenario": "1",
+  "variant": "pwnkit_localaccount",
+  "step": "7",
+  "split": "test",
+  "group_id": "[\"1\", \"7\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=EXECVE msg=audit(1758522647.457:4657): argc=3 a0=\"python3\" a1=\"-c\" a2=696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=PATH msg=audit(1758522647.457:4657): item=0 name=\"/usr/bin/python3\" inode=5914 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758522647.457:4657): item=1 name=\"/usr/bin/python3\" inode=6206 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758522647.457:4657): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758522647.457:4657): proctitle=707974686F6E33002D6300696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=SYSCALL msg=audit(1758522647.489:4658): arch=c000003e syscall=59 success=yes exit=0 a0=7fa98c181110 a1=7fa98c1e21c0 a2=7ffcbc8e9488 a3=fffffffffffff28e items=3 ppid=2731 pid=2732 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1758522647.489:4658): argc=1 a0=\"/bin/bash\"\n        type=PATH msg=audit(1758522647.489:4658): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758522647.489:4658): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758522647.489:4658): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "f16aba88eb64468aa753afd168054245e3d124db55c5cd6b25c8b37adb0a4c57",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.006\", \"T1059.004\", \"T1059\", \"T1611\", \"T1505.003\", \"T1190\", \"T1105\", \"T1219\", \"T1021.004\", \"T1078\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show the www-data user executing `python3 -c 'import pty; pty.spawn(\\\"/bin/bash\\\")'`, a common post-exploitation command to upgrade a web shell or reverse shell to an interactive TTY. Spawning `/bin/bash` from a web-service account is highly suspicious and strongly indicates command execution following compromise.\"}",
+  "teacher_response_sha256": "c91a4abe3139bcd4f4621fa6cea45f5d0d1d6233e41b37c1f5b4984f127f3146",
+  "teacher_confidence_label": "Almost Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "explanation",
+  "candidate_status": "completed",
+  "candidate_record_id": "04bc41b3e440005a64d32cb2a92c6874956744ffae9b884e07c8e023a04eed24:413",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"TTP-1.1: Exploit Shellcode\",\n    \"TTP-1.2: Exploit Shellcode\",\n    \"TTP-1.3: Exploit Shellcode\",\n    \"TTP-1.4: Exploit Shellcode\",\n    \"TTP-1.5: Exploit Shellcode\",\n    \"TTP-1.6: Exploit Shellcode\",\n    \"TTP-1.7: Exploit Shellcode\",\n    \"TTP-1.8: Exploit Shellcode\",\n    \"TTP-1.9: Exploit Shellcode\",\n    \"TTP-1.10: Exploit Shellcode\",\n    \"TTP-1.11: Exploit Shellcode\",\n    \"TTP-1.12: Exploit Shellcode\",\n    \"TTP-1.13: Exploit Shellcode\",\n    \"TTP-1.14: Exploit Shellcode\",\n    \"TTP-1.15: Exploit Shellcode\",\n    \"TTP-1.16: Exploit Shellcode\",\n    \"TTP-1.17: Exploit Shellcode\",\n    \"TTP-1.18: Exploit Shellcode\",\n    \"TTP-1.19: Exploit Shellcode\",\n    \"TTP-1.20: Exploit Shellcode\",\n    \"TTP-1.21: Exploit Shellcode\",\n    \"TTP-1.22: Exploit Shellcode\",\n    \"TTP-1.23: Exploit Shellcode\",\n    \"TTP-1.24: Exploit Shellcode\",\n    \"TTP-1.25: Exploit Shellcode\",\n    \"TTP-1.26: Exploit Shellcode\",\n    \"TTP-1.27: Exploit Shellcode\",\n    \"TTP-1.28: Exploit Shellcode\",\n    \"TTP-1.29: Exploit Shellcode\",\n    \"TTP-1.30: Exploit Shellcode\",\n    \"TTP-1.31: Exploit Shellcode\",\n    \"TTP-1.32: Exploit Shellcode\",\n    \"TTP-1.33: Exploit Shellcode\",\n    \"TTP-1.34: Exploit Shellcode\",\n    \"TTP-1.35: Exploit Shellcode\",\n    \"TTP-1.36: Exploit Shellcode\",\n    \"TTP-1.37: Exploit Shellcode\",\n    \"TTP-1.38: Exploit Shellcode\",\n    \"TTP-1.39: Exploit Shellcode\",\n    \"TTP-1.40: Exploit Shellcode\",\n    \"TTP-1.41: Exploit Shellcode\",\n    \"TTP-1.42: Exploit Shellcode\",\n    \"TTP-1.43: Exploit Shellcode\",\n    \"TTP-1.44: Exploit Shellcode\",\n    \"TTP-1.45: Exploit Shellcode\",\n    \"TTP-1.46: Exploit Shellcode\",\n    \"TTP-1.47: Exploit Shellcode\",\n    \"TTP-1.48: Exploit Shellcode\",\n    \"TTP-1.49: Exploit Shellcode\",\n    \"TTP-1.50: Exploit Shellcode\",\n    \"TTP-1.51: Exploit Shellcode\",\n    \"TTP-1.52: Exploit Shellcode\",\n    \"TTP-1.53: Exploit Shellcode\",\n    \"TTP-1.54: Exploit Shellcode\",\n    \"TTP-1.55: Exploit Shellcode\",\n    \"TTP-1.56: Exploit Shellcode\",\n    \"TTP-1.57: Exploit Shellcode\",\n    \"TTP-1.58: Exploit Shellcode\",\n    \"TTP-1.59: Exploit Shellcode\",\n    \"TTP-1.60: Exploit Shellcode\",\n    \"TTP-1.61: Exploit Shellcode\",\n    \"TTP-1.62: Exploit Shellcode\",\n    \"TTP-1.63: Exploit Shellcode\",\n    \"TTP-1.64: Exploit Shellcode\",\n    \"TTP-1.65: Exploit Shellcode\",\n    \"TTP-1.66: Exploit Shellcode\",\n    \"TTP-1.67: Exploit Shellcode\",\n    \"TTP-1.68: Exploit Shellcode\",\n    \"TTP-1.69: Exploit Shellcode\",\n    \"TTP-1.70: Exploit Shellcode\",\n    \"TTP-1.71: Exploit Shellcode\",\n    \"TTP-1.72: Exploit Shellcode\",\n    \"TTP-1",
+  "candidate_response_sha256": "f5a434c5d854f58fa30535b9f6440aae73146d220da99b8c54d5416cd11f9d9b",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "explanation",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "04bc41b3e440005a64d32cb2a92c6874956744ffae9b884e07c8e023a04eed24",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "60f288e0d7f61b562ff8bcf95ed9ced730dfe77ed9f71591bffb7eabb759068a",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1191,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 137.90844006299994,
+  "candidate_output_tokens_per_second": 7.425216321294126,
+  "candidate_peak_allocated_bytes": 5096673280,
+  "candidate_peak_reserved_bytes": 5886705664,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "c6c0bd924bf998df4d8b10eca55a76e38c1102f496d09a88ba61edaf64850600",
+  "haiku_reference_response_raw": "Decoding the hex argument: 696D706F7274207074793B7074792E737061776E28222F62696E2F62617368222 9 → \"import pty;pty.spawn(\"/bin/bash\")\", which is the classic reverse-shell TTY upgrade technique.\n\nThe logs show the www-data web server user (uid 33) executing python3 with an inline command that spawns an interactive /bin/bash via pty, with no audit login session (auid unset, ses unset), and the bash process's parent is a separate process (ppid 2731). This is a web-shell or reverse-shell pattern: a compromised web application spawning an interactive shell for an attacker.\n\n```json\n{\n  \"techniques\": [\n    \"T1059.006\",\n    \"T1059.004\",\n    \"T1059\",\n    \"T1190\",\n    \"T1505.003\",\n    \"T1571\",\n    \"T1068\",\n    \"T1548\",\n    \"T1082\",\n    \"T1033\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The www-data web server account (uid 33) launches python3 with an inline command (decoded: import pty;pty.spawn(\\\"/bin/bash\\\")) to obtain an interactive shell, a classic reverse-shell TTY upgrade with no associated login session (auid/ses unset). This pattern indicates a compromised web application being used to gain interactive command execution.\"\n}\n```",
+  "haiku_reference_response_sha256": "69fb26a6bc05d2ff0ff1a81d5c0048c4fbb23745e44e5c00b809c612b5bc21a1",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "5938a37f760c50e7b9932fba4110097e21c937834af5c8931c7f80bd1ba3d4c0",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's first ten predictions are all 'TTP-1.x: Exploit Shellcode', which are not ATT&CK IDs. T1059 is absent from the first ten.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"The predicted label 'Exploit Shellcode' is not supported by the logs, which show a python3 pty.spawn call launching /bin/bash as www-data. No shellcode artifact is present.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is recoverable; the response is truncated mid-list and contains no explanation.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No reasons are provided, and the predictions are not connected to the observed command-line artifacts.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, is truncated, omits the confidence and explanation fields, and lists repeated placeholder entries instead of ATT&CK IDs.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"Not assessed as a comparison response was not usable; reference techniques are not directly comparable to the placeholder predictions.\",\n    \"reasoning_similarity\": \"No candidate explanation present.\"\n  },\n  \"extracted_predictions\": [\"TTP-1.1: Exploit Shellcode\", \"TTP-1.2: Exploit Shellcode\", \"TTP-1.3: Exploit Shellcode\", \"TTP-1.4: Exploit Shellcode\", \"TTP-1.5: Exploit Shellcode\", \"TTP-1.6: Exploit Shellcode\", \"TTP-1.7: Exploit Shellcode\", \"TTP-1.8: Exploit Shellcode\", \"TTP-1.9: Exploit Shellcode\", \"TTP-1.10: Exploit Shellcode\"],\n  \"failure_labels\": [\"invalid_attack_id_format\", \"placeholder_or_repetitive_output\", \"truncated_response\", \"missing_confidence\", \"missing_explanation\", \"schema_violation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable to compare.\",\n  \"confidence_label_null_reason\": \"The candidate response never states a confidence label; it is truncated before reaching that field.\"\n}\n```",
+  "response_hash": "158c7dec4b8a63db05db6f0515959486f3281ea6d4dee1b820eb66f04ccf7a1f",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvRtJEecJNWQjTPMvWm",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's first ten predictions are all 'TTP-1.x: Exploit Shellcode', which are not ATT&CK IDs. T1059 is absent from the first ten.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"The predicted label 'Exploit Shellcode' is not supported by the logs, which show a python3 pty.spawn call launching /bin/bash as www-data. No shellcode artifact is present.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is recoverable; the response is truncated mid-list and contains no explanation.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No reasons are provided, and the predictions are not connected to the observed command-line artifacts.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, is truncated, omits the confidence and explanation fields, and lists repeated placeholder entries instead of ATT&CK IDs.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"Not assessed as a comparison response was not usable; reference techniques are not directly comparable to the placeholder predictions.\",\n    \"reasoning_similarity\": \"No candidate explanation present.\"\n  },\n  \"extracted_predictions\": [\"TTP-1.1: Exploit Shellcode\", \"TTP-1.2: Exploit Shellcode\", \"TTP-1.3: Exploit Shellcode\", \"TTP-1.4: Exploit Shellcode\", \"TTP-1.5: Exploit Shellcode\", \"TTP-1.6: Exploit Shellcode\", \"TTP-1.7: Exploit Shellcode\", \"TTP-1.8: Exploit Shellcode\", \"TTP-1.9: Exploit Shellcode\", \"TTP-1.10: Exploit Shellcode\"],\n  \"failure_labels\": [\"invalid_attack_id_format\", \"placeholder_or_repetitive_output\", \"truncated_response\", \"missing_confidence\", \"missing_explanation\", \"schema_violation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable to compare.\",\n  \"confidence_label_null_reason\": \"The candidate response never states a confidence label; it is truncated before reaching that field.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 5723,
+      "output_tokens": 955,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 5723,
+    "output_tokens": 955,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005249000000000001,
+  "batch_api": true,
+  "elapsed_seconds": 23910.894111394882,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5723,
+  "output_tokens": 955,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's first ten predictions are all 'TTP-1.x: Exploit Shellcode', which are not ATT&CK IDs. T1059 is absent from the first ten.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"The predicted label 'Exploit Shellcode' is not supported by the logs, which show a python3 pty.spawn call launching /bin/bash as www-data. No shellcode artifact is present.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is recoverable; the response is truncated mid-list and contains no explanation.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No reasons are provided, and the predictions are not connected to the observed command-line artifacts.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, is truncated, omits the confidence and explanation fields, and lists repeated placeholder entries instead of ATT&CK IDs.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"Not assessed as a comparison response was not usable; reference techniques are not directly comparable to the placeholder predictions.\",\n    \"reasoning_similarity\": \"No candidate explanation present.\"\n  },\n  \"extracted_predictions\": [\"TTP-1.1: Exploit Shellcode\", \"TTP-1.2: Exploit Shellcode\", \"TTP-1.3: Exploit Shellcode\", \"TTP-1.4: Exploit Shellcode\", \"TTP-1.5: Exploit Shellcode\", \"TTP-1.6: Exploit Shellcode\", \"TTP-1.7: Exploit Shellcode\", \"TTP-1.8: Exploit Shellcode\", \"TTP-1.9: Exploit Shellcode\", \"TTP-1.10: Exploit Shellcode\"],\n  \"failure_labels\": [\"invalid_attack_id_format\", \"placeholder_or_repetitive_output\", \"truncated_response\", \"missing_confidence\", \"missing_explanation\", \"schema_violation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable to compare.\",\n  \"confidence_label_null_reason\": \"The candidate response never states a confidence label; it is truncated before reaching that field.\"\n}\n```",
+  "judge_response_sha256": "158c7dec4b8a63db05db6f0515959486f3281ea6d4dee1b820eb66f04ccf7a1f",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate's first ten predictions are all 'TTP-1.x: Exploit Shellcode', which are not ATT&CK IDs. T1059 is absent from the first ten."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "The predicted label 'Exploit Shellcode' is not supported by the logs, which show a python3 pty.spawn call launching /bin/bash as www-data. No shellcode artifact is present."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field is recoverable; the response is truncated mid-list and contains no explanation."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No reasons are provided, and the predictions are not connected to the observed command-line artifacts."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No confidence label is recoverable from the candidate."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, is truncated, omits the confidence and explanation fields, and lists repeated placeholder entries instead of ATT&CK IDs."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "prediction_similarity": "Not assessed as a comparison response was not usable; reference techniques are not directly comparable to the placeholder predictions.",
+      "reasoning_similarity": "No candidate explanation present."
+    },
+    "extracted_predictions": [
+      "TTP-1.1: Exploit Shellcode",
+      "TTP-1.2: Exploit Shellcode",
+      "TTP-1.3: Exploit Shellcode",
+      "TTP-1.4: Exploit Shellcode",
+      "TTP-1.5: Exploit Shellcode",
+      "TTP-1.6: Exploit Shellcode",
+      "TTP-1.7: Exploit Shellcode",
+      "TTP-1.8: Exploit Shellcode",
+      "TTP-1.9: Exploit Shellcode",
+      "TTP-1.10: Exploit Shellcode"
+    ],
+    "failure_labels": [
+      "invalid_attack_id_format",
+      "placeholder_or_repetitive_output",
+      "truncated_response",
+      "missing_confidence",
+      "missing_explanation",
+      "schema_violation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable to compare.",
+    "confidence_label_null_reason": "The candidate response never states a confidence label; it is truncated before reaching that field."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate's first ten predictions are all 'TTP-1.x: Exploit Shellcode', which are not ATT&CK IDs. T1059 is absent from the first ten."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "The predicted label 'Exploit Shellcode' is not supported by the logs, which show a python3 pty.spawn call launching /bin/bash as www-data. No shellcode artifact is present."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field is recoverable; the response is truncated mid-list and contains no explanation."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No reasons are provided, and the predictions are not connected to the observed command-line artifacts."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No confidence label is recoverable from the candidate."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, is truncated, omits the confidence and explanation fields, and lists repeated placeholder entries instead of ATT&CK IDs."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "prediction_similarity": "Not assessed as a comparison response was not usable; reference techniques are not directly comparable to the placeholder predictions.",
+    "reasoning_similarity": "No candidate explanation present."
+  },
+  "judge_extracted_predictions": [
+    "TTP-1.1: Exploit Shellcode",
+    "TTP-1.2: Exploit Shellcode",
+    "TTP-1.3: Exploit Shellcode",
+    "TTP-1.4: Exploit Shellcode",
+    "TTP-1.5: Exploit Shellcode",
+    "TTP-1.6: Exploit Shellcode",
+    "TTP-1.7: Exploit Shellcode",
+    "TTP-1.8: Exploit Shellcode",
+    "TTP-1.9: Exploit Shellcode",
+    "TTP-1.10: Exploit Shellcode"
+  ],
+  "judge_failure_labels": [
+    "invalid_attack_id_format",
+    "placeholder_or_repetitive_output",
+    "truncated_response",
+    "missing_confidence",
+    "missing_explanation",
+    "schema_violation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable to compare.",
+  "confidence_label_null_reason": "The candidate response never states a confidence label; it is truncated before reaching that field."
+}

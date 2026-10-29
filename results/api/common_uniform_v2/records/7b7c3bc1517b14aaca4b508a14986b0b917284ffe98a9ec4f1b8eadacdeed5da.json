@@ -1,0 +1,243 @@
+{
+  "prompt_id": "91",
+  "scenario": "3",
+  "variant": "ssh_apt",
+  "step": "30",
+  "split": "test",
+  "group_id": "[\"3\", \"30\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nlinuxshare:\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1765536519.788:9708): proctitle=726D002D7266002F6D656469612F646174612F416E6E6F746174696F6E73002F6D656469612F646174612F496D61676573\n        type=SYSCALL msg=audit(1765536519.788:9709): arch=c000003e syscall=263 success=yes exit=0 a0=6 a1=56505d2fafe0 a2=0 a3=10ea0725b58aa2e9 items=2 ppid=2520 pid=2530 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=13 comm=\"rm\" exe=\"/usr/bin/rm\" subj=unconfined\u001dARCH=x86_64 SYSCALL=unlinkat AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765536519.788:9709): item=0 name=\"/root\" inode=147280 dev=fe:01 mode=040755 ouid=0 ogid=0 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765536519.788:9709): item=1 name=\"232_img_SimpleFlight_3_0_1646229596286326600.txt\" inode=147428 dev=fe:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765536519.788:9709): proctitle=726D002D7266002F6D656469612F646174612F416E6E6F746174696F6E73002F6D656469612F646174612F496D61676573\n        type=SYSCALL msg=audit(1765536519.788:9710): arch=c000003e syscall=263 success=yes exit=0 a0=6 a1=56505d2fb120 a2=0 a3=10ea0725b58aa2e9 items=2 ppid=2520 pid=2530 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=13 comm=\"rm\" exe=\"/usr/bin/rm\" subj=unconfined\u001dARCH=x86_64 SYSCALL=unlinkat AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765536519.788:9710): item=0 name=\"/root\" inode=147280 dev=fe:01 mode=040755 ouid=0 ogid=0 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765536519.788:9710): item=1 name=\"202_img_SimpleFlight_3_0_1646229598199617700.txt\" inode=147395 dev=fe:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765536519.788:9710): proctitle=726D002D7266002F6D656469612F646174612F416E6E6F746174696F6E73002F6D656469612F646174612F496D61676573\n        type=SYSCALL msg=audit(1765536519.788:9711): arch=c000003e syscall=263 success=yes exit=0 a0=6 a1=56505d2fb260 a2=0 a3=10ea0725b58aa2e9 items=2 ppid=2520 pid=2530 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=13 comm=\"rm\" exe=\"/usr/bin/rm\" subj=unconfined\u001dARCH=x86_64 SYSCALL=unlinkat AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"",
+  "prompt_sha256": "aa5cf51dad1f425cb1737e3860a5c916127037ea8a7877f9539f46dc8914f51f",
+  "ground_truth": "[\"T1485\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1070.004\", \"T1485\", \"T1565.001\", \"T1070\", \"T1107\", \"T1027.005\", \"T1490\", \"T1488\", \"T1036\", \"T1059.004\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit logs show root executing `rm -rf /media/data/Annotations /media/data/Images`, causing multiple successful `unlinkat` DELETE operations. Recursive deletion of data directories is consistent with file deletion/data destruction behavior, though `rm -rf` can also be legitimate administration activity.\"}",
+  "teacher_response_sha256": "baeb3b472ebf297cf09b7a14c3a4adfd64886948f6daf13edd3b0361c4c79d28",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:91",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat Actor\",\n    \"202 Michelin Threat",
+  "candidate_response_sha256": "7cabd0ee518bd27bc417f7dad1855c7604a5186190ff479b44918aaa4bbf1539",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1424,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 108.4732570749984,
+  "candidate_output_tokens_per_second": 9.44011480444444,
+  "candidate_peak_allocated_bytes": 5100750848,
+  "candidate_peak_reserved_bytes": 6452936704,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "c20d65391fc7186acf3afc163a9433a3adad26f1b0e20666771ee12353907808",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1485\", \"T1070.004\", \"T1070\", \"T1565.001\", \"T1083\", \"T1059.004\", \"T1531\", \"T1005\", \"T1074.001\", \"T1564.001\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The audit log shows the root user running 'rm -rf' via an interactive pts0 session against /media/data/Annotations and /media/data/Images, deleting many files in rapid succession (unlinkat syscalls with nametype=DELETE), which is consistent with mass data destruction or cleanup of sensitive/research data. However, the deleted files are image and annotation artifacts that could equally reflect routine dataset maintenance by an administrator, so the evidence is suggestive but not conclusive.\"\n}\n```",
+  "haiku_reference_response_sha256": "35372d048e39c14f274e303eee06c1ae2f830760dd9370bd7bd585da8a8b0d2d",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "b15bb507dc9156c5340af8107e80fe984fb9804a6b40c5a11eb8cec82d62c1e1",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's technique list contains only the repeated string '202 Michelin Threat Actor', which is not an ATT&CK technique ID. T1485 is not present among the first ten distinct predictions, so exact-ID coverage is zero.\",\n    \"prediction_evidence_support\": \"The predicted entries are not ATT&CK technique IDs and do not map to any supplied observation (unlinkat/DELETE events under /root). The only predicted content is unsupported and not a recognizable technique claim.\",\n    \"explanation_grounding\": \"No explanation field is present in the recoverable content; the response is a degenerate repetition of a non-technique string with no grounded observations.\",\n    \"prediction_reason_alignment\": \"There are no explanations connecting predictions to reasons, and the predictions themselves are not technique identifiers, so alignment is absent.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate content.\",\n    \"instruction_adherence\": \"The response is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a repeated non-ATT&CK string instead of up to ten technique IDs.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable; the response contains only the repeated technique placeholder string and no confidence or explanation field.\"\n  },\n  \"extracted_predictions\": [\"202 Michelin Threat Actor\"],\n  \"failure_labels\": [\n    \"invalid_json\",\n    \"missing_required_fields\",\n    \"degenerate_repetition\",\n    \"non_attack_technique_identifiers\",\n    \"no_explanation\",\n    \"missed_ground_truth_T1485\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or confidence wording in recoverable substantive content.\"\n}\n```",
+  "response_hash": "acc333ec60353b15794f01378146f757d21c55e17fccc3698880bc78bf453a60",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvEuikWEuUo1K7tbPho",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's technique list contains only the repeated string '202 Michelin Threat Actor', which is not an ATT&CK technique ID. T1485 is not present among the first ten distinct predictions, so exact-ID coverage is zero.\",\n    \"prediction_evidence_support\": \"The predicted entries are not ATT&CK technique IDs and do not map to any supplied observation (unlinkat/DELETE events under /root). The only predicted content is unsupported and not a recognizable technique claim.\",\n    \"explanation_grounding\": \"No explanation field is present in the recoverable content; the response is a degenerate repetition of a non-technique string with no grounded observations.\",\n    \"prediction_reason_alignment\": \"There are no explanations connecting predictions to reasons, and the predictions themselves are not technique identifiers, so alignment is absent.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate content.\",\n    \"instruction_adherence\": \"The response is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a repeated non-ATT&CK string instead of up to ten technique IDs.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable; the response contains only the repeated technique placeholder string and no confidence or explanation field.\"\n  },\n  \"extracted_predictions\": [\"202 Michelin Threat Actor\"],\n  \"failure_labels\": [\n    \"invalid_json\",\n    \"missing_required_fields\",\n    \"degenerate_repetition\",\n    \"non_attack_technique_identifiers\",\n    \"no_explanation\",\n    \"missed_ground_truth_T1485\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or confidence wording in recoverable substantive content.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 6494,
+      "output_tokens": 862,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 6494,
+    "output_tokens": 862,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005402,
+  "batch_api": true,
+  "elapsed_seconds": 39065.300609111786,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 6494,
+  "output_tokens": 862,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's technique list contains only the repeated string '202 Michelin Threat Actor', which is not an ATT&CK technique ID. T1485 is not present among the first ten distinct predictions, so exact-ID coverage is zero.\",\n    \"prediction_evidence_support\": \"The predicted entries are not ATT&CK technique IDs and do not map to any supplied observation (unlinkat/DELETE events under /root). The only predicted content is unsupported and not a recognizable technique claim.\",\n    \"explanation_grounding\": \"No explanation field is present in the recoverable content; the response is a degenerate repetition of a non-technique string with no grounded observations.\",\n    \"prediction_reason_alignment\": \"There are no explanations connecting predictions to reasons, and the predictions themselves are not technique identifiers, so alignment is absent.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate content.\",\n    \"instruction_adherence\": \"The response is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a repeated non-ATT&CK string instead of up to ten technique IDs.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable; the response contains only the repeated technique placeholder string and no confidence or explanation field.\"\n  },\n  \"extracted_predictions\": [\"202 Michelin Threat Actor\"],\n  \"failure_labels\": [\n    \"invalid_json\",\n    \"missing_required_fields\",\n    \"degenerate_repetition\",\n    \"non_attack_technique_identifiers\",\n    \"no_explanation\",\n    \"missed_ground_truth_T1485\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or confidence wording in recoverable substantive content.\"\n}\n```",
+  "judge_response_sha256": "acc333ec60353b15794f01378146f757d21c55e17fccc3698880bc78bf453a60",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 0,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": null,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "The candidate's technique list contains only the repeated string '202 Michelin Threat Actor', which is not an ATT&CK technique ID. T1485 is not present among the first ten distinct predictions, so exact-ID coverage is zero.",
+      "prediction_evidence_support": "The predicted entries are not ATT&CK technique IDs and do not map to any supplied observation (unlinkat/DELETE events under /root). The only predicted content is unsupported and not a recognizable technique claim.",
+      "explanation_grounding": "No explanation field is present in the recoverable content; the response is a degenerate repetition of a non-technique string with no grounded observations.",
+      "prediction_reason_alignment": "There are no explanations connecting predictions to reasons, and the predictions themselves are not technique identifiers, so alignment is absent.",
+      "confidence_evidence_support": "No confidence label is recoverable from the candidate content.",
+      "instruction_adherence": "The response is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a repeated non-ATT&CK string instead of up to ten technique IDs."
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable; the response contains only the repeated technique placeholder string and no confidence or explanation field."
+    },
+    "extracted_predictions": [
+      "202 Michelin Threat Actor"
+    ],
+    "failure_labels": [
+      "invalid_json",
+      "missing_required_fields",
+      "degenerate_repetition",
+      "non_attack_technique_identifiers",
+      "no_explanation",
+      "missed_ground_truth_T1485"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence field or confidence wording in recoverable substantive content."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 0,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "The candidate's technique list contains only the repeated string '202 Michelin Threat Actor', which is not an ATT&CK technique ID. T1485 is not present among the first ten distinct predictions, so exact-ID coverage is zero.",
+    "prediction_evidence_support": "The predicted entries are not ATT&CK technique IDs and do not map to any supplied observation (unlinkat/DELETE events under /root). The only predicted content is unsupported and not a recognizable technique claim.",
+    "explanation_grounding": "No explanation field is present in the recoverable content; the response is a degenerate repetition of a non-technique string with no grounded observations.",
+    "prediction_reason_alignment": "There are no explanations connecting predictions to reasons, and the predictions themselves are not technique identifiers, so alignment is absent.",
+    "confidence_evidence_support": "No confidence label is recoverable from the candidate content.",
+    "instruction_adherence": "The response is not valid JSON, lacks the required confidence and explanation fields, and the techniques list is filled with a repeated non-ATT&CK string instead of up to ten technique IDs."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable; the response contains only the repeated technique placeholder string and no confidence or explanation field."
+  },
+  "judge_extracted_predictions": [
+    "202 Michelin Threat Actor"
+  ],
+  "judge_failure_labels": [
+    "invalid_json",
+    "missing_required_fields",
+    "degenerate_repetition",
+    "non_attack_technique_identifiers",
+    "no_explanation",
+    "missed_ground_truth_T1485"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence field or confidence wording in recoverable substantive content."
+}

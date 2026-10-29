@@ -1,0 +1,275 @@
+{
+  "prompt_id": "867",
+  "scenario": "3",
+  "variant": "ssh_apt",
+  "step": "10",
+  "split": "test",
+  "group_id": "[\"3\", \"10\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Dec 12 10:32:45 inetfw dnsmasq[736]: reply packages.wazuh.com is 2600:9000:26a1:cc00:b:c04a:e8c0:93a1\n        Dec 12 10:32:45 inetfw dnsmasq[736]: reply apt.puppet.com is <CNAME>\n        Dec 12 10:32:45 inetfw dnsmasq[736]: reply d3e8phsy3q3gj7.cloudfront.net is 18.239.255.42\n        Dec 12 10:32:45 inetfw dnsmasq[736]: reply d3e8phsy3q3gj7.cloudfront.net is 18.239.255.61\n        Dec 12 10:32:45 inetfw dnsmasq[736]: reply d3e8phsy3q3gj7.cloudfront.net is 18.239.255.36\n        Dec 12 10:32:45 inetfw dnsmasq[736]: reply d3e8phsy3q3gj7.cloudfront.net is 18.239.255.95\n        Dec 12 10:32:45 inetfw dnsmasq[736]: query[SRV] _https._tcp.esm.ubuntu.com from 172.17.100.122\n        Dec 12 10:32:45 inetfw dnsmasq[736]: cached _https._tcp.esm.ubuntu.com is NXDOMAIN\n        Dec 12 10:32:45 inetfw dnsmasq[736]: query[A] esm.ubuntu.com from 172.17.100.122\n        Dec 12 10:32:45 inetfw dnsmasq[736]: forwarded esm.ubuntu.com to 192.42.2.2\n    logs/log/suricata/fast.log:\n        12/12/2025-10:32:45.047443  [**] [1:2013504:6] ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management [**] [Classification: Not Suspicious Traffic] [Priority: 3] {TCP} 172.17.100.122:48512 -> 185.125.190.95:80\n        12/12/2025-10:32:45.073319  [**] [1:2013504:6] ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management [**] [Classification: Not Suspicious Traffic] [Priority: 3] {TCP} 172.17.100.122:48512 -> 185.125.190.95:80\n        12/12/2025-10:32:45.215771  [**] [1:2013504:6] ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management [**] [Classification: Not Suspicious Traffic] [Priority: 3] {TCP} 172.17.100.122:54408 -> 18.239.255.42:80\n        12/12/2025-10:32:45.374713  [**] [1:2013504:6] ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management [**] [Classification: Not Suspicious Traffic] [Priority: 3] {TCP} 172.17.100.122:48512 -> 185.125.190.95:80\n        12/12/2025-10:32:45.439809  [**] [1:2013504:6] ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management [**] [Classification: Not Suspicious Traffic] [Priority: 3] {TCP} 172.17.100.122:39624 -> 91.189.91.82:80\nreposerver:\n    logs/log/syslog:\n        Dec 12 10:32:45 puppet systemd[1]: Starting Update APT News...\n        Dec 12 10:32:45 puppet systemd[1]: Starting Update the local ESM caches...\n        Dec 12 10:32:45 puppet systemd[1]: apt-news.service: Deactivated successfully.\n        Dec 12 10:32:45 puppet systemd[1]: Finished Update APT News.\n        Dec 12 10:32:45 puppet systemd[1]: esm-cache.service: Deactivated successfully.\n        Dec 12 10:32:45 puppet systemd[1]: Finished Update the local ESM caches.\n    logs/log/audit/audit.log:\n        type=EXECVE msg=audit(1765535565.816:16786): argc=2 a0=\"touch\" a1=\"/tmp/apt-key-gpghome.1aoyWe4RNM/pubring.gpg\"\n        type=PATH msg=audit(1765535565.816:16786): item=0 name=\"/usr/bin/touch\" inode=1620 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765535565.816:16786): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=79850 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535565.816:16786): proctitle=746F756368002F746D702F6170742D6B65792D677067686F6D652E31616F79576534524E4D2F70756272696E672E677067\n        type=SYSCALL msg=audit(1765535565.816:16787): arch=c000003e syscall=59 success=yes exit=0 a0=55fb42fb1570 a1=55fb42faf028 a2=55fb42fb1478 a3=0 items=2 ppid=4628 pid=4650 auid=1002 uid=105 gid=65534 euid=105 suid=105 fsuid=105 egid=65534 sgid=65534 fsgid=65534 tty=pts2 ses=5 comm=\"apt-config\" exe=\"/usr/bin/apt-config\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"_apt\" GID=\"nogroup\" EUID=\"_apt\" SUID=\"_apt\" FSUID=\"_apt\" EGID=\"nogroup\" SGID=\"nogroup\" FSGID=\"nogroup\"\n        type=EXECVE msg=audit(1765535565.816:16787): argc=4 a0=\"apt-config\" a1=\"shell\" a2=\"TRUSTEDPARTS\" a3=\"Dir::Etc::TrustedParts/d\"\n        type=PATH msg=audit(1765535565.816:16787): item=0 name=\"/usr/bin/apt-config\" inode=1749 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765535565.816:16787): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=79850 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535565.816:16787): proctitle=6170742D636F6E666967007368656C6C00545255535445445041525453004469723A3A4574633A3A5472757374656450617274732F64\n        type=SYSCALL msg=audit(1765535565.820:16788): arch=c000003e syscall=59 success=yes exit=0 a0=558998c7abf0 a1=558998c81200 a2=7ffce8fb8320 a3=88 items=2 ppid=4650 pid=4651 auid=1002 uid=105 gid=65534 euid=105 suid=105 fsuid=105 egid=65534 sgid=65534 fsgid=65534 tty=pts2 ses=5 comm=\"dpkg\" exe=\"/usr/bin/dpkg\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"_apt\" GID=\"nogroup\" EUID=\"_apt\" SUID=\"_apt\" FSUID=\"_apt\" EGID=\"nogroup\" SGID=\"nogroup\" FSGID=\"nogroup\"\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-12-12T10:32:45.741+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"id\":\"86601\",\"firedtimes\":34,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765535565.1001713\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T10:32:45.047443+0000\",\"flow_id\":\"1149766759884070.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"172.17.100.122\",\"src_port\":\"48512\",\"dest_ip\":\"185.125.190.95\",\"dest_port\":\"80\",\"proto\":\"TCP\",\"community_id\":\"1:gguYXA+qRGswY0AVnaL1jIgGxPQ=\",\"tx_id\":\"0\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2013504\",\"rev\":\"6\",\"signature\":\"ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":\"3\",\"metadata\":{\"confidence\":[\"High\"],\"created_at\":[\"2011_08_31\"],\"signature_severity\":[\"Informational\"],\"updated_at\":[\"2020_04_22\"]}},\"http\":{\"hostname\":\"nova.clouds.archive.ubuntu.com\",\"url\":\"/ubuntu/dists/jammy/InRelease\",\"http_user_agent\":\"Debian APT-HTTP/1.3 (2.4.12) non-interactive\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"304\",\"length\":\"0\"},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"4\",\"pkts_toclient\":\"2\",\"bytes_toserver\":\"506\",\"bytes_toclient\":\"615\",\"start\":\"2025-12-12T10:32:44.992550+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}\n        {\"timestamp\":\"2025-12-12T10:32:45.746+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"id\":\"86601\",\"firedtimes\":35,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765535565.1003974\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T10:32:45.073319+0000\",\"flow_id\":\"1149766759884070.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"172.17.100.122\",\"src_port\":\"48512\",\"dest_ip\":\"185.125.190.95\",\"dest_port\":\"80\",\"proto\":\"TCP\",\"community_id\":\"1:gguYXA+qRGswY0AVnaL1jIgGxPQ=\",\"tx_id\":\"1\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2013504\",\"rev\":\"6\",\"signature\":\"ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":\"3\",\"metadata\":{\"confidence\":[\"High\"],\"created_at\":[\"2011_08_31\"],\"signature_severity\":[\"Informational\"],\"updated_at\":[\"2020_04_22\"]}},\"http\":{\"hostname\":\"nova.clouds.archive.ubuntu.com\",\"url\":\"/ubuntu/dists/jammy-updates/InRelease\",\"http_user_agent\":\"Debian APT-HTTP/1.3 (2.4.12) non-interactive\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"304\",\"length\":\"0\"},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"6\",\"pkts_toclient\":\"3\",\"bytes_toserver\":\"1124\",\"bytes_toclient\":\"1156\",\"start\":\"2025-12-12T10:32:44.992550+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}\n        {\"timestamp\":\"2025-12-12T10:32:47.692+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"id\":\"86601\",\"firedtimes\":36,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765535567.1007132\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T10:32:45.215771+0000\",\"flow_id\":\"998141529492673.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"172.17.100.122\",\"src_port\":\"54408\",\"dest_ip\":\"18.239.255.42\",\"dest_port\":\"80\",\"proto\":\"TCP\",\"community_id\":\"1:U8amG/LMg7FEKAGgN+KIBr6rnvA=\",\"tx_id\":\"0\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2013504\",\"rev\":\"6\",\"signature\":\"ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":\"3\",\"metadata\":{\"confidence\":[\"High\"],\"created_at\":[\"2011_08_31\"],\"signature_severity\":[\"Informational\"],\"updated_at\":[\"2020_04_22\"]}},\"http\":{\"hostname\":\"apt.puppet.com\",\"url\":\"/dists/jammy/InRelease\",\"http_user_agent\":\"Debian APT-HTTP/1.3 (2.4.12) non-interactive\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"304\",\"length\":\"0\"},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"4\",\"pkts_toclient\":\"3\",\"bytes_toserver\":\"483\",\"bytes_toclient\":\"1503\",\"start\":\"2025-12-12T10:32:45.003265+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}\n        {\"timestamp\":\"2025-12-12T10:32:47.696+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"id\":\"86601\",\"firedtimes\":37,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765535567.1009341\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T10:32:45.374713+0000\",\"flow_id\":\"1149766759884070.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"172.17.100.122\",\"src_port\":\"48512\",\"dest_ip\":\"185.125.190.95\",\"dest_port\":\"80\",\"proto\":\"TCP\",\"community_id\":\"1:gguYXA+qRGswY0AVnaL1jIgGxPQ=\",\"tx_id\":\"2\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2013504\",\"rev\":\"6\",\"signature\":\"ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":\"3\",\"metadata\":{\"confidence\":[\"High\"],\"created_at\":[\"2011_08_31\"],\"signature_severity\":[\"Informational\"],\"updated_at\":[\"2020_04_22\"]}},\"http\":{\"hostname\":\"nova.clouds.archive.ubuntu.com\",\"url\":\"/ubuntu/dists/jammy-backports/InRelease\",\"http_user_agent\":\"Debian APT-HTTP/1.3 (2.4.12) non-interactive\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"304\",\"length\":\"0\"},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"8\",\"pkts_toclient\":\"5\",\"bytes_toserver\":\"1500\",\"bytes_toclient\":\"1775\",\"start\":\"2025-12-12T10:32:44.992550+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}\n        {\"timestamp\":\"2025-12-12T10:32:47.700+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"id\":\"86601\",\"firedtimes\":38,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765535567.1011626\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T10:32:45.439809+0000\",\"flow_id\":\"1414186421549407.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"172.17.100.122\",\"src_port\":\"39624\",\"dest_ip\":\"91.189.91.82\",\"dest_port\":\"80\",\"proto\":\"TCP\",\"community_id\":\"1:eIrszB0zMgSsVAXdr1PENDkD8eE=\",\"tx_id\":\"0\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2013504\",\"rev\":\"6\",\"signature\":\"ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":\"3\",\"metadata\":{\"confidence\":[\"High\"],\"created_at\":[\"2011_08_31\"],\"signature_severity\":[\"Informational\"],\"updated_at\":[\"2020_04_22\"]}},\"http\":{\"hostname\":\"security.ubuntu.com\",\"url\":\"/ubuntu/dists/jammy-security/InRelease\",\"http_user_agent\":\"Debian APT-HTTP/1.3 (2.4.12) non-interactive\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"304\",\"length\":\"0\"},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"4\",\"pkts_toclient\":\"3\",\"bytes_toserver\":\"504\",\"bytes_toclient\":\"500\",\"start\":\"2025-12-12T10:32:45.227679+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}",
+  "prompt_sha256": "191beb13be3eb3410429a14a83d8b929c55e9c0c5d15e6c7c2be579c238b42f3",
+  "ground_truth": "[\"T1059.004\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1071.001\", \"T1105\", \"T1041\", \"T1090\", \"T1583.006\", \"T1071\", \"T1218\", \"T1059.004\", \"T1027\", \"T1195.002\"], \"confidence\": \"Certain: Normal\", \"explanation\": \"The logs show routine Ubuntu/Debian APT package repository checks using the standard Debian APT HTTP user agent against legitimate hosts such as archive.ubuntu.com, security.ubuntu.com, apt.puppet.com, and esm.ubuntu.com. Suricata explicitly classifies the traffic as \\u201cNot Suspicious Traffic,\\u201d with HTTP 304 responses and normal apt-config/dpkg activity consistent with package management rather than an attack.\"}",
+  "teacher_response_sha256": "d03bfb080a55a3a42d94160825e3ed271f54ef4e5556fb3f822bf67391488144",
+  "teacher_confidence_label": "Certain: Normal",
+  "model": "mistral7b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203:867",
+  "candidate_response_raw": "1. T1086: Data From Removable Media (apt-key-gpghome.1aoyWe4RNM)\n2. T1086: Data From Removable Media (/tmp/apt-key-gpghome.1aoyWe4RNM/pubring.gpg)\n3. T1086: Data From Removable Media (/lib64/ld-linux-x86-64.so.2)\n4. T1086: Data From Removable Media (/usr/bin/apt-config)\n5. T1086: Data From Removable Media (/usr/bin/touch)\n6. T1105: Execution from a Network Share (apt-config)\n7. T1086: Data From Removable Media (/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)\n8. T1086: Data From Removable Media (/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)\n9. T1086: Data From Removable Media (/usr/lib64/ld-linux-x86-64.so.2)\n10. T1086: Data From Removable Media (/usr/lib/x86_64-linux-gnu/ld-2.31.so)\n\nconfidence: Almost Certain: Attack\nexplanation: The logs show multiple instances of outbound traffic to various IP addresses, which is likely related to package management using the APT User-Agent. Additionally, the logs indicate the execution of various binaries, including apt-config and ld-linux-x86-64.so, which are typically associated with package management activities. The use of these binaries and the outbound traffic to external IP addresses suggest that an attacker may be attempting to download and install malicious packages or updates.",
+  "candidate_response_sha256": "cf26fbeff6dfcbc0e9e916b65facd0ec768a343740ae77a4de06aa02922663c4",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6b3efb8ede6d2f573d3fa5dcfc7edd5ee5c5b6943715438245bff22a5b636203",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 6540,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 466,
+  "candidate_elapsed_seconds": 15.883903676000045,
+  "candidate_output_tokens_per_second": 29.33787622397306,
+  "candidate_peak_allocated_bytes": 16143131136,
+  "candidate_peak_reserved_bytes": 21659385856,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "4a45346568c0c747778956fb132e4f78ea1e0e17d5b3d9a1749935cda5d0ecaf",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1072\", \"T1105\", \"T1071.001\", \"T1543.002\", \"T1608\", \"T1059.004\", \"T1040\", \"T1557\", \"T1553.004\", \"T1027\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show Debian APT package-management activity: APT User-Agent HTTP requests to standard Ubuntu/Puppet/Wazuh repositories returning 304 Not Modified, routine DNS resolution of repository hosts, and systemd-triggered apt-news and ESM cache updates. The audit trail shows apt-config and dpkg executed under the _apt service account as part of normal GPG keyring handling (apt-key-gpghome), consistent with legitimate repository refresh rather than malicious execution.\"\n}\n```",
+  "haiku_reference_response_sha256": "a2fb44a63fabfeef62be0b2375cb0705b7ecfd36a5c831e700dea8a1218953bf",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "9b367c04fc4c585b53c458c37e0c87332e1ba8718f0d64c9716924ef222d5c78",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059.004; the candidate's ten predictions are T1086 (repeated) and T1105, with no T1059.004 among them. Coverage is 0.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"T1086 (Data From Removable Media) is not supported by any log; no removable media access appears. The file paths cited (apt-key-gpghome, ld-linux, apt-config) are real in the logs but do not indicate removable media. Several listed paths (/lib/x86_64-linux-gnu/ld-linux..., /usr/lib64/..., ld-2.31.so) do not appear in the supplied logs at all. T1105 is mislabeled as 'Execution from a Network Share', which is not its definition, and the apt traffic does not show tool transfer to the host that would support it.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"The explanation cites real observations (APT user-agent outbound traffic, apt-config and ld-linux executions) but the outbound traffic is to standard repository hosts and the candidate draws an attack inference from it without support. It also invents an attacker download narrative not present in the data.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Predictions are not connected to appropriate reasons: T1086 is assigned to file paths that have no removable-media relation, and the explanation does not mention removable media or the mislabeled techniques.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"Candidate label 'Almost Certain: Attack' is grossly disproportionate: the logs are consistent with routine APT/Ubuntu/Puppet repository maintenance (304 responses, systemd apt-news and ESM cache jobs, _apt service account GPG handling), with no malicious indicators.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is not strict JSON and lacks the required JSON structure; it uses a numbered list and plain-text fields. The top-10 list is present with IDs plus descriptive text, which violates 'only print the ID' and the schema, though the three required concepts are loosely present.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1086\",\"T1105\"],\"failure_labels\":[\"wrong_technique_ids\",\"missing_ground_truth_technique\",\"duplicate_predictions\",\"mislabeled_technique_name\",\"unsupported_removable_media_inference\",\"hallucinated_log_artifacts\",\"overconfident_attack_label\",\"non_json_output\",\"schema_violation\",\"descriptive_text_in_technique_list\"],\"prediction_similarity\":{\"score\":0,\"reason\":\"No comparison response was provided; the reference set is not assessed for similarity.\"},\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Almost Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":1,\"confidence_label_agreement_reason\":\"Candidate asserts attack while the evidence reflects routine package-management activity; the directions are opposed with high confidence on the normal side, so this is a major directional disagreement (score 1, not 0, since the candidate's label is high-confidence attack and the warranted label is high-confidence normal, which is the opposing-high-confidence case). Scored 0 under the rule for opposing high-confidence conclusions.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "52ab952e4b4cbce848f1064401260af8b616df4930524376537048b65954f21a",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwF6Ro2ryvVMCqhT1MW",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059.004; the candidate's ten predictions are T1086 (repeated) and T1105, with no T1059.004 among them. Coverage is 0.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"T1086 (Data From Removable Media) is not supported by any log; no removable media access appears. The file paths cited (apt-key-gpghome, ld-linux, apt-config) are real in the logs but do not indicate removable media. Several listed paths (/lib/x86_64-linux-gnu/ld-linux..., /usr/lib64/..., ld-2.31.so) do not appear in the supplied logs at all. T1105 is mislabeled as 'Execution from a Network Share', which is not its definition, and the apt traffic does not show tool transfer to the host that would support it.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"The explanation cites real observations (APT user-agent outbound traffic, apt-config and ld-linux executions) but the outbound traffic is to standard repository hosts and the candidate draws an attack inference from it without support. It also invents an attacker download narrative not present in the data.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Predictions are not connected to appropriate reasons: T1086 is assigned to file paths that have no removable-media relation, and the explanation does not mention removable media or the mislabeled techniques.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"Candidate label 'Almost Certain: Attack' is grossly disproportionate: the logs are consistent with routine APT/Ubuntu/Puppet repository maintenance (304 responses, systemd apt-news and ESM cache jobs, _apt service account GPG handling), with no malicious indicators.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is not strict JSON and lacks the required JSON structure; it uses a numbered list and plain-text fields. The top-10 list is present with IDs plus descriptive text, which violates 'only print the ID' and the schema, though the three required concepts are loosely present.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1086\",\"T1105\"],\"failure_labels\":[\"wrong_technique_ids\",\"missing_ground_truth_technique\",\"duplicate_predictions\",\"mislabeled_technique_name\",\"unsupported_removable_media_inference\",\"hallucinated_log_artifacts\",\"overconfident_attack_label\",\"non_json_output\",\"schema_violation\",\"descriptive_text_in_technique_list\"],\"prediction_similarity\":{\"score\":0,\"reason\":\"No comparison response was provided; the reference set is not assessed for similarity.\"},\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Almost Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":1,\"confidence_label_agreement_reason\":\"Candidate asserts attack while the evidence reflects routine package-management activity; the directions are opposed with high confidence on the normal side, so this is a major directional disagreement (score 1, not 0, since the candidate's label is high-confidence attack and the warranted label is high-confidence normal, which is the opposing-high-confidence case). Scored 0 under the rule for opposing high-confidence conclusions.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 10773,
+      "output_tokens": 1140,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 10773,
+    "output_tokens": 1140,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00082365,
+  "batch_api": true,
+  "elapsed_seconds": 23713.968954086304,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 10773,
+  "output_tokens": 1140,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059.004; the candidate's ten predictions are T1086 (repeated) and T1105, with no T1059.004 among them. Coverage is 0.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"T1086 (Data From Removable Media) is not supported by any log; no removable media access appears. The file paths cited (apt-key-gpghome, ld-linux, apt-config) are real in the logs but do not indicate removable media. Several listed paths (/lib/x86_64-linux-gnu/ld-linux..., /usr/lib64/..., ld-2.31.so) do not appear in the supplied logs at all. T1105 is mislabeled as 'Execution from a Network Share', which is not its definition, and the apt traffic does not show tool transfer to the host that would support it.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"The explanation cites real observations (APT user-agent outbound traffic, apt-config and ld-linux executions) but the outbound traffic is to standard repository hosts and the candidate draws an attack inference from it without support. It also invents an attacker download narrative not present in the data.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Predictions are not connected to appropriate reasons: T1086 is assigned to file paths that have no removable-media relation, and the explanation does not mention removable media or the mislabeled techniques.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"Candidate label 'Almost Certain: Attack' is grossly disproportionate: the logs are consistent with routine APT/Ubuntu/Puppet repository maintenance (304 responses, systemd apt-news and ESM cache jobs, _apt service account GPG handling), with no malicious indicators.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is not strict JSON and lacks the required JSON structure; it uses a numbered list and plain-text fields. The top-10 list is present with IDs plus descriptive text, which violates 'only print the ID' and the schema, though the three required concepts are loosely present.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1086\",\"T1105\"],\"failure_labels\":[\"wrong_technique_ids\",\"missing_ground_truth_technique\",\"duplicate_predictions\",\"mislabeled_technique_name\",\"unsupported_removable_media_inference\",\"hallucinated_log_artifacts\",\"overconfident_attack_label\",\"non_json_output\",\"schema_violation\",\"descriptive_text_in_technique_list\"],\"prediction_similarity\":{\"score\":0,\"reason\":\"No comparison response was provided; the reference set is not assessed for similarity.\"},\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Almost Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":1,\"confidence_label_agreement_reason\":\"Candidate asserts attack while the evidence reflects routine package-management activity; the directions are opposed with high confidence on the normal side, so this is a major directional disagreement (score 1, not 0, since the candidate's label is high-confidence attack and the warranted label is high-confidence normal, which is the opposing-high-confidence case). Scored 0 under the rule for opposing high-confidence conclusions.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "52ab952e4b4cbce848f1064401260af8b616df4930524376537048b65954f21a",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1059.004; the candidate's ten predictions are T1086 (repeated) and T1105, with no T1059.004 among them. Coverage is 0."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "T1086 (Data From Removable Media) is not supported by any log; no removable media access appears. The file paths cited (apt-key-gpghome, ld-linux, apt-config) are real in the logs but do not indicate removable media. Several listed paths (/lib/x86_64-linux-gnu/ld-linux..., /usr/lib64/..., ld-2.31.so) do not appear in the supplied logs at all. T1105 is mislabeled as 'Execution from a Network Share', which is not its definition, and the apt traffic does not show tool transfer to the host that would support it."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "The explanation cites real observations (APT user-agent outbound traffic, apt-config and ld-linux executions) but the outbound traffic is to standard repository hosts and the candidate draws an attack inference from it without support. It also invents an attacker download narrative not present in the data."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Predictions are not connected to appropriate reasons: T1086 is assigned to file paths that have no removable-media relation, and the explanation does not mention removable media or the mislabeled techniques."
+      },
+      "confidence_evidence_support": {
+        "score": 0,
+        "reason": "Candidate label 'Almost Certain: Attack' is grossly disproportionate: the logs are consistent with routine APT/Ubuntu/Puppet repository maintenance (304 responses, systemd apt-news and ESM cache jobs, _apt service account GPG handling), with no malicious indicators."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Output is not strict JSON and lacks the required JSON structure; it uses a numbered list and plain-text fields. The top-10 list is present with IDs plus descriptive text, which violates 'only print the ID' and the schema, though the three required concepts are loosely present."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1086",
+      "T1105"
+    ],
+    "failure_labels": [
+      "wrong_technique_ids",
+      "missing_ground_truth_technique",
+      "duplicate_predictions",
+      "mislabeled_technique_name",
+      "unsupported_removable_media_inference",
+      "hallucinated_log_artifacts",
+      "overconfident_attack_label",
+      "non_json_output",
+      "schema_violation",
+      "descriptive_text_in_technique_list"
+    ],
+    "prediction_similarity": {
+      "score": 0,
+      "reason": "No comparison response was provided; the reference set is not assessed for similarity."
+    },
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Almost Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": 1,
+    "confidence_label_agreement_reason": "Candidate asserts attack while the evidence reflects routine package-management activity; the directions are opposed with high confidence on the normal side, so this is a major directional disagreement (score 1, not 0, since the candidate's label is high-confidence attack and the warranted label is high-confidence normal, which is the opposing-high-confidence case). Scored 0 under the rule for opposing high-confidence conclusions.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1059.004; the candidate's ten predictions are T1086 (repeated) and T1105, with no T1059.004 among them. Coverage is 0."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "T1086 (Data From Removable Media) is not supported by any log; no removable media access appears. The file paths cited (apt-key-gpghome, ld-linux, apt-config) are real in the logs but do not indicate removable media. Several listed paths (/lib/x86_64-linux-gnu/ld-linux..., /usr/lib64/..., ld-2.31.so) do not appear in the supplied logs at all. T1105 is mislabeled as 'Execution from a Network Share', which is not its definition, and the apt traffic does not show tool transfer to the host that would support it."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "The explanation cites real observations (APT user-agent outbound traffic, apt-config and ld-linux executions) but the outbound traffic is to standard repository hosts and the candidate draws an attack inference from it without support. It also invents an attacker download narrative not present in the data."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Predictions are not connected to appropriate reasons: T1086 is assigned to file paths that have no removable-media relation, and the explanation does not mention removable media or the mislabeled techniques."
+  },
+  "score_confidence_evidence_support": {
+    "score": 0,
+    "reason": "Candidate label 'Almost Certain: Attack' is grossly disproportionate: the logs are consistent with routine APT/Ubuntu/Puppet repository maintenance (304 responses, systemd apt-news and ESM cache jobs, _apt service account GPG handling), with no malicious indicators."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Output is not strict JSON and lacks the required JSON structure; it uses a numbered list and plain-text fields. The top-10 list is present with IDs plus descriptive text, which violates 'only print the ID' and the schema, though the three required concepts are loosely present."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1086",
+    "T1105"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_ids",
+    "missing_ground_truth_technique",
+    "duplicate_predictions",
+    "mislabeled_technique_name",
+    "unsupported_removable_media_inference",
+    "hallucinated_log_artifacts",
+    "overconfident_attack_label",
+    "non_json_output",
+    "schema_violation",
+    "descriptive_text_in_technique_list"
+  ],
+  "judge_prediction_similarity": {
+    "score": 0,
+    "reason": "No comparison response was provided; the reference set is not assessed for similarity."
+  },
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Almost Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": 1,
+  "confidence_label_agreement_reason": "Candidate asserts attack while the evidence reflects routine package-management activity; the directions are opposed with high confidence on the normal side, so this is a major directional disagreement (score 1, not 0, since the candidate's label is high-confidence attack and the warranted label is high-confidence normal, which is the opposing-high-confidence case). Scored 0 under the rule for opposing high-confidence conclusions.",
+  "confidence_label_null_reason": null
+}

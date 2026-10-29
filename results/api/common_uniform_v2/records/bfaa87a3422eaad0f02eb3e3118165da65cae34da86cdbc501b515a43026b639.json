@@ -1,0 +1,267 @@
+{
+  "prompt_id": "474",
+  "scenario": "3",
+  "variant": "ssh_apt",
+  "step": "14",
+  "split": "train",
+  "group_id": "[\"3\", \"14\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765535705.048:17031): arch=c000003e syscall=91 success=yes exit=0 a0=3 a1=81a4 a2=100 a3=0 items=1 ppid=4266 pid=4780 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"vim\" exe=\"/usr/bin/vim.basic\" subj=unconfined\u001dARCH=x86_64 SYSCALL=fchmod AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535705.048:17031): item=0 name=(null) inode=1034119 dev=fc:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535705.048:17031): proctitle=76696D0044454249414E2F636F6E74726F6C\n        type=SYSCALL msg=audit(1765535705.048:17032): arch=c000003e syscall=188 success=yes exit=0 a0=5643e601f720 a1=7fc874232000 a2=5643e6291970 a3=1c items=1 ppid=4266 pid=4780 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"vim\" exe=\"/usr/bin/vim.basic\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setxattr AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535705.048:17032): item=0 name=\"DEBIAN/control\" inode=1034119 dev=fc:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535705.048:17032): proctitle=76696D0044454249414E2F636F6E74726F6C\n        type=SYSCALL msg=audit(1765535705.048:17033): arch=c000003e syscall=87 success=yes exit=0 a0=5643e62710f0 a1=1 a2=0 a3=1 items=2 ppid=4266 pid=4780 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"vim\" exe=\"/usr/bin/vim.basic\" subj=unconfined\u001dARCH=x86_64 SYSCALL=unlink AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535705.048:17033): item=0 name=\"/tmp/.tmux_data/healthcheckd/DEBIAN/\" inode=1034117 dev=fc:01 mode=040755 ouid=0 ogid=0 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765535705.048:17033): item=1 name=\"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" inode=1034126 dev=fc:01 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535705.048:17033): proctitle=76696D0044454249414E2F636F6E74726F6C",
+  "prompt_sha256": "9e75e3753ee6bbc6aeb16b56918c4aa69f3363eba2bcd03e87c7828dcb051b81",
+  "ground_truth": "[\"T1059\", \"T1574\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1546.016\", \"T1059.004\", \"T1036.005\", \"T1070.004\", \"T1222.002\", \"T1564.001\", \"T1105\", \"T1027\", \"T1059\", \"T1574.006\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root editing a Debian package control file under a hidden /tmp path (/tmp/.tmux_data/healthcheckd/DEBIAN/control), consistent with preparing or modifying a malicious package/persistence artifact. Use of a hidden temporary directory and package metadata manipulation is suspicious, though the sample only shows vim file operations rather than execution or installation.\"}",
+  "teacher_response_sha256": "6f40402e2a4d0a617cd7d655e2a45f480d9ef440c401bd9f970d52a59fb274b2",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "hermes",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b:474",
+  "candidate_response_raw": "{\n  \"techniques\": [\n    \"SYSCALL\",\n    \"PATH\",\n    \"PROCTITLE\",\n    \"SYSCALL\",\n    \"PATH\",\n    \"PROCTITLE\",\n    \"SYSCALL\",\n    \"PATH\",\n    \"PROCTITLE\",\n    \"SYSCALL\"\n  ],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The logs contain a syscall (SYSCALL) that is executed by the system, indicating a system call. The syscall is successful, and the exit code is 0, which is a common indicator of successful system calls. The syscall is executed by the unconfined user (UID=0), which is a common user for system calls. The syscall is associated with the file \"/usr/bin/vim.basic\", which is a common file used for system calls. The logs also contain a path to a file called \"DEBIAN/control\" and a path to a file called \"DEBIAN/.control.swp\", which are both commonly used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp\" that is a parent directory of the \"DEBIAN/\" directory, which is a common directory used for system calls. The logs also contain a path to a file called \"/tmp/.tmux_data/healthcheckd/DEBIAN/.control.swp",
+  "candidate_response_sha256": "7e190f26c379ff586857741d5831e08e29c12968173da86686ec32ff4964d652",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "7f0855a29924a03de1bb1972832b7a2895bd3fefeae9eec293caf36c13f7927b",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1606,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 25.183128618009505,
+  "candidate_output_tokens_per_second": 40.66214391120946,
+  "candidate_peak_allocated_bytes": 4245927936,
+  "candidate_peak_reserved_bytes": 9992929280,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "4820872154284e7703e09533c383cc576c78e9e1880f31177deb55b2c5d39500",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1036\", \"T1564.001\", \"T1222.002\", \"T1059.004\", \"T1070.004\", \"T1546\", \"T1574\", \"T1027\", \"T1543\", \"T1505\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The root user, via vim, edits a DEBIAN/control file (the Debian package metadata) inside a hidden directory '/tmp/.tmux_data/healthcheckd/', after changing its permissions (fchmod) and extended attributes (setxattr), then deletes the swap file, indicating preparation of a masqueraded, hidden Debian package and anti-forensic cleanup. Legitimate admins rarely hide package build data under a dot-prefixed /tmp directory named after tmux and a 'healthcheckd' service, so this strongly suggests malicious persistence or trojanized package staging.\"\n}\n```",
+  "haiku_reference_response_sha256": "58340e98afe4d82b7758bab20362b07c498c0fbde3cbdf72201698d483138952",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "0af07797d2d349b3d9b4c4cbbbd8d41ee001c28ffc8dff70be4e0d4b7b499c34",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate lists only SYSCALL, PATH, PROCTITLE (data source/log types, not ATT&CK IDs) and no ground-truth IDs T1059 or T1574 appear among the ten predictions.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predicted items are log record type names rather than ATT&CK techniques; they do not correspond to any supported technique claim.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"Explanation references real artifacts (vim.basic, DEBIAN/control, .control.swp, tmux path) but contains false claims such as UID=0 being 'unconfined user' and heavy repetition of a parent-directory claim with no new information; largely invented framing.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No actual technique predictions are connected to reasons; the listed items are not ATT&CK techniques.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Recovered label 'Somewhat Certain: Attack' is a defensible direction, but the explanation mischaracterizes the activity as normal-looking system calls, so the confidence is weakly supported by its own reasoning.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Output is not valid JSON (explanation is a degenerate repetitive run-on), techniques are not ATT&CK IDs, and the list is padded with duplicates.\"}},\"null_reasons\":{\"prediction_similarity\":\"No ATT&CK technique predictions were extracted for comparison; the listed items are log record types.\",\"reasoning_similarity\":\"Candidate explanation is degenerate and does not map to the reference reasoning in a meaningful way.\"},\"extracted_predictions\":[\"SYSCALL\",\"PATH\",\"PROCTITLE\"],\"failure_labels\":[\"wrong_identifier_type\",\"no_valid_attack_technique_ids\",\"invalid_json\",\"degenerate_repetitive_explanation\",\"ground_truth_miss\"],\"prediction_similarity\":0,\"reasoning_similarity\":1,\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Recovered label and warranted label are both Attack-directional and adjacent (Somewhat vs Almost Certain).\",\"confidence_label_null_reason\":null}",
+  "response_hash": "6c7de447f15c5b58e0ac424386f8ecbdea44daa6b8ef14e9f4e77dc346d493a5",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTv1qLxmwTMxuFQBT14b",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate lists only SYSCALL, PATH, PROCTITLE (data source/log types, not ATT&CK IDs) and no ground-truth IDs T1059 or T1574 appear among the ten predictions.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predicted items are log record type names rather than ATT&CK techniques; they do not correspond to any supported technique claim.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"Explanation references real artifacts (vim.basic, DEBIAN/control, .control.swp, tmux path) but contains false claims such as UID=0 being 'unconfined user' and heavy repetition of a parent-directory claim with no new information; largely invented framing.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No actual technique predictions are connected to reasons; the listed items are not ATT&CK techniques.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Recovered label 'Somewhat Certain: Attack' is a defensible direction, but the explanation mischaracterizes the activity as normal-looking system calls, so the confidence is weakly supported by its own reasoning.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Output is not valid JSON (explanation is a degenerate repetitive run-on), techniques are not ATT&CK IDs, and the list is padded with duplicates.\"}},\"null_reasons\":{\"prediction_similarity\":\"No ATT&CK technique predictions were extracted for comparison; the listed items are log record types.\",\"reasoning_similarity\":\"Candidate explanation is degenerate and does not map to the reference reasoning in a meaningful way.\"},\"extracted_predictions\":[\"SYSCALL\",\"PATH\",\"PROCTITLE\"],\"failure_labels\":[\"wrong_identifier_type\",\"no_valid_attack_technique_ids\",\"invalid_json\",\"degenerate_repetitive_explanation\",\"ground_truth_miss\"],\"prediction_similarity\":0,\"reasoning_similarity\":1,\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Recovered label and warranted label are both Attack-directional and adjacent (Somewhat vs Almost Certain).\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 5651,
+      "output_tokens": 831,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 5651,
+    "output_tokens": 831,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0004903,
+  "batch_api": true,
+  "elapsed_seconds": 27638.899533748627,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5651,
+  "output_tokens": 831,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate lists only SYSCALL, PATH, PROCTITLE (data source/log types, not ATT&CK IDs) and no ground-truth IDs T1059 or T1574 appear among the ten predictions.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predicted items are log record type names rather than ATT&CK techniques; they do not correspond to any supported technique claim.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"Explanation references real artifacts (vim.basic, DEBIAN/control, .control.swp, tmux path) but contains false claims such as UID=0 being 'unconfined user' and heavy repetition of a parent-directory claim with no new information; largely invented framing.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No actual technique predictions are connected to reasons; the listed items are not ATT&CK techniques.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"Recovered label 'Somewhat Certain: Attack' is a defensible direction, but the explanation mischaracterizes the activity as normal-looking system calls, so the confidence is weakly supported by its own reasoning.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Output is not valid JSON (explanation is a degenerate repetitive run-on), techniques are not ATT&CK IDs, and the list is padded with duplicates.\"}},\"null_reasons\":{\"prediction_similarity\":\"No ATT&CK technique predictions were extracted for comparison; the listed items are log record types.\",\"reasoning_similarity\":\"Candidate explanation is degenerate and does not map to the reference reasoning in a meaningful way.\"},\"extracted_predictions\":[\"SYSCALL\",\"PATH\",\"PROCTITLE\"],\"failure_labels\":[\"wrong_identifier_type\",\"no_valid_attack_technique_ids\",\"invalid_json\",\"degenerate_repetitive_explanation\",\"ground_truth_miss\"],\"prediction_similarity\":0,\"reasoning_similarity\":1,\"candidate_confidence_label\":\"Somewhat Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":3,\"confidence_label_agreement_reason\":\"Recovered label and warranted label are both Attack-directional and adjacent (Somewhat vs Almost Certain).\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "6c7de447f15c5b58e0ac424386f8ecbdea44daa6b8ef14e9f4e77dc346d493a5",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate lists only SYSCALL, PATH, PROCTITLE (data source/log types, not ATT&CK IDs) and no ground-truth IDs T1059 or T1574 appear among the ten predictions."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "Predicted items are log record type names rather than ATT&CK techniques; they do not correspond to any supported technique claim."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "Explanation references real artifacts (vim.basic, DEBIAN/control, .control.swp, tmux path) but contains false claims such as UID=0 being 'unconfined user' and heavy repetition of a parent-directory claim with no new information; largely invented framing."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No actual technique predictions are connected to reasons; the listed items are not ATT&CK techniques."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "Recovered label 'Somewhat Certain: Attack' is a defensible direction, but the explanation mischaracterizes the activity as normal-looking system calls, so the confidence is weakly supported by its own reasoning."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Output is not valid JSON (explanation is a degenerate repetitive run-on), techniques are not ATT&CK IDs, and the list is padded with duplicates."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "No ATT&CK technique predictions were extracted for comparison; the listed items are log record types.",
+      "reasoning_similarity": "Candidate explanation is degenerate and does not map to the reference reasoning in a meaningful way."
+    },
+    "extracted_predictions": [
+      "SYSCALL",
+      "PATH",
+      "PROCTITLE"
+    ],
+    "failure_labels": [
+      "wrong_identifier_type",
+      "no_valid_attack_technique_ids",
+      "invalid_json",
+      "degenerate_repetitive_explanation",
+      "ground_truth_miss"
+    ],
+    "prediction_similarity": 0,
+    "reasoning_similarity": 1,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "Recovered label and warranted label are both Attack-directional and adjacent (Somewhat vs Almost Certain).",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate lists only SYSCALL, PATH, PROCTITLE (data source/log types, not ATT&CK IDs) and no ground-truth IDs T1059 or T1574 appear among the ten predictions."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "Predicted items are log record type names rather than ATT&CK techniques; they do not correspond to any supported technique claim."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "Explanation references real artifacts (vim.basic, DEBIAN/control, .control.swp, tmux path) but contains false claims such as UID=0 being 'unconfined user' and heavy repetition of a parent-directory claim with no new information; largely invented framing."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No actual technique predictions are connected to reasons; the listed items are not ATT&CK techniques."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "Recovered label 'Somewhat Certain: Attack' is a defensible direction, but the explanation mischaracterizes the activity as normal-looking system calls, so the confidence is weakly supported by its own reasoning."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Output is not valid JSON (explanation is a degenerate repetitive run-on), techniques are not ATT&CK IDs, and the list is padded with duplicates."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No ATT&CK technique predictions were extracted for comparison; the listed items are log record types.",
+    "reasoning_similarity": "Candidate explanation is degenerate and does not map to the reference reasoning in a meaningful way."
+  },
+  "judge_extracted_predictions": [
+    "SYSCALL",
+    "PATH",
+    "PROCTITLE"
+  ],
+  "judge_failure_labels": [
+    "wrong_identifier_type",
+    "no_valid_attack_technique_ids",
+    "invalid_json",
+    "degenerate_repetitive_explanation",
+    "ground_truth_miss"
+  ],
+  "judge_prediction_similarity": 0,
+  "judge_reasoning_similarity": 1,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "Recovered label and warranted label are both Attack-directional and adjacent (Somewhat vs Almost Certain).",
+  "confidence_label_null_reason": null
+}

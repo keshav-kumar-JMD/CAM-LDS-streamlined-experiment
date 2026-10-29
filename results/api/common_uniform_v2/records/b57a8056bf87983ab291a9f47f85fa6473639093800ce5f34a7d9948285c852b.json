@@ -1,0 +1,273 @@
+{
+  "prompt_id": "191",
+  "scenario": "7",
+  "variant": "",
+  "step": "13",
+  "split": "train",
+  "group_id": "[\"7\", \"13\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ndocker:\n    logs/log/syslog:\n        2026-01-21T10:46:27.517045+00:00 docker CRON[3686]: (CRON) info (No MTA installed, discarding output)\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1768992356.115:5655): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c000402dec a2=10 a3=0 items=0 ppid=3689 pid=3717 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=31 comm=\"tool\" exe=\"/opt/tool\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1768992356.115:5655): saddr=020000357F0000350000000000000000\u001dSADDR={ saddr_fam=inet laddr=127.0.0.53 lport=53 }\n        type=PROCTITLE msg=audit(1768992356.115:5655): proctitle=\"/opt/tool\"\n        type=SYSCALL msg=audit(1768992356.119:5656): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c000402e4c a2=10 a3=0 items=0 ppid=3689 pid=3717 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=31 comm=\"tool\" exe=\"/opt/tool\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1768992356.119:5656): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1768992356.119:5656): proctitle=\"/opt/tool\"\n        type=USER_ACCT msg=audit(1768992361.827:5658): pid=3810 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:accounting grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=CRED_ACQ msg=audit(1768992361.829:5659): pid=3810 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=USER_START msg=audit(1768992361.832:5661): pid=3810 uid=0 auid=0 ses=36 subj=unconfined msg='op=PAM:session_open grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=CRED_REFR msg=audit(1768992361.834:5663): pid=3811 uid=0 auid=0 ses=36 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\ninetfw:\n    logs/log/syslog:\n        Jan 21 10:45:56 inetfw dnsmasq[737]: query[AAAA] faaacebook.com from 172.17.100.125\n        Jan 21 10:45:56 inetfw dnsmasq[737]: cached faaacebook.com is NODATA-IPv6\n        Jan 21 10:45:56 inetfw dnsmasq[737]: query[A] faaacebook.com from 172.17.100.125\n        Jan 21 10:45:56 inetfw dnsmasq[737]: forwarded faaacebook.com to 192.42.2.2\n        Jan 21 10:45:56 inetfw dnsmasq[737]: reply faaacebook.com is 192.42.1.174",
+  "prompt_sha256": "1be2501adf48891de1874e09b14f209bb14405a0d84dcbe045aecdcb8090bca3",
+  "ground_truth": "[\"T1003.008\", \"T1041\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1573\", \"T1071.001\", \"T1090\", \"T1102\", \"T1568\", \"T1071\", \"T1041\", \"T1105\", \"T1059\", \"T1027\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a root-run custom binary /opt/tool resolving a suspicious typosquatted domain (faaacebook.com) and connecting to the returned external IP 192.42.1.174 over TCP/443. This pattern is consistent with encrypted web-based command-and-control or staging rather than ordinary system activity, though the limited telemetry does not prove payload behavior.\"}",
+  "teacher_response_sha256": "40ee8f23a0c4ead49c7d63da2b79d118fa4a99e2340b55adadbe0e3ca5d7b5e4",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "qwen7b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "e1c2fda3f39f077e7f74012fd0d51fd621931088ea87e57d546b6d20fd8c066c:191",
+  "candidate_response_raw": "```json\n{\n    \"techniques\": [\n        \"T1098\",\n        \"T1071\",\n        \"T1041\",\n        \"T1075\",\n        \"T1021\",\n        \"T1046\",\n        \"T1020\",\n        \"T1027\",\n        \"T1043\",\n        \"T1025\"\n    ],\n    \"confidence\": \"Somewhat Certain: Attack\",\n    \"explanation\": \"The logs indicate DNS requests for a suspicious domain (faaacebook.com, which is misspelled and likely malicious) and network connections to an external IP address (192.42.1.174). These activities are consistent with reconnaissance and command and control (C2) communication, which are often associated with cyber attacks.\"\n}\n```",
+  "candidate_response_sha256": "630ff5ade0e47e0ccc6accac946ac01ae565b90d8aba57f9bee422395ef5542d",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "qwen7b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "e1c2fda3f39f077e7f74012fd0d51fd621931088ea87e57d546b6d20fd8c066c",
+  "candidate_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1675,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 182,
+  "candidate_elapsed_seconds": 5.467381205999118,
+  "candidate_output_tokens_per_second": 33.288331861751175,
+  "candidate_peak_allocated_bytes": 15631419392,
+  "candidate_peak_reserved_bytes": 21671968768,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "85e04a4a2904c7dd92c10f285242658dffa8c9e89793575263ed1c194722f13d",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1071.004\", \"T1071\", \"T1568.002\", \"T1568\", \"T1046\", \"T1049\", \"T1095\", \"T1571\", \"T1573\", \"T1204\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"A binary running from a non-standard path (/opt/tool) as root repeatedly calls connect() to an external IP (192.42.1.174:443) and to the local DNS resolver, and DNS queries for the typo-squatted domain 'faaacebook.com' (resolving to that same external IP) suggest command-and-control or DNS-based resolution behavior. The cron entries are routine, but the unknown tool's outbound beaconing and suspicious domain lookup indicate likely malicious activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "ee7ef95b81725676240db089d0ae869b4e3ff1627d92fcbe765329a023dddb3f",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "1f1df63bb61d5687f2b2cc1ed9519ebd307f276732dbcf1d2af01b138e3ec7d3",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 1, \"reason\": \"Ground truth is T1003.008 and T1041. Candidate lists T1041 at rank 3 (exact match, 1 of 2 = 50%). T1003.008 is absent from the first ten predictions. Coverage is 50%, which falls in the 50% to less than 75% band, so score 2 under the stated anchors.\"},\n    \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"T1041 (exfiltration over C2) is loosely supported by the outbound connect() to 192.42.1.174:443 from /opt/tool. T1071 (application layer protocol) is reasonable given DNS queries. Many others (T1098, T1075, T1021, T1020, T1043, T1025) have no supporting observations in the logs.\"},\n    \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites the misspelled domain and the external IP, which are real observations. However, it describes the domain as 'likely malicious' and the activity as 'reconnaissance' without distinguishing inference from observation, and it does not mention the /opt/tool binary or root connect() calls, which are the strongest artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"C2 framing connects reasonably to T1071 and T1041, but reconnaissance framing does not map to the predicted T1046 or T1021 (lateral movement) without supporting evidence. Credential dumping (T1003.008) is not addressed at all.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"Candidate label is Somewhat Certain: Attack. The evidence (unknown binary making root outbound connections to an external IP, typo-squatted domain) arguably supports a stronger attack call, so the label is somewhat under-confident. The explanation does not acknowledge limitations.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is wrapped in a markdown code fence, which breaks strict JSON. Required fields are present and substantive content is recoverable. The explanation is two sentences, within limits. Ten techniques are listed, but with several unsupported ones.\"}\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1098\", \"T1071\", \"T1041\", \"T1075\", \"T1021\", \"T1046\", \"T1020\", \"T1027\", \"T1043\", \"T1025\"],\n  \"failure_labels\": [\"fenced_json\", \"unsupported_technique_predictions\", \"missed_ground_truth_T1003.008\", \"weak_explanation_grounding\"],\n  \"prediction_similarity\": 2,\n  \"reasoning_similarity\": 2,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Candidate and warranted labels are adjacent categories with the same Attack direction; candidate is one step less certain.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "8de4cf16c83c6ab3fd36bbe42ea7e47ef7446abf5ff07eaaee3c515a6c1227cd",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwVxF6JQDs3E1fJxKXz",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 1, \"reason\": \"Ground truth is T1003.008 and T1041. Candidate lists T1041 at rank 3 (exact match, 1 of 2 = 50%). T1003.008 is absent from the first ten predictions. Coverage is 50%, which falls in the 50% to less than 75% band, so score 2 under the stated anchors.\"},\n    \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"T1041 (exfiltration over C2) is loosely supported by the outbound connect() to 192.42.1.174:443 from /opt/tool. T1071 (application layer protocol) is reasonable given DNS queries. Many others (T1098, T1075, T1021, T1020, T1043, T1025) have no supporting observations in the logs.\"},\n    \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites the misspelled domain and the external IP, which are real observations. However, it describes the domain as 'likely malicious' and the activity as 'reconnaissance' without distinguishing inference from observation, and it does not mention the /opt/tool binary or root connect() calls, which are the strongest artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"C2 framing connects reasonably to T1071 and T1041, but reconnaissance framing does not map to the predicted T1046 or T1021 (lateral movement) without supporting evidence. Credential dumping (T1003.008) is not addressed at all.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"Candidate label is Somewhat Certain: Attack. The evidence (unknown binary making root outbound connections to an external IP, typo-squatted domain) arguably supports a stronger attack call, so the label is somewhat under-confident. The explanation does not acknowledge limitations.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is wrapped in a markdown code fence, which breaks strict JSON. Required fields are present and substantive content is recoverable. The explanation is two sentences, within limits. Ten techniques are listed, but with several unsupported ones.\"}\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1098\", \"T1071\", \"T1041\", \"T1075\", \"T1021\", \"T1046\", \"T1020\", \"T1027\", \"T1043\", \"T1025\"],\n  \"failure_labels\": [\"fenced_json\", \"unsupported_technique_predictions\", \"missed_ground_truth_T1003.008\", \"weak_explanation_grounding\"],\n  \"prediction_similarity\": 2,\n  \"reasoning_similarity\": 2,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Candidate and warranted labels are adjacent categories with the same Attack direction; candidate is one step less certain.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4320,
+      "output_tokens": 1043,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4320,
+    "output_tokens": 1043,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00047675,
+  "batch_api": true,
+  "elapsed_seconds": 531.9647636413574,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4320,
+  "output_tokens": 1043,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 1, \"reason\": \"Ground truth is T1003.008 and T1041. Candidate lists T1041 at rank 3 (exact match, 1 of 2 = 50%). T1003.008 is absent from the first ten predictions. Coverage is 50%, which falls in the 50% to less than 75% band, so score 2 under the stated anchors.\"},\n    \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"T1041 (exfiltration over C2) is loosely supported by the outbound connect() to 192.42.1.174:443 from /opt/tool. T1071 (application layer protocol) is reasonable given DNS queries. Many others (T1098, T1075, T1021, T1020, T1043, T1025) have no supporting observations in the logs.\"},\n    \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites the misspelled domain and the external IP, which are real observations. However, it describes the domain as 'likely malicious' and the activity as 'reconnaissance' without distinguishing inference from observation, and it does not mention the /opt/tool binary or root connect() calls, which are the strongest artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"C2 framing connects reasonably to T1071 and T1041, but reconnaissance framing does not map to the predicted T1046 or T1021 (lateral movement) without supporting evidence. Credential dumping (T1003.008) is not addressed at all.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"Candidate label is Somewhat Certain: Attack. The evidence (unknown binary making root outbound connections to an external IP, typo-squatted domain) arguably supports a stronger attack call, so the label is somewhat under-confident. The explanation does not acknowledge limitations.\"},\n    \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is wrapped in a markdown code fence, which breaks strict JSON. Required fields are present and substantive content is recoverable. The explanation is two sentences, within limits. Ten techniques are listed, but with several unsupported ones.\"}\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1098\", \"T1071\", \"T1041\", \"T1075\", \"T1021\", \"T1046\", \"T1020\", \"T1027\", \"T1043\", \"T1025\"],\n  \"failure_labels\": [\"fenced_json\", \"unsupported_technique_predictions\", \"missed_ground_truth_T1003.008\", \"weak_explanation_grounding\"],\n  \"prediction_similarity\": 2,\n  \"reasoning_similarity\": 2,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Candidate and warranted labels are adjacent categories with the same Attack direction; candidate is one step less certain.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "8de4cf16c83c6ab3fd36bbe42ea7e47ef7446abf5ff07eaaee3c515a6c1227cd",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 1,
+        "reason": "Ground truth is T1003.008 and T1041. Candidate lists T1041 at rank 3 (exact match, 1 of 2 = 50%). T1003.008 is absent from the first ten predictions. Coverage is 50%, which falls in the 50% to less than 75% band, so score 2 under the stated anchors."
+      },
+      "prediction_evidence_support": {
+        "score": 2,
+        "reason": "T1041 (exfiltration over C2) is loosely supported by the outbound connect() to 192.42.1.174:443 from /opt/tool. T1071 (application layer protocol) is reasonable given DNS queries. Many others (T1098, T1075, T1021, T1020, T1043, T1025) have no supporting observations in the logs."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation cites the misspelled domain and the external IP, which are real observations. However, it describes the domain as 'likely malicious' and the activity as 'reconnaissance' without distinguishing inference from observation, and it does not mention the /opt/tool binary or root connect() calls, which are the strongest artifacts."
+      },
+      "prediction_reason_alignment": {
+        "score": 2,
+        "reason": "C2 framing connects reasonably to T1071 and T1041, but reconnaissance framing does not map to the predicted T1046 or T1021 (lateral movement) without supporting evidence. Credential dumping (T1003.008) is not addressed at all."
+      },
+      "confidence_evidence_support": {
+        "score": 2,
+        "reason": "Candidate label is Somewhat Certain: Attack. The evidence (unknown binary making root outbound connections to an external IP, typo-squatted domain) arguably supports a stronger attack call, so the label is somewhat under-confident. The explanation does not acknowledge limitations."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Output is wrapped in a markdown code fence, which breaks strict JSON. Required fields are present and substantive content is recoverable. The explanation is two sentences, within limits. Ten techniques are listed, but with several unsupported ones."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1098",
+      "T1071",
+      "T1041",
+      "T1075",
+      "T1021",
+      "T1046",
+      "T1020",
+      "T1027",
+      "T1043",
+      "T1025"
+    ],
+    "failure_labels": [
+      "fenced_json",
+      "unsupported_technique_predictions",
+      "missed_ground_truth_T1003.008",
+      "weak_explanation_grounding"
+    ],
+    "prediction_similarity": 2,
+    "reasoning_similarity": 2,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "Candidate and warranted labels are adjacent categories with the same Attack direction; candidate is one step less certain.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 1,
+    "reason": "Ground truth is T1003.008 and T1041. Candidate lists T1041 at rank 3 (exact match, 1 of 2 = 50%). T1003.008 is absent from the first ten predictions. Coverage is 50%, which falls in the 50% to less than 75% band, so score 2 under the stated anchors."
+  },
+  "score_prediction_evidence_support": {
+    "score": 2,
+    "reason": "T1041 (exfiltration over C2) is loosely supported by the outbound connect() to 192.42.1.174:443 from /opt/tool. T1071 (application layer protocol) is reasonable given DNS queries. Many others (T1098, T1075, T1021, T1020, T1043, T1025) have no supporting observations in the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation cites the misspelled domain and the external IP, which are real observations. However, it describes the domain as 'likely malicious' and the activity as 'reconnaissance' without distinguishing inference from observation, and it does not mention the /opt/tool binary or root connect() calls, which are the strongest artifacts."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 2,
+    "reason": "C2 framing connects reasonably to T1071 and T1041, but reconnaissance framing does not map to the predicted T1046 or T1021 (lateral movement) without supporting evidence. Credential dumping (T1003.008) is not addressed at all."
+  },
+  "score_confidence_evidence_support": {
+    "score": 2,
+    "reason": "Candidate label is Somewhat Certain: Attack. The evidence (unknown binary making root outbound connections to an external IP, typo-squatted domain) arguably supports a stronger attack call, so the label is somewhat under-confident. The explanation does not acknowledge limitations."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Output is wrapped in a markdown code fence, which breaks strict JSON. Required fields are present and substantive content is recoverable. The explanation is two sentences, within limits. Ten techniques are listed, but with several unsupported ones."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1098",
+    "T1071",
+    "T1041",
+    "T1075",
+    "T1021",
+    "T1046",
+    "T1020",
+    "T1027",
+    "T1043",
+    "T1025"
+  ],
+  "judge_failure_labels": [
+    "fenced_json",
+    "unsupported_technique_predictions",
+    "missed_ground_truth_T1003.008",
+    "weak_explanation_grounding"
+  ],
+  "judge_prediction_similarity": 2,
+  "judge_reasoning_similarity": 2,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "Candidate and warranted labels are adjacent categories with the same Attack direction; candidate is one step less certain.",
+  "confidence_label_null_reason": null
+}

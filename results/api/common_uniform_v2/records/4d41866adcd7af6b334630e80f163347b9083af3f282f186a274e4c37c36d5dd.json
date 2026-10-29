@@ -1,0 +1,291 @@
+{
+  "prompt_id": "85",
+  "scenario": "3",
+  "variant": "ssh_healthcheck",
+  "step": "23",
+  "split": "train",
+  "group_id": "[\"3\", \"23\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nlinuxshare:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765464136.024:3204): arch=c000003e syscall=59 success=yes exit=0 a0=564d27ca2870 a1=564d27c9fe00 a2=564d27ca3130 a3=78f88b99e1056883 items=3 ppid=2122 pid=2206 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=10 comm=\"stty\" exe=\"/usr/bin/stty\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765464136.024:3204): argc=5 a0=\"stty\" a1=\"rows\" a2=\"38\" a3=\"columns\" a4=\"116\"\n        type=PATH msg=audit(1765464136.024:3204): item=0 name=\"/usr/bin/stty\" inode=673 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765464136.024:3204): item=1 name=\"/usr/bin/stty\" inode=673 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765464136.024:3204): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=2058 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765464136.024:3204): proctitle=7374747900726F777300333800636F6C756D6E7300313136",
+  "prompt_sha256": "0f64cfedb1e481aa31e4621365f723a756f338c0bf9c83e93ff724d561f44fb3",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1027\", \"T1036\", \"T1070.003\", \"T1106\", \"T1204\", \"T1562.001\", \"T1548\", \"T1005\"], \"confidence\": \"Almost Certain: Normal\", \"explanation\": \"The audit log only shows root executing /usr/bin/stty to set terminal rows and columns on a TTY session, which is typical interactive shell behavior. There are no suspicious arguments, file modifications, privilege changes, or persistence/exfiltration indicators.\"}",
+  "teacher_response_sha256": "68edccd624fc87673f4416744c22c8cff3edfe6920449a7122a21b39ea22bae1",
+  "teacher_confidence_label": "Almost Certain: Normal",
+  "model": "llama3b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "8d972aa104e73eee77cae5fd8ad0d51ba05ed930a8ddb187f420e3fe554b5f0f:85",
+  "candidate_response_raw": "Here is the classification of the provided system log data in JSON format:\n\n```json\n{\n  \"techniques\": [\n    \"T1003: Use Alternative Credentials\",\n    \"T1210: Use Privilege Esc escalation\",\n    \"T1211: Privilege Escalation\",\n    \"T1212: Privilege Escalation via SUID/GID\",\n    \"T1213: Use Privilege Escalation\",\n    \"T1214: Privilege Escalation via SUID/GID\",\n    \"T1215: Use Privilege Escalation\",\n    \"T1216: Use Privilege Escalation\",\n    \"T1217: Use Privilege Escalation\",\n    \"T1218: Use Privilege Escalation\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The logs indicate a potential privilege escalation attack, as the'stty' command is executed with elevated privileges (root) and the 'execve' system call is used to execute the command. This is a common technique used by attackers to gain elevated privileges on the system.\"\n}\n```\n\nThe confidence level is set to \"Certain: Attack\" because the logs clearly indicate a potential privilege escalation attack, with the'stty' command being executed with elevated privileges (root) and the 'execve' system call being used to execute the command. This is a common technique used by attackers to gain elevated privileges on the system.",
+  "candidate_response_sha256": "fbd37d37988334b653527a6faf3f220a1cb87b1cbd9fd0870752542c21fe86f5",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "8d972aa104e73eee77cae5fd8ad0d51ba05ed930a8ddb187f420e3fe554b5f0f",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 853,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 301,
+  "candidate_elapsed_seconds": 8.625870388000067,
+  "candidate_output_tokens_per_second": 34.89502930843223,
+  "candidate_peak_allocated_bytes": 6605096448,
+  "candidate_peak_reserved_bytes": 8795455488,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "98ba50410902a1a82953cc38cb555fa564e59eb082f80ef24ba6f34ad2871ac3",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1059\", \"T1082\", \"T1033\", \"T1548\", \"T1574\", \"T1036\", \"T1070\", \"T1497\", \"T1518\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The log shows a single execution of /usr/bin/stty with arguments setting terminal rows and columns (38 rows, 116 columns), a routine terminal-configuration action typical of an interactive shell session on pts0 from a legitimate parent process (ppid=2122). There are no suspicious indicators such as network activity, encoded payloads, unusual parent-child chains, or tampering with binaries or logs.\"\n}\n```",
+  "haiku_reference_response_sha256": "5e93aa95a77a3e866a1c2897335267b5fad5b0a571431a235b7da95308416bc1",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "626b7a737a29330b29cce2246b7bed1eff5b378bba58f7624ad72ca1fbe9cb49",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059 (Command and Scripting Interpreter). The candidate's ten IDs do not include T1059; they are largely invented or mislabeled IDs (e.g., T1003 labeled 'Use Alternative Credentials', T1210-T1218 labeled as privilege escalation variants that do not match ATT&CK IDs). No exact-ID coverage.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predictions such as privilege escalation via SUID/GID or T1003 are not supported by the log: stty is executed by root in a pts0 session with only terminal size arguments; no credential access or SUID manipulation is shown. Many IDs are not valid ATT&CK techniques.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"Explanation cites real artifacts (stty, execve, root, pts0-like elevated context), but misreads them as privilege escalation and ignores that stty with rows/columns arguments is routine terminal configuration. Partially grounded in observations but inference is wrong.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Privilege escalation rationale is loosely tied to root execution, but the listed technique IDs do not match that rationale, and none map to the execution technique that the log arguably fits.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"Candidate label 'Certain: Attack' is grossly disproportionate for a single benign stty invocation with no suspicious indicators; the warranted label is near 'Normal'.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is not strict JSON (wrapped in fence and surrounding prose), technique entries include descriptions despite instruction to print only IDs, and the IDs are not valid ATT&CK identifiers.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1003\",\"T1210\",\"T1211\",\"T1212\",\"T1213\",\"T1214\",\"T1215\",\"T1216\",\"T1217\",\"T1218\"],\"failure_labels\":[\"wrong_technique_ids\",\"invented_or_invalid_attack_ids\",\"missed_ground_truth_T1059\",\"overconfident_attack_label\",\"benign_activity_misclassified_as_attack\",\"non_json_output\",\"descriptions_included_despite_id_only_instruction\"],\"prediction_similarity\":{\"score\":null,\"reason\":\"No comparison response provided.\"},\"reasoning_similarity\":{\"score\":null,\"reason\":\"No comparison response provided.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":0,\"confidence_label_agreement_reason\":\"Candidate asserts Certain: Attack while the evidence (routine stty terminal-size call by root on a pts session) warrants Almost Certain: Normal; this is opposing high-confidence conclusions.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "28ff4f6501fb7aee58f2fc45e0ee10d62fdd08142bcc4a62576b83bed29686b1",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvYaGiZnYECvrdojQN3",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059 (Command and Scripting Interpreter). The candidate's ten IDs do not include T1059; they are largely invented or mislabeled IDs (e.g., T1003 labeled 'Use Alternative Credentials', T1210-T1218 labeled as privilege escalation variants that do not match ATT&CK IDs). No exact-ID coverage.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predictions such as privilege escalation via SUID/GID or T1003 are not supported by the log: stty is executed by root in a pts0 session with only terminal size arguments; no credential access or SUID manipulation is shown. Many IDs are not valid ATT&CK techniques.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"Explanation cites real artifacts (stty, execve, root, pts0-like elevated context), but misreads them as privilege escalation and ignores that stty with rows/columns arguments is routine terminal configuration. Partially grounded in observations but inference is wrong.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Privilege escalation rationale is loosely tied to root execution, but the listed technique IDs do not match that rationale, and none map to the execution technique that the log arguably fits.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"Candidate label 'Certain: Attack' is grossly disproportionate for a single benign stty invocation with no suspicious indicators; the warranted label is near 'Normal'.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is not strict JSON (wrapped in fence and surrounding prose), technique entries include descriptions despite instruction to print only IDs, and the IDs are not valid ATT&CK identifiers.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1003\",\"T1210\",\"T1211\",\"T1212\",\"T1213\",\"T1214\",\"T1215\",\"T1216\",\"T1217\",\"T1218\"],\"failure_labels\":[\"wrong_technique_ids\",\"invented_or_invalid_attack_ids\",\"missed_ground_truth_T1059\",\"overconfident_attack_label\",\"benign_activity_misclassified_as_attack\",\"non_json_output\",\"descriptions_included_despite_id_only_instruction\"],\"prediction_similarity\":{\"score\":null,\"reason\":\"No comparison response provided.\"},\"reasoning_similarity\":{\"score\":null,\"reason\":\"No comparison response provided.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":0,\"confidence_label_agreement_reason\":\"Candidate asserts Certain: Attack while the evidence (routine stty terminal-size call by root on a pts session) warrants Almost Certain: Normal; this is opposing high-confidence conclusions.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3648,
+      "output_tokens": 990,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3648,
+    "output_tokens": 990,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0004299,
+  "batch_api": true,
+  "elapsed_seconds": 9884.749959945679,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3648,
+  "output_tokens": 990,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Ground truth is T1059 (Command and Scripting Interpreter). The candidate's ten IDs do not include T1059; they are largely invented or mislabeled IDs (e.g., T1003 labeled 'Use Alternative Credentials', T1210-T1218 labeled as privilege escalation variants that do not match ATT&CK IDs). No exact-ID coverage.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"Predictions such as privilege escalation via SUID/GID or T1003 are not supported by the log: stty is executed by root in a pts0 session with only terminal size arguments; no credential access or SUID manipulation is shown. Many IDs are not valid ATT&CK techniques.\"},\"explanation_grounding\":{\"score\":1,\"reason\":\"Explanation cites real artifacts (stty, execve, root, pts0-like elevated context), but misreads them as privilege escalation and ignores that stty with rows/columns arguments is routine terminal configuration. Partially grounded in observations but inference is wrong.\"},\"prediction_reason_alignment\":{\"score\":1,\"reason\":\"Privilege escalation rationale is loosely tied to root execution, but the listed technique IDs do not match that rationale, and none map to the execution technique that the log arguably fits.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"Candidate label 'Certain: Attack' is grossly disproportionate for a single benign stty invocation with no suspicious indicators; the warranted label is near 'Normal'.\"},\"instruction_adherence\":{\"score\":1,\"reason\":\"Output is not strict JSON (wrapped in fence and surrounding prose), technique entries include descriptions despite instruction to print only IDs, and the IDs are not valid ATT&CK identifiers.\"}},\"null_reasons\":{},\"extracted_predictions\":[\"T1003\",\"T1210\",\"T1211\",\"T1212\",\"T1213\",\"T1214\",\"T1215\",\"T1216\",\"T1217\",\"T1218\"],\"failure_labels\":[\"wrong_technique_ids\",\"invented_or_invalid_attack_ids\",\"missed_ground_truth_T1059\",\"overconfident_attack_label\",\"benign_activity_misclassified_as_attack\",\"non_json_output\",\"descriptions_included_despite_id_only_instruction\"],\"prediction_similarity\":{\"score\":null,\"reason\":\"No comparison response provided.\"},\"reasoning_similarity\":{\"score\":null,\"reason\":\"No comparison response provided.\"},\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":0,\"confidence_label_agreement_reason\":\"Candidate asserts Certain: Attack while the evidence (routine stty terminal-size call by root on a pts session) warrants Almost Certain: Normal; this is opposing high-confidence conclusions.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "28ff4f6501fb7aee58f2fc45e0ee10d62fdd08142bcc4a62576b83bed29686b1",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1059 (Command and Scripting Interpreter). The candidate's ten IDs do not include T1059; they are largely invented or mislabeled IDs (e.g., T1003 labeled 'Use Alternative Credentials', T1210-T1218 labeled as privilege escalation variants that do not match ATT&CK IDs). No exact-ID coverage."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "Predictions such as privilege escalation via SUID/GID or T1003 are not supported by the log: stty is executed by root in a pts0 session with only terminal size arguments; no credential access or SUID manipulation is shown. Many IDs are not valid ATT&CK techniques."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "Explanation cites real artifacts (stty, execve, root, pts0-like elevated context), but misreads them as privilege escalation and ignores that stty with rows/columns arguments is routine terminal configuration. Partially grounded in observations but inference is wrong."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Privilege escalation rationale is loosely tied to root execution, but the listed technique IDs do not match that rationale, and none map to the execution technique that the log arguably fits."
+      },
+      "confidence_evidence_support": {
+        "score": 0,
+        "reason": "Candidate label 'Certain: Attack' is grossly disproportionate for a single benign stty invocation with no suspicious indicators; the warranted label is near 'Normal'."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Output is not strict JSON (wrapped in fence and surrounding prose), technique entries include descriptions despite instruction to print only IDs, and the IDs are not valid ATT&CK identifiers."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1003",
+      "T1210",
+      "T1211",
+      "T1212",
+      "T1213",
+      "T1214",
+      "T1215",
+      "T1216",
+      "T1217",
+      "T1218"
+    ],
+    "failure_labels": [
+      "wrong_technique_ids",
+      "invented_or_invalid_attack_ids",
+      "missed_ground_truth_T1059",
+      "overconfident_attack_label",
+      "benign_activity_misclassified_as_attack",
+      "non_json_output",
+      "descriptions_included_despite_id_only_instruction"
+    ],
+    "prediction_similarity": {
+      "score": null,
+      "reason": "No comparison response provided."
+    },
+    "reasoning_similarity": {
+      "score": null,
+      "reason": "No comparison response provided."
+    },
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": 0,
+    "confidence_label_agreement_reason": "Candidate asserts Certain: Attack while the evidence (routine stty terminal-size call by root on a pts session) warrants Almost Certain: Normal; this is opposing high-confidence conclusions.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1059 (Command and Scripting Interpreter). The candidate's ten IDs do not include T1059; they are largely invented or mislabeled IDs (e.g., T1003 labeled 'Use Alternative Credentials', T1210-T1218 labeled as privilege escalation variants that do not match ATT&CK IDs). No exact-ID coverage."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "Predictions such as privilege escalation via SUID/GID or T1003 are not supported by the log: stty is executed by root in a pts0 session with only terminal size arguments; no credential access or SUID manipulation is shown. Many IDs are not valid ATT&CK techniques."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "Explanation cites real artifacts (stty, execve, root, pts0-like elevated context), but misreads them as privilege escalation and ignores that stty with rows/columns arguments is routine terminal configuration. Partially grounded in observations but inference is wrong."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Privilege escalation rationale is loosely tied to root execution, but the listed technique IDs do not match that rationale, and none map to the execution technique that the log arguably fits."
+  },
+  "score_confidence_evidence_support": {
+    "score": 0,
+    "reason": "Candidate label 'Certain: Attack' is grossly disproportionate for a single benign stty invocation with no suspicious indicators; the warranted label is near 'Normal'."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Output is not strict JSON (wrapped in fence and surrounding prose), technique entries include descriptions despite instruction to print only IDs, and the IDs are not valid ATT&CK identifiers."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1003",
+    "T1210",
+    "T1211",
+    "T1212",
+    "T1213",
+    "T1214",
+    "T1215",
+    "T1216",
+    "T1217",
+    "T1218"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_ids",
+    "invented_or_invalid_attack_ids",
+    "missed_ground_truth_T1059",
+    "overconfident_attack_label",
+    "benign_activity_misclassified_as_attack",
+    "non_json_output",
+    "descriptions_included_despite_id_only_instruction"
+  ],
+  "judge_prediction_similarity": {
+    "score": null,
+    "reason": "No comparison response provided."
+  },
+  "judge_reasoning_similarity": {
+    "score": null,
+    "reason": "No comparison response provided."
+  },
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": 0,
+  "confidence_label_agreement_reason": "Candidate asserts Certain: Attack while the evidence (routine stty terminal-size call by root on a pts session) warrants Almost Certain: Normal; this is opposing high-confidence conclusions.",
+  "confidence_label_null_reason": null
+}

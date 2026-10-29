@@ -1,0 +1,275 @@
+{
+  "prompt_id": "83",
+  "scenario": "3",
+  "variant": "ssh_healthcheck",
+  "step": "2",
+  "split": "test",
+  "group_id": "[\"3\", \"2\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/syslog:\n        Dec 11 14:28:27 puppet systemd[3244]: Created slice User Application Slice.\n        Dec 11 14:28:27 puppet systemd[3244]: Created slice User Core Session Slice.\n        Dec 11 14:28:27 puppet systemd[3244]: Reached target Paths.\n        Dec 11 14:28:27 puppet systemd[3244]: Reached target Timers.\n        Dec 11 14:28:27 puppet systemd[3244]: Starting D-Bus User Message Bus Socket...\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG network certificate management daemon.\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG cryptographic agent and passphrase cache (access for web browsers).\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG cryptographic agent and passphrase cache (restricted).\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG cryptographic agent (ssh-agent emulation).\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG cryptographic agent and passphrase cache.\n    logs/log/auth.log:\n        Dec 11 14:28:26 puppet sshd[895]: exited MaxStartups throttling after 00:00:23, 1 connections dropped\n        Dec 11 14:28:27 puppet sshd[3241]: Accepted password for john from 192.42.1.174 port 56902 ssh2\n        Dec 11 14:28:27 puppet sshd[3241]: pam_unix(sshd:session): session opened for user john(uid=1002) by (uid=0)\n        Dec 11 14:28:27 puppet systemd-logind[687]: New session 5 of user john.\n        Dec 11 14:28:27 puppet systemd: pam_unix(systemd-user:session): session opened for user john(uid=1002) by (uid=0)\n        Dec 11 14:28:33 puppet dbus-daemon[672]: [system] Failed to activate service 'org.bluez': timed out (service_start_timeout=25000ms)\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1765463307.644:14740): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=393 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765463307.644:14740): proctitle=\"(polkitd)\"\n        type=SYSCALL msg=audit(1765463307.644:14741): arch=c000003e syscall=42 success=yes exit=0 a0=b a1=7ffec2cc68c0 a2=2d a3=7 items=1 ppid=1 pid=681 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"polkitd\" exe=\"/usr/libexec/polkitd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765463307.644:14741): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E44796E616D69635573657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.DynamicUser }\n        type=PATH msg=audit(1765463307.644:14741): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=393 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765463307.644:14741): proctitle=\"(polkitd)\"\n        type=SYSCALL msg=audit(1765463307.648:14742): arch=c000003e syscall=42 success=yes exit=0 a0=b a1=7ffec2cc68c0 a2=2d a3=7 items=1 ppid=1 pid=681 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"polkitd\" exe=\"/usr/libexec/polkitd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765463307.648:14742): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E44796E616D69635573657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.DynamicUser }\n        type=PATH msg=audit(1765463307.648:14742): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=393 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765463307.648:14742): proctitle=\"(polkitd)\"",
+  "prompt_sha256": "00b3250a6fbc85018bb58bf0f766351a22c28a3d4fe91a49e89427e1f0197382",
+  "ground_truth": "[\"T1078.002\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1021.004\", \"T1110\", \"T1078\", \"T1110.001\", \"T1110.003\", \"T1133\", \"T1566\", \"T1204\", \"T1098\", \"T1040\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The auth log shows SSH MaxStartups throttling with a dropped connection followed by a successful password login for user john from a remote IP, which is consistent with SSH remote services access potentially after password guessing. The remaining systemd/polkit audit entries look like normal session initialization, so evidence of malicious activity is suggestive but not definitive.\"}",
+  "teacher_response_sha256": "e6f8227d9308a87fe56426b2c3ac62c3ddb73e4ea3b0cd0a054abfdf45fd71a5",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "mistral7b",
+  "condition": "explanation",
+  "candidate_status": "completed",
+  "candidate_record_id": "adbe49b44452ca4701685c00d3556d9f7404b80082948111204b8365cde1b371:83",
+  "candidate_response_raw": "The logs show a successful SSH password login for user john from 192.42.1.174 followed by normal systemd/polkitd activity creating user sessions and D-Bus sockets. There are no clear malicious artifacts beyond remote SSH access, so the evidence is most consistent with Remote Services/SSH-based attack activity rather than a definitive attack.\n\n    \"techniques\": [\"T1021.001: Remote Services/SSH\", \"T1078: Valid Accounts\", \"T1021.002: SSH Brute Force\", \"T1041: Persistent Credential Access\", \"T1021.003: SSH Command Execution\", \"T1080: Account Discovery\", \"T1077: Network Service Discovery\", \"T1021.004: SSH Shell\", \"T1078.001: OS Credential Dumping\", \"T1021.005: SSH File Transfer\"]\n    \"confidence\": \"Somewhat Certain: Attack\"\n    \"explanation\": The logs show a successful SSH password login for user john from an external IP, which is consistent with remote SSH access. While the sample only shows normal post-login activity, SSH-based remote services access is a common attacker behavior.",
+  "candidate_response_sha256": "c9c8f17291a74c3f541bd755d41efb9908b5740ddbcfd440261151d016f293f7",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "explanation",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "adbe49b44452ca4701685c00d3556d9f7404b80082948111204b8365cde1b371",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_adapter_sha256": "1667859baf2c123936f0bb42f2aff2d687a4dd34397bc8a4f8665bd97cf632aa",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 2295,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 314,
+  "candidate_elapsed_seconds": 17.2802427179995,
+  "candidate_output_tokens_per_second": 18.171041062573174,
+  "candidate_peak_allocated_bytes": 15109510144,
+  "candidate_peak_reserved_bytes": 18171822080,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "d2b1c42c628eb4c1e2cfe9cc28a8c1e84c6ea3e2aeb878679c91eda47c46596a",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1021.004\", \"T1078\", \"T1110\", \"T1033\", \"T1059\", \"T1548\", \"T1087\", \"T1549\", \"T1136\", \"T1574\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show a standard SSH password login by the user 'john' from a single source IP, followed by normal systemd user session creation (GnuPG sockets, user slices) and routine polkitd queries to systemd's DynamicUser socket, with no failed-auth bursts, privilege escalation, or suspicious process activity. The ssh MaxStartups throttling message and the dbus bluez timeout are benign operational noise, though the remote login origin warrants routine verification.\"\n}\n```",
+  "haiku_reference_response_sha256": "00441e74e8d33f915047582b2de3d652528ea54ec8f5e6d1f36df823bf64c2bc",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "662473052381cab41f99bcfc33b55fe78c1fb7c80ead112b4dc6a14385b8e38b",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 1, \"reason\": \"Ground truth is T1078.002 (Valid Accounts: Domain Accounts). The candidate lists T1078 (parent Valid Accounts) as the second prediction, which is not an exact-ID match; the ID-for-ID match on T1078.002 is absent. Other IDs are not exact matches to ground truth and several are mislabeled (e.g., T1078.001 labeled as OS Credential Dumping, T1041 labeled as Persistent Credential Access).\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"Predictions of SSH remote services (T1021.001) are supported by the Accepted password SSH login log, but many predictions (SSH Brute Force, Command Execution, Shell, File Transfer, Account Discovery, Network Service Discovery) have no supporting observations; the logs show a single successful login with no brute force, commands, or discovery activity.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites the actual successful password login for john from 192.42.1.174 and the systemd session creation, which are real observations. However, it characterizes the external IP as suspicious without evidence and does not note the benign surrounding context clearly.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"The T1021.001 prediction is connected to the SSH login reasoning, but the other nine predictions are not justified by any stated reason, and some mapped labels are incorrect (e.g., T1078.001 described as OS Credential Dumping).\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"Candidate label 'Somewhat Certain: Attack' is recoverable from the response. The logs show routine post-login systemd and polkitd activity with no malicious artifacts, which the candidate itself acknowledges; leaning toward attack is an over-confident reading relative to the evidence.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is not valid JSON, is missing the opening brace and the 'techniques' key formatting, uses prose, and does not include a clean confidence/explanation structure. Substantive fields are recoverable but the required format is not followed.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1021.001\", \"T1078\", \"T1021.002\", \"T1041\", \"T1021.003\", \"T1080\", \"T1077\", \"T1021.004\", \"T1078.001\", \"T1021.005\"], \"failure_labels\": [\"wrong_technique_id_for_ground_truth_missing_T1078.002\", \"label_name_mismatch\", \"overclaimed_attack_from_normal_activity\", \"invalid_json_format\", \"speculative_predictions_without_evidence\"], \"prediction_similarity\": 1, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Somewhat Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": 1, \"confidence_label_agreement_reason\": \"Candidate asserts attack direction (Somewhat Certain: Attack) while the logs indicate routine, benign session activity; this is a major directional disagreement, though not an opposing high-confidence conclusion.\", \"confidence_label_null_reason\": null}",
+  "response_hash": "2c35222d2b0a8bb2974f70478c009adfbc978d4111b1a0b5325ce1849f24ac49",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTwPmgvNbJZGrC8poEe4",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 1, \"reason\": \"Ground truth is T1078.002 (Valid Accounts: Domain Accounts). The candidate lists T1078 (parent Valid Accounts) as the second prediction, which is not an exact-ID match; the ID-for-ID match on T1078.002 is absent. Other IDs are not exact matches to ground truth and several are mislabeled (e.g., T1078.001 labeled as OS Credential Dumping, T1041 labeled as Persistent Credential Access).\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"Predictions of SSH remote services (T1021.001) are supported by the Accepted password SSH login log, but many predictions (SSH Brute Force, Command Execution, Shell, File Transfer, Account Discovery, Network Service Discovery) have no supporting observations; the logs show a single successful login with no brute force, commands, or discovery activity.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites the actual successful password login for john from 192.42.1.174 and the systemd session creation, which are real observations. However, it characterizes the external IP as suspicious without evidence and does not note the benign surrounding context clearly.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"The T1021.001 prediction is connected to the SSH login reasoning, but the other nine predictions are not justified by any stated reason, and some mapped labels are incorrect (e.g., T1078.001 described as OS Credential Dumping).\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"Candidate label 'Somewhat Certain: Attack' is recoverable from the response. The logs show routine post-login systemd and polkitd activity with no malicious artifacts, which the candidate itself acknowledges; leaning toward attack is an over-confident reading relative to the evidence.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is not valid JSON, is missing the opening brace and the 'techniques' key formatting, uses prose, and does not include a clean confidence/explanation structure. Substantive fields are recoverable but the required format is not followed.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1021.001\", \"T1078\", \"T1021.002\", \"T1041\", \"T1021.003\", \"T1080\", \"T1077\", \"T1021.004\", \"T1078.001\", \"T1021.005\"], \"failure_labels\": [\"wrong_technique_id_for_ground_truth_missing_T1078.002\", \"label_name_mismatch\", \"overclaimed_attack_from_normal_activity\", \"invalid_json_format\", \"speculative_predictions_without_evidence\"], \"prediction_similarity\": 1, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Somewhat Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": 1, \"confidence_label_agreement_reason\": \"Candidate asserts attack direction (Somewhat Certain: Attack) while the logs indicate routine, benign session activity; this is a major directional disagreement, though not an opposing high-confidence conclusion.\", \"confidence_label_null_reason\": null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4921,
+      "output_tokens": 1103,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4921,
+    "output_tokens": 1103,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005218,
+  "batch_api": true,
+  "elapsed_seconds": 39151.8374247551,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4921,
+  "output_tokens": 1103,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 1, \"reason\": \"Ground truth is T1078.002 (Valid Accounts: Domain Accounts). The candidate lists T1078 (parent Valid Accounts) as the second prediction, which is not an exact-ID match; the ID-for-ID match on T1078.002 is absent. Other IDs are not exact matches to ground truth and several are mislabeled (e.g., T1078.001 labeled as OS Credential Dumping, T1041 labeled as Persistent Credential Access).\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"Predictions of SSH remote services (T1021.001) are supported by the Accepted password SSH login log, but many predictions (SSH Brute Force, Command Execution, Shell, File Transfer, Account Discovery, Network Service Discovery) have no supporting observations; the logs show a single successful login with no brute force, commands, or discovery activity.\"}, \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites the actual successful password login for john from 192.42.1.174 and the systemd session creation, which are real observations. However, it characterizes the external IP as suspicious without evidence and does not note the benign surrounding context clearly.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"The T1021.001 prediction is connected to the SSH login reasoning, but the other nine predictions are not justified by any stated reason, and some mapped labels are incorrect (e.g., T1078.001 described as OS Credential Dumping).\"}, \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"Candidate label 'Somewhat Certain: Attack' is recoverable from the response. The logs show routine post-login systemd and polkitd activity with no malicious artifacts, which the candidate itself acknowledges; leaning toward attack is an over-confident reading relative to the evidence.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is not valid JSON, is missing the opening brace and the 'techniques' key formatting, uses prose, and does not include a clean confidence/explanation structure. Substantive fields are recoverable but the required format is not followed.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"T1021.001\", \"T1078\", \"T1021.002\", \"T1041\", \"T1021.003\", \"T1080\", \"T1077\", \"T1021.004\", \"T1078.001\", \"T1021.005\"], \"failure_labels\": [\"wrong_technique_id_for_ground_truth_missing_T1078.002\", \"label_name_mismatch\", \"overclaimed_attack_from_normal_activity\", \"invalid_json_format\", \"speculative_predictions_without_evidence\"], \"prediction_similarity\": 1, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Somewhat Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": 1, \"confidence_label_agreement_reason\": \"Candidate asserts attack direction (Somewhat Certain: Attack) while the logs indicate routine, benign session activity; this is a major directional disagreement, though not an opposing high-confidence conclusion.\", \"confidence_label_null_reason\": null}",
+  "judge_response_sha256": "2c35222d2b0a8bb2974f70478c009adfbc978d4111b1a0b5325ce1849f24ac49",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 1,
+        "reason": "Ground truth is T1078.002 (Valid Accounts: Domain Accounts). The candidate lists T1078 (parent Valid Accounts) as the second prediction, which is not an exact-ID match; the ID-for-ID match on T1078.002 is absent. Other IDs are not exact matches to ground truth and several are mislabeled (e.g., T1078.001 labeled as OS Credential Dumping, T1041 labeled as Persistent Credential Access)."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "Predictions of SSH remote services (T1021.001) are supported by the Accepted password SSH login log, but many predictions (SSH Brute Force, Command Execution, Shell, File Transfer, Account Discovery, Network Service Discovery) have no supporting observations; the logs show a single successful login with no brute force, commands, or discovery activity."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation cites the actual successful password login for john from 192.42.1.174 and the systemd session creation, which are real observations. However, it characterizes the external IP as suspicious without evidence and does not note the benign surrounding context clearly."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "The T1021.001 prediction is connected to the SSH login reasoning, but the other nine predictions are not justified by any stated reason, and some mapped labels are incorrect (e.g., T1078.001 described as OS Credential Dumping)."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "Candidate label 'Somewhat Certain: Attack' is recoverable from the response. The logs show routine post-login systemd and polkitd activity with no malicious artifacts, which the candidate itself acknowledges; leaning toward attack is an over-confident reading relative to the evidence."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "The response is not valid JSON, is missing the opening brace and the 'techniques' key formatting, uses prose, and does not include a clean confidence/explanation structure. Substantive fields are recoverable but the required format is not followed."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1021.001",
+      "T1078",
+      "T1021.002",
+      "T1041",
+      "T1021.003",
+      "T1080",
+      "T1077",
+      "T1021.004",
+      "T1078.001",
+      "T1021.005"
+    ],
+    "failure_labels": [
+      "wrong_technique_id_for_ground_truth_missing_T1078.002",
+      "label_name_mismatch",
+      "overclaimed_attack_from_normal_activity",
+      "invalid_json_format",
+      "speculative_predictions_without_evidence"
+    ],
+    "prediction_similarity": 1,
+    "reasoning_similarity": 1,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": 1,
+    "confidence_label_agreement_reason": "Candidate asserts attack direction (Somewhat Certain: Attack) while the logs indicate routine, benign session activity; this is a major directional disagreement, though not an opposing high-confidence conclusion.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 1,
+    "reason": "Ground truth is T1078.002 (Valid Accounts: Domain Accounts). The candidate lists T1078 (parent Valid Accounts) as the second prediction, which is not an exact-ID match; the ID-for-ID match on T1078.002 is absent. Other IDs are not exact matches to ground truth and several are mislabeled (e.g., T1078.001 labeled as OS Credential Dumping, T1041 labeled as Persistent Credential Access)."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "Predictions of SSH remote services (T1021.001) are supported by the Accepted password SSH login log, but many predictions (SSH Brute Force, Command Execution, Shell, File Transfer, Account Discovery, Network Service Discovery) have no supporting observations; the logs show a single successful login with no brute force, commands, or discovery activity."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation cites the actual successful password login for john from 192.42.1.174 and the systemd session creation, which are real observations. However, it characterizes the external IP as suspicious without evidence and does not note the benign surrounding context clearly."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "The T1021.001 prediction is connected to the SSH login reasoning, but the other nine predictions are not justified by any stated reason, and some mapped labels are incorrect (e.g., T1078.001 described as OS Credential Dumping)."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "Candidate label 'Somewhat Certain: Attack' is recoverable from the response. The logs show routine post-login systemd and polkitd activity with no malicious artifacts, which the candidate itself acknowledges; leaning toward attack is an over-confident reading relative to the evidence."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "The response is not valid JSON, is missing the opening brace and the 'techniques' key formatting, uses prose, and does not include a clean confidence/explanation structure. Substantive fields are recoverable but the required format is not followed."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1021.001",
+    "T1078",
+    "T1021.002",
+    "T1041",
+    "T1021.003",
+    "T1080",
+    "T1077",
+    "T1021.004",
+    "T1078.001",
+    "T1021.005"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_id_for_ground_truth_missing_T1078.002",
+    "label_name_mismatch",
+    "overclaimed_attack_from_normal_activity",
+    "invalid_json_format",
+    "speculative_predictions_without_evidence"
+  ],
+  "judge_prediction_similarity": 1,
+  "judge_reasoning_similarity": 1,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": 1,
+  "confidence_label_agreement_reason": "Candidate asserts attack direction (Somewhat Certain: Attack) while the logs indicate routine, benign session activity; this is a major directional disagreement, though not an opposing high-confidence conclusion.",
+  "confidence_label_null_reason": null
+}

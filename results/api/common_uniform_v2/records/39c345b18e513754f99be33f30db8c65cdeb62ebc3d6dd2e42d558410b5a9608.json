@@ -1,0 +1,241 @@
+{
+  "prompt_id": "222",
+  "scenario": "1",
+  "variant": "cron_localaccount",
+  "step": "34",
+  "split": "test",
+  "group_id": "[\"1\", \"34\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758701933.120:13816): arch=c000003e syscall=59 success=yes exit=0 a0=555c0f2121d0 a1=555c0f211fd0 a2=555c0f211a80 a3=fffffffffffff286 items=3 ppid=17419 pid=17462 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=7 comm=\"rm\" exe=\"/usr/bin/rm\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758701933.120:13816): argc=2 a0=\"rm\" a1=\"linpeas.sh\"\n        type=PATH msg=audit(1758701933.120:13816): item=0 name=\"/usr/bin/rm\" inode=840 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758701933.120:13816): item=1 name=\"/usr/bin/rm\" inode=840 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758701933.120:13816): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758701933.120:13816): proctitle=726D006C696E706561732E7368\n        type=SYSCALL msg=audit(1758701933.120:13817): arch=c000003e syscall=263 success=no exit=-2 a0=ffffff9c a1=5632c2811c20 a2=0 a3=fffffffffffff2cb items=1 ppid=17419 pid=17462 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=7 comm=\"rm\" exe=\"/usr/bin/rm\" subj==unconfined\u001dARCH=x86_64 SYSCALL=unlinkat AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1758701933.120:13817): item=0 name=\"/root\" inode=8200 dev=fe:01 mode=040700 ouid=0 ogid=0 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758701933.120:13817): proctitle=726D006C696E706561732E7368",
+  "prompt_sha256": "b046c84d1d0709e3d4f7ea932034aef6aa2ab72fe45799bfa449d8596a8e0ec9",
+  "ground_truth": "[\"T1070.004\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1070.004\", \"T1070\", \"T1059.004\", \"T1036.005\", \"T1082\", \"T1083\", \"T1007\", \"T1016\", \"T1069.001\", \"T1120\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root executing `rm linpeas.sh`, apparently attempting to delete LinPEAS, a commonly used Linux privilege-escalation/enumeration script. Although deletion of a file alone can be normal, the specific artifact name suggests cleanup/removal of attacker tooling after discovery activity.\"}",
+  "teacher_response_sha256": "b149f0bed8300c1f68d30624b105b06d953285c64d128443c5312c008514a1a2",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "hermes",
+  "condition": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "7d7344a36f2db01e0cc9b7c2ccc3dab12268271c823284c051b62f1b1db969d4:222",
+  "candidate_response_raw": "{\"techniques\": \"T1021.004\", \"confidence\": \"T1021.004\": \"The logs show root executing `rm linpeas.sh`, which is commonly used to delete a scheduled script or scheduled job. This is consistent with deleting scheduled activity, though the evidence is limited to `rm linpeas.sh` and the removal of a Linux script rather than a full attack.\"}",
+  "candidate_response_sha256": "0f8033e768d498a00c1fd0177a010411b5c76b5179a5ff708a203d9dbb8a2429",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "joint",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "7d7344a36f2db01e0cc9b7c2ccc3dab12268271c823284c051b62f1b1db969d4",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_adapter_sha256": "07d0c6108b789aad34901ac02a76abbc01a04f84f9a0209780bf7ab0f58afb50",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": false,
+  "candidate_input_tokens": 1338,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 91,
+  "candidate_elapsed_seconds": 3.77862746000028,
+  "candidate_output_tokens_per_second": 24.08281868570162,
+  "candidate_peak_allocated_bytes": 4072641536,
+  "candidate_peak_reserved_bytes": 8503951360,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "ce11f414bef45cc473882ac5bf1851c23a152ec76b625c6baf0300f67dcf6e66",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1070.004\", \"T1070\", \"T1059.004\", \"T1083\", \"T1548\", \"T1087\", \"T1082\", \"T1057\", \"T1033\", \"T1046\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The audit logs show root (uid=0) executing `rm linpeas.sh` in /root, deleting the LinPEAS privilege-escalation enumeration script, with the unlinkat call failing (exit=-2) during cleanup. Running a known offensive enumeration tool and then attempting to remove it is consistent with post-exploitation activity and anti-forensic cleanup rather than routine administration.\"\n}\n```",
+  "haiku_reference_response_sha256": "ebc6f0634c762bfb72360437a75b5ed91b1486198d590a26f45b1c271f1a3e35",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "01f464ac268528257a45682e6685819c60462626f70b185360df5b01c761c717",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 2,\n    \"prediction_reason_alignment\": 1,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only candidate-listed ID is T1021.004 (SSH), which is not the ground-truth T1070.004 (File Deletion). The 'techniques' field is also malformed, so no valid ranked list of ten exists; coverage of the ground truth is zero.\",\n    \"prediction_evidence_support\": \"The logs show root running 'rm linpeas.sh' and a failed unlinkat in /root, which supports a file-deletion behavior (T1070.004). T1021.004 has no support in the supplied logs: there is no SSH, remote login, or network activity.\",\n    \"explanation_grounding\": \"The explanation accurately cites the rm command on linpeas.sh and limits its claim appropriately. However, it describes the file as a 'scheduled script' or 'scheduled job', which is not supported by the logs; the script is linpeas.sh, a known enumeration tool.\",\n    \"prediction_reason_alignment\": \"The explanation argues for deletion of scheduled activity, which fits file deletion, but the predicted technique (T1021.004, remote services SSH) does not match that reasoning. The reasoning and prediction are misaligned.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable; the 'confidence' field contains a technique-explanation string rather than one of the seven permitted labels.\",\n    \"instruction_adherence\": \"The response is not valid JSON, the 'techniques' and 'confidence' fields are malformed, the required confidence label is missing, and the explanation is embedded as the confidence value. Only a single technique is given instead of a ranked list of ten.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response; the confidence field contains explanatory text, not one of the seven categories.\"\n  },\n  \"extracted_predictions\": [\"T1021.004\"],\n  \"failure_labels\": [\n    \"wrong_technique_identified\",\n    \"malformed_json\",\n    \"missing_confidence_label\",\n    \"unsupported_scheduled_job_claim\",\n    \"incomplete_technique_list\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The confidence field contains an explanation string rather than one of the seven permitted labels, and no label is clearly expressed elsewhere.\"\n}\n```",
+  "response_hash": "6c859c714882f2f66cfe1eae3d57fc0a93719915bca6b1034068d22d09b1894e",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvBCP1AtDNwsWGWiX56",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 2,\n    \"prediction_reason_alignment\": 1,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only candidate-listed ID is T1021.004 (SSH), which is not the ground-truth T1070.004 (File Deletion). The 'techniques' field is also malformed, so no valid ranked list of ten exists; coverage of the ground truth is zero.\",\n    \"prediction_evidence_support\": \"The logs show root running 'rm linpeas.sh' and a failed unlinkat in /root, which supports a file-deletion behavior (T1070.004). T1021.004 has no support in the supplied logs: there is no SSH, remote login, or network activity.\",\n    \"explanation_grounding\": \"The explanation accurately cites the rm command on linpeas.sh and limits its claim appropriately. However, it describes the file as a 'scheduled script' or 'scheduled job', which is not supported by the logs; the script is linpeas.sh, a known enumeration tool.\",\n    \"prediction_reason_alignment\": \"The explanation argues for deletion of scheduled activity, which fits file deletion, but the predicted technique (T1021.004, remote services SSH) does not match that reasoning. The reasoning and prediction are misaligned.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable; the 'confidence' field contains a technique-explanation string rather than one of the seven permitted labels.\",\n    \"instruction_adherence\": \"The response is not valid JSON, the 'techniques' and 'confidence' fields are malformed, the required confidence label is missing, and the explanation is embedded as the confidence value. Only a single technique is given instead of a ranked list of ten.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response; the confidence field contains explanatory text, not one of the seven categories.\"\n  },\n  \"extracted_predictions\": [\"T1021.004\"],\n  \"failure_labels\": [\n    \"wrong_technique_identified\",\n    \"malformed_json\",\n    \"missing_confidence_label\",\n    \"unsupported_scheduled_job_claim\",\n    \"incomplete_technique_list\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The confidence field contains an explanation string rather than one of the seven permitted labels, and no label is clearly expressed elsewhere.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3756,
+      "output_tokens": 997,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3756,
+    "output_tokens": 997,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00043705,
+  "batch_api": true,
+  "elapsed_seconds": 5269.728852272034,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3756,
+  "output_tokens": 997,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 2,\n    \"prediction_reason_alignment\": 1,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The only candidate-listed ID is T1021.004 (SSH), which is not the ground-truth T1070.004 (File Deletion). The 'techniques' field is also malformed, so no valid ranked list of ten exists; coverage of the ground truth is zero.\",\n    \"prediction_evidence_support\": \"The logs show root running 'rm linpeas.sh' and a failed unlinkat in /root, which supports a file-deletion behavior (T1070.004). T1021.004 has no support in the supplied logs: there is no SSH, remote login, or network activity.\",\n    \"explanation_grounding\": \"The explanation accurately cites the rm command on linpeas.sh and limits its claim appropriately. However, it describes the file as a 'scheduled script' or 'scheduled job', which is not supported by the logs; the script is linpeas.sh, a known enumeration tool.\",\n    \"prediction_reason_alignment\": \"The explanation argues for deletion of scheduled activity, which fits file deletion, but the predicted technique (T1021.004, remote services SSH) does not match that reasoning. The reasoning and prediction are misaligned.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable; the 'confidence' field contains a technique-explanation string rather than one of the seven permitted labels.\",\n    \"instruction_adherence\": \"The response is not valid JSON, the 'techniques' and 'confidence' fields are malformed, the required confidence label is missing, and the explanation is embedded as the confidence value. Only a single technique is given instead of a ranked list of ten.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response; the confidence field contains explanatory text, not one of the seven categories.\"\n  },\n  \"extracted_predictions\": [\"T1021.004\"],\n  \"failure_labels\": [\n    \"wrong_technique_identified\",\n    \"malformed_json\",\n    \"missing_confidence_label\",\n    \"unsupported_scheduled_job_claim\",\n    \"incomplete_technique_list\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The confidence field contains an explanation string rather than one of the seven permitted labels, and no label is clearly expressed elsewhere.\"\n}\n```",
+  "judge_response_sha256": "6c859c714882f2f66cfe1eae3d57fc0a93719915bca6b1034068d22d09b1894e",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 1,
+      "explanation_grounding": 2,
+      "prediction_reason_alignment": 1,
+      "confidence_evidence_support": null,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "The only candidate-listed ID is T1021.004 (SSH), which is not the ground-truth T1070.004 (File Deletion). The 'techniques' field is also malformed, so no valid ranked list of ten exists; coverage of the ground truth is zero.",
+      "prediction_evidence_support": "The logs show root running 'rm linpeas.sh' and a failed unlinkat in /root, which supports a file-deletion behavior (T1070.004). T1021.004 has no support in the supplied logs: there is no SSH, remote login, or network activity.",
+      "explanation_grounding": "The explanation accurately cites the rm command on linpeas.sh and limits its claim appropriately. However, it describes the file as a 'scheduled script' or 'scheduled job', which is not supported by the logs; the script is linpeas.sh, a known enumeration tool.",
+      "prediction_reason_alignment": "The explanation argues for deletion of scheduled activity, which fits file deletion, but the predicted technique (T1021.004, remote services SSH) does not match that reasoning. The reasoning and prediction are misaligned.",
+      "confidence_evidence_support": "No confidence label is recoverable; the 'confidence' field contains a technique-explanation string rather than one of the seven permitted labels.",
+      "instruction_adherence": "The response is not valid JSON, the 'techniques' and 'confidence' fields are malformed, the required confidence label is missing, and the explanation is embedded as the confidence value. Only a single technique is given instead of a ranked list of ten."
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response; the confidence field contains explanatory text, not one of the seven categories."
+    },
+    "extracted_predictions": [
+      "T1021.004"
+    ],
+    "failure_labels": [
+      "wrong_technique_identified",
+      "malformed_json",
+      "missing_confidence_label",
+      "unsupported_scheduled_job_claim",
+      "incomplete_technique_list"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The confidence field contains an explanation string rather than one of the seven permitted labels, and no label is clearly expressed elsewhere."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 1,
+  "score_explanation_grounding": 2,
+  "score_prediction_reason_alignment": 1,
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "The only candidate-listed ID is T1021.004 (SSH), which is not the ground-truth T1070.004 (File Deletion). The 'techniques' field is also malformed, so no valid ranked list of ten exists; coverage of the ground truth is zero.",
+    "prediction_evidence_support": "The logs show root running 'rm linpeas.sh' and a failed unlinkat in /root, which supports a file-deletion behavior (T1070.004). T1021.004 has no support in the supplied logs: there is no SSH, remote login, or network activity.",
+    "explanation_grounding": "The explanation accurately cites the rm command on linpeas.sh and limits its claim appropriately. However, it describes the file as a 'scheduled script' or 'scheduled job', which is not supported by the logs; the script is linpeas.sh, a known enumeration tool.",
+    "prediction_reason_alignment": "The explanation argues for deletion of scheduled activity, which fits file deletion, but the predicted technique (T1021.004, remote services SSH) does not match that reasoning. The reasoning and prediction are misaligned.",
+    "confidence_evidence_support": "No confidence label is recoverable; the 'confidence' field contains a technique-explanation string rather than one of the seven permitted labels.",
+    "instruction_adherence": "The response is not valid JSON, the 'techniques' and 'confidence' fields are malformed, the required confidence label is missing, and the explanation is embedded as the confidence value. Only a single technique is given instead of a ranked list of ten."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response; the confidence field contains explanatory text, not one of the seven categories."
+  },
+  "judge_extracted_predictions": [
+    "T1021.004"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_identified",
+    "malformed_json",
+    "missing_confidence_label",
+    "unsupported_scheduled_job_claim",
+    "incomplete_technique_list"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The confidence field contains an explanation string rather than one of the seven permitted labels, and no label is clearly expressed elsewhere."
+}

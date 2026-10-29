@@ -6,6 +6,15 @@ from collections import defaultdict
 from .common import *
 from .data import records
 from .storage import Store
+from .api import COMMON_JUDGE_RUN, HAIKU_SELF_JUDGE_RUN
+
+def strict_confidence(text):
+    """Descriptive strict extraction only; the judge separately recovers malformed content."""
+    try:
+        value=strict_json(text)
+        label=value.get('confidence') if isinstance(value,dict) else None
+        return label if label in CONFIDENCES else ''
+    except (ValueError,TypeError):return ''
 
 def compile_tables(root):
     root=Path(root);verify_experiment(root);source=records(root);haiku=Store(root,'api/haiku')
@@ -24,10 +33,27 @@ def compile_tables(root):
                     if actual and actual['prompt_sha256']!=row['prompt_sha256']:raise ValueError('Candidate prompt mismatch')
                     ref=reference.get(row['prompt_id'],{})
                     if ref and ref['prompt_sha256']!=row['prompt_sha256']:raise ValueError('Haiku prompt mismatch')
-                    out={k:row[k] for k in ('prompt_id','scenario','variant','step','split','group_id','prompt_text','prompt_sha256','ground_truth')}
-                    out.update(model=model,condition=condition,status='pending',response_raw='',record_id='',**{})
-                    out.update(actual);out.update(haiku_response=ref.get('response_raw',''),
-                        haiku_status=ref.get('status','pending'),haiku_record_id=ref.get('record_id',''))
+                    source_keys=('prompt_id','scenario','variant','step','split','group_id','prompt_text',
+                                 'prompt_sha256','ground_truth','teacher_model','teacher_response_raw',
+                                 'teacher_response_sha256')
+                    out={k:row[k] for k in source_keys}
+                    out['teacher_confidence_label']=strict_confidence(row['teacher_response_raw'])
+                    out.update(model=model,condition=condition,
+                               candidate_status=actual.get('status','pending'),
+                               candidate_record_id=actual.get('record_id',''),
+                               candidate_response_raw=actual.get('response_raw',''),
+                               candidate_response_sha256=actual.get('response_hash',''),
+                               candidate_confidence_label_strict=strict_confidence(actual.get('response_raw','')))
+                    for key,value in actual.items():
+                        if key not in source_keys and key not in ('status','record_id','response_raw','response_hash'):
+                            out['candidate_'+key]=value
+                    out.update(
+                        haiku_reference_status=ref.get('status','pending'),
+                        haiku_reference_record_id=ref.get('record_id',''),
+                        haiku_reference_response_raw=ref.get('response_raw',''),
+                        haiku_reference_response_sha256=ref.get('response_hash',''),
+                        haiku_reference_confidence_label_strict=strict_confidence(ref.get('response_raw','')),
+                        haiku_reference_finish_reason=ref.get('finish_reason',''))
                     all_rows.append(out)
     output=root/'results/compiled';write_csv(output/'D_all_responses.csv',all_rows)
     for condition in ('technique','explanation','joint'):
@@ -39,20 +65,21 @@ def compile_tables(root):
             for split in ('train','validation','test'):
                 rs=[r for r in all_rows if r['model']==model and r['condition']==condition and r['split']==split]
                 if rs:coverage.append(dict(model=model,condition=condition,split=split,total=len(rs),
-                    completed=sum(r['status']=='completed' for r in rs),
-                    context_unsupported=sum(r['status']=='context_unsupported' for r in rs),
-                    missing_or_error=sum(r['status'] not in ('completed','context_unsupported') for r in rs)))
+                    completed=sum(r['candidate_status']=='completed' for r in rs),
+                    context_unsupported=sum(r['candidate_status']=='context_unsupported' for r in rs),
+                    missing_or_error=sum(r['candidate_status'] not in ('completed','context_unsupported') for r in rs)))
     write_csv(output/'coverage.csv',coverage);return all_rows
 
 def require_complete(rows,haiku=True):
-    missing=[r for r in rows if r['status'] not in ('completed','context_unsupported') or
-             (haiku and r.get('haiku_status')!='completed')]
+    missing=[r for r in rows if r['candidate_status'] not in ('completed','context_unsupported') or
+             (haiku and r.get('haiku_reference_status')!='completed')]
     if missing:raise RuntimeError(f'{len(missing)} candidate/reference records unfinished. Continue generation before freezing judge jobs.')
 
 def consolidate_judgments(root):
     root=Path(root);all_rows=[]
+    current={COMMON_JUDGE_RUN,HAIKU_SELF_JUDGE_RUN}
     for directory in (root/'results/api').iterdir():
-        if directory.name=='haiku' or not (directory/'responses.csv').exists():continue
+        if directory.name not in current or not (directory/'responses.csv').exists():continue
         for row in read_csv(directory/'responses.csv'):all_rows.append(dict(row,judge_run=directory.name))
     write_csv(root/'results/compiled/all_judgments.csv',all_rows)
     return all_rows
@@ -60,9 +87,10 @@ def consolidate_judgments(root):
 def intervals(root,draws=2000):
     rows=consolidate_judgments(root)
     source=records(root)
-    common=[r for r in rows if r.get('judge_run')=='common' and r.get('status')=='completed']
+    common=[r for r in rows if r.get('judge_run')==COMMON_JUDGE_RUN and r.get('status')=='completed']
     baseline={(r['model'],r['prompt_id']):r for r in common if r['condition']=='untreated_hf'}
-    metrics=sorted({k for r in common for k in r if k.startswith('score_')})
+    metrics=sorted({k for r in common for k in r if k.startswith('score_')} |
+                   {'judge_prediction_similarity','judge_reasoning_similarity','confidence_label_agreement'})
     output=[]
     def number(v):
         try:

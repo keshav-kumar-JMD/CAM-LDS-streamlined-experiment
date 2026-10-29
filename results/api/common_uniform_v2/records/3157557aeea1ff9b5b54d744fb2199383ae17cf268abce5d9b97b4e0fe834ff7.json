@@ -1,0 +1,279 @@
+{
+  "prompt_id": "250",
+  "scenario": "2",
+  "variant": "cron",
+  "step": "13",
+  "split": "train",
+  "group_id": "[\"2\", \"13\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 10:33:03 inetfw dnsmasq[733]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 10:33:03 inetfw dnsmasq[733]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 10:33:03 inetfw dnsmasq[733]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 10:33:03 inetfw dnsmasq[733]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 10:33:03 inetfw dnsmasq[733]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759314783.241:5193): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c00032296c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314783.241:5193): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314783.241:5193): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314783.241:5194): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c00032298c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314783.241:5194): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314783.241:5194): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314783.249:5195): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c000322a2c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314783.249:5195): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759314783.249:5195): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "c484a2f8cecab4158acc0c132d12ac9e94aa22012e9429d144b31153e036172c",
+  "ground_truth": "[\"T1041\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1102\", \"T1090\", \"T1036.005\", \"T1583.001\", \"T1568\", \"T1573\", \"T1041\", \"T1105\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The host resolves a suspicious typosquatted domain, faaacebook.com, and the zmcontroller process then initiates an outbound connection to the resolved IP over TCP/443, which is consistent with possible web-based C2 or malicious external communication. The evidence is limited to DNS and connection telemetry, so it is suspicious but not definitive on its own.\"}",
+  "teacher_response_sha256": "1aaea71ad65275e9611cb01f68ea9a54cc7494c9558fa1440629429fec1193fe",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:250",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"TTP-1: Reconnaissance\",\n    \"TTP-2: Privilege Escalation\",\n    \"TTP-3: Escalation of Privilege\",\n    \"TTP-4: Persistence\",\n    \"TTP-5: Data Collection\",\n    \"TTP-6: Data Exfiltration\",\n    \"TTP-7: Command and Control\",\n    \"TTP-8: Data Execution\",\n    \"TTP-9: Cover Tracks\",\n    \"TTP-10: Maintain Access\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The logs indicate multiple instances of reconnaissance and privilege escalation techniques, such as querying DNS records, connecting to a remote server, and establishing persistent connections. These actions are consistent with known MITRE ATT&CK techniques used by adversaries to gather information and maintain access to the system.\"\n}\n```",
+  "candidate_response_sha256": "c5244db3014571bf124bc58e01e23ad0309698d849e8b8221ccf0906acad9264",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1232,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 193,
+  "candidate_elapsed_seconds": 20.528942386998096,
+  "candidate_output_tokens_per_second": 9.401361081427925,
+  "candidate_peak_allocated_bytes": 5067146240,
+  "candidate_peak_reserved_bytes": 6452936704,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "98afa7931166e00159a04473a93e411d52339029b0b5b4d3f57e9a1f636cba52",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1071.004\", \"T1071.001\", \"T1568.002\", \"T1573\", \"T1105\", \"T1090\", \"T1029\", \"T1048\", \"T1583.001\", \"T1659\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The DNS queries from 172.17.100.121 for 'faaacebook.com', a typosquat-like lookalike of facebook.com, resolved via the internal resolver, and the videoserver's zmcontroller process connected to the DNS server (172.17.100.254:53) and then to 192.42.1.174:443, the same IP the DNS reply returned. While the typosquatted domain is suspicious and could indicate DGA or phishing-style activity, the traffic pattern is consistent with a single benign-looking application (zmcontroller) performing routine name resolution and HTTPS connections, and the connection failure (exit=-115, EINPROGRESS) is typical of non-blocking connects rather than an exploit.\"\n}\n```",
+  "haiku_reference_response_sha256": "043306968d1e7264b1ac2372e50e736ec6267586a8723df421d2eef158c5aa67",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "911c01d8eaf28739915808d08d63fbbca4b45764cb5bd7080ad9f64fc3eded6f",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions are non-ATT&CK labels (e.g., 'TTP-1: Reconnaissance', 'TTP-5: Data Collection', 'TTP-6: Data Exfiltration') that do not match any exact technique ID, so no exact-ID coverage is achieved.\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs show DNS queries for a lookalike domain and a zmcontroller process connecting to port 443 after DNS, which loosely relate to C2 or exfiltration. But the candidate's predictions (Privilege Escalation, Persistence, Cover Tracks, Data Execution) are not supported by any observed privilege change, persistence mechanism, or log tampering in the samples; the connect syscalls show uid=root already, not escalation.\"}, \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation cites DNS queries and connections, which are real observations, but claims 'establishing persistent connections' and 'privilege escalation' that are not visible. It also fails to distinguish observation from inference, and omits the typosquatted domain and the IP correlation.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Reconnaissance and DNS querying loosely align with the DNS artifacts, but Privilege Escalation and Persistence are not tied to any specific artifact. Several predicted techniques lack supporting reasons entirely.\"}, \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"Candidate confidence is 'Certain: Attack', which is grossly disproportionate given a single benign-looking application performing DNS resolution and HTTPS connections with no clear malicious payload or exfiltration evidence and no acknowledged limitations.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is wrapped in code fences and is not strict JSON (the audit flags this), though the required fields are substantively present. Techniques are given with descriptive names rather than IDs only, violating the 'only print the ID' instruction, and the explanation exceeds the 1-2 sentence limit.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"TTP-1: Reconnaissance\", \"TTP-2: Privilege Escalation\", \"TTP-3: Escalation of Privilege\", \"TTP-4: Persistence\", \"TTP-5: Data Collection\", \"TTP-6: Data Exfiltration\", \"TTP-7: Command and Control\", \"TTP-8: Data Execution\", \"TTP-9: Cover Tracks\", \"TTP-10: Maintain Access\"], \"failure_labels\": [\"wrong_technique_ids\", \"non_attack_nomenclature\", \"unsupported_privilege_escalation_claim\", \"unsupported_persistence_claim\", \"overconfident_attack_label\", \"instruction_format_violation\", \"explanation_too_long\"], \"prediction_similarity\": 0, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Certain: Attack\", \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\", \"confidence_label_agreement\": 0, \"confidence_label_agreement_reason\": \"Candidate states 'Certain: Attack' while the evidence (benign-looking zmcontroller DNS and HTTPS traffic with no clear malicious payload) warrants a Normal-leaning or at most neutral label; opposing high-confidence conclusions are present, so the score is 0.\", \"confidence_label_null_reason\": null}",
+  "response_hash": "f8bc6baf474711dacff601958dd0662155c677a3259b5679c7db560adbc0c298",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvFfPKiia7C4zLxdLfi",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions are non-ATT&CK labels (e.g., 'TTP-1: Reconnaissance', 'TTP-5: Data Collection', 'TTP-6: Data Exfiltration') that do not match any exact technique ID, so no exact-ID coverage is achieved.\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs show DNS queries for a lookalike domain and a zmcontroller process connecting to port 443 after DNS, which loosely relate to C2 or exfiltration. But the candidate's predictions (Privilege Escalation, Persistence, Cover Tracks, Data Execution) are not supported by any observed privilege change, persistence mechanism, or log tampering in the samples; the connect syscalls show uid=root already, not escalation.\"}, \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation cites DNS queries and connections, which are real observations, but claims 'establishing persistent connections' and 'privilege escalation' that are not visible. It also fails to distinguish observation from inference, and omits the typosquatted domain and the IP correlation.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Reconnaissance and DNS querying loosely align with the DNS artifacts, but Privilege Escalation and Persistence are not tied to any specific artifact. Several predicted techniques lack supporting reasons entirely.\"}, \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"Candidate confidence is 'Certain: Attack', which is grossly disproportionate given a single benign-looking application performing DNS resolution and HTTPS connections with no clear malicious payload or exfiltration evidence and no acknowledged limitations.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is wrapped in code fences and is not strict JSON (the audit flags this), though the required fields are substantively present. Techniques are given with descriptive names rather than IDs only, violating the 'only print the ID' instruction, and the explanation exceeds the 1-2 sentence limit.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"TTP-1: Reconnaissance\", \"TTP-2: Privilege Escalation\", \"TTP-3: Escalation of Privilege\", \"TTP-4: Persistence\", \"TTP-5: Data Collection\", \"TTP-6: Data Exfiltration\", \"TTP-7: Command and Control\", \"TTP-8: Data Execution\", \"TTP-9: Cover Tracks\", \"TTP-10: Maintain Access\"], \"failure_labels\": [\"wrong_technique_ids\", \"non_attack_nomenclature\", \"unsupported_privilege_escalation_claim\", \"unsupported_persistence_claim\", \"overconfident_attack_label\", \"instruction_format_violation\", \"explanation_too_long\"], \"prediction_similarity\": 0, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Certain: Attack\", \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\", \"confidence_label_agreement\": 0, \"confidence_label_agreement_reason\": \"Candidate states 'Certain: Attack' while the evidence (benign-looking zmcontroller DNS and HTTPS traffic with no clear malicious payload) warrants a Normal-leaning or at most neutral label; opposing high-confidence conclusions are present, so the score is 0.\", \"confidence_label_null_reason\": null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4249,
+      "output_tokens": 1226,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4249,
+    "output_tokens": 1226,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00051895,
+  "batch_api": true,
+  "elapsed_seconds": 4791.761289596558,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4249,
+  "output_tokens": 1226,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions are non-ATT&CK labels (e.g., 'TTP-1: Reconnaissance', 'TTP-5: Data Collection', 'TTP-6: Data Exfiltration') that do not match any exact technique ID, so no exact-ID coverage is achieved.\"}, \"prediction_evidence_support\": {\"score\": 1, \"reason\": \"The logs show DNS queries for a lookalike domain and a zmcontroller process connecting to port 443 after DNS, which loosely relate to C2 or exfiltration. But the candidate's predictions (Privilege Escalation, Persistence, Cover Tracks, Data Execution) are not supported by any observed privilege change, persistence mechanism, or log tampering in the samples; the connect syscalls show uid=root already, not escalation.\"}, \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation cites DNS queries and connections, which are real observations, but claims 'establishing persistent connections' and 'privilege escalation' that are not visible. It also fails to distinguish observation from inference, and omits the typosquatted domain and the IP correlation.\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Reconnaissance and DNS querying loosely align with the DNS artifacts, but Privilege Escalation and Persistence are not tied to any specific artifact. Several predicted techniques lack supporting reasons entirely.\"}, \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"Candidate confidence is 'Certain: Attack', which is grossly disproportionate given a single benign-looking application performing DNS resolution and HTTPS connections with no clear malicious payload or exfiltration evidence and no acknowledged limitations.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"The response is wrapped in code fences and is not strict JSON (the audit flags this), though the required fields are substantively present. Techniques are given with descriptive names rather than IDs only, violating the 'only print the ID' instruction, and the explanation exceeds the 1-2 sentence limit.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"TTP-1: Reconnaissance\", \"TTP-2: Privilege Escalation\", \"TTP-3: Escalation of Privilege\", \"TTP-4: Persistence\", \"TTP-5: Data Collection\", \"TTP-6: Data Exfiltration\", \"TTP-7: Command and Control\", \"TTP-8: Data Execution\", \"TTP-9: Cover Tracks\", \"TTP-10: Maintain Access\"], \"failure_labels\": [\"wrong_technique_ids\", \"non_attack_nomenclature\", \"unsupported_privilege_escalation_claim\", \"unsupported_persistence_claim\", \"overconfident_attack_label\", \"instruction_format_violation\", \"explanation_too_long\"], \"prediction_similarity\": 0, \"reasoning_similarity\": 1, \"candidate_confidence_label\": \"Certain: Attack\", \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\", \"confidence_label_agreement\": 0, \"confidence_label_agreement_reason\": \"Candidate states 'Certain: Attack' while the evidence (benign-looking zmcontroller DNS and HTTPS traffic with no clear malicious payload) warrants a Normal-leaning or at most neutral label; opposing high-confidence conclusions are present, so the score is 0.\", \"confidence_label_null_reason\": null}",
+  "judge_response_sha256": "f8bc6baf474711dacff601958dd0662155c677a3259b5679c7db560adbc0c298",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions are non-ATT&CK labels (e.g., 'TTP-1: Reconnaissance', 'TTP-5: Data Collection', 'TTP-6: Data Exfiltration') that do not match any exact technique ID, so no exact-ID coverage is achieved."
+      },
+      "prediction_evidence_support": {
+        "score": 1,
+        "reason": "The logs show DNS queries for a lookalike domain and a zmcontroller process connecting to port 443 after DNS, which loosely relate to C2 or exfiltration. But the candidate's predictions (Privilege Escalation, Persistence, Cover Tracks, Data Execution) are not supported by any observed privilege change, persistence mechanism, or log tampering in the samples; the connect syscalls show uid=root already, not escalation."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "The explanation cites DNS queries and connections, which are real observations, but claims 'establishing persistent connections' and 'privilege escalation' that are not visible. It also fails to distinguish observation from inference, and omits the typosquatted domain and the IP correlation."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Reconnaissance and DNS querying loosely align with the DNS artifacts, but Privilege Escalation and Persistence are not tied to any specific artifact. Several predicted techniques lack supporting reasons entirely."
+      },
+      "confidence_evidence_support": {
+        "score": 0,
+        "reason": "Candidate confidence is 'Certain: Attack', which is grossly disproportionate given a single benign-looking application performing DNS resolution and HTTPS connections with no clear malicious payload or exfiltration evidence and no acknowledged limitations."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "The response is wrapped in code fences and is not strict JSON (the audit flags this), though the required fields are substantively present. Techniques are given with descriptive names rather than IDs only, violating the 'only print the ID' instruction, and the explanation exceeds the 1-2 sentence limit."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "TTP-1: Reconnaissance",
+      "TTP-2: Privilege Escalation",
+      "TTP-3: Escalation of Privilege",
+      "TTP-4: Persistence",
+      "TTP-5: Data Collection",
+      "TTP-6: Data Exfiltration",
+      "TTP-7: Command and Control",
+      "TTP-8: Data Execution",
+      "TTP-9: Cover Tracks",
+      "TTP-10: Maintain Access"
+    ],
+    "failure_labels": [
+      "wrong_technique_ids",
+      "non_attack_nomenclature",
+      "unsupported_privilege_escalation_claim",
+      "unsupported_persistence_claim",
+      "overconfident_attack_label",
+      "instruction_format_violation",
+      "explanation_too_long"
+    ],
+    "prediction_similarity": 0,
+    "reasoning_similarity": 1,
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": 0,
+    "confidence_label_agreement_reason": "Candidate states 'Certain: Attack' while the evidence (benign-looking zmcontroller DNS and HTTPS traffic with no clear malicious payload) warrants a Normal-leaning or at most neutral label; opposing high-confidence conclusions are present, so the score is 0.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1041 (Exfiltration Over C2 Channel). The candidate's first ten predictions are non-ATT&CK labels (e.g., 'TTP-1: Reconnaissance', 'TTP-5: Data Collection', 'TTP-6: Data Exfiltration') that do not match any exact technique ID, so no exact-ID coverage is achieved."
+  },
+  "score_prediction_evidence_support": {
+    "score": 1,
+    "reason": "The logs show DNS queries for a lookalike domain and a zmcontroller process connecting to port 443 after DNS, which loosely relate to C2 or exfiltration. But the candidate's predictions (Privilege Escalation, Persistence, Cover Tracks, Data Execution) are not supported by any observed privilege change, persistence mechanism, or log tampering in the samples; the connect syscalls show uid=root already, not escalation."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "The explanation cites DNS queries and connections, which are real observations, but claims 'establishing persistent connections' and 'privilege escalation' that are not visible. It also fails to distinguish observation from inference, and omits the typosquatted domain and the IP correlation."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Reconnaissance and DNS querying loosely align with the DNS artifacts, but Privilege Escalation and Persistence are not tied to any specific artifact. Several predicted techniques lack supporting reasons entirely."
+  },
+  "score_confidence_evidence_support": {
+    "score": 0,
+    "reason": "Candidate confidence is 'Certain: Attack', which is grossly disproportionate given a single benign-looking application performing DNS resolution and HTTPS connections with no clear malicious payload or exfiltration evidence and no acknowledged limitations."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "The response is wrapped in code fences and is not strict JSON (the audit flags this), though the required fields are substantively present. Techniques are given with descriptive names rather than IDs only, violating the 'only print the ID' instruction, and the explanation exceeds the 1-2 sentence limit."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "TTP-1: Reconnaissance",
+    "TTP-2: Privilege Escalation",
+    "TTP-3: Escalation of Privilege",
+    "TTP-4: Persistence",
+    "TTP-5: Data Collection",
+    "TTP-6: Data Exfiltration",
+    "TTP-7: Command and Control",
+    "TTP-8: Data Execution",
+    "TTP-9: Cover Tracks",
+    "TTP-10: Maintain Access"
+  ],
+  "judge_failure_labels": [
+    "wrong_technique_ids",
+    "non_attack_nomenclature",
+    "unsupported_privilege_escalation_claim",
+    "unsupported_persistence_claim",
+    "overconfident_attack_label",
+    "instruction_format_violation",
+    "explanation_too_long"
+  ],
+  "judge_prediction_similarity": 0,
+  "judge_reasoning_similarity": 1,
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": 0,
+  "confidence_label_agreement_reason": "Candidate states 'Certain: Attack' while the evidence (benign-looking zmcontroller DNS and HTTPS traffic with no clear malicious payload) warrants a Normal-leaning or at most neutral label; opposing high-confidence conclusions are present, so the score is 0.",
+  "confidence_label_null_reason": null
+}

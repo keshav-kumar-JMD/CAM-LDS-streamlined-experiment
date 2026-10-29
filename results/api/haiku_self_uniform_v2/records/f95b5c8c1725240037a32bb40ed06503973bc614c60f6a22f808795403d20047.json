@@ -1,0 +1,211 @@
+{
+  "prompt_id": "382",
+  "scenario": "6",
+  "variant": "screensharing_binary",
+  "step": "57",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/audit/audit.log:\n        type=EXECVE msg=audit(1765380934.228:104442): argc=4 a0=\"ln\" a1=\"-sf\" a2=\"/home/judy/.local/share/firefox/firefox-startup\" a3=\"/home/judy/.local/bin/firefox\"\n        type=PATH msg=audit(1765380934.228:104442): item=0 name=\"/usr/bin/ln\" inode=1579 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765380934.228:104442): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=82044 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765380934.228:104442): proctitle=6C6E002D7366002F686F6D652F6A7564792F2E6C6F63616C2F73686172652F66697265666F782F66697265666F782D73746172747570002F686F6D652F6A7564792F2E6C6F63616C2F62696E2F66697265666F78\n        type=SYSCALL msg=audit(1765380934.228:104443): arch=c000003e syscall=264 success=yes exit=0 a0=ffffff9c a1=7fff02115840 a2=ffffff9c a3=7fff0211622b items=5 ppid=10238 pid=25088 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts1 ses=1 comm=\"ln\" exe=\"/usr/bin/ln\" subj=unconfined\u001dARCH=x86_64 SYSCALL=renameat AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=0 name=\"/home/judy/.local/bin/\" inode=517264 dev=fc:01 mode=040755 ouid=1002 ogid=1002 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=1 name=\"/home/judy/.local/bin/\" inode=517264 dev=fc:01 mode=040755 ouid=1002 ogid=1002 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=2 name=\"/home/judy/.local/bin/Cu1HScbk\" inode=517596 dev=fc:01 mode=0120777 ouid=1002 ogid=1002 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=3 name=\"/home/judy/.local/bin/firefox\" inode=517271 dev=fc:01 mode=0120777 ouid=1002 ogid=1002 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=4 name=\"/home/judy/.local/bin/firefox\" inode=517596 dev=fc:01 mode=0120777 ouid=1002 ogid=1002 rdev=00:00 nametype=CREATE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"",
+  "prompt_sha256": "cab249b5260653ac02ae7bbfd3252c7ffcb5e4bd00e56324332686a8c08d233f",
+  "source_row": "2362",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1546.004\", \"T1574.007\", \"T1036.005\", \"T1204.002\", \"T1059.004\", \"T1105\", \"T1027\", \"T1222.002\", \"T1564.001\", \"T1070.004\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show user judy force-creating a symlink named /home/judy/.local/bin/firefox pointing to /home/judy/.local/share/firefox/firefox-startup, effectively hijacking execution when the user runs firefox from a user-local PATH directory. This is consistent with Unix shell/profile or application startup persistence/execution via a masqueraded browser binary rather than typical Firefox installation behavior.\"}",
+  "teacher_response_sha256": "cf08ce1dc42589703cb1029fd5c0bb5a07bad6abb40b00c8554aaf4bcf185694",
+  "source_value_text": "{\"techniques\": [\"T1546.004\", \"T1574.007\", \"T1036.005\", \"T1204.002\", \"T1059.004\", \"T1105\", \"T1027\", \"T1222.002\", \"T1564.001\", \"T1070.004\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show user judy force-creating a symlink named /home/judy/.local/bin/firefox pointing to /home/judy/.local/share/firefox/firefox-startup, effectively hijacking execution when the user runs firefox from a user-local PATH directory. This is consistent with Unix shell/profile or application startup persistence/execution via a masqueraded browser binary rather than typical Firefox installation behavior.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"6\", \"57\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1574.008\", \"T1219\"]",
+  "model": "haiku",
+  "condition": "haiku",
+  "record_id": "9b55d13dddca6d4c3e80ea4cbe91de639b6287c21a4b5d9459cfb75c9ade6243",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 3,\n    \"prediction_reason_alignment\": 2,\n    \"confidence_evidence_support\": 2,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1574.008 and T1219. The candidate's first ten predictions include T1574 and T1574.010 but not T1574.008 (a sibling subtechnique, not the exact ID), and T1219 is absent. Exact-ID coverage is 0.\",\n    \"prediction_evidence_support\": \"The logs show a symlink replacing ~/.local/bin/firefox, which loosely supports hijacking/proxy-execution ideas (T1574 family). Predictions like T1543, T1547, T1546, and T1070.004 lack support from the supplied artifacts; T1059.004 and T1204 are weakly connected at best.\",\n    \"explanation_grounding\": \"The explanation accurately cites the ln -sf command, the target path, the Cu1HScbk temporary symlink, and the same-directory shadowing. It makes an inference (binary proxy execution) that is flagged as a suspicion rather than presented as observed fact.\",\n    \"prediction_reason_alignment\": \"The hijacking/proxy-execution reasoning aligns with T1574-family predictions, but the long tail of persistence, defense-evasion, and execution IDs is not tied to any stated reason.\",\n    \"confidence_evidence_support\": \"Candidate label is 'Somewhat Certain: Normal'. The evidence (a user-owned symlink in a user directory, plausibly an install wrapper) supports a benign reading, but the candidate's own explanation notes hijacking-like patterns and its prediction list is broad and weakly supported, so the label is only mildly calibrated.\",\n    \"instruction_adherence\": \"Output is fenced JSON with a 10-item technique list (IDs only, as requested), but the explanation runs to two sentences and the top-level JSON is wrapped in fences; the response parses as fenced JSON with the required fields present.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was supplied.\",\n    \"reasoning_similarity\": \"No comparison response was supplied.\"\n  },\n  \"extracted_predictions\": [\"T1574.010\", \"T1574\", \"T1036\", \"T1543\", \"T1059.004\", \"T1564\", \"T1547\", \"T1546\", \"T1204\", \"T1070.004\"],\n  \"failure_labels\": [\"missed_ground_truth_ids\", \"overbroad_technique_list\", \"weak_prediction_evidence_support\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Normal\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 0,\n  \"confidence_label_agreement_reason\": \"The candidate leans Normal while the ground truth indicates an attack (T1574.008 hijacking and T1219 remote access tool patterns). This is a directional disagreement with the attack-labeled ground truth, scored as major difference.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "3ce639bc453ab970422cce7fd91fe9e359591b6b8a05742ef31a43097dcfa8f0",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTx1DKWL2RtZanUeTG4s",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 3,\n    \"prediction_reason_alignment\": 2,\n    \"confidence_evidence_support\": 2,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1574.008 and T1219. The candidate's first ten predictions include T1574 and T1574.010 but not T1574.008 (a sibling subtechnique, not the exact ID), and T1219 is absent. Exact-ID coverage is 0.\",\n    \"prediction_evidence_support\": \"The logs show a symlink replacing ~/.local/bin/firefox, which loosely supports hijacking/proxy-execution ideas (T1574 family). Predictions like T1543, T1547, T1546, and T1070.004 lack support from the supplied artifacts; T1059.004 and T1204 are weakly connected at best.\",\n    \"explanation_grounding\": \"The explanation accurately cites the ln -sf command, the target path, the Cu1HScbk temporary symlink, and the same-directory shadowing. It makes an inference (binary proxy execution) that is flagged as a suspicion rather than presented as observed fact.\",\n    \"prediction_reason_alignment\": \"The hijacking/proxy-execution reasoning aligns with T1574-family predictions, but the long tail of persistence, defense-evasion, and execution IDs is not tied to any stated reason.\",\n    \"confidence_evidence_support\": \"Candidate label is 'Somewhat Certain: Normal'. The evidence (a user-owned symlink in a user directory, plausibly an install wrapper) supports a benign reading, but the candidate's own explanation notes hijacking-like patterns and its prediction list is broad and weakly supported, so the label is only mildly calibrated.\",\n    \"instruction_adherence\": \"Output is fenced JSON with a 10-item technique list (IDs only, as requested), but the explanation runs to two sentences and the top-level JSON is wrapped in fences; the response parses as fenced JSON with the required fields present.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was supplied.\",\n    \"reasoning_similarity\": \"No comparison response was supplied.\"\n  },\n  \"extracted_predictions\": [\"T1574.010\", \"T1574\", \"T1036\", \"T1543\", \"T1059.004\", \"T1564\", \"T1547\", \"T1546\", \"T1204\", \"T1070.004\"],\n  \"failure_labels\": [\"missed_ground_truth_ids\", \"overbroad_technique_list\", \"weak_prediction_evidence_support\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Normal\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 0,\n  \"confidence_label_agreement_reason\": \"The candidate leans Normal while the ground truth indicates an attack (T1574.008 hijacking and T1219 remote access tool patterns). This is a directional disagreement with the attack-labeled ground truth, scored as major difference.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 3951,
+      "output_tokens": 1113,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 3951,
+    "output_tokens": 1113,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0004758,
+  "batch_api": true,
+  "elapsed_seconds": 48299.84187889099,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3951,
+  "output_tokens": 1113,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "response_empty": false,
+  "valid_json": false,
+  "schema_adherent": false,
+  "required_fields_present": false,
+  "unexpected_text_present": true,
+  "parse_error": "Whole response is not strict JSON",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1574.010\", \"T1574\", \"T1036\", \"T1543\", \"T1059.004\", \"T1564\", \"T1547\", \"T1546\", \"T1204\", \"T1070.004\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show a user-level `ln -sf` command replacing `~/.local/bin/firefox` with a symlink to a Firefox startup script, which is consistent with a legitimate Firefox install/update wrapper rather than an attack. The mild suspicion comes from the temporary `Cu1HScbk` symlink being created and removed in the same directory, and the action being a shadowing of a binary name in a user PATH directory, which resembles binary proxy execution or hijacking patterns.\"\n}\n```",
+  "haiku_reference_finish_reason": "end_turn",
+  "haiku_reference_response_empty": false,
+  "haiku_reference_valid_json": false,
+  "haiku_reference_schema_adherent": false,
+  "haiku_reference_required_fields_present": false,
+  "haiku_reference_unexpected_text_present": true,
+  "haiku_reference_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "candidate_status": "completed",
+  "candidate_record_id": "665f6f600c96386553ef6964fe541d45a66d779cca12b3927f4fd57f6a6f4076",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\"T1574.010\", \"T1574\", \"T1036\", \"T1543\", \"T1059.004\", \"T1564\", \"T1547\", \"T1546\", \"T1204\", \"T1070.004\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show a user-level `ln -sf` command replacing `~/.local/bin/firefox` with a symlink to a Firefox startup script, which is consistent with a legitimate Firefox install/update wrapper rather than an attack. The mild suspicion comes from the temporary `Cu1HScbk` symlink being created and removed in the same directory, and the action being a shadowing of a binary name in a user PATH directory, which resembles binary proxy execution or hijacking patterns.\"\n}\n```",
+  "candidate_response_sha256": "8008b06faa7ff6a02a8ba674521b7b0c4a154d21c749290f65c6fa4d48add3ca",
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 1,\n    \"explanation_grounding\": 3,\n    \"prediction_reason_alignment\": 2,\n    \"confidence_evidence_support\": 2,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1574.008 and T1219. The candidate's first ten predictions include T1574 and T1574.010 but not T1574.008 (a sibling subtechnique, not the exact ID), and T1219 is absent. Exact-ID coverage is 0.\",\n    \"prediction_evidence_support\": \"The logs show a symlink replacing ~/.local/bin/firefox, which loosely supports hijacking/proxy-execution ideas (T1574 family). Predictions like T1543, T1547, T1546, and T1070.004 lack support from the supplied artifacts; T1059.004 and T1204 are weakly connected at best.\",\n    \"explanation_grounding\": \"The explanation accurately cites the ln -sf command, the target path, the Cu1HScbk temporary symlink, and the same-directory shadowing. It makes an inference (binary proxy execution) that is flagged as a suspicion rather than presented as observed fact.\",\n    \"prediction_reason_alignment\": \"The hijacking/proxy-execution reasoning aligns with T1574-family predictions, but the long tail of persistence, defense-evasion, and execution IDs is not tied to any stated reason.\",\n    \"confidence_evidence_support\": \"Candidate label is 'Somewhat Certain: Normal'. The evidence (a user-owned symlink in a user directory, plausibly an install wrapper) supports a benign reading, but the candidate's own explanation notes hijacking-like patterns and its prediction list is broad and weakly supported, so the label is only mildly calibrated.\",\n    \"instruction_adherence\": \"Output is fenced JSON with a 10-item technique list (IDs only, as requested), but the explanation runs to two sentences and the top-level JSON is wrapped in fences; the response parses as fenced JSON with the required fields present.\"\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was supplied.\",\n    \"reasoning_similarity\": \"No comparison response was supplied.\"\n  },\n  \"extracted_predictions\": [\"T1574.010\", \"T1574\", \"T1036\", \"T1543\", \"T1059.004\", \"T1564\", \"T1547\", \"T1546\", \"T1204\", \"T1070.004\"],\n  \"failure_labels\": [\"missed_ground_truth_ids\", \"overbroad_technique_list\", \"weak_prediction_evidence_support\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Normal\",\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": 0,\n  \"confidence_label_agreement_reason\": \"The candidate leans Normal while the ground truth indicates an attack (T1574.008 hijacking and T1219 remote access tool patterns). This is a directional disagreement with the attack-labeled ground truth, scored as major difference.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "3ce639bc453ab970422cce7fd91fe9e359591b6b8a05742ef31a43097dcfa8f0",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 1,
+      "explanation_grounding": 3,
+      "prediction_reason_alignment": 2,
+      "confidence_evidence_support": 2,
+      "instruction_adherence": 1
+    },
+    "reasons": {
+      "technique_identification": "Ground truth is T1574.008 and T1219. The candidate's first ten predictions include T1574 and T1574.010 but not T1574.008 (a sibling subtechnique, not the exact ID), and T1219 is absent. Exact-ID coverage is 0.",
+      "prediction_evidence_support": "The logs show a symlink replacing ~/.local/bin/firefox, which loosely supports hijacking/proxy-execution ideas (T1574 family). Predictions like T1543, T1547, T1546, and T1070.004 lack support from the supplied artifacts; T1059.004 and T1204 are weakly connected at best.",
+      "explanation_grounding": "The explanation accurately cites the ln -sf command, the target path, the Cu1HScbk temporary symlink, and the same-directory shadowing. It makes an inference (binary proxy execution) that is flagged as a suspicion rather than presented as observed fact.",
+      "prediction_reason_alignment": "The hijacking/proxy-execution reasoning aligns with T1574-family predictions, but the long tail of persistence, defense-evasion, and execution IDs is not tied to any stated reason.",
+      "confidence_evidence_support": "Candidate label is 'Somewhat Certain: Normal'. The evidence (a user-owned symlink in a user directory, plausibly an install wrapper) supports a benign reading, but the candidate's own explanation notes hijacking-like patterns and its prediction list is broad and weakly supported, so the label is only mildly calibrated.",
+      "instruction_adherence": "Output is fenced JSON with a 10-item technique list (IDs only, as requested), but the explanation runs to two sentences and the top-level JSON is wrapped in fences; the response parses as fenced JSON with the required fields present."
+    },
+    "null_reasons": {
+      "prediction_similarity": "No comparison response was supplied.",
+      "reasoning_similarity": "No comparison response was supplied."
+    },
+    "extracted_predictions": [
+      "T1574.010",
+      "T1574",
+      "T1036",
+      "T1543",
+      "T1059.004",
+      "T1564",
+      "T1547",
+      "T1546",
+      "T1204",
+      "T1070.004"
+    ],
+    "failure_labels": [
+      "missed_ground_truth_ids",
+      "overbroad_technique_list",
+      "weak_prediction_evidence_support"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Somewhat Certain: Normal",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 0,
+    "confidence_label_agreement_reason": "The candidate leans Normal while the ground truth indicates an attack (T1574.008 hijacking and T1219 remote access tool patterns). This is a directional disagreement with the attack-labeled ground truth, scored as major difference.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 1,
+  "score_explanation_grounding": 3,
+  "score_prediction_reason_alignment": 2,
+  "score_confidence_evidence_support": 2,
+  "score_instruction_adherence": 1,
+  "judge_reasons": {
+    "technique_identification": "Ground truth is T1574.008 and T1219. The candidate's first ten predictions include T1574 and T1574.010 but not T1574.008 (a sibling subtechnique, not the exact ID), and T1219 is absent. Exact-ID coverage is 0.",
+    "prediction_evidence_support": "The logs show a symlink replacing ~/.local/bin/firefox, which loosely supports hijacking/proxy-execution ideas (T1574 family). Predictions like T1543, T1547, T1546, and T1070.004 lack support from the supplied artifacts; T1059.004 and T1204 are weakly connected at best.",
+    "explanation_grounding": "The explanation accurately cites the ln -sf command, the target path, the Cu1HScbk temporary symlink, and the same-directory shadowing. It makes an inference (binary proxy execution) that is flagged as a suspicion rather than presented as observed fact.",
+    "prediction_reason_alignment": "The hijacking/proxy-execution reasoning aligns with T1574-family predictions, but the long tail of persistence, defense-evasion, and execution IDs is not tied to any stated reason.",
+    "confidence_evidence_support": "Candidate label is 'Somewhat Certain: Normal'. The evidence (a user-owned symlink in a user directory, plausibly an install wrapper) supports a benign reading, but the candidate's own explanation notes hijacking-like patterns and its prediction list is broad and weakly supported, so the label is only mildly calibrated.",
+    "instruction_adherence": "Output is fenced JSON with a 10-item technique list (IDs only, as requested), but the explanation runs to two sentences and the top-level JSON is wrapped in fences; the response parses as fenced JSON with the required fields present."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No comparison response was supplied.",
+    "reasoning_similarity": "No comparison response was supplied."
+  },
+  "judge_extracted_predictions": [
+    "T1574.010",
+    "T1574",
+    "T1036",
+    "T1543",
+    "T1059.004",
+    "T1564",
+    "T1547",
+    "T1546",
+    "T1204",
+    "T1070.004"
+  ],
+  "judge_failure_labels": [
+    "missed_ground_truth_ids",
+    "overbroad_technique_list",
+    "weak_prediction_evidence_support"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Somewhat Certain: Normal",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 0,
+  "confidence_label_agreement_reason": "The candidate leans Normal while the ground truth indicates an attack (T1574.008 hijacking and T1219 remote access tool patterns). This is a directional disagreement with the attack-labeled ground truth, scored as major difference.",
+  "confidence_label_null_reason": null
+}

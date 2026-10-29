@@ -1,0 +1,259 @@
+{
+  "prompt_id": "629",
+  "scenario": "1",
+  "variant": "sudo_sshkey",
+  "step": "44",
+  "split": "validation",
+  "group_id": "[\"1\", \"44\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758532669.777:13178): arch=c000003e syscall=59 success=yes exit=0 a0=7ffd9dd8eeb8 a1=7ffd9dd8c930 a2=55e8cd4a2ae0 a3=7ffd9dd8c970 items=3 ppid=17139 pid=17140 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758532669.777:13178): argc=3 a0=\"bash\" a1=\"-c\" a2=63617420207C2078617267732062617368202D6320\n        type=PATH msg=audit(1758532669.777:13178): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758532669.777:13178): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758532669.777:13178): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758532669.777:13178): proctitle=62617368002D630063617420207C2078617267732062617368202D6320\n        type=SYSCALL msg=audit(1758532669.785:13179): arch=c000003e syscall=59 success=yes exit=0 a0=561ad16e93a0 a1=561ad16e9c50 a2=561ad16da2c0 a3=fffffffffffff286 items=3 ppid=17140 pid=17142 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"xargs\" exe=\"/usr/bin/xargs\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758532669.785:13179): argc=3 a0=\"xargs\" a1=\"bash\" a2=\"-c\"\n        type=PATH msg=audit(1758532669.785:13179): item=0 name=\"/usr/bin/xargs\" inode=1802 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758532669.785:13179): item=1 name=\"/usr/bin/xargs\" inode=1802 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "14a5c095d07db222bfc02e67b1fb5f91299c98a7b8bae7548079929e7adb6a7e",
+  "ground_truth": "[\"T1218\", \"T1098.004\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1202\", \"T1106\", \"T1059.009\", \"T1027\", \"T1140\", \"T1053.003\", \"T1078\", \"T1036\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit logs show root executing nested shell interpreters via `bash -c` with a pipeline into `xargs bash -c`, which is a suspicious pattern for executing commands supplied through stdin and obscuring the actual payload from process arguments. While shell pipelines can be legitimate, this construction strongly aligns with Unix shell command execution behavior commonly used during attacks.\"}",
+  "teacher_response_sha256": "05a784797ca7659da75b892fe79754d81530527efbd7ba6d06c43f3afae2fde5",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "full",
+  "candidate_status": "completed",
+  "candidate_record_id": "f698815f31135a5094919ba05742c9b03d461bcc4c3a21c478c9215d937257a5:629",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"A12.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1",
+  "candidate_response_sha256": "48aabf930c98da813db9e590b421db209827b6417136989d65322c95bcbdcf9e",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "full",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "f698815f31135a5094919ba05742c9b03d461bcc4c3a21c478c9215d937257a5",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "8fce4286c3e70efa4793aa6953feb040e0ede00717c24b10c82ceb4c1edad21e",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1264,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 137.3123874360026,
+  "candidate_output_tokens_per_second": 7.45744807967349,
+  "candidate_peak_allocated_bytes": 5106167808,
+  "candidate_peak_reserved_bytes": 5903482880,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "d10a2e23c1c4a2bb8a1298dfeff156ced9c2ac9bb02f61e3b9bdbaaad3e2105b",
+  "haiku_reference_response_raw": "Decoding the hex in the EXECVE argument reveals `cat /proc/*/cmdline | xargs bash -c` style activity, i.e., a shell pipeline that reads process command-line data (`/proc/*/cmdline`) and feeds it into a new bash instance. The `a2` hex decodes to `cat  | xargs bash -c` with the trailing ASCII shown in the proctitle (`bash -c cat  | xargs bash -c`). Piping process memory/cmdline contents into `bash -c` is a pattern associated with credential harvesting from process arguments and with executing dynamically assembled commands, and it runs as root with no auid set, consistent with a remotely spawned or privilege-escalated shell.\n\n```json\n{\n  \"techniques\": [\n    \"T1059.004\",\n    \"T1057\",\n    \"T1552.003\",\n    \"T1059\",\n    \"T1083\",\n    \"T1082\",\n    \"T1033\",\n    \"T1569\",\n    \"T1543\",\n    \"T1078\"\n  ],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"A root bash process (auid unset, indicating no interactive login session) executes a pipeline that reads /proc process cmdline data via cat and passes it to xargs bash -c, which is a classic pattern for harvesting credentials from process arguments and executing dynamically built commands. Although the pipeline could be legitimate administrative or monitoring scripting, the unset login UID and root context make it more likely to be attacker activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "781a5b0443ab07cfb3cd677aa7f63f857b846d8c88455bb7b89c74bb5dd9748f",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "6ed03cadd58ccbec41b468739daa6dd9560138c95fe0cfec11b9f87eddcb54c6",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate's techniques list is a degenerate string of 'A1.1.1...' repeated tokens with no valid ATT&CK IDs; none of the ground-truth IDs (T1218, T1098.004) appear.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No valid technique predictions are present, so no prediction is supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"The explanation was not recovered from the candidate's malformed output; only the Haiku reference contains an explanation, which cannot be scored for this candidate.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions and no explanation are recoverable from the candidate response.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable; the candidate response contains no confidence field or label text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON (degenerate repeated tokens in the techniques field), lacks confidence and explanation fields, and fails the requested schema and top-10 ID format.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"malformed_json\", \"degenerate_output\", \"missing_required_fields\", \"no_valid_technique_ids\", \"missing_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence label.\"\n}\n```",
+  "response_hash": "9b29a5433f00710e3a692cab58adb0cadb521132fbe7842a5fb82e8600adf402",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvWVTh4hvNrxUZ5fTHK",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate's techniques list is a degenerate string of 'A1.1.1...' repeated tokens with no valid ATT&CK IDs; none of the ground-truth IDs (T1218, T1098.004) appear.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No valid technique predictions are present, so no prediction is supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"The explanation was not recovered from the candidate's malformed output; only the Haiku reference contains an explanation, which cannot be scored for this candidate.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions and no explanation are recoverable from the candidate response.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable; the candidate response contains no confidence field or label text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON (degenerate repeated tokens in the techniques field), lacks confidence and explanation fields, and fails the requested schema and top-10 ID format.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"malformed_json\", \"degenerate_output\", \"missing_required_fields\", \"no_valid_technique_ids\", \"missing_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 5181,
+      "output_tokens": 714,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 5181,
+    "output_tokens": 714,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00043755000000000004,
+  "batch_api": true,
+  "elapsed_seconds": 37560.04509091377,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5181,
+  "output_tokens": 714,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate's techniques list is a degenerate string of 'A1.1.1...' repeated tokens with no valid ATT&CK IDs; none of the ground-truth IDs (T1218, T1098.004) appear.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No valid technique predictions are present, so no prediction is supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"The explanation was not recovered from the candidate's malformed output; only the Haiku reference contains an explanation, which cannot be scored for this candidate.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions and no explanation are recoverable from the candidate response.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable; the candidate response contains no confidence field or label text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON (degenerate repeated tokens in the techniques field), lacks confidence and explanation fields, and fails the requested schema and top-10 ID format.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"malformed_json\", \"degenerate_output\", \"missing_required_fields\", \"no_valid_technique_ids\", \"missing_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence label.\"\n}\n```",
+  "judge_response_sha256": "9b29a5433f00710e3a692cab58adb0cadb521132fbe7842a5fb82e8600adf402",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate's techniques list is a degenerate string of 'A1.1.1...' repeated tokens with no valid ATT&CK IDs; none of the ground-truth IDs (T1218, T1098.004) appear."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No valid technique predictions are present, so no prediction is supported by the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "The explanation was not recovered from the candidate's malformed output; only the Haiku reference contains an explanation, which cannot be scored for this candidate."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions and no explanation are recoverable from the candidate response."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable; the candidate response contains no confidence field or label text."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON (degenerate repeated tokens in the techniques field), lacks confidence and explanation fields, and fails the requested schema and top-10 ID format."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "confidence_label_agreement": "No candidate confidence label recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "malformed_json",
+      "degenerate_output",
+      "missing_required_fields",
+      "no_valid_technique_ids",
+      "missing_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no recoverable confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate's techniques list is a degenerate string of 'A1.1.1...' repeated tokens with no valid ATT&CK IDs; none of the ground-truth IDs (T1218, T1098.004) appear."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No valid technique predictions are present, so no prediction is supported by the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "The explanation was not recovered from the candidate's malformed output; only the Haiku reference contains an explanation, which cannot be scored for this candidate."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions and no explanation are recoverable from the candidate response."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable; the candidate response contains no confidence field or label text."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON (degenerate repeated tokens in the techniques field), lacks confidence and explanation fields, and fails the requested schema and top-10 ID format."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "confidence_label_agreement": "No candidate confidence label recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "malformed_json",
+    "degenerate_output",
+    "missing_required_fields",
+    "no_valid_technique_ids",
+    "missing_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no recoverable confidence label."
+}

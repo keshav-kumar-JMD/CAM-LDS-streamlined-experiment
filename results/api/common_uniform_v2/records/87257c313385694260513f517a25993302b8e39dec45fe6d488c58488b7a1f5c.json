@@ -1,0 +1,277 @@
+{
+  "prompt_id": "876",
+  "scenario": "3",
+  "variant": "ssh_puppet",
+  "step": "20",
+  "split": "train",
+  "group_id": "[\"3\", \"20\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nlinuxshare:\n    logs/log/audit/audit.log:\n        type=EXECVE msg=audit(1765543949.268:3007): argc=3 a0=\"python3\" a1=\"-c\" a2=696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=PATH msg=audit(1765543949.268:3007): item=0 name=\"/usr/bin/python3\" inode=3655 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765543949.268:3007): item=1 name=\"/usr/bin/python3\" inode=10087 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765543949.268:3007): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=2058 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765543949.268:3007): proctitle=707974686F6E33002D6300696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=SYSCALL msg=audit(1765543949.300:3008): arch=c000003e syscall=59 success=yes exit=0 a0=7fdfee2ad7f0 a1=7fdfee24c1c0 a2=7ffee0e6e098 a3=7fdfee334680 items=3 ppid=2114 pid=2115 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"bash\" exe=\"/usr/bin/bash\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765543949.300:3008): argc=1 a0=\"/bin/bash\"\n        type=PATH msg=audit(1765543949.300:3008): item=0 name=\"/bin/bash\" inode=433 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765543949.300:3008): item=1 name=\"/bin/bash\" inode=433 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765543949.300:3008): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=2058 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "93869100e16487b0ac5e2cc373c13187a5efa2200bfe76afefdb2292436e624c",
+  "ground_truth": "[\"T1059\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059.006\", \"T1059\", \"T1055\", \"T1106\", \"T1202\", \"T1078\", \"T1021.004\", \"T1548\", \"T1053\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show python3 executing inline code `import pty; pty.spawn(\\\"/bin/bash\\\")`, which is a common technique to spawn or upgrade an interactive Linux shell, often after remote access. While this can be used administratively, the PTY-spawned root bash with unset audit user is suspicious and aligns most directly with command/scripting interpreter abuse.\"}",
+  "teacher_response_sha256": "c054c75b22d122c32652f0b4b02bbd53c7fd41e595b700a1ea3e8106b1b47e44",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:876",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"Process Execution (Process Exploit)\",\n    \"Path Execution (Path Exploit)\",\n    \"Command Execution (Command Exploit)\",\n    \"File Execution (File Exploit)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Process Injection (Process Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Command Injection (Command Injection)\",\n    \"",
+  "candidate_response_sha256": "82b1fef10d48731876e4106695071570dbf9d8f7e83d28be075ef7c44650b4cf",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1184,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 109.78192950200173,
+  "candidate_output_tokens_per_second": 9.327582459564338,
+  "candidate_peak_allocated_bytes": 5065306624,
+  "candidate_peak_reserved_bytes": 6230638592,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "314ba82db9c9a00e532a29de99c8192d0744eb1d7eea57256fff6291269f41d1",
+  "haiku_reference_response_raw": "Decoding the hex in the EXECVE record gives `import pty;pty.spawn(\"/bin/bash\")`, a classic reverse-shell / TTY upgrade one-liner that runs Python to spawn an interactive bash shell as root. The audit trail shows a root-owned python3 process (ppid 2114, pid 2115) executing this command and then launching /bin/bash on pts0 with no auid (unset), which indicates an interactive session that was not authenticated through a normal login. This matches an attacker who has obtained a shell and is stabilizing it with pty.spawn, typically following a reverse shell or command-injection foothold. Interactive root shell spawning via inline Python is rarely legitimate in production logs.\n\n```json\n{\n  \"techniques\": [\"T1059.006\", \"T1059.004\", \"T1059\", \"T1571\", \"T1548.003\", \"T1068\", \"T1078\", \"T1021.004\", \"T1105\", \"T1036\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The hex-encoded argument decodes to `import pty;pty.spawn(\\\"/bin/bash\\\")`, a common post-exploitation TTY-upgrade technique, executed by a root python3 process that spawns an interactive bash on pts0 with an unset audit UID, indicating an unauthenticated interactive session. Legitimate administration rarely invokes inline Python to spawn a root shell in this way.\"\n}\n```",
+  "haiku_reference_response_sha256": "621c7c87a21c53318e18099bd5ac1a0c35cd5c94a9b1754e908573b21e96ad31",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "b955376e89fd2d2804ff200e98193c02d773f3289a9e2a56aa62eedc4c5e5ade",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\n      \"score\": 0,\n      \"reason\": \"Ground truth is T1059. The candidate's first ten predictions are non-ATT&CK-ID strings (e.g., 'Process Execution (Process Exploit)', 'Command Injection (Command Injection)'), and none match T1059 exactly. Coverage is 0 of the first ten.\"\n    },\n    \"prediction_evidence_support\": {\n      \"score\": 0,\n      \"reason\": \"The predictions are repetitive, invented labels that do not correspond to ATT&CK IDs and are not tied to any supplied artifact. The list is degenerate, with the same 'Injection' entries repeated dozens of times, so no prediction is supported at the claimed specificity.\"\n    },\n    \"explanation_grounding\": {\n      \"score\": 0,\n      \"reason\": \"The candidate provides no explanation field. The only substantive content is a repeated list of techniques, so there is no grounded explanation.\"\n    },\n    \"prediction_reason_alignment\": {\n      \"score\": 0,\n      \"reason\": \"No explanation is provided and the technique predictions are not connected to any reasons, so alignment cannot be established.\"\n    },\n    \"confidence_evidence_support\": {\n      \"score\": null,\n      \"reason\": \"No confidence label is recoverable from the candidate. The confidence field is absent.\"\n    },\n    \"instruction_adherence\": {\n      \"score\": 0,\n      \"reason\": \"The response is not valid JSON, lacks the required confidence and explanation fields, and contains a runaway repetitive list of techniques instead of a top-10 list of ATT&CK IDs with only IDs printed.\"\n    }\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable; the confidence field is missing.\"\n  },\n  \"extracted_predictions\": [\n    \"Process Execution (Process Exploit)\",\n    \"Path Execution (Path Exploit)\",\n    \"Command Execution (Command Exploit)\",\n    \"File Execution (File Exploit)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Process Injection (Process Injection)\"\n  ],\n  \"failure_labels\": [\n    \"invalid_json\",\n    \"missing_required_fields\",\n    \"non_attack_id_predictions\",\n    \"degenerate_repetition\",\n    \"missing_explanation\",\n    \"no_confidence_label\"\n  ],\n  \"prediction_similarity\": 0,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or stated confidence label.\"\n}\n```",
+  "response_hash": "b0ebcb7f74a469b03f7ac208c36c12450c4812503eb4737e121eb1ce82885ebb",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvMXC7t7nWioMMSoodP",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\n      \"score\": 0,\n      \"reason\": \"Ground truth is T1059. The candidate's first ten predictions are non-ATT&CK-ID strings (e.g., 'Process Execution (Process Exploit)', 'Command Injection (Command Injection)'), and none match T1059 exactly. Coverage is 0 of the first ten.\"\n    },\n    \"prediction_evidence_support\": {\n      \"score\": 0,\n      \"reason\": \"The predictions are repetitive, invented labels that do not correspond to ATT&CK IDs and are not tied to any supplied artifact. The list is degenerate, with the same 'Injection' entries repeated dozens of times, so no prediction is supported at the claimed specificity.\"\n    },\n    \"explanation_grounding\": {\n      \"score\": 0,\n      \"reason\": \"The candidate provides no explanation field. The only substantive content is a repeated list of techniques, so there is no grounded explanation.\"\n    },\n    \"prediction_reason_alignment\": {\n      \"score\": 0,\n      \"reason\": \"No explanation is provided and the technique predictions are not connected to any reasons, so alignment cannot be established.\"\n    },\n    \"confidence_evidence_support\": {\n      \"score\": null,\n      \"reason\": \"No confidence label is recoverable from the candidate. The confidence field is absent.\"\n    },\n    \"instruction_adherence\": {\n      \"score\": 0,\n      \"reason\": \"The response is not valid JSON, lacks the required confidence and explanation fields, and contains a runaway repetitive list of techniques instead of a top-10 list of ATT&CK IDs with only IDs printed.\"\n    }\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable; the confidence field is missing.\"\n  },\n  \"extracted_predictions\": [\n    \"Process Execution (Process Exploit)\",\n    \"Path Execution (Path Exploit)\",\n    \"Command Execution (Command Exploit)\",\n    \"File Execution (File Exploit)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Process Injection (Process Injection)\"\n  ],\n  \"failure_labels\": [\n    \"invalid_json\",\n    \"missing_required_fields\",\n    \"non_attack_id_predictions\",\n    \"degenerate_repetition\",\n    \"missing_explanation\",\n    \"no_confidence_label\"\n  ],\n  \"prediction_similarity\": 0,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or stated confidence label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 6300,
+      "output_tokens": 996,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 6300,
+    "output_tokens": 996,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000564,
+  "batch_api": true,
+  "elapsed_seconds": 2336.7613327503204,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 6300,
+  "output_tokens": 996,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\n      \"score\": 0,\n      \"reason\": \"Ground truth is T1059. The candidate's first ten predictions are non-ATT&CK-ID strings (e.g., 'Process Execution (Process Exploit)', 'Command Injection (Command Injection)'), and none match T1059 exactly. Coverage is 0 of the first ten.\"\n    },\n    \"prediction_evidence_support\": {\n      \"score\": 0,\n      \"reason\": \"The predictions are repetitive, invented labels that do not correspond to ATT&CK IDs and are not tied to any supplied artifact. The list is degenerate, with the same 'Injection' entries repeated dozens of times, so no prediction is supported at the claimed specificity.\"\n    },\n    \"explanation_grounding\": {\n      \"score\": 0,\n      \"reason\": \"The candidate provides no explanation field. The only substantive content is a repeated list of techniques, so there is no grounded explanation.\"\n    },\n    \"prediction_reason_alignment\": {\n      \"score\": 0,\n      \"reason\": \"No explanation is provided and the technique predictions are not connected to any reasons, so alignment cannot be established.\"\n    },\n    \"confidence_evidence_support\": {\n      \"score\": null,\n      \"reason\": \"No confidence label is recoverable from the candidate. The confidence field is absent.\"\n    },\n    \"instruction_adherence\": {\n      \"score\": 0,\n      \"reason\": \"The response is not valid JSON, lacks the required confidence and explanation fields, and contains a runaway repetitive list of techniques instead of a top-10 list of ATT&CK IDs with only IDs printed.\"\n    }\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable; the confidence field is missing.\"\n  },\n  \"extracted_predictions\": [\n    \"Process Execution (Process Exploit)\",\n    \"Path Execution (Path Exploit)\",\n    \"Command Execution (Command Exploit)\",\n    \"File Execution (File Exploit)\",\n    \"Command Injection (Command Injection)\",\n    \"Path Injection (Path Injection)\",\n    \"File Injection (File Injection)\",\n    \"Process Injection (Process Injection)\"\n  ],\n  \"failure_labels\": [\n    \"invalid_json\",\n    \"missing_required_fields\",\n    \"non_attack_id_predictions\",\n    \"degenerate_repetition\",\n    \"missing_explanation\",\n    \"no_confidence_label\"\n  ],\n  \"prediction_similarity\": 0,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or stated confidence label.\"\n}\n```",
+  "judge_response_sha256": "b0ebcb7f74a469b03f7ac208c36c12450c4812503eb4737e121eb1ce82885ebb",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1059. The candidate's first ten predictions are non-ATT&CK-ID strings (e.g., 'Process Execution (Process Exploit)', 'Command Injection (Command Injection)'), and none match T1059 exactly. Coverage is 0 of the first ten."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "The predictions are repetitive, invented labels that do not correspond to ATT&CK IDs and are not tied to any supplied artifact. The list is degenerate, with the same 'Injection' entries repeated dozens of times, so no prediction is supported at the claimed specificity."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "The candidate provides no explanation field. The only substantive content is a repeated list of techniques, so there is no grounded explanation."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No explanation is provided and the technique predictions are not connected to any reasons, so alignment cannot be established."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No confidence label is recoverable from the candidate. The confidence field is absent."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks the required confidence and explanation fields, and contains a runaway repetitive list of techniques instead of a top-10 list of ATT&CK IDs with only IDs printed."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable; the confidence field is missing."
+    },
+    "extracted_predictions": [
+      "Process Execution (Process Exploit)",
+      "Path Execution (Path Exploit)",
+      "Command Execution (Command Exploit)",
+      "File Execution (File Exploit)",
+      "Command Injection (Command Injection)",
+      "Path Injection (Path Injection)",
+      "File Injection (File Injection)",
+      "Process Injection (Process Injection)"
+    ],
+    "failure_labels": [
+      "invalid_json",
+      "missing_required_fields",
+      "non_attack_id_predictions",
+      "degenerate_repetition",
+      "missing_explanation",
+      "no_confidence_label"
+    ],
+    "prediction_similarity": 0,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence field or stated confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1059. The candidate's first ten predictions are non-ATT&CK-ID strings (e.g., 'Process Execution (Process Exploit)', 'Command Injection (Command Injection)'), and none match T1059 exactly. Coverage is 0 of the first ten."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "The predictions are repetitive, invented labels that do not correspond to ATT&CK IDs and are not tied to any supplied artifact. The list is degenerate, with the same 'Injection' entries repeated dozens of times, so no prediction is supported at the claimed specificity."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "The candidate provides no explanation field. The only substantive content is a repeated list of techniques, so there is no grounded explanation."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No explanation is provided and the technique predictions are not connected to any reasons, so alignment cannot be established."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No confidence label is recoverable from the candidate. The confidence field is absent."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks the required confidence and explanation fields, and contains a runaway repetitive list of techniques instead of a top-10 list of ATT&CK IDs with only IDs printed."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable; the confidence field is missing."
+  },
+  "judge_extracted_predictions": [
+    "Process Execution (Process Exploit)",
+    "Path Execution (Path Exploit)",
+    "Command Execution (Command Exploit)",
+    "File Execution (File Exploit)",
+    "Command Injection (Command Injection)",
+    "Path Injection (Path Injection)",
+    "File Injection (File Injection)",
+    "Process Injection (Process Injection)"
+  ],
+  "judge_failure_labels": [
+    "invalid_json",
+    "missing_required_fields",
+    "non_attack_id_predictions",
+    "degenerate_repetition",
+    "missing_explanation",
+    "no_confidence_label"
+  ],
+  "judge_prediction_similarity": 0,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence field or stated confidence label."
+}

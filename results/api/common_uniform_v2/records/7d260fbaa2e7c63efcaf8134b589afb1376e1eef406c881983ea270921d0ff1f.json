@@ -1,0 +1,283 @@
+{
+  "prompt_id": "264",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "8",
+  "split": "test",
+  "group_id": "[\"2\", \"8\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 11:40:59 inetfw dnsmasq[734]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 11:40:59 inetfw dnsmasq[734]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 11:40:59 inetfw dnsmasq[734]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 11:40:59 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 11:40:59 inetfw dnsmasq[734]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759318859.996:5152): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c0000900ec a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318859.996:5152): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318859.996:5152): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318859.996:5153): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c00009014c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318859.996:5153): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318859.996:5153): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318859.996:5154): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c00009030c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318859.996:5154): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759318859.996:5154): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "641b5d5f39d3aa780996b7f2001133d00dec213a9e110d0a1a4ad056f8e56d0a",
+  "ground_truth": "[\"T1003\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1036.005\", \"T1566.002\", \"T1102\", \"T1583.001\", \"T1584.001\", \"T1090\", \"T1105\", \"T1204.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a host resolving and connecting over HTTPS to the suspicious typosquatted domain faaacebook.com, which appears designed to mimic facebook.com and is unlikely to be normal video-server behavior. The activity primarily indicates web/DNS-based external communication, potentially using a masqueraded domain for malicious infrastructure or delivery.\"}",
+  "teacher_response_sha256": "d79355b510d11c7819eb52f4b208d875e8d6a140f0edc167e2ef796768d4bb69",
+  "teacher_confidence_label": "Somewhat Certain: Attack",
+  "model": "bitnet2b",
+  "condition": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "1e533d086336191b89e801dc429d8795a904aa491e6cf5c66bb47811146895d1:264",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1001.1.1.1\",\n    \"T1001.1.1.2\",\n    \"T1001.1.1.3\",\n    \"T1001.1.1.4\",\n    \"T1001.1.1.5\",\n    \"T1001.1.1.6\",\n    \"T1001.1.1.7\",\n    \"T1001.1.1.8\",\n    \"T1001.1.1.9\",\n    \"T1001.1.1.10\",\n    \"T1001.1.1.11\",\n    \"T1001.1.1.12\",\n    \"T1001.1.1.13\",\n    \"T1001.1.1.14\",\n    \"T1001.1.1.15\",\n    \"T1001.1.1.16\",\n    \"T1001.1.1.17\",\n    \"T1001.1.1.18\",\n    \"T1001.1.1.19\",\n    \"T1001.1.1.20\",\n    \"T1001.1.1.21\",\n    \"T1001.1.1.22\",\n    \"T1001.1.1.23\",\n    \"T1001.1.1.24\",\n    \"T1001.1.1.25\",\n    \"T1001.1.1.26\",\n    \"T1001.1.1.27\",\n    \"T1001.1.1.28\",\n    \"T1001.1.1.29\",\n    \"T1001.1.1.30\",\n    \"T1001.1.1.31\",\n    \"T1001.1.1.32\",\n    \"T1001.1.1.33\",\n    \"T1001.1.1.34\",\n    \"T1001.1.1.35\",\n    \"T1001.1.1.36\",\n    \"T1001.1.1.37\",\n    \"T1001.1.1.38\",\n    \"T1001.1.1.39\",\n    \"T1001.1.1.40\",\n    \"T1001.1.1.41\",\n    \"T1001.1.1.42\",\n    \"T1001.1.1.43\",\n    \"T1001.1.1.44\",\n    \"T1001.1.1.45\",\n    \"T1001.1.1.46\",\n    \"T1001.1.1.47\",\n    \"T1001.1.1.48\",\n    \"T1001.1.1.49\",\n    \"T1001.1.1.50\",\n    \"T1001.1.1.51\",\n    \"T1001.1.1.52\",\n    \"T1001.1.1.53\",\n    \"T1001.1.1.54\",\n    \"T1001.1.1.55\",\n    \"T1001.1.1.56\",\n    \"T1001.1.1.57\",\n    \"T1001.1.1.58\",\n    \"T1001.1.1.59\",\n    \"T1001.1.1.60\",\n    \"T1001.1.1.61\",\n    \"T1001.1.1.62\",\n    \"T1001.1.1.63\",\n    \"T1001.1.1.64\",\n    \"T1001.1.1.65\",\n    \"T1001.1.1.66\",\n    \"T1001.1.1.67\",\n    \"T1001.1.1.68\",\n    \"T1001.1.1.69\",\n    \"T1001.1.1.70\",\n    \"T1001.1.1.71\",\n    \"T1001.1.1.72\",\n    \"T1001.1.1.73\",\n    \"T1001.1.1.74\",\n    \"T1001.1.1.75\",\n    \"T1001.1.1.76\",\n    \"T1001.1.1.77\",\n    \"T1001.1.1.78\",\n    \"T1001.1.1.79\",\n    \"T1001.1.1.80\",\n    \"T1001.1.1.81\",\n    \"T1001.1.1.82\",\n    \"T1001.1.1.83\",\n    \"T1001.1.1.84\",\n    \"T1001.",
+  "candidate_response_sha256": "1a6d34c35ca84b314d7ae65e60a0ec49e61fb82f7a78f88dcaf822c58cc4fe4d",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "joint",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "1e533d086336191b89e801dc429d8795a904aa491e6cf5c66bb47811146895d1",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "f709e0d3c1139ef3ea8eddacefaf0886a3a055e61bf209c2a5a1ccef4d19689d",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1249,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 138.2040508579994,
+  "candidate_output_tokens_per_second": 7.409334195653425,
+  "candidate_peak_allocated_bytes": 5101312512,
+  "candidate_peak_reserved_bytes": 5704253440,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "7c47b1cf5d380e566a1b3f3552ab8d1af568de4069157ecf670e798d68dee674",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1568.002\", \"T1071.004\", \"T1071.001\", \"T1568\", \"T1071\", \"T1048.003\", \"T1572\", \"T1573.002\", \"T1090\", \"T1583.001\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The inetfw logs show DNS queries for 'faaacebook.com', a typosquatted domain impersonating facebook.com, which was resolved to an external IP (192.42.1.174). The videoserver audit logs show an unusual process 'zmcontroller' running as root with a 'fax' group, sending DNS-port traffic to the internal resolver and then attempting a connection to the same suspicious external IP on port 443, which suggests domain-based command-and-control or data exfiltration activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "a9db92a9958369604adb650447887f6f1b7c3173e02cd165f055e74868eb32fa",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "1f8b7fb356851f9f30b723f6f81dac38227934abda1a4711bdf97ec9788a0336",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1003 (OS Credential Dumping). The candidate's ten predictions are all T1001.1.1.x sub-IDs (repeated pattern, not valid ATT&CK IDs), none matching T1003; the response is also truncated mid-list.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"The predicted IDs are not valid ATT&CK techniques and bear no relation to the logs (DNS queries, zmcontroller connecting to port 53/443); no supported prediction is present.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is provided; the candidate contains only a technique list, so explanation is missing.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No explanation or reasons are provided linking predictions to log artifacts; predictions are degenerate and unconnected.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks confidence and explanation fields, contains no content beyond a degenerate repeated list, and is truncated.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label recoverable.\", \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"}, \"extracted_predictions\": [\"T1001.1.1.1\", \"T1001.1.1.2\", \"T1001.1.1.3\", \"T1001.1.1.4\", \"T1001.1.1.5\", \"T1001.1.1.6\", \"T1001.1.1.7\", \"T1001.1.1.8\", \"T1001.1.1.9\", \"T1001.1.1.10\"], \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"degenerate_repetition\", \"truncated_output\", \"technique_mismatch\", \"no_explanation\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response contains no confidence field or expressed certainty level.\"}",
+  "response_hash": "d990d3febaa048d8f426ec7011e7fc6b5a22ab1bb4e2af0edb6fcabc58e16685",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvU49dAJQTgk7SU3RN4",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1003 (OS Credential Dumping). The candidate's ten predictions are all T1001.1.1.x sub-IDs (repeated pattern, not valid ATT&CK IDs), none matching T1003; the response is also truncated mid-list.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"The predicted IDs are not valid ATT&CK techniques and bear no relation to the logs (DNS queries, zmcontroller connecting to port 53/443); no supported prediction is present.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is provided; the candidate contains only a technique list, so explanation is missing.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No explanation or reasons are provided linking predictions to log artifacts; predictions are degenerate and unconnected.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks confidence and explanation fields, contains no content beyond a degenerate repeated list, and is truncated.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label recoverable.\", \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"}, \"extracted_predictions\": [\"T1001.1.1.1\", \"T1001.1.1.2\", \"T1001.1.1.3\", \"T1001.1.1.4\", \"T1001.1.1.5\", \"T1001.1.1.6\", \"T1001.1.1.7\", \"T1001.1.1.8\", \"T1001.1.1.9\", \"T1001.1.1.10\"], \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"degenerate_repetition\", \"truncated_output\", \"technique_mismatch\", \"no_explanation\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response contains no confidence field or expressed certainty level.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 5228,
+      "output_tokens": 819,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 5228,
+    "output_tokens": 819,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00046615000000000003,
+  "batch_api": true,
+  "elapsed_seconds": 6533.36240696907,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5228,
+  "output_tokens": 819,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"Ground truth is T1003 (OS Credential Dumping). The candidate's ten predictions are all T1001.1.1.x sub-IDs (repeated pattern, not valid ATT&CK IDs), none matching T1003; the response is also truncated mid-list.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"The predicted IDs are not valid ATT&CK techniques and bear no relation to the logs (DNS queries, zmcontroller connecting to port 53/443); no supported prediction is present.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is provided; the candidate contains only a technique list, so explanation is missing.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No explanation or reasons are provided linking predictions to log artifacts; predictions are degenerate and unconnected.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks confidence and explanation fields, contains no content beyond a degenerate repeated list, and is truncated.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label recoverable.\", \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"}, \"extracted_predictions\": [\"T1001.1.1.1\", \"T1001.1.1.2\", \"T1001.1.1.3\", \"T1001.1.1.4\", \"T1001.1.1.5\", \"T1001.1.1.6\", \"T1001.1.1.7\", \"T1001.1.1.8\", \"T1001.1.1.9\", \"T1001.1.1.10\"], \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"degenerate_repetition\", \"truncated_output\", \"technique_mismatch\", \"no_explanation\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response contains no confidence field or expressed certainty level.\"}",
+  "judge_response_sha256": "d990d3febaa048d8f426ec7011e7fc6b5a22ab1bb4e2af0edb6fcabc58e16685",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Ground truth is T1003 (OS Credential Dumping). The candidate's ten predictions are all T1001.1.1.x sub-IDs (repeated pattern, not valid ATT&CK IDs), none matching T1003; the response is also truncated mid-list."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "The predicted IDs are not valid ATT&CK techniques and bear no relation to the logs (DNS queries, zmcontroller connecting to port 53/443); no supported prediction is present."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field is provided; the candidate contains only a technique list, so explanation is missing."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No explanation or reasons are provided linking predictions to log artifacts; predictions are degenerate and unconnected."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Output is not valid JSON, lacks confidence and explanation fields, contains no content beyond a degenerate repeated list, and is truncated."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "confidence_label_agreement": "No candidate confidence label recoverable."
+    },
+    "extracted_predictions": [
+      "T1001.1.1.1",
+      "T1001.1.1.2",
+      "T1001.1.1.3",
+      "T1001.1.1.4",
+      "T1001.1.1.5",
+      "T1001.1.1.6",
+      "T1001.1.1.7",
+      "T1001.1.1.8",
+      "T1001.1.1.9",
+      "T1001.1.1.10"
+    ],
+    "failure_labels": [
+      "invalid_json",
+      "missing_required_fields",
+      "degenerate_repetition",
+      "truncated_output",
+      "technique_mismatch",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence field or expressed certainty level."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Ground truth is T1003 (OS Credential Dumping). The candidate's ten predictions are all T1001.1.1.x sub-IDs (repeated pattern, not valid ATT&CK IDs), none matching T1003; the response is also truncated mid-list."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "The predicted IDs are not valid ATT&CK techniques and bear no relation to the logs (DNS queries, zmcontroller connecting to port 53/443); no supported prediction is present."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field is provided; the candidate contains only a technique list, so explanation is missing."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No explanation or reasons are provided linking predictions to log artifacts; predictions are degenerate and unconnected."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Output is not valid JSON, lacks confidence and explanation fields, contains no content beyond a degenerate repeated list, and is truncated."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "confidence_label_agreement": "No candidate confidence label recoverable."
+  },
+  "judge_extracted_predictions": [
+    "T1001.1.1.1",
+    "T1001.1.1.2",
+    "T1001.1.1.3",
+    "T1001.1.1.4",
+    "T1001.1.1.5",
+    "T1001.1.1.6",
+    "T1001.1.1.7",
+    "T1001.1.1.8",
+    "T1001.1.1.9",
+    "T1001.1.1.10"
+  ],
+  "judge_failure_labels": [
+    "invalid_json",
+    "missing_required_fields",
+    "degenerate_repetition",
+    "truncated_output",
+    "technique_mismatch",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence field or expressed certainty level."
+}

@@ -1,0 +1,243 @@
+{
+  "prompt_id": "526",
+  "scenario": "4",
+  "variant": "",
+  "step": "21",
+  "split": "test",
+  "group_id": "[\"4\", \"21\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nlinuxshare:\n    logs/log/syslog:\n        2025-12-15T11:13:13.830891+00:00 linuxshare systemd[2125]: Listening on dirmngr.socket - GnuPG network certificate management daemon.\n        2025-12-15T11:13:13.830987+00:00 linuxshare systemd[2125]: Listening on gpg-agent-browser.socket - GnuPG cryptographic agent and passphrase cache (access for web browsers).\n        2025-12-15T11:13:13.831094+00:00 linuxshare systemd[2125]: Listening on gpg-agent-extra.socket - GnuPG cryptographic agent and passphrase cache (restricted).\n        2025-12-15T11:13:13.832390+00:00 linuxshare systemd[2125]: Listening on gpg-agent-ssh.socket - GnuPG cryptographic agent (ssh-agent emulation).\n        2025-12-15T11:13:13.833648+00:00 linuxshare systemd[2125]: Listening on gpg-agent.socket - GnuPG cryptographic agent and passphrase cache.\n        2025-12-15T11:13:13.834822+00:00 linuxshare systemd[2125]: Reached target sockets.target - Sockets.\n        2025-12-15T11:13:13.834946+00:00 linuxshare systemd[2125]: Reached target basic.target - Basic System.\n        2025-12-15T11:13:13.835040+00:00 linuxshare systemd[1]: Started user@1002.service - User Manager for UID 1002.\n        2025-12-15T11:13:13.835145+00:00 linuxshare systemd[1]: Started session-10.scope - Session 10 of User john.\n        2025-12-15T11:13:13.835246+00:00 linuxshare systemd[2125]: Reached target default.target - Main User Target.\n    logs/log/auth.log:\n        2025-12-15T11:13:13.644794+00:00 linuxshare sshd[2122]: Accepted password for john from 172.17.100.122 port 43212 ssh2\n        2025-12-15T11:13:13.646821+00:00 linuxshare sshd[2122]: pam_unix(sshd:session): session opened for user john(uid=1002) by (uid=0)\n        2025-12-15T11:13:13.693498+00:00 linuxshare systemd-logind[564]: New session 10 of user john.\n        2025-12-15T11:13:13.705314+00:00 linuxshare (systemd): pam_unix(systemd-user:session): session opened for user john(uid=1002) by (uid=0)\n        2025-12-15T11:13:13.840317+00:00 linuxshare sshd[2122]: pam_env(sshd:session): deprecated reading of user environment enabled\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1765797193.640:3089): proctitle=2F7573722F7362696E2F73736864002D44002D52\n        type=SYSCALL msg=audit(1765797193.640:3090): arch=c000003e syscall=113 success=yes exit=0 a0=3ea a1=ffffffff a2=0 a3=d677effe6a674cb3 items=0 ppid=599 pid=2122 auid=1002 uid=1002 gid=1002 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=10 comm=\"sshd\" exe=\"/usr/sbin/sshd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setreuid AUID=\"john\" UID=\"john\" GID=\"john\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1765797193.640:3090): proctitle=2F7573722F7362696E2F73736864002D44002D52\n        type=SYSCALL msg=audit(1765797193.640:3091): arch=c000003e syscall=113 success=yes exit=0 a0=0 a1=ffffffff a2=fffffffd a3=0 items=0 ppid=599 pid=2122 auid=1002 uid=0 gid=1002 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=10 comm=\"sshd\" exe=\"/usr/sbin/sshd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setreuid AUID=\"john\" UID=\"root\" GID=\"john\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1765797193.640:3091): proctitle=2F7573722F7362696E2F73736864002D44002D52\n        type=SYSCALL msg=audit(1765797193.640:3092): arch=c000003e syscall=114 success=yes exit=0 a0=0 a1=ffffffff a2=0 a3=0 items=0 ppid=599 pid=2122 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=10 comm=\"sshd\" exe=\"/usr/sbin/sshd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setregid AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1765797193.640:3092): proctitle=2F7573722F7362696E2F73736864002D44002D52\n        type=SYSCALL msg=audit(1765797193.644:3093): arch=c000003e syscall=42 success=no exit=-2 a0=5 a1=7ffe581000e0 a2=2d a3=0 items=1 ppid=599 pid=2122 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=10 comm=\"sshd\" exe=\"/usr/sbin/sshd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765797193.644:3093): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E4D756C7469706C6578657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.Multiplexer }\n        type=PATH msg=audit(1765797193.644:3093): item=0 name=\"/run/systemd/userdb/io.systemd.Multiplexer\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0",
+  "prompt_sha256": "be786a24cc44b8e8c28511b0ba360577fd8afca227c376dc5d80922a56d20469",
+  "ground_truth": "[\"T1078.003\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1021.004\", \"T1078.003\", \"T1110\", \"T1133\", \"T1059.004\", \"T1548.003\", \"T1563.001\", \"T1003.008\", \"T1049\", \"T1087.001\"], \"confidence\": \"Somewhat Certain: Normal\", \"explanation\": \"The logs primarily show a successful SSH password login for user john and normal PAM/systemd session initialization, including expected sshd UID/GID transitions and systemd user service startup. There are no clear malicious post-login commands or abnormal artifacts, though remote SSH access could map to remote services/valid accounts if the login were unauthorized.\"}",
+  "teacher_response_sha256": "3a7183073bba137d1603ec0108da9856de711e6a5fa0862e4dddc1d4ff48566f",
+  "teacher_confidence_label": "Somewhat Certain: Normal",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:526",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection-Attack\",\n    \"SSHD-Connection",
+  "candidate_response_sha256": "bed0be23d38bcd5d1491380aaac908a7e4f5928a4b67d529b6444df1f7c615ae",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "length",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1961,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 110.50494988500031,
+  "candidate_output_tokens_per_second": 9.26655322739525,
+  "candidate_peak_allocated_bytes": 5195443712,
+  "candidate_peak_reserved_bytes": 6438256640,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "b12d2773bb489e6700395336895b0f739e2265b4687c72f235866092b51d59af",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1078\", \"T1021.004\", \"T1110.004\", \"T1548\", \"T1078.003\", \"T1078.002\", \"T1059.004\", \"T1550\", \"T1033\", \"T1036\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show a standard SSH password login by user john from 172.17.100.122, followed by normal PAM session setup, systemd user manager startup, and typical sshd privilege transitions (setreuid/setregid) that OpenSSH performs during session creation. The audit trail is consistent with routine interactive SSH login rather than exploitation, though the privilege-change syscalls and the connection to the systemd userdb multiplexer are the only elements worth routine monitoring.\"\n}\n```",
+  "haiku_reference_response_sha256": "d2ab5eab7994aedb5ca9ae600fa0d2aa551eda90d3065ce8a4aa0c07ae39de85",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "ead86eac84d5ad2a06ec1b817d9411df46ae1de7db8c22fdbf8dc0d77f85cd7e",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's technique list contains only the non-ATT&CK string 'SSHD-Connection-Attack' repeated many times; none of the first ten distinct predictions is the ground-truth ID T1078.003.\",\n    \"prediction_evidence_support\": \"'SSHD-Connection-Attack' is not a valid ATT&CK technique ID and is not tied to any specific log artifact; the repeated entries are unsupported by the supplied logs.\",\n    \"explanation_grounding\": \"No explanation field is recoverable; the response is a truncated repetition of one invalid identifier.\",\n    \"prediction_reason_alignment\": \"No explanation or reasoning is provided, so predictions cannot be connected to any reason.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate content.\",\n    \"instruction_adherence\": \"The response is not valid JSON, violates the top-10 technique list requirement by repeating one non-ID string hundreds of times, and omits the confidence and explanation fields.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is present in the response.\"\n  },\n  \"extracted_predictions\": [\"SSHD-Connection-Attack\"],\n  \"failure_labels\": [\n    \"invalid_technique_id\",\n    \"degenerate_repetition\",\n    \"truncated_or_malformed_output\",\n    \"missing_confidence\",\n    \"missing_explanation\",\n    \"missing_required_fields\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or confidence statement.\"\n}\n```",
+  "response_hash": "187101782beeb5664f46f1d2408798a4e449412043d6c356d3a5b353cc7e38e2",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvH2uuCM2xgyrVS71y5",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's technique list contains only the non-ATT&CK string 'SSHD-Connection-Attack' repeated many times; none of the first ten distinct predictions is the ground-truth ID T1078.003.\",\n    \"prediction_evidence_support\": \"'SSHD-Connection-Attack' is not a valid ATT&CK technique ID and is not tied to any specific log artifact; the repeated entries are unsupported by the supplied logs.\",\n    \"explanation_grounding\": \"No explanation field is recoverable; the response is a truncated repetition of one invalid identifier.\",\n    \"prediction_reason_alignment\": \"No explanation or reasoning is provided, so predictions cannot be connected to any reason.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate content.\",\n    \"instruction_adherence\": \"The response is not valid JSON, violates the top-10 technique list requirement by repeating one non-ID string hundreds of times, and omits the confidence and explanation fields.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is present in the response.\"\n  },\n  \"extracted_predictions\": [\"SSHD-Connection-Attack\"],\n  \"failure_labels\": [\n    \"invalid_technique_id\",\n    \"degenerate_repetition\",\n    \"truncated_or_malformed_output\",\n    \"missing_confidence\",\n    \"missing_explanation\",\n    \"missing_required_fields\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or confidence statement.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 7007,
+      "output_tokens": 774,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 7007,
+    "output_tokens": 774,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00054385,
+  "batch_api": true,
+  "elapsed_seconds": 17794.966933727264,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 7007,
+  "output_tokens": 774,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 0,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": 0\n  },\n  \"reasons\": {\n    \"technique_identification\": \"The candidate's technique list contains only the non-ATT&CK string 'SSHD-Connection-Attack' repeated many times; none of the first ten distinct predictions is the ground-truth ID T1078.003.\",\n    \"prediction_evidence_support\": \"'SSHD-Connection-Attack' is not a valid ATT&CK technique ID and is not tied to any specific log artifact; the repeated entries are unsupported by the supplied logs.\",\n    \"explanation_grounding\": \"No explanation field is recoverable; the response is a truncated repetition of one invalid identifier.\",\n    \"prediction_reason_alignment\": \"No explanation or reasoning is provided, so predictions cannot be connected to any reason.\",\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate content.\",\n    \"instruction_adherence\": \"The response is not valid JSON, violates the top-10 technique list requirement by repeating one non-ID string hundreds of times, and omits the confidence and explanation fields.\"\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is present in the response.\"\n  },\n  \"extracted_predictions\": [\"SSHD-Connection-Attack\"],\n  \"failure_labels\": [\n    \"invalid_technique_id\",\n    \"degenerate_repetition\",\n    \"truncated_or_malformed_output\",\n    \"missing_confidence\",\n    \"missing_explanation\",\n    \"missing_required_fields\"\n  ],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or confidence statement.\"\n}\n```",
+  "judge_response_sha256": "187101782beeb5664f46f1d2408798a4e449412043d6c356d3a5b353cc7e38e2",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 0,
+      "explanation_grounding": 0,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": null,
+      "instruction_adherence": 0
+    },
+    "reasons": {
+      "technique_identification": "The candidate's technique list contains only the non-ATT&CK string 'SSHD-Connection-Attack' repeated many times; none of the first ten distinct predictions is the ground-truth ID T1078.003.",
+      "prediction_evidence_support": "'SSHD-Connection-Attack' is not a valid ATT&CK technique ID and is not tied to any specific log artifact; the repeated entries are unsupported by the supplied logs.",
+      "explanation_grounding": "No explanation field is recoverable; the response is a truncated repetition of one invalid identifier.",
+      "prediction_reason_alignment": "No explanation or reasoning is provided, so predictions cannot be connected to any reason.",
+      "confidence_evidence_support": "No confidence label is recoverable from the candidate content.",
+      "instruction_adherence": "The response is not valid JSON, violates the top-10 technique list requirement by repeating one non-ID string hundreds of times, and omits the confidence and explanation fields."
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is present in the response."
+    },
+    "extracted_predictions": [
+      "SSHD-Connection-Attack"
+    ],
+    "failure_labels": [
+      "invalid_technique_id",
+      "degenerate_repetition",
+      "truncated_or_malformed_output",
+      "missing_confidence",
+      "missing_explanation",
+      "missing_required_fields"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence field or confidence statement."
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 0,
+  "score_explanation_grounding": 0,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": 0,
+  "judge_reasons": {
+    "technique_identification": "The candidate's technique list contains only the non-ATT&CK string 'SSHD-Connection-Attack' repeated many times; none of the first ten distinct predictions is the ground-truth ID T1078.003.",
+    "prediction_evidence_support": "'SSHD-Connection-Attack' is not a valid ATT&CK technique ID and is not tied to any specific log artifact; the repeated entries are unsupported by the supplied logs.",
+    "explanation_grounding": "No explanation field is recoverable; the response is a truncated repetition of one invalid identifier.",
+    "prediction_reason_alignment": "No explanation or reasoning is provided, so predictions cannot be connected to any reason.",
+    "confidence_evidence_support": "No confidence label is recoverable from the candidate content.",
+    "instruction_adherence": "The response is not valid JSON, violates the top-10 technique list requirement by repeating one non-ID string hundreds of times, and omits the confidence and explanation fields."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is present in the response."
+  },
+  "judge_extracted_predictions": [
+    "SSHD-Connection-Attack"
+  ],
+  "judge_failure_labels": [
+    "invalid_technique_id",
+    "degenerate_repetition",
+    "truncated_or_malformed_output",
+    "missing_confidence",
+    "missing_explanation",
+    "missing_required_fields"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence field or confidence statement."
+}

@@ -1,0 +1,265 @@
+{
+  "prompt_id": "592",
+  "scenario": "7",
+  "variant": "",
+  "step": "7",
+  "split": "train",
+  "group_id": "[\"7\", \"7\"]",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ndocker:\n    logs/log/audit/audit.log:\n        type=CRED_ACQ msg=audit(1768991701.953:5172): pid=3517 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=USER_START msg=audit(1768991701.954:5174): pid=3517 uid=0 auid=0 ses=27 subj=unconfined msg='op=PAM:session_open grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=CRED_REFR msg=audit(1768991701.957:5176): pid=3518 uid=0 auid=0 ses=27 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1768991701.959:5179): arch=c000003e syscall=59 success=yes exit=0 a0=6466b0bd5538 a1=6466b0bd54e0 a2=6466b0bd5500 a3=8 items=3 ppid=3518 pid=3519 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=27 comm=\"debian-sa1\" exe=\"/usr/bin/dash\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1768991701.959:5179): argc=4 a0=\"/bin/sh\" a1=\"/usr/lib/sysstat/debian-sa1\" a2=\"1\" a3=\"1\"\n        type=PATH msg=audit(1768991701.959:5179): item=0 name=\"/usr/lib/sysstat/debian-sa1\" inode=17583 dev=fd:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1768991701.959:5179): item=1 name=\"/bin/sh\" inode=1762 dev=fd:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1768991701.959:5179): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=6473 dev=fd:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1768991701.959:5179): proctitle=2F62696E2F7368002F7573722F6C69622F737973737461742F64656269616E2D73613100310031\n        type=CRED_DISP msg=audit(1768991701.960:5180): pid=3517 uid=0 auid=0 ses=27 subj=unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"",
+  "prompt_sha256": "a36e524a155547b7719f74ac74dc764aaeda0f1231563f720926e83fc36c4cde",
+  "ground_truth": "[\"T1033\"]",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1053.003\", \"T1059.004\", \"T1059\", \"T1037\", \"T1547\", \"T1070.006\", \"T1005\", \"T1082\", \"T1106\", \"T1204\"], \"confidence\": \"Almost Certain: Normal\", \"explanation\": \"The audit records show a root cron PAM session executing the standard sysstat collection script /usr/lib/sysstat/debian-sa1 via /bin/sh with arguments typical of scheduled sa1 activity. These artifacts are consistent with normal Debian sysstat cron operation rather than malicious behavior.\"}",
+  "teacher_response_sha256": "a36ec0f32feae7eca5fe414f44b6af32fd739de4e7de412c3e93a6ad40983de5",
+  "teacher_confidence_label": "Almost Certain: Normal",
+  "model": "bitnet2b",
+  "condition": "untreated_hf",
+  "candidate_status": "completed",
+  "candidate_record_id": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b:592",
+  "candidate_response_raw": "```json\n{\n  \"techniques\": [\n    \"C credential grant\",\n    \"PAM session open\",\n    \"PAM credential set\",\n    \"PAM credential grant\",\n    \"PAM credential set\",\n    \"PAM credential grant\",\n    \"PAM credential set\",\n    \"PAM credential grant\",\n    \"PAM credential set\",\n    \"PAM credential grant\",\n    \"PAM credential set\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The logs indicate multiple PAM operations to set credentials for the 'root' user, which is a common MITRE ATT&CK technique used for privilege escalation attacks. The repeated attempts to set credentials for the 'root' user suggest an ongoing attack.\"\n}\n```",
+  "candidate_response_sha256": "e48ce2207af6f8c66ae5cb46b8282e00a9cd9b1bd5a38bedbbaabf46196e547f",
+  "candidate_confidence_label_strict": "",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated_hf",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "02a0b288274f0ec3b468bb9cbea68497ad89a575915c05012e0b83fd8ec2052b",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_adapter_sha256": "",
+  "candidate_precision": "bfloat16",
+  "candidate_generation_settings": {
+    "experiment_id": "camlds_exact_teacher_v1",
+    "seed": 42,
+    "precision": "bfloat16",
+    "max_new_tokens": 1024,
+    "do_sample": false,
+    "repetition_penalty": 1.0,
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 16,
+    "save_steps": 10,
+    "training_context": 8192,
+    "test_conditions": [
+      "technique",
+      "explanation",
+      "joint",
+      "full"
+    ],
+    "teacher_model": "openai/gpt-5.5-20260423",
+    "teacher_first": 1981,
+    "teacher_last": 2970,
+    "training_policy": "universal-feasible-full-response-exact-distillation",
+    "bitnet_policy": "BF16-master-with-native-online-ternary-weight-int8-activation-forward",
+    "tokenizer_regex_policy": "checkpoint-original-no-mistral-regex-rewrite",
+    "prompt_policy": "source-text-unchanged",
+    "loss": "equal-per-field-per-example",
+    "haiku_model": "claude-haiku-5-5",
+    "haiku_max_tokens": 128000,
+    "judge_max_tokens": 8192,
+    "haiku_temperature": null,
+    "haiku_thinking": {
+      "type": "disabled"
+    }
+  },
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_input_truncated": false,
+  "candidate_gpu": "NVIDIA A100-SXM4-80GB",
+  "candidate_bitnet_intrinsic_quantization": true,
+  "candidate_input_tokens": 1212,
+  "candidate_max_new_tokens": 1024,
+  "candidate_output_allowance_reduced": false,
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 156,
+  "candidate_elapsed_seconds": 16.793452604000777,
+  "candidate_output_tokens_per_second": 9.289334580480219,
+  "candidate_peak_allocated_bytes": 5061923840,
+  "candidate_peak_reserved_bytes": 6438256640,
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": true,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "79d2b707786f8cb121dab13a383cdc46bbe6b1eff4ee994d56afc92c3389c673",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1053.003\", \"T1059.004\", \"T1078\", \"T1569\", \"T1543\", \"T1036\", \"T1070\", \"T1555\", \"T1087\", \"T1082\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show cron (/usr/sbin/cron) running the standard Debian sysstat job /usr/lib/sysstat/debian-sa1 as root via /bin/sh, with routine PAM session open/close and credential handling and no anomalous parent processes, network activity, or unusual paths. This is consistent with scheduled system maintenance rather than malicious execution.\"\n}\n```",
+  "haiku_reference_response_sha256": "242c8f8821886126ff4dd6455dea404d39db8108c2327dfa4b3919ecd5eb0ce2",
+  "haiku_reference_confidence_label_strict": "",
+  "haiku_reference_finish_reason": "end_turn",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "d20e889912cb6bbe813227d18339e0e57a1a181149b4684c9b0dbfa0953bb907",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's first ten predictions are not ATT&CK IDs at all ('C credential grant', 'PAM session open', etc.); none match T1033, so exact-ID coverage is zero.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"The predicted items are not ATT&CK techniques and the claimed 'privilege escalation' framing is not supported by the cron/debian-sa1 logs, which show routine scheduled sysstat execution.\"}, \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation refers to real PAM operations for root, but misreads routine cron PAM setcred/session events as an ongoing attack and invents a 'repeated attempts' pattern not present in the logs (each PAM event occurs once).\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Predictions are not technique IDs and the stated reason (privilege escalation via credential setting) does not connect to the listed items in a coherent way.\"}, \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"'Certain: Attack' is grossly disproportionate given the benign cron-driven debian-sa1 execution, and the explanation acknowledges no limitations.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is fenced JSON with a list of non-ID strings rather than ATT&CK IDs, violating the 'only print the ID' instruction; the explanation is within length.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"C credential grant\", \"PAM session open\", \"PAM credential set\", \"PAM credential grant\"], \"failure_labels\": [\"wrong_identifier_format\", \"no_valid_attck_ids\", \"misread_benign_cron_activity_as_attack\", \"overconfident_attack_label\", \"fabricated_repetition_pattern\", \"wrong_direction_confidence\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": \"Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": 0, \"confidence_label_agreement_reason\": \"Candidate asserts Certain: Attack while the logs show routine cron execution of debian-sa1 as root; this is an opposing high-confidence conclusion (Certain Attack vs Almost Certain Normal).\", \"confidence_label_null_reason\": null}",
+  "response_hash": "24faf3cfd183d9e991d4e2e26da824a4356fd8ba7db0b083070b9dc312aeb20d",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgTvH78uJf5auLmtuSPbp",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's first ten predictions are not ATT&CK IDs at all ('C credential grant', 'PAM session open', etc.); none match T1033, so exact-ID coverage is zero.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"The predicted items are not ATT&CK techniques and the claimed 'privilege escalation' framing is not supported by the cron/debian-sa1 logs, which show routine scheduled sysstat execution.\"}, \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation refers to real PAM operations for root, but misreads routine cron PAM setcred/session events as an ongoing attack and invents a 'repeated attempts' pattern not present in the logs (each PAM event occurs once).\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Predictions are not technique IDs and the stated reason (privilege escalation via credential setting) does not connect to the listed items in a coherent way.\"}, \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"'Certain: Attack' is grossly disproportionate given the benign cron-driven debian-sa1 execution, and the explanation acknowledges no limitations.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is fenced JSON with a list of non-ID strings rather than ATT&CK IDs, violating the 'only print the ID' instruction; the explanation is within length.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"C credential grant\", \"PAM session open\", \"PAM credential set\", \"PAM credential grant\"], \"failure_labels\": [\"wrong_identifier_format\", \"no_valid_attck_ids\", \"misread_benign_cron_activity_as_attack\", \"overconfident_attack_label\", \"fabricated_repetition_pattern\", \"wrong_direction_confidence\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": \"Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": 0, \"confidence_label_agreement_reason\": \"Candidate asserts Certain: Attack while the logs show routine cron execution of debian-sa1 as root; this is an opposing high-confidence conclusion (Certain Attack vs Almost Certain Normal).\", \"confidence_label_null_reason\": null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": "global",
+      "input_tokens": 4090,
+      "output_tokens": 831,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "inference_geo": "global",
+    "input_tokens": 4090,
+    "output_tokens": 831,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00041225,
+  "batch_api": true,
+  "elapsed_seconds": 8795.521222352982,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4090,
+  "output_tokens": 831,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's first ten predictions are not ATT&CK IDs at all ('C credential grant', 'PAM session open', etc.); none match T1033, so exact-ID coverage is zero.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"The predicted items are not ATT&CK techniques and the claimed 'privilege escalation' framing is not supported by the cron/debian-sa1 logs, which show routine scheduled sysstat execution.\"}, \"explanation_grounding\": {\"score\": 1, \"reason\": \"The explanation refers to real PAM operations for root, but misreads routine cron PAM setcred/session events as an ongoing attack and invents a 'repeated attempts' pattern not present in the logs (each PAM event occurs once).\"}, \"prediction_reason_alignment\": {\"score\": 1, \"reason\": \"Predictions are not technique IDs and the stated reason (privilege escalation via credential setting) does not connect to the listed items in a coherent way.\"}, \"confidence_evidence_support\": {\"score\": 0, \"reason\": \"'Certain: Attack' is grossly disproportionate given the benign cron-driven debian-sa1 execution, and the explanation acknowledges no limitations.\"}, \"instruction_adherence\": {\"score\": 1, \"reason\": \"Output is fenced JSON with a list of non-ID strings rather than ATT&CK IDs, violating the 'only print the ID' instruction; the explanation is within length.\"}}, \"null_reasons\": {}, \"extracted_predictions\": [\"C credential grant\", \"PAM session open\", \"PAM credential set\", \"PAM credential grant\"], \"failure_labels\": [\"wrong_identifier_format\", \"no_valid_attck_ids\", \"misread_benign_cron_activity_as_attack\", \"overconfident_attack_label\", \"fabricated_repetition_pattern\", \"wrong_direction_confidence\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": \"Certain: Attack\", \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": 0, \"confidence_label_agreement_reason\": \"Candidate asserts Certain: Attack while the logs show routine cron execution of debian-sa1 as root; this is an opposing high-confidence conclusion (Certain Attack vs Almost Certain Normal).\", \"confidence_label_null_reason\": null}",
+  "judge_response_sha256": "24faf3cfd183d9e991d4e2e26da824a4356fd8ba7db0b083070b9dc312aeb20d",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate's first ten predictions are not ATT&CK IDs at all ('C credential grant', 'PAM session open', etc.); none match T1033, so exact-ID coverage is zero."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "The predicted items are not ATT&CK techniques and the claimed 'privilege escalation' framing is not supported by the cron/debian-sa1 logs, which show routine scheduled sysstat execution."
+      },
+      "explanation_grounding": {
+        "score": 1,
+        "reason": "The explanation refers to real PAM operations for root, but misreads routine cron PAM setcred/session events as an ongoing attack and invents a 'repeated attempts' pattern not present in the logs (each PAM event occurs once)."
+      },
+      "prediction_reason_alignment": {
+        "score": 1,
+        "reason": "Predictions are not technique IDs and the stated reason (privilege escalation via credential setting) does not connect to the listed items in a coherent way."
+      },
+      "confidence_evidence_support": {
+        "score": 0,
+        "reason": "'Certain: Attack' is grossly disproportionate given the benign cron-driven debian-sa1 execution, and the explanation acknowledges no limitations."
+      },
+      "instruction_adherence": {
+        "score": 1,
+        "reason": "Output is fenced JSON with a list of non-ID strings rather than ATT&CK IDs, violating the 'only print the ID' instruction; the explanation is within length."
+      }
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "C credential grant",
+      "PAM session open",
+      "PAM credential set",
+      "PAM credential grant"
+    ],
+    "failure_labels": [
+      "wrong_identifier_format",
+      "no_valid_attck_ids",
+      "misread_benign_cron_activity_as_attack",
+      "overconfident_attack_label",
+      "fabricated_repetition_pattern",
+      "wrong_direction_confidence"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": 0,
+    "confidence_label_agreement_reason": "Candidate asserts Certain: Attack while the logs show routine cron execution of debian-sa1 as root; this is an opposing high-confidence conclusion (Certain Attack vs Almost Certain Normal).",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate's first ten predictions are not ATT&CK IDs at all ('C credential grant', 'PAM session open', etc.); none match T1033, so exact-ID coverage is zero."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "The predicted items are not ATT&CK techniques and the claimed 'privilege escalation' framing is not supported by the cron/debian-sa1 logs, which show routine scheduled sysstat execution."
+  },
+  "score_explanation_grounding": {
+    "score": 1,
+    "reason": "The explanation refers to real PAM operations for root, but misreads routine cron PAM setcred/session events as an ongoing attack and invents a 'repeated attempts' pattern not present in the logs (each PAM event occurs once)."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 1,
+    "reason": "Predictions are not technique IDs and the stated reason (privilege escalation via credential setting) does not connect to the listed items in a coherent way."
+  },
+  "score_confidence_evidence_support": {
+    "score": 0,
+    "reason": "'Certain: Attack' is grossly disproportionate given the benign cron-driven debian-sa1 execution, and the explanation acknowledges no limitations."
+  },
+  "score_instruction_adherence": {
+    "score": 1,
+    "reason": "Output is fenced JSON with a list of non-ID strings rather than ATT&CK IDs, violating the 'only print the ID' instruction; the explanation is within length."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "C credential grant",
+    "PAM session open",
+    "PAM credential set",
+    "PAM credential grant"
+  ],
+  "judge_failure_labels": [
+    "wrong_identifier_format",
+    "no_valid_attck_ids",
+    "misread_benign_cron_activity_as_attack",
+    "overconfident_attack_label",
+    "fabricated_repetition_pattern",
+    "wrong_direction_confidence"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": 0,
+  "confidence_label_agreement_reason": "Candidate asserts Certain: Attack while the logs show routine cron execution of debian-sa1 as root; this is an opposing high-confidence conclusion (Certain Attack vs Almost Certain Normal).",
+  "confidence_label_null_reason": null
+}
