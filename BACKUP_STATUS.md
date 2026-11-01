@@ -7,20 +7,16 @@ This repository is the portable backup of the streamlined CAM-LDS experiment. It
 - BitNet 2B: technique, explanation, joint and full
 - Hermes: technique, explanation, joint and full
 - Llama 3B: technique, explanation, joint and full
-- Mistral 7B: technique, explanation, joint and full
 - Qwen 1B: technique, explanation, joint and full
-- Qwen 7B: technique, explanation, joint and full
 
 The final adapter ZIP files are stored with Git LFS. Base-model weights are excluded because the frozen Hugging Face repository and revision are recorded and can be downloaded again.
 
-All six model families have complete technique, explanation, joint, and full
-adapter archives: 24 adapters in total.
+## Incomplete models at backup time
 
-## Completed API evaluation
+- Mistral 7B: training was active, with no acknowledged local trainer checkpoint yet.
+- Qwen 7B: the last worker failed before an acknowledged local trainer checkpoint was created.
 
-- Haiku reference responses: 990 completed
-- Uniform common judgments: 12,449 completed
-- Haiku self-evaluations: 285 completed
+No checkpoint is claimed for these models. Rerunning section 4 starts the unfinished condition unless a newer acknowledged checkpoint has subsequently arrived from Colab.
 
 ## Excluded transient data
 

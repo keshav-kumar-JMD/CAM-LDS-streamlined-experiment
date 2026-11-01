@@ -5,6 +5,7 @@ import textwrap
 import sys
 sys.path.insert(0,str(Path(__file__).parent))
 from streamlined.common import MODELS,CONDITIONS
+from streamlined.rubrics import rubric
 
 ROOT=Path(__file__).resolve().parent
 PATH=str(ROOT)
@@ -264,6 +265,81 @@ There are no condition-specific paid rubrics. Technique, explanation, joint, and
 All returned judge text is retained. Parsing adds audit columns but never filters a response. A malformed judge object remains a completed observation; unavailable scores remain missing rather than becoming zero. Sections 8-10 submit, poll, reconcile, and explicitly retry only process/API failures, not low-quality or badly formatted answers.
 '''
 
+PROMPT_DOCUMENTATION = '''## Exact Haiku prompts and request construction
+
+This section documents the prompts actually constructed by `streamlined/api.py`. It is descriptive only and performs no API request. Each API job has an independent context; there is no conversation history between rows.
+
+### A. Haiku reference/baseline request
+
+The reference experiment has **no system prompt**. The sole user message is the unchanged `prompt_text` from the designated teacher row:
+
+```text
+<unchanged CAM-LDS prompt_text for this prompt_id>
+```
+
+Equivalent message payload:
+
+```json
+{
+  "messages": [
+    {"role": "user", "content": "<unchanged prompt_text>"}
+  ]
+}
+```
+
+No ground truth, teacher response, small-model response, judge rubric, prior response, or previous-row context is supplied during Haiku reference generation.
+
+### B. Common candidate-judging request
+
+The system prompt is the following frozen text, returned verbatim by `streamlined.rubrics.rubric()`:
+
+```text
+''' + rubric() + '''
+```
+
+The sole user message is a serialized JSON case object with this structure:
+
+```json
+{
+  "prompt": "<unchanged CAM-LDS prompt_text>",
+  "ground_truth": "<ground-truth ATT&CK technique IDs>",
+  "candidate_response": "<one untreated-HF or SFT response, verbatim>",
+  "candidate_format_audit": {
+    "valid_json": "<deterministic audit value>",
+    "schema_adherent": "<deterministic audit value>",
+    "...": "<remaining audit fields>"
+  },
+  "haiku_reference_response": "<corresponding Haiku response, verbatim>"
+}
+```
+
+The `haiku_reference_response` is supplied only so the judge can produce `prediction_similarity` and `reasoning_similarity`; the system prompt explicitly says it is not authoritative and must not be scored as the candidate. The teacher response is retained in compiled audit tables but is **not included** in the judging prompt. Exactly one candidate is supplied per request, so untreated and SFT responses are never compared in the same judge context.
+
+### C. Haiku self-assessment request
+
+Self-assessment uses the **same frozen system prompt** and the same JSON case structure, except:
+
+- `candidate_response` is Haiku's own previously saved response;
+- `haiku_reference_response` is omitted;
+- `prediction_similarity` and `reasoning_similarity` must therefore be `null`.
+
+The judge is not told to reproduce or repair the candidate. It evaluates the saved text as an anonymous candidate using the same six dimensions used for untreated-HF and SFT responses.
+
+### Output requested from Haiku judge
+
+The system prompt requests one JSON object containing `scores`, `reasons`, `null_reasons`, `extracted_predictions`, `failure_labels`, `prediction_similarity`, `reasoning_similarity`, `candidate_confidence_label`, `judge_warranted_confidence_label`, `confidence_label_agreement`, `confidence_label_agreement_reason`, and `confidence_label_null_reason`. The raw returned text is retained even when it is not valid JSON.
+
+### API parameters affecting the prompts
+
+- Model: frozen `haiku_model` in `configs/experiment.json`.
+- Temperature: omitted, so the provider default applies.
+- Seed: not set.
+- Thinking: the frozen `haiku_thinking` setting (disabled in this experiment).
+- Reference output limit: frozen `haiku_max_tokens` setting.
+- Judge output limit: frozen `judge_max_tokens` setting.
+- Batch submission changes transport and price only; it does not change system or user content.
+'''
+
 COMPARISON_DOCUMENTATION = '''## Experiment D - Matched raw-versus-SFT analysis (Section 11)
 
 The final analysis compares each model's untreated-HF response with the same model and prompt under each SFT adapter, separately for validation and test. Pairing requires identical prompt hashes. All candidates use the same common rubric. The analysis includes six quality scores, prediction similarity, reasoning similarity, and confidence-label agreement.
@@ -369,6 +445,8 @@ print(haiku.poll(max_seconds=3600))''',
          'Rerun 1–2 then 6 until completed=990, or use 10 for confirmed failures. Rerun 5 to reconcile an unknown batch.')
     nb['cells'].append({'cell_type':'markdown','metadata':{},'source':JUDGE_EXPERIMENT_DOCUMENTATION.splitlines(True),
                         'id':'judge-experiment-map'})
+    nb['cells'].append({'cell_type':'markdown','metadata':{},'source':PROMPT_DOCUMENTATION.splitlines(True),
+                        'id':'haiku-prompt-reference'})
     nb['cells'].append({'cell_type':'markdown','metadata':{},'source':RUBRIC_DOCUMENTATION.splitlines(True),
                         'id':'judge-rubric-reference'})
     cell(nb,'7. Join Haiku references and freeze judge jobs','Recompile D/E with corresponding Haiku responses. '
