@@ -8,6 +8,7 @@ import socket
 import subprocess
 import time
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from filelock import FileLock
 from streamlined.common import POLICY, audit_response, digest, read_json, verify_experiment, write_json
 from streamlined.encoding import render
@@ -15,7 +16,8 @@ from streamlined.monitor import Heartbeat
 from streamlined.telemetry import Meter
 from streamlined.transport import Mirror
 from .artifacts import artifact_paths, prepare, toolchain
-from .protocol import identity, selected_rows, stream
+from .protocol import (PARALLEL_SLOTS, UPLOAD_BACKPRESSURE, UPLOAD_BATCH_SIZE,
+                       identity, selected_rows, stream)
 from .store import SyncStore
 
 def request(url,path,payload=None,timeout=60):
@@ -25,8 +27,9 @@ def request(url,path,payload=None,timeout=60):
         return json.loads(response.read())
 
 class Server:
-    def __init__(self,root,key,artifact,context,mirror):
+    def __init__(self,root,key,artifact,context,parallel,mirror):
         self.root=Path(root);self.key=key;self.artifact=Path(artifact);self.context=context
+        self.parallel=parallel
         self.toolkit=toolchain(root,bitnet=key=='bitnet2b',mirror=mirror)
         with socket.socket() as sock:
             sock.bind(('127.0.0.1',0));self.port=sock.getsockname()[1]
@@ -37,7 +40,8 @@ class Server:
         self.log.parent.mkdir(parents=True,exist_ok=True)
         self.handle=self.log.open('a',encoding='utf-8')
         args=[self.toolkit['server'],'-m',self.artifact,'--host','127.0.0.1',
-              '--port',str(self.port),'-c',str(self.context),'-ngl','999','--parallel','1']
+              '--port',str(self.port),'-c',str(self.context*self.parallel),'-ngl','999',
+              '--parallel',str(self.parallel),'-b','2048','-ub','512']
         self.handle.write('COMMAND '+json.dumps([str(x) for x in args])+'\n');self.handle.flush()
         self.process=subprocess.Popen([str(x) for x in args],cwd=self.root,
             stdout=self.handle,stderr=subprocess.STDOUT)
@@ -109,7 +113,10 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
         todo=[(row,prefix,ids) for row,prefix,ids in planned
               if not store.done(f'{rid_base}:{row["prompt_id"]}')]
         if not todo:
-            store.snapshot();print(run,'already complete',flush=True);return
+            try:store.snapshot()
+            finally:store.close()
+            print(run,'already complete',flush=True);return
+        parallel=min(PARALLEL_SLOTS[key],len(todo))
         meter=Meter(root,run);started=time.perf_counter()
         summary={'generation_seconds':0.,'local_checkpoint_seconds':0.,'receiver_seconds':0.,
                  'csv_snapshot_seconds':0.,'input_tokens':0,'output_tokens':0,'new_rows':0}
@@ -117,7 +124,7 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
         status='failed'
         try:
             hb.update('server loading','load')
-            server=Server(root,key,artifact,context,mirror)
+            server=Server(root,key,artifact,context,parallel,mirror)
             with server as backend:
                 import psutil
                 server_process=psutil.Process(backend.process.pid)
@@ -157,8 +164,8 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                     'per_row_roundtrip_required_before_generation':True,'checks':tokenizer_checks})
                 try:mirror.put(root,tokenizer_audit)
                 except Exception as error:print('Tokenizer audit upload pending:',error,flush=True)
-                for row,prefix,ids in todo:
-                    hb.check();pid=row['prompt_id'];rid=f'{rid_base}:{pid}'
+                def generate(item):
+                    row,prefix,ids=item;pid=row['prompt_id'];rid=f'{rid_base}:{pid}'
                     decoded=backend.detokenize(ids)
                     if decoded!=prefix:
                         mismatch=next((i for i,(a,b) in enumerate(zip(decoded,prefix)) if a!=b),
@@ -181,6 +188,7 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                         toolchain_commit=saved['toolchain_commit'],
                         backend='bitnet.cpp' if key=='bitnet2b' else 'llama.cpp',
                         input_tokens=len(ids),context=context,native_context=native_context,
+                        parallel_slots=parallel,server_total_context=context*parallel,
                         tokenizer_input_source='frozen_hf_token_ids_direct',
                         gguf_pretokenizer_ids_equal=tokenizer_ids_equal,
                         tokenizer_roundtrip_gate='exact_rendered_prompt_text_per_row',
@@ -192,7 +200,6 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                         base.update(status='context_unsupported',finish_reason='context_unsupported',
                                     output_tokens=0,elapsed_seconds=0,**audit_response(''))
                     else:
-                        hb.update(pid,'generating')
                         begin=time.perf_counter()
                         try:
                             answer=backend.completion(ids,base['max_new_tokens'])
@@ -200,9 +207,6 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                             if answer.get('truncated'):raise RuntimeError('Backend truncated the input or shifted context')
                             stop=answer.get('stop_type','unknown')
                             elapsed=time.perf_counter()-begin
-                            summary['generation_seconds']+=elapsed
-                            summary['input_tokens']+=len(ids)
-                            summary['output_tokens']+=len(generated)
                             base.update(status='completed',response_raw=text,response_hash=digest(text),
                                 finish_reason=stop,response_truncated=stop=='limit',
                                 output_tokens=len(generated),elapsed_seconds=elapsed,
@@ -211,31 +215,50 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                                 **audit_response(text))
                         except Exception as error:
                             base.update(status='retryable_error',generation_error=f'{type(error).__name__}: {error}')
-                            store.put(base)
-                            raise
-                    timings=store.put(base)
-                    summary['local_checkpoint_seconds']+=timings['local_seconds']
-                    summary['receiver_seconds']+=timings['receiver_seconds']
-                    summary['new_rows']+=1
-                    try:server_peak_rss=max(server_peak_rss,server_process.memory_info().rss)
-                    except psutil.Error:pass
-                    hb.update(pid,'saved on laptop')
-                    done=sum(store.done(f'{rid_base}:{item[0]["prompt_id"]}') for item in planned)
-                    print(f'{run}: ID {pid} saved; {done}/{len(planned)}',flush=True)
+                    return base
+                hb.update(f'{len(todo)} rows','generating concurrently')
+                failures=[]
+                with ThreadPoolExecutor(max_workers=parallel,
+                                        thread_name_prefix='independent-row') as executor:
+                    futures={executor.submit(generate,item):item for item in todo}
+                    for future in as_completed(futures):
+                        hb.check()
+                        base=future.result();pid=base['prompt_id']
+                        timings=store.put(base)
+                        summary['local_checkpoint_seconds']+=timings['local_seconds']
+                        summary['receiver_seconds']+=timings['receiver_seconds']
+                        summary['generation_seconds']+=float(base.get('elapsed_seconds',0))
+                        summary['input_tokens']+=int(base.get('input_tokens',0))
+                        summary['output_tokens']+=int(base.get('output_tokens',0))
+                        summary['new_rows']+=1
+                        if base['status']=='retryable_error':failures.append(pid)
+                        try:server_peak_rss=max(server_peak_rss,server_process.memory_info().rss)
+                        except psutil.Error:pass
+                        hb.update(pid,'saved locally; receiver upload queued')
+                        done=sum(store.done(f'{rid_base}:{item[0]["prompt_id"]}') for item in planned)
+                        print(f'{run}: ID {pid} saved; {done}/{len(planned)}',flush=True)
+                if failures:
+                    raise RuntimeError(f'{len(failures)} row generations failed and remain retryable')
             status='completed' if limit is None else 'pilot_completed'
         finally:
             if server is not None and server.log.exists():
                 try:mirror.put(root,server.log)
                 except Exception as error:print('Server log upload pending:',error,flush=True)
             try:
-                begin=time.perf_counter();store.snapshot()
+                begin=time.perf_counter()
+                try:store.snapshot()
+                finally:store.close()
                 summary['csv_snapshot_seconds']+=time.perf_counter()-begin
+                summary['receiver_seconds']=store.upload_seconds
             except Exception as error:
                 print('Final CSV snapshot pending; row records remain authoritative:',error,flush=True)
             report=meter.close();report.update(summary)
             report.update(run=run,status=status,gguf_sha256=saved['artifact_sha256'],
                 backend='bitnet.cpp' if key=='bitnet2b' else 'llama.cpp',
-                server_context=context,toolchain_commit=saved['toolchain_commit'],
+                server_context=context,server_total_context=context*parallel,
+                parallel_slots=parallel,request_contexts_independent=True,
+                upload_batch_size=UPLOAD_BATCH_SIZE,upload_backpressure=UPLOAD_BACKPRESSURE,
+                toolchain_commit=saved['toolchain_commit'],
                 sampled_peak_server_rss_bytes=server_peak_rss,
                 inference_and_io_wall_seconds=time.perf_counter()-started)
             target=root/'telemetry'/run/f'{hb.owner}.json';write_json(target,report)

@@ -12,7 +12,17 @@ BITNET_GGUF_SHA256 = '4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a3454837449288
 BITNET_GGUF_FILE = 'ggml-model-i2_s.gguf'
 BITNET_GGUF_REPO = 'microsoft/bitnet-b1.58-2B-4T-gguf'
 CALIBRATION_NAME = 'camlds_604_train_prompts_only'
-SNAPSHOT_EVERY = 10
+SNAPSHOT_EVERY = 25
+UPLOAD_BATCH_SIZE = 5
+UPLOAD_BACKPRESSURE = 25
+PARALLEL_SLOTS = {
+    'qwen1b': 8,
+    'hermes': 8,
+    'bitnet2b': 4,
+    'llama3b': 4,
+    'mistral7b': 2,
+    'qwen7b': 2,
+}
 NEW_JUDGE_RUN = 'quantized_common_cached_v1'
 OPTIONAL_JUDGE_RUN = 'quantized_iq1_cached_v1'
 JUDGE_PROTOCOL = 'uniform_common_v2_confidence_agreement'

@@ -53,9 +53,32 @@ If an artifact upload loses its tunnel after quantization, `artifact.pending.jso
 
 ## Checkpointing, interruptions and local CSV cost
 
-The new Colab worker saves each row as an atomic JSON record on the laptop through the authenticated receiver **before starting the next row**. The record ID includes the experiment, model, condition, representation, artifact and calibration hashes, settings and prompt ID. A resumed run reads the laptop records and skips terminal rows. A row whose outcome is uncertain can be retried; completed rows cannot be silently overwritten with a different response. The quantized response CSV is a materialized view of these records, refreshed after ten newly saved rows and again at normal completion. The larger Haiku judge CSV refreshes every 100 record mutations and at cell completion; each judge record is still saved immediately. If a runtime dies between snapshots, some latest rows may be absent from `responses.csv` while safely present in `records/*.json`; run the verification/snapshot cell or resume to refresh the CSV. The laptop receiver is required for Colab work; local Haiku API notebooks require no receiver or tunnel.
+The Colab worker saves each completed row first as an atomic local JSON record, then a background uploader sends receiver checkpoints in batches of up to five. Backpressure pauses new local saves if 25 rows await receiver acknowledgement, and normal completion forces a full upload flush. The record ID includes the experiment, model, condition, representation, artifact and calibration hashes, settings and prompt ID. A resumed run reconciles Colab-spooled and laptop records and skips terminal rows. A row whose outcome is uncertain can be retried; completed rows cannot be silently overwritten with a different response. The quantized response CSV is a materialized view of the laptop records, refreshed after 25 mutations and again at normal completion. The larger Haiku judge CSV refreshes every 100 record mutations and at cell completion; each judge record is still saved immediately. If a runtime dies before its background queue is uploaded, its atomic Colab records are replayed on a surviving runtime; if the runtime itself is discarded first, only receiver-acknowledged records are recoverable. Run the verification/snapshot cell or resume to refresh the CSV. The laptop receiver is required for Colab work; local Haiku API notebooks require no receiver or tunnel.
 
-The ten-row snapshot reduces full-CSV rewrites and Windows file-lock exposure while preserving per-row durability. Each HTTPS acknowledgment still costs a network round trip. Saved timing separates generation, local atomic write and receiver acknowledgment; CSV snapshot time is reported separately. For very large outputs, the tunnel can remain a bottleneck. Reusing one URL/token across different model streams is safe because files and leases are stream-specific; never run the same model/condition twice simultaneously. The laptop watchdog alarms on lost Colab heartbeats independently of the notebook kernel; keep Windows awake and sound enabled.
+The 25-row snapshot reduces full-CSV rewrites and Windows file-lock exposure. Five-row asynchronous receiver calls remove most tunnel latency from the generation critical path while retaining bounded recovery exposure. Saved timing separates summed generation time, wall time, local atomic writes, receiver upload and CSV snapshot time. Independent rows are issued concurrently but remain separate llama-server requests with separate contexts, unchanged frozen prompt token IDs and unchanged decoding settings. Configured slots are Qwen 1B/Hermes 8, BitNet/Llama 3B 4, and Mistral/Qwen 7B 2; the pilot or tail uses no more slots than remaining rows. The server allocates the original per-row context per slot and records both per-slot and total context. Reusing one URL/token across different model streams is safe because files and leases are stream-specific; never run the same model/condition twice simultaneously. The laptop watchdog alarms on lost Colab heartbeats independently of the notebook kernel; keep Windows awake and sound enabled.
+
+## Quantized inference process revisions and completion at cutover
+
+The inference process changed on **2 November 2026**. Revision 1 used one llama-server slot, synchronous receiver acknowledgement after every row and a CSV snapshot every ten mutations. Revision 2 uses the model-specific concurrent slots listed above, atomic Colab row records, background receiver uploads in batches of up to five, backpressure at 25 outstanding rows and a CSV snapshot every 25 mutations. Quantization artifacts, prompts, frozen HF token IDs, context allowance and generation settings did not change.
+
+The following is the dated completion snapshot copied from the opening descriptions of the 04 and 05 notebooks. Counts were obtained from authoritative results/quantized record files; saved telemetry was used to corroborate completed runs. All records present at this cutover lacked the Revision 2 parallel_slots field, so they belong to Revision 1. Revision 2 starts by resuming the remaining prompt IDs in the same stream.
+
+| Notebook / model | Required rows | Revision 1 rows saved before change | Revision 2 rows at cutover | Remaining for Revision 2 |
+| --- | ---: | ---: | ---: | ---: |
+| 04 untreated TQ1_0: Qwen 1B | 990 | 239 (24%) | 0 | 751 |
+| 04 untreated TQ1_0: Hermes | 990 | 990 (100%) | 0 | 0 |
+| 04 untreated TQ1_0: Llama 3B | 990 | 658 (66%) | 0 | 332 |
+| 04 untreated TQ1_0: Mistral 7B | 990 | 252 (25%) | 0 | 738 |
+| 04 untreated TQ1_0: Qwen 7B | 990 | 0 (0%) | 0 | 990 |
+| 04 untreated native I2_S: BitNet 2B | 990 | 0 (0%) | 0 | 990 |
+| 05 SFT TQ1_0: Qwen 1B, each of four adapters | 285 each | 0 each | 0 each | 285 each |
+| 05 SFT TQ1_0: Hermes, each of four adapters | 285 each | 0 each | 0 each | 285 each |
+| 05 SFT TQ1_0: Llama 3B, each of four adapters | 285 each | 0 each | 0 each | 285 each |
+| 05 SFT TQ1_0: Mistral 7B, each of four adapters | 285 each | 0 each | 0 each | 285 each |
+| 05 SFT TQ1_0: Qwen 7B, each of four adapters | 285 each | 0 each | 0 each | 285 each |
+| 05 SFT native I2_S: BitNet 2B, each of four adapters | 285 each | 0 each | 0 each | 285 each |
+
+The optional 06 IQ1_S notebooks had no saved inference rows at the cutover and therefore have no Revision 1 responses. Their first inference results will use Revision 2. These counts describe response inference only; an already prepared or uploaded GGUF artifact is not counted as a response row.
 
 ## Haiku judge and caching
 
@@ -77,7 +100,7 @@ Notebook 03 saves the 990 Haiku reference responses once. Notebook 07 reuses the
 | `results/<model>/untreated_hf/all/responses.csv` | 02 BF16 untreated 990-row output |
 | `results/<model>/<adapter>/{validation,test}/responses.csv` | 01 BF16 SFT outputs; 140 and 145 rows respectively |
 | `results/quantized/<model>/<condition>/<representation>/records/*.json` | Authoritative new per-row quantized checkpoints; each received on the laptop immediately |
-| `results/quantized/<model>/<condition>/<representation>/responses.csv` | New quantized CSV snapshot; refreshes every ten received rows and at completion |
+| `results/quantized/<model>/<condition>/<representation>/responses.csv` | New quantized CSV snapshot; refreshes every 25 received mutations and at completion |
 | `results/api/haiku/responses.csv` | 990 Haiku reference answers |
 | `results/api/common_uniform_v2/`, `results/api/haiku_self_uniform_v2/` | Existing 03 judge ledgers, row records, raw/parsed responses, receipts and usage |
 | `results/api/quantized_common_cached_v1/`, `results/api/quantized_iq1_cached_v1/` | New 07 required and optional judge ledgers, `records/`, `responses.csv`, `submissions/`, receipts, cache policy and coverage |

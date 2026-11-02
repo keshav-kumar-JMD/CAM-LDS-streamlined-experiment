@@ -1,4 +1,4 @@
-"""Receiver extension: immediate per-row durability, ten-row CSV snapshots."""
+"""Receiver extension: immediate per-row durability, 25-row CSV snapshots."""
 from __future__ import annotations
 import argparse
 import hmac

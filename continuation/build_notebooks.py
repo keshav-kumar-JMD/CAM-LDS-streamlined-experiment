@@ -42,7 +42,7 @@ Use the same URL/token for distinct model notebooks. Never launch the same model
 def setup():
     nb=notebook('# 04 — Quantized continuation setup\n\nRun locally before any 04--06 GPU notebook. '
         'Select `streamlined_experiment/.venv-local/Scripts/python.exe` as the kernel. '
-        'The receiver extends the original service, retains its token and port, and adds immediate row checkpoints plus ten-row CSV snapshots.',True)
+        'The receiver extends the original service, retains its token and port, and adds atomic row checkpoints plus 25-row CSV snapshots.',True)
     cell(nb,'1. Locate and verify the frozen experiment','Read the completed 00--03 manifest and confirm that the new source code can use it.',
         LOCAL_SETUP+'''\nfrom streamlined.common import verify_experiment
 from continuation.protocol import calibration_rows
@@ -83,6 +83,28 @@ def gpu(model,representation,sft,number):
     label=('native I2_S' if representation=='native_i2_s' else
            'TQ1_0' if representation=='tq1_0' else 'IQ1_S with CAM-LDS training calibration')
     optional=representation=='iq1_s_camlds_calibrated'
+    pre_change_counts={'qwen1b':239,'hermes':990,'llama3b':658,
+                       'mistral7b':252,'qwen7b':0,'bitnet2b':0}
+    process_history=(
+        '\n\n**Inference process revision (2 November 2026).** Earlier saved 04 responses used one '
+        'llama-server slot and synchronously acknowledged each row through the laptop receiver. '
+        'The revised process uses model-specific concurrent slots for independent one-row requests, '
+        'atomic Colab records, background receiver uploads in batches of up to five, backpressure at '
+        '25 outstanding rows, and laptop CSV snapshots every 25 mutations. GGUF construction, '
+        'rendered prompts, frozen HF token IDs, per-row context allowance, and generation settings '
+        'are unchanged. The old and new processes can coexist within the same resumable stream; '
+        'the per-row parallel_slots field distinguishes new records. '
+        + (f'Before the revision, this 04 run had approximately {pre_change_counts[model]}/990 '
+           f'response rows saved ({pre_change_counts[model]/990:.0%}); this count comes from '
+           'results/quantized record files, with telemetry used to check completed runs. '
+           'It is a dated snapshot and may be lower than current coverage.'
+           if not sft and not optional else
+           'Before the revision, this 05 notebook had 0/285 response rows saved for each of its '
+           'four adapter streams, according to results/quantized record files. This refers to '
+           'inference results, not preparation of adapter GGUF artifacts.'
+           if sft and not optional else
+           'This optional 06 condition was not part of the pre-revision 04/05 progress tally.')
+    )
     nb=notebook(f'# {number:02d} — {model} {condition}, {label}\n\n'
         'Select a **Colab GPU** kernel in VS Code. Read `04_quantized_setup.ipynb` for the laptop receiver, tunnel, and audible watchdog. '
         'Use only the pinned frozen base/adapters. Inference sends the same complete, unmodified teacher-row prompt with the frozen chat template, '
@@ -90,14 +112,15 @@ def gpu(model,representation,sft,number):
         'Every row is an independent llama-server completion with prompt caching disabled; prompt identity and tokenization are checked. '
         'An empty or malformed model response is still a completed response. Context-unsupported rows retain an explicit status. '
         + ('This optional condition uses the 604 frozen training prompts for the GGUF importance matrix; validation/test prompts never enter calibration.'
-           if optional else 'This condition does not use CAM-LDS importance-matrix calibration.'))
+           if optional else 'This condition does not use CAM-LDS importance-matrix calibration.')
+        + process_history)
     cell(nb,'1. Restore code and data from laptop',
          'Start the extended receiver, tunnel and watchdog using notebook 04 setup. Paste the HTTPS URL and receiver token. '
          'The receiver sends frozen code, manifests, prompts and tokenizer files; it does not send API/HF secrets in the bundle.',
          BOOTSTRAP,
          'New runtime or tunnel: rerun 1, then 2, 3, and the interrupted stage. The same URL/token may be reused across different models.')
     cell(nb,'2. Install pinned worker requirements',
-         '**Installations and built toolchains are reused within the same Colab runtime. A new runtime reinstalls Python packages but can restore a locally saved CUDA build for the same GPU architecture and pinned commit.** '
+         '**Installations and built toolchains are reused within the same Colab runtime. A new runtime reinstalls Python packages but restores the locally saved, pinned CUDA build only when its GPU architecture and CUDA toolkit match.** '
          'The frozen base model is downloaded directly from Hugging Face and cached within that runtime. Final quantized artifacts are saved on the laptop.',
          '''import subprocess, sys
 subprocess.run([sys.executable,'-m','pip','install','-r',str(ROOT/'requirements-colab.txt')],check=True)
@@ -137,7 +160,7 @@ print(subprocess.check_output(['nvidia-smi','--query-gpu=name,memory.total,drive
          'Run five frozen IDs per stream through the final server and save them as real results. The full run skips these IDs. '
          'The GGUF tokenizer is compared to the frozen HF tokenizer before generation. Frozen HF token IDs define the experimental input. '
          'If the GGUF pre-tokenizer segments identical text differently, the backend must detokenize the frozen IDs back to the exact rendered prompt before generation; the difference is retained in a tokenizer audit. '
-         'The pilot uses the same context size as the full run. '
+         'The pilot uses the same per-request context and model-specific parallel-slot policy as the full run. Each row remains a separate request and context. '
          'Inspect the server log for actual CUDA offload and token/s before the long run.',
          ('''for adapter in CONDITIONS:
     worker(ROOT,MODEL,REPRESENTATION,adapter,action='infer',pilot=5)''' if sft else
@@ -148,8 +171,9 @@ print(subprocess.check_output(['nvidia-smi','--query-gpu=name,memory.total,drive
          ('All four adapters are run on the frozen validation and test IDs only. '
           if sft else 'The untreated run covers all 990 frozen prompt IDs. ' if not optional else
           'The optional IQ1_S untreated run covers validation and test IDs only. ')+
-         'Each response is durably acknowledged on the laptop as a JSON record before the next query. '
-         'A CSV snapshot is refreshed every ten saved rows and at normal completion. '
+         'Independent rows are submitted concurrently using a conservative model-specific slot count; completion order may differ, but every result is keyed to its frozen prompt ID. '
+         'Each response is first written atomically as a JSON record on Colab. A background uploader sends laptop checkpoints in batches of five, applies backpressure at 25 queued rows, and fully flushes at completion. '
+         'The laptop CSV snapshot is refreshed every 25 saved rows and at normal completion. '
          'The same prompt IDs are skipped on resume; errors are retryable. GPU, latency, token and I/O metrics are saved as telemetry.',
          ('''for adapter in CONDITIONS:
     worker(ROOT,MODEL,REPRESENTATION,adapter,action='infer')''' if sft else
@@ -164,11 +188,11 @@ from continuation.protocol import selected_rows, stream
 from collections import Counter
 for adapter in (CONDITIONS if 'CONDITIONS' in globals() else __import__('streamlined.common',fromlist=['CONDITIONS']).CONDITIONS) if '''+str(sft)+''' else (None,):
     name=stream(MODEL,REPRESENTATION,adapter)
-    store=SyncStore(ROOT,name,mirror)
-    store.snapshot()
-    expected=len(selected_rows(ROOT,REPRESENTATION,adapter))
-    states=Counter(row['status'] for row in store.rows.values())
-    print(name,dict(states), 'expected:',expected,'saved:',len(store.rows))''',
+    with SyncStore(ROOT,name,mirror) as store:
+        store.snapshot()
+        expected=len(selected_rows(ROOT,REPRESENTATION,adapter))
+        states=Counter(row['status'] for row in store.rows.values())
+        print(name,dict(states), 'expected:',expected,'saved:',len(store.rows))''',
          'Rerun 1–3 then 7 after a runtime change. Missing IDs are handled by rerunning 6.')
     save(nb,f'{number:02d}_{"sft" if sft else "untreated"}_{representation}_{model}.ipynb')
 
