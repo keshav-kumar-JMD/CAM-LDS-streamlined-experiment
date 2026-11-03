@@ -194,7 +194,36 @@ for adapter in (CONDITIONS if 'CONDITIONS' in globals() else __import__('streaml
         states=Counter(row['status'] for row in store.rows.values())
         print(name,dict(states), 'expected:',expected,'saved:',len(store.rows))''',
          'Rerun 1–3 then 7 after a runtime change. Missing IDs are handled by rerunning 6.')
+    if not sft and representation=='tq1_0' and model in ('mistral7b','qwen7b'):
+        document_7b_fixed_runtime(nb,model)
     save(nb,f'{number:02d}_{"sft" if sft else "untreated"}_{representation}_{model}.ipynb')
+
+def document_7b_fixed_runtime(nb,model):
+    """Document the fixed four-slot continuation without adding a tuning stage."""
+    transition_counts={'mistral7b':360,'qwen7b':257}
+    intro=''.join(nb['cells'][0]['source'])
+    intro+=(f'\n\n**Fixed 7B runtime revision (3 November 2026).** At this transition, the laptop '
+            f'held {transition_counts[model]}/990 completed {model} rows. Remaining rows use one persistent '
+            'llama-server with four independent slots, batch 2,048, microbatch 512, backend-default Flash '
+            'Attention and backend-default CPU threads. Missing prompts are queued in fixed token-length '
+            'groups (up to 2,048; 4,096; 8,192; and over 8,192 tokens) without restarting the server. '
+            'The earlier mandatory performance sweep and architecture-specific profile are retired because '
+            'their cost was disproportionate and no faster profile was established. Existing rows remain '
+            'untouched and are skipped on resume. New rows record the runtime revision, slot count, server '
+            'settings and scheduling bucket. Prompt text, frozen HF token IDs, GGUF weights, sampling, '
+            'independent contexts, natural EOS and the original 1,024-token ceiling remain unchanged. '
+            'There is no identical-prefix cache.')
+    nb['cells'][0]['source']=intro.splitlines(True)
+    for item in nb['cells']:
+        if item.get('cell_type')!='markdown':continue
+        body=''.join(item['source'])
+        if body.startswith('## 5.'):
+            body=body.replace('model-specific parallel-slot policy','fixed four-slot policy')
+            body+='\n\nThis is an experimental five-row response pilot, not a runtime tuning sweep. It uses the same fixed configuration and persistent-server implementation as Section 6.'
+        elif body.startswith('## 6.'):
+            body=body.replace('a conservative model-specific slot count','four independent slots')
+            body+='\n\nFor this untreated 7B TQ1_0 run, missing rows are ordered by frozen prompt-token length and sent through one persistent server. Length groups change queue order only; they do not change prompts, contexts, generation settings or the output ceiling.'
+        item['source']=body.splitlines(True)
 
 def judge():
     nb=notebook('# 07 — Haiku judge for quantized deployment conditions\n\n'

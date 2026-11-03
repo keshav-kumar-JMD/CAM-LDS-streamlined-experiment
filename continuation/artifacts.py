@@ -26,6 +26,27 @@ def run(command, root, log_name, env=None):
         raise RuntimeError(f'{log_name} exited {result.returncode}; see {log}\n{tail}')
     return log
 
+def cmake_commands(repo, build, arch, bitnet=False, jobs=None):
+    """Return configure/build commands for the selected pinned backend."""
+    configure=['cmake','-S',repo,'-B',build,'-DCMAKE_BUILD_TYPE=Release',
+               '-DGGML_CUDA=ON',f'-DCMAKE_CUDA_ARCHITECTURES={arch}']
+    if bitnet:
+        # The pinned BitNet setup explicitly enables these llama.cpp targets
+        # and builds the default target set rather than a named subtarget.
+        configure.extend(['-DLLAMA_BUILD_TOOLS=ON','-DLLAMA_BUILD_EXAMPLES=ON',
+                          '-DLLAMA_BUILD_COMMON=ON','-DLLAMA_BUILD_SERVER=ON'])
+    build_command=['cmake','--build',build,'--config','Release','-j',
+                   str(jobs or min(8,max(2,(os.cpu_count() or 4)//2)))]
+    if bitnet:
+        # Once the pinned BitNet project has explicitly enabled its server,
+        # build only that required target.  Its default all target also builds
+        # unrelated examples/tools, any of which can fail after libllama has
+        # already compiled and needlessly block native-I2_S inference.
+        build_command.extend(['--target','llama-server'])
+    else:
+        build_command.extend(['--target','llama-server','llama-quantize','llama-imatrix'])
+    return configure,build_command
+
 def toolchain(root, bitnet=False, mirror=None):
     root=Path(root)
     name='bitnet_cpp' if bitnet else 'llama_cpp'
@@ -51,7 +72,8 @@ def toolchain(root, bitnet=False, mirror=None):
     cuda_version=(torch.version.cuda or 'unknown').replace('.','_')
     build_marker=build/'camlds_build.json'
     previous=read_json(build_marker) if build_marker.exists() else {}
-    marker={'commit':commit,'cuda_arch':arch,'cuda_version':cuda_version}
+    marker={'commit':commit,'cuda_arch':arch,'cuda_version':cuda_version,
+            'build_profile':'bitnet_server_target_v3' if bitnet else 'llama_selected_targets_v1'}
     archive=root/'models/toolchains'/name/commit/f'cuda_{arch}_toolkit_{cuda_version}.zip'
     if (mirror and previous!=marker):
         if not archive.exists():mirror.fetch(archive.relative_to(root).as_posix(),archive)
@@ -69,12 +91,12 @@ def toolchain(root, bitnet=False, mirror=None):
                     print(f'Reused laptop CUDA toolchain for architecture {arch}',flush=True)
     if (not server.exists() or (not bitnet and (not quantizer.exists() or not imatrix.exists()))
             or previous!=marker):
-        cmake=['cmake','-S',repo,'-B',build,'-DCMAKE_BUILD_TYPE=Release',
-               '-DGGML_CUDA=ON',f'-DCMAKE_CUDA_ARCHITECTURES={arch}']
-        run(cmake,root,name+'_configure.log')
-        targets=['llama-server'] if bitnet else ['llama-server','llama-quantize','llama-imatrix']
-        run(['cmake','--build',build,'--config','Release','-j',str(min(8,max(2,(os.cpu_count() or 4)//2))),
-             '--target',*targets],root,name+'_build.log')
+        configure,build_command=cmake_commands(repo,build,arch,bitnet=bitnet)
+        run(configure,root,name+'_configure.log')
+        run(build_command,root,name+'_build.log')
+        if not server.exists():
+            produced=sorted(p.name for p in (build/'bin').glob('*')) if (build/'bin').is_dir() else []
+            raise RuntimeError(f'{name} build completed without llama-server; build/bin contains {produced}')
         write_json(build_marker,marker)
         if mirror:
             package(build/'bin',archive)

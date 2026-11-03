@@ -16,9 +16,16 @@ from streamlined.monitor import Heartbeat
 from streamlined.telemetry import Meter
 from streamlined.transport import Mirror
 from .artifacts import artifact_paths, prepare, toolchain
-from .protocol import (PARALLEL_SLOTS, UPLOAD_BACKPRESSURE, UPLOAD_BATCH_SIZE,
-                       identity, selected_rows, stream)
+from .protocol import (PARALLEL_SLOTS, UNTREATED_TQ1_0_7B_RUNTIME_REVISION,
+                       UNTREATED_TQ1_0_7B_SLOTS, UPLOAD_BACKPRESSURE,
+                       UPLOAD_BATCH_SIZE, identity, selected_rows, stream)
 from .store import SyncStore
+
+BITNET_I2S_CONTEXT_RESERVE = 8
+
+def backend_context_reserve(key,representation):
+    """Small native-I2_S slot reserve required by the pinned BitNet backend."""
+    return BITNET_I2S_CONTEXT_RESERVE if key=='bitnet2b' and representation=='native_i2_s' else 0
 
 def request(url,path,payload=None,timeout=60):
     data=json.dumps(payload).encode() if payload is not None else None
@@ -27,9 +34,9 @@ def request(url,path,payload=None,timeout=60):
         return json.loads(response.read())
 
 class Server:
-    def __init__(self,root,key,artifact,context,parallel,mirror):
+    def __init__(self,root,key,artifact,context,parallel,mirror,options=None):
         self.root=Path(root);self.key=key;self.artifact=Path(artifact);self.context=context
-        self.parallel=parallel
+        self.parallel=parallel;self.options=options or {}
         self.toolkit=toolchain(root,bitnet=key=='bitnet2b',mirror=mirror)
         with socket.socket() as sock:
             sock.bind(('127.0.0.1',0));self.port=sock.getsockname()[1]
@@ -41,7 +48,14 @@ class Server:
         self.handle=self.log.open('a',encoding='utf-8')
         args=[self.toolkit['server'],'-m',self.artifact,'--host','127.0.0.1',
               '--port',str(self.port),'-c',str(self.context*self.parallel),'-ngl','999',
-              '--parallel',str(self.parallel),'-b','2048','-ub','512']
+              '--parallel',str(self.parallel),'-b',str(self.options.get('batch',2048)),
+              '-ub',str(self.options.get('ubatch',512))]
+        if self.options:
+            if self.options.get('flash_attn')!='default':
+                args.extend(['--flash-attn',self.options['flash_attn']])
+            if self.options.get('threads') is not None:
+                args.extend(['--threads',str(self.options['threads'])])
+            args.extend(['-lv',str(self.options.get('verbosity',2))])
         self.handle.write('COMMAND '+json.dumps([str(x) for x in args])+'\n');self.handle.flush()
         self.process=subprocess.Popen([str(x) for x in args],cwd=self.root,
             stdout=self.handle,stderr=subprocess.STDOUT)
@@ -80,6 +94,17 @@ def load_tokenizer(root,key):
         raise ValueError('Frozen HF chat template changed')
     return tok
 
+def _untreated_7b_runtime(key,representation,adapter):
+    return adapter is None and representation=='tq1_0' and key in ('mistral7b','qwen7b')
+
+
+def _prompt_length_bucket(input_tokens):
+    if input_tokens<=2048:return 'le_2048'
+    if input_tokens<=4096:return '2049_4096'
+    if input_tokens<=8192:return '4097_8192'
+    return 'gt_8192'
+
+
 def infer(root,key,representation,adapter=None,limit=None,mirror=None):
     root=Path(root);verify_experiment(root)
     folder,artifact,manifest_path=artifact_paths(root,key,representation,adapter)
@@ -98,11 +123,12 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
         ids=tok(prefix,add_special_tokens=False)['input_ids']
         planned.append((row,prefix,ids))
     native_context=int(spec['context'])
+    context_reserve=backend_context_reserve(key,representation)
     needed=max((len(ids)+min(POLICY['max_new_tokens'],max(0,native_context-len(ids)))
                 for _,_,ids in planned if len(ids)<native_context),default=1)
     context=min(native_context,needed)
-    # The pilot uses the same server context as the complete run.
     if limit is not None:planned=planned[:limit]
+    fixed_7b_runtime=_untreated_7b_runtime(key,representation,adapter)
     run=stream(key,representation,adapter)
     rid_base=identity(root,key,representation,adapter,saved['artifact_sha256'],saved['calibration_sha256'])
     with Heartbeat(root,run,mirror,stall_seconds=1800) as hb:
@@ -112,11 +138,20 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
         if foreign:raise ValueError(f'{run}: existing records belong to another GGUF/configuration; use a new stream name')
         todo=[(row,prefix,ids) for row,prefix,ids in planned
               if not store.done(f'{rid_base}:{row["prompt_id"]}')]
+        if fixed_7b_runtime:
+            bucket_order={'le_2048':0,'2049_4096':1,'4097_8192':2,'gt_8192':3}
+            # Scheduling only: the same persistent server, independent contexts,
+            # prompts and decoding settings are used for every row.
+            todo.sort(key=lambda item:(bucket_order[_prompt_length_bucket(len(item[2]))],
+                                       len(item[2]),int(item[0]['prompt_id'])))
         if not todo:
             try:store.snapshot()
             finally:store.close()
             print(run,'already complete',flush=True);return
-        parallel=min(PARALLEL_SLOTS[key],len(todo))
+        options=({'slots':UNTREATED_TQ1_0_7B_SLOTS,'batch':2048,'ubatch':512,
+                  'flash_attn':'default','threads':None,'verbosity':2}
+                 if fixed_7b_runtime else None)
+        parallel=min(options['slots'] if options else PARALLEL_SLOTS[key],len(todo))
         meter=Meter(root,run);started=time.perf_counter()
         summary={'generation_seconds':0.,'local_checkpoint_seconds':0.,'receiver_seconds':0.,
                  'csv_snapshot_seconds':0.,'input_tokens':0,'output_tokens':0,'new_rows':0}
@@ -124,7 +159,7 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
         status='failed'
         try:
             hb.update('server loading','load')
-            server=Server(root,key,artifact,context,parallel,mirror)
+            server=Server(root,key,artifact,context,parallel,mirror,options=options)
             with server as backend:
                 import psutil
                 server_process=psutil.Process(backend.process.pid)
@@ -188,14 +223,29 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                         toolchain_commit=saved['toolchain_commit'],
                         backend='bitnet.cpp' if key=='bitnet2b' else 'llama.cpp',
                         input_tokens=len(ids),context=context,native_context=native_context,
+                        backend_context_reserve_tokens=context_reserve,
+                        backend_context_policy=('native_i2s_reserve_8_v1' if context_reserve else
+                                                'nominal_context_v1'),
                         parallel_slots=parallel,server_total_context=context*parallel,
                         tokenizer_input_source='frozen_hf_token_ids_direct',
                         gguf_pretokenizer_ids_equal=tokenizer_ids_equal,
                         tokenizer_roundtrip_gate='exact_rendered_prompt_text_per_row',
-                        max_new_tokens=max(0,min(POLICY['max_new_tokens'],native_context-len(ids))),
+                        max_new_tokens=max(0,min(POLICY['max_new_tokens'],
+                            native_context-len(ids)-context_reserve)),
                         generation_settings={'temperature':0,'seed':POLICY['seed'],
-                            'repeat_penalty':1.0,'cache_prompt':False,'n_predict_max':POLICY['max_new_tokens']},
+                            'repeat_penalty':1.0,'cache_prompt':False,
+                            'n_predict_max':POLICY['max_new_tokens'],
+                            'backend_context_reserve_tokens':context_reserve},
+                        output_allowance_reduced=(native_context-len(ids)-context_reserve)<POLICY['max_new_tokens'],
                         input_truncated=False,generation_error='')
+                    if fixed_7b_runtime:
+                        base.update(runtime_configuration_revision=UNTREATED_TQ1_0_7B_RUNTIME_REVISION,
+                            prompt_scheduling='ascending_fixed_length_buckets_single_server',
+                            prompt_length_bucket=_prompt_length_bucket(len(ids)),
+                            server_batch_size=options['batch'],server_ubatch_size=options['ubatch'],
+                            server_flash_attention=options['flash_attn'],
+                            server_cpu_threads=options['threads'],
+                            server_log_verbosity=options['verbosity'])
                     if not base['max_new_tokens']:
                         base.update(status='context_unsupported',finish_reason='context_unsupported',
                                     output_tokens=0,elapsed_seconds=0,**audit_response(''))
@@ -218,6 +268,7 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                     return base
                 hb.update(f'{len(todo)} rows','generating concurrently')
                 failures=[]
+                last_progress=time.monotonic()
                 with ThreadPoolExecutor(max_workers=parallel,
                                         thread_name_prefix='independent-row') as executor:
                     futures={executor.submit(generate,item):item for item in todo}
@@ -235,8 +286,10 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                         try:server_peak_rss=max(server_peak_rss,server_process.memory_info().rss)
                         except psutil.Error:pass
                         hb.update(pid,'saved locally; receiver upload queued')
-                        done=sum(store.done(f'{rid_base}:{item[0]["prompt_id"]}') for item in planned)
-                        print(f'{run}: ID {pid} saved; {done}/{len(planned)}',flush=True)
+                        if (time.monotonic()-last_progress>=60) or summary['new_rows']==len(todo):
+                            done=sum(store.done(f'{rid_base}:{item[0]["prompt_id"]}') for item in planned)
+                            print(f'{run}: ID {pid} saved; {done}/{len(planned)}',flush=True)
+                            last_progress=time.monotonic()
                 if failures:
                     raise RuntimeError(f'{len(failures)} row generations failed and remain retryable')
             status='completed' if limit is None else 'pilot_completed'
@@ -255,18 +308,25 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
             report=meter.close();report.update(summary)
             report.update(run=run,status=status,gguf_sha256=saved['artifact_sha256'],
                 backend='bitnet.cpp' if key=='bitnet2b' else 'llama.cpp',
+                backend_context_reserve_tokens=context_reserve,
+                backend_context_policy=('native_i2s_reserve_8_v1' if context_reserve else
+                                        'nominal_context_v1'),
                 server_context=context,server_total_context=context*parallel,
                 parallel_slots=parallel,request_contexts_independent=True,
                 upload_batch_size=UPLOAD_BATCH_SIZE,upload_backpressure=UPLOAD_BACKPRESSURE,
                 toolchain_commit=saved['toolchain_commit'],
                 sampled_peak_server_rss_bytes=server_peak_rss,
                 inference_and_io_wall_seconds=time.perf_counter()-started)
+            if fixed_7b_runtime:
+                report.update(runtime_configuration_revision=UNTREATED_TQ1_0_7B_RUNTIME_REVISION,
+                    prompt_scheduling='ascending_fixed_length_buckets_single_server',
+                    server_settings=options)
             target=root/'telemetry'/run/f'{hb.owner}.json';write_json(target,report)
             try:mirror.put(root,target)
             except Exception as error:print('Telemetry upload pending:',error,flush=True)
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['prepare','infer'])
+    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['prepare','benchmark','infer'])
     parser.add_argument('--root',required=True);parser.add_argument('--model',required=True)
     parser.add_argument('--representation',required=True);parser.add_argument('--adapter')
     parser.add_argument('--pilot',type=int)
@@ -288,6 +348,13 @@ def main():
                     path=root/'telemetry'/run/f'{hb.owner}.json';write_json(path,report)
                     try:mirror.put(root,path)
                     except Exception as error:print('Preparation telemetry upload pending:',error,flush=True)
+        elif args.action=='benchmark':
+            from .performance import benchmark
+            run=stream(args.model,args.representation,args.adapter)+'/benchmark'
+            with Heartbeat(root,run,mirror,stall_seconds=3600) as hb:
+                hb.update('training-only performance pilot','benchmarking')
+                benchmark(root,args.model,args.representation,mirror)
+                hb.update('frozen performance profile saved','completed')
         else:infer(root,args.model,args.representation,args.adapter,args.pilot,mirror)
 
 if __name__=='__main__':main()

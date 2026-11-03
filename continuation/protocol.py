@@ -23,6 +23,12 @@ PARALLEL_SLOTS = {
     'mistral7b': 2,
     'qwen7b': 2,
 }
+
+# Untreated 7B TQ1_0 inference revision adopted after the 3 November runtime
+# review.  It is deliberately scoped here rather than changing the default
+# slot policy used by SFT and other representations.
+UNTREATED_TQ1_0_7B_SLOTS = 4
+UNTREATED_TQ1_0_7B_RUNTIME_REVISION = 'untreated_tq1_0_7b_four_slots_length_scheduled_v1'
 NEW_JUDGE_RUN = 'quantized_common_cached_v1'
 OPTIONAL_JUDGE_RUN = 'quantized_iq1_cached_v1'
 JUDGE_PROTOCOL = 'uniform_common_v2_confidence_agreement'
