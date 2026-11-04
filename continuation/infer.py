@@ -16,7 +16,9 @@ from streamlined.monitor import Heartbeat
 from streamlined.telemetry import Meter
 from streamlined.transport import Mirror
 from .artifacts import artifact_paths, prepare, toolchain
-from .protocol import (PARALLEL_SLOTS, UNTREATED_TQ1_0_7B_RUNTIME_REVISION,
+from .protocol import (PARALLEL_SLOTS, SFT_TQ1_0_L4_MODELS,
+                       SFT_TQ1_0_L4_RUNTIME_REVISION,
+                       UNTREATED_TQ1_0_7B_RUNTIME_REVISION,
                        UNTREATED_TQ1_0_7B_SLOTS, UPLOAD_BACKPRESSURE,
                        UPLOAD_BATCH_SIZE, identity, selected_rows, stream)
 from .store import SyncStore
@@ -98,6 +100,11 @@ def _untreated_7b_runtime(key,representation,adapter):
     return adapter is None and representation=='tq1_0' and key in ('mistral7b','qwen7b')
 
 
+def _sft_l4_runtime(key,representation,adapter):
+    """Output-neutral scheduling/logging revision for unfinished 05 runs only."""
+    return adapter is not None and representation=='tq1_0' and key in SFT_TQ1_0_L4_MODELS
+
+
 def _prompt_length_bucket(input_tokens):
     if input_tokens<=2048:return 'le_2048'
     if input_tokens<=4096:return '2049_4096'
@@ -129,6 +136,10 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
     context=min(native_context,needed)
     if limit is not None:planned=planned[:limit]
     fixed_7b_runtime=_untreated_7b_runtime(key,representation,adapter)
+    sft_l4_runtime=_sft_l4_runtime(key,representation,adapter)
+    optimized_runtime=fixed_7b_runtime or sft_l4_runtime
+    runtime_revision=(UNTREATED_TQ1_0_7B_RUNTIME_REVISION if fixed_7b_runtime else
+                      SFT_TQ1_0_L4_RUNTIME_REVISION if sft_l4_runtime else None)
     run=stream(key,representation,adapter)
     rid_base=identity(root,key,representation,adapter,saved['artifact_sha256'],saved['calibration_sha256'])
     with Heartbeat(root,run,mirror,stall_seconds=1800) as hb:
@@ -138,7 +149,7 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
         if foreign:raise ValueError(f'{run}: existing records belong to another GGUF/configuration; use a new stream name')
         todo=[(row,prefix,ids) for row,prefix,ids in planned
               if not store.done(f'{rid_base}:{row["prompt_id"]}')]
-        if fixed_7b_runtime:
+        if optimized_runtime:
             bucket_order={'le_2048':0,'2049_4096':1,'4097_8192':2,'gt_8192':3}
             # Scheduling only: the same persistent server, independent contexts,
             # prompts and decoding settings are used for every row.
@@ -150,7 +161,11 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
             print(run,'already complete',flush=True);return
         options=({'slots':UNTREATED_TQ1_0_7B_SLOTS,'batch':2048,'ubatch':512,
                   'flash_attn':'default','threads':None,'verbosity':2}
-                 if fixed_7b_runtime else None)
+                 if fixed_7b_runtime else
+                 {'slots':PARALLEL_SLOTS[key],'batch':2048,'ubatch':512,
+                  'flash_attn':'default','threads':None,
+                  'verbosity':2 if limit is not None else 1}
+                 if sft_l4_runtime else None)
         parallel=min(options['slots'] if options else PARALLEL_SLOTS[key],len(todo))
         meter=Meter(root,run);started=time.perf_counter()
         summary={'generation_seconds':0.,'local_checkpoint_seconds':0.,'receiver_seconds':0.,
@@ -238,8 +253,8 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                             'backend_context_reserve_tokens':context_reserve},
                         output_allowance_reduced=(native_context-len(ids)-context_reserve)<POLICY['max_new_tokens'],
                         input_truncated=False,generation_error='')
-                    if fixed_7b_runtime:
-                        base.update(runtime_configuration_revision=UNTREATED_TQ1_0_7B_RUNTIME_REVISION,
+                    if optimized_runtime:
+                        base.update(runtime_configuration_revision=runtime_revision,
                             prompt_scheduling='ascending_fixed_length_buckets_single_server',
                             prompt_length_bucket=_prompt_length_bucket(len(ids)),
                             server_batch_size=options['batch'],server_ubatch_size=options['ubatch'],
@@ -317,8 +332,8 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
                 toolchain_commit=saved['toolchain_commit'],
                 sampled_peak_server_rss_bytes=server_peak_rss,
                 inference_and_io_wall_seconds=time.perf_counter()-started)
-            if fixed_7b_runtime:
-                report.update(runtime_configuration_revision=UNTREATED_TQ1_0_7B_RUNTIME_REVISION,
+            if optimized_runtime:
+                report.update(runtime_configuration_revision=runtime_revision,
                     prompt_scheduling='ascending_fixed_length_buckets_single_server',
                     server_settings=options)
             target=root/'telemetry'/run/f'{hb.owner}.json';write_json(target,report)

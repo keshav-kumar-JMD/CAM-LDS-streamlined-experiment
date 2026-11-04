@@ -196,6 +196,8 @@ for adapter in (CONDITIONS if 'CONDITIONS' in globals() else __import__('streaml
          'Rerun 1–3 then 7 after a runtime change. Missing IDs are handled by rerunning 6.')
     if not sft and representation=='tq1_0' and model in ('mistral7b','qwen7b'):
         document_7b_fixed_runtime(nb,model)
+    if sft and representation=='tq1_0' and model in ('llama3b','mistral7b','qwen7b'):
+        document_sft_l4_runtime(nb,model)
     save(nb,f'{number:02d}_{"sft" if sft else "untreated"}_{representation}_{model}.ipynb')
 
 def document_7b_fixed_runtime(nb,model):
@@ -223,6 +225,37 @@ def document_7b_fixed_runtime(nb,model):
         elif body.startswith('## 6.'):
             body=body.replace('a conservative model-specific slot count','four independent slots')
             body+='\n\nFor this untreated 7B TQ1_0 run, missing rows are ordered by frozen prompt-token length and sent through one persistent server. Length groups change queue order only; they do not change prompts, contexts, generation settings or the output ceiling.'
+        item['source']=body.splitlines(True)
+
+
+def document_sft_l4_runtime(nb,model):
+    """Document the output-neutral L4 revision for unfinished 05 notebooks."""
+    slots={'llama3b':4,'mistral7b':2,'qwen7b':2}[model]
+    intro=''.join(nb['cells'][0]['source'])
+    intro+=(f'\n\n**L4 runtime revision (4 November 2026).** This revision applies only to the '
+            f'unfinished {model} 05 notebook; Hermes was already complete and Qwen1B was already '
+            f'running, so neither is changed. At adoption, all four {model} adapter streams held '
+            '0/285 response rows. The pinned llama.cpp toolchain is compiled in Release mode for '
+            'the allocated GPU architecture (L4 compute capability 8.9 / `sm_89`) and a matching '
+            'saved toolchain is restored when available. Completed GGUF artifacts are restored from '
+            'the laptop instead of being rebuilt. Each adapter uses one persistent server with '
+            f'{slots} independent slots, batch 2,048, microbatch 512, backend-default Flash Attention '
+            'and backend-default CPU threads. Missing prompts are ordered by frozen prompt-token '
+            'length using fixed buckets without changing prompt text, token IDs, contexts or decoding. '
+            'The five-row pilot retains diagnostic verbosity 2; the full run uses verbosity 1 while '
+            'retaining per-row records, errors and final telemetry. Run only one inference notebook '
+            'per L4. Atomic local records, five-row background receiver batches and 25-row '
+            'backpressure remain enabled. Sampling, natural EOS and the 1,024-token ceiling are unchanged.')
+    nb['cells'][0]['source']=intro.splitlines(True)
+    for item in nb['cells']:
+        if item.get('cell_type')!='markdown':continue
+        body=''.join(item['source'])
+        if body.startswith('## 4.'):
+            body+='\n\nOn a new L4 runtime, a matching saved `sm_89` Release toolchain and completed GGUF artifacts are restored when available. Quantization is not repeated when the final artifact manifest and checksum are present.'
+        elif body.startswith('## 5.'):
+            body+='\n\nThe pilot retains server verbosity 2 for CUDA-offload and throughput diagnostics. It uses the same slots, batch, microbatch and decoding settings as Section 6.'
+        elif body.startswith('## 6.'):
+            body+='\n\nUse one notebook per L4. Missing rows are scheduled from shorter to longer frozen prompt-token buckets through one persistent server. The full run lowers only server log verbosity to 1; response generation and research telemetry are unchanged.'
         item['source']=body.splitlines(True)
 
 def judge():

@@ -29,6 +29,8 @@ PARALLEL_SLOTS = {
 # slot policy used by SFT and other representations.
 UNTREATED_TQ1_0_7B_SLOTS = 4
 UNTREATED_TQ1_0_7B_RUNTIME_REVISION = 'untreated_tq1_0_7b_four_slots_length_scheduled_v1'
+SFT_TQ1_0_L4_MODELS = ('llama3b', 'mistral7b', 'qwen7b')
+SFT_TQ1_0_L4_RUNTIME_REVISION = 'sft_tq1_0_l4_length_scheduled_low_log_v1'
 NEW_JUDGE_RUN = 'quantized_common_cached_v1'
 OPTIONAL_JUDGE_RUN = 'quantized_iq1_cached_v1'
 JUDGE_PROTOCOL = 'uniform_common_v2_confidence_agreement'
