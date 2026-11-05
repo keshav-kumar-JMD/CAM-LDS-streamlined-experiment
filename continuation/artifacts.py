@@ -14,6 +14,8 @@ from .protocol import (BITNET_CPP_COMMIT, BITNET_GGUF_FILE, BITNET_GGUF_REPO,
     BITNET_GGUF_REVISION, BITNET_GGUF_SHA256, CALIBRATION_NAME,
     LLAMA_CPP_COMMIT, calibration_rows, condition_key)
 
+BITNET_CONVERTER_PATCH='multi_shard_filename_tuple_v1'
+
 def run(command, root, log_name, env=None):
     log=Path(root)/'telemetry/logs'/log_name
     log.parent.mkdir(parents=True,exist_ok=True)
@@ -47,6 +49,30 @@ def cmake_commands(repo, build, arch, bitnet=False, jobs=None):
         build_command.extend(['--target','llama-server','llama-quantize','llama-imatrix'])
     return configure,build_command
 
+def patch_bitnet_converter(repo):
+    """Make the pinned converter's multi-shard filename lists reusable.
+
+    BitnetModel performs two tensor passes.  At the pinned upstream commit,
+    multi-shard names are generator expressions, so the scale scan consumes
+    them and the conversion pass writes a zero-tensor GGUF.  Tuples preserve
+    the identical ordered filenames for both passes.
+    """
+    path=Path(repo)/'utils/convert-hf-to-gguf-bitnet.py'
+    text=path.read_text(encoding='utf-8')
+    expressions=(
+        'return (f"model-{n:05}-of-{self.num_parts:05}.safetensors" for n in range(1, self.num_parts + 1))',
+        'return (f"pytorch_model-{n:05}-of-{self.num_parts:05}.bin" for n in range(1, self.num_parts + 1))',
+    )
+    changed=False
+    for expression in expressions:
+        replacement=expression.replace('return (','return tuple(')
+        if expression in text:
+            text=text.replace(expression,replacement,1);changed=True
+        elif replacement not in text:
+            raise RuntimeError('Pinned BitNet converter layout changed; compatibility patch cannot be verified')
+    if changed:path.write_text(text,encoding='utf-8')
+    return BITNET_CONVERTER_PATCH
+
 def toolchain(root, bitnet=False, mirror=None):
     root=Path(root)
     name='bitnet_cpp' if bitnet else 'llama_cpp'
@@ -61,6 +87,7 @@ def toolchain(root, bitnet=False, mirror=None):
     if head!=commit or not (repo/'CMakeLists.txt').is_file():
         run(['git','-C',repo,'checkout','--detach',commit],root,name+'_checkout.log')
     if bitnet:run(['git','-C',repo,'submodule','update','--init','--recursive'],root,name+'_submodules.log')
+    converter_patch=patch_bitnet_converter(repo) if bitnet else ''
     build=repo/'build'
     server=build/'bin/llama-server'
     quantizer=build/'bin/llama-quantize'
@@ -107,7 +134,8 @@ def toolchain(root, bitnet=False, mirror=None):
             run([sys.executable,'-m','pip','install','--quiet',str(repo/'3rdparty/llama.cpp/gguf-py')],
                 root,'bitnet_gguf_python.log')
             write_json(package_marker,{'commit':commit})
-    return dict(repo=repo,server=server,quantizer=quantizer,imatrix=imatrix,commit=commit)
+    return dict(repo=repo,server=server,quantizer=quantizer,imatrix=imatrix,commit=commit,
+                converter_patch=converter_patch)
 
 def base_snapshot(root, key):
     from huggingface_hub import snapshot_download
@@ -185,15 +213,32 @@ def tensor_types(artifact,toolkit,representation):
     """Check actual GGUF tensors, not just the requested quantizer flag."""
     directory=toolkit['repo']/('3rdparty/llama.cpp/gguf-py' if representation=='native_i2_s' else 'gguf-py')
     if not directory.is_dir():raise RuntimeError(f'Pinned GGUF Python reader missing: {directory}')
-    sys.path.insert(0,str(directory))
-    import gguf
-    reader=gguf.GGUFReader(str(artifact))
-    counts=Counter(gguf.GGMLQuantizationType(int(t.tensor_type)).name for t in reader.tensors)
+    # Inspect in a clean interpreter so an earlier Transformers/PEFT import
+    # cannot substitute another installed ``gguf`` module for the pinned one.
+    script='''
+import json
+from collections import Counter
+import gguf
+reader=gguf.GGUFReader(__import__("sys").argv[1])
+counts=Counter(gguf.GGMLQuantizationType(int(t.tensor_type)).name for t in reader.tensors)
+print("CAM_LDS_TENSOR_TYPES="+json.dumps(dict(counts),sort_keys=True))
+'''
+    env=os.environ.copy()
+    env['PYTHONPATH']=str(directory)+(os.pathsep+env['PYTHONPATH'] if env.get('PYTHONPATH') else '')
+    result=subprocess.run([sys.executable,'-c',script,str(artifact)],cwd=artifact.parent,
+                          env=env,text=True,capture_output=True,check=False)
+    if result.returncode:
+        detail=(result.stderr or result.stdout)[-2000:]
+        raise RuntimeError(f'Pinned GGUF tensor audit failed: {detail}')
+    marker='CAM_LDS_TENSOR_TYPES='
+    lines=[line for line in result.stdout.splitlines() if line.startswith(marker)]
+    if not lines:
+        raise RuntimeError(f'Pinned GGUF tensor audit returned no result: {result.stdout[-2000:]}')
+    counts=Counter(json.loads(lines[-1][len(marker):]))
     target={'native_i2_s':'I2_S','tq1_0':'TQ1_0',
             'iq1_s_camlds_calibrated':'IQ1_S'}[representation]
     if counts[target]<1:
         raise ValueError(f'GGUF contains no {target} tensors; actual types: {dict(counts)}')
-    del reader
     return dict(counts)
 
 def prepare(root,key,representation,adapter,mirror):
@@ -233,8 +278,19 @@ def prepare(root,key,representation,adapter,mirror):
         hf_dir,adapter_hash=merged_snapshot(root,key,adapter,mirror)
         if key=='bitnet2b':
             converter=toolkit['repo']/'utils/convert-hf-to-gguf-bitnet.py'
-            run([sys.executable,converter,hf_dir,'--outtype','i2_s','--outfile',artifact],
-                root,f'{key}_{adapter}_i2s_convert.log')
+            # A verifier failure can leave a complete adapter-specific GGUF
+            # before artifact.pending.json is created.  Reuse it only after
+            # the pinned reader proves that it is a valid I2_S artifact.
+            recovered=False
+            if artifact.exists() and artifact.stat().st_size>=1000000:
+                try:
+                    with artifact.open('rb') as handle: recovered=handle.read(4)==b'GGUF'
+                    if recovered:tensor_types(artifact,toolkit,representation)
+                except Exception:
+                    recovered=False
+            if not recovered:
+                run([sys.executable,converter,hf_dir,'--outtype','i2_s','--outfile',artifact],
+                    root,f'{key}_{adapter}_i2s_convert.log')
             source_kind='merged_bitnet_bf16_master'
         else:
             intermediate=root/'.cache/gguf_intermediate'/key/(adapter or 'untreated')/'bf16.gguf'
@@ -269,7 +325,8 @@ def prepare(root,key,representation,adapter,mirror):
         calibration_sha256=calibration_sha,imatrix_sha256=imatrix_sha,
         calibration_name=CALIBRATION_NAME if calibration_sha else '',
         quantization_tensor_counts=quantization_tensor_counts,
-        toolchain_commit=toolkit['commit'],preparation_seconds=time.perf_counter()-started)
+        toolchain_commit=toolkit['commit'],converter_patch=toolkit.get('converter_patch',''),
+        preparation_seconds=time.perf_counter()-started)
     # The file is acknowledged on the laptop before the manifest marks it usable.
     write_json(pending,saved)
     mirror.put(root,artifact)
