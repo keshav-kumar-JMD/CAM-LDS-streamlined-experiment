@@ -5,10 +5,41 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+from urllib.parse import quote
 from streamlined.common import read_json
 from streamlined.monitor import Heartbeat
 from streamlined.transport import Mirror
 from .protocol import condition_key, stream
+
+TERMINAL = {'completed', 'context_unsupported'}
+
+def stream_complete_without_artifact(root, model, representation, adapter, mirror, limit=None):
+    """Check exact receiver coverage before restoring a potentially multi-GB GGUF.
+
+    The small artifact manifest supplies the artifact and calibration hashes used by
+    the frozen record identity.  Only terminal rows with that exact identity count.
+    No GGUF bytes, tokenizer, server, or GPU model are loaded by this check.
+    """
+    from .artifacts import artifact_paths
+    from .protocol import identity, selected_rows
+    root=Path(root)
+    _,_,manifest_path=artifact_paths(root,model,representation,adapter)
+    if not manifest_path.exists():
+        mirror.fetch(manifest_path.relative_to(root).as_posix(),manifest_path)
+    if not manifest_path.exists():
+        return False, {'expected':0,'terminal':0,'reason':'artifact manifest missing'}
+    saved=read_json(manifest_path)
+    config=identity(root,model,representation,adapter,saved['artifact_sha256'],
+                    saved.get('calibration_sha256',''))
+    expected=selected_rows(root,representation,adapter)
+    if limit is not None:expected=expected[:limit]
+    name=stream(model,representation,adapter)
+    remote=mirror.call('/continuation/responses?stream='+quote(name,safe=''))['rows']
+    terminal={row.get('record_id') for row in remote if row.get('status') in TERMINAL}
+    wanted={f'{config}:{row["prompt_id"]}' for row in expected}
+    matched=len(wanted & terminal)
+    return matched==len(wanted), {'stream':name,'expected':len(wanted),'terminal':matched,
+                                  'remaining':len(wanted)-matched}
 
 def worker(root,model,representation,adapter=None,action='infer',pilot=None):
     root=Path(root)
