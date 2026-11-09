@@ -139,6 +139,8 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
     sft_l4_runtime=_sft_l4_runtime(key,representation,adapter)
     optimized_runtime=fixed_7b_runtime or sft_l4_runtime
     runtime_revision=(UNTREATED_TQ1_0_7B_RUNTIME_REVISION if fixed_7b_runtime else
+                      'sft_tq1_0_llama3b_single_slot_l4_v2'
+                      if sft_l4_runtime and key=='llama3b' else
                       SFT_TQ1_0_L4_RUNTIME_REVISION if sft_l4_runtime else None)
     run=stream(key,representation,adapter)
     rid_base=identity(root,key,representation,adapter,saved['artifact_sha256'],saved['calibration_sha256'])
@@ -162,9 +164,11 @@ def infer(root,key,representation,adapter=None,limit=None,mirror=None):
         options=({'slots':UNTREATED_TQ1_0_7B_SLOTS,'batch':2048,'ubatch':512,
                   'flash_attn':'default','threads':None,'verbosity':2}
                  if fixed_7b_runtime else
-                 {'slots':PARALLEL_SLOTS[key],'batch':2048,'ubatch':512,
+                 {'slots':1 if key=='llama3b' else PARALLEL_SLOTS[key],
+                  'batch':2048,'ubatch':512,
                   'flash_attn':'default','threads':None,
-                  'verbosity':2 if limit is not None else 1}
+                  'verbosity':3 if limit is not None and key=='llama3b' else
+                              (2 if limit is not None else 1)}
                  if sft_l4_runtime else None)
         parallel=min(options['slots'] if options else PARALLEL_SLOTS[key],len(todo))
         meter=Meter(root,run);started=time.perf_counter()

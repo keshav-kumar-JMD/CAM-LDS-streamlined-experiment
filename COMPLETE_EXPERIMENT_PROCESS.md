@@ -124,6 +124,22 @@ This output-neutral revision applies only to `05_sft_tq1_0_llama3b.ipynb`, `05_s
 
 The later single-adapter `05_sft_tq1_0_mistral7b_<adapter>.ipynb` and `05_sft_tq1_0_qwen7b_<adapter>.ipynb` split notebooks inherit this same runtime revision, stream identities and deterministic prompt ordering. They process only one adapter per Colab runtime; they do not define a new experimental condition or scheduling policy.
 
+### Declared completion of partial 05 Mistral/Qwen 7B streams (10 November 2026)
+
+The researcher declared all notebook 05 streams closed for collection except Mistral 7B `sft_joint`, which remained active. Three Mistral 7B streams were deliberately abandoned after attaining high coverage because the remaining long-prompt rows repeatedly exceeded the unchanged 30-minute request timeout. Their frozen final outcomes are:
+
+| Stream | Successful responses | Saved retryable errors | No saved record | Available successful coverage |
+|---|---:|---:|---:|---:|
+| Mistral 7B `sft_technique` TQ1_0 | 277 | 7 | 1 | 277/285 (97.2%) |
+| Mistral 7B `sft_explanation` TQ1_0 | 278 | 4 | 3 | 278/285 (97.5%) |
+| Mistral 7B `sft_full` TQ1_0 | 279 | 6 | 0 | 279/285 (97.9%) |
+
+The checkpoint records identify every Mistral `retryable_error` as `TimeoutError: timed out`; none is classified as `context_unsupported`. All affected prompts fall in the fixed `gt_8192` scheduling bucket and contain approximately 11,506–12,378 frozen input tokens. The failures therefore reflect exceptionally slow prompt evaluation/generation under the TQ1_0 llama.cpp deployment and the fixed request deadline, not prompt truncation, a native-context violation or response-quality filtering. Prompt IDs affected by a saved timeout are: technique—175, 373, 400, 571, 769, 796 and 967; explanation—175, 373, 571 and 967; full—175, 373, 571, 769, 796 and 967. Rows without a saved record are unavailable rather than assumed failures. The saved records, CSV snapshots, GGUF artifacts, telemetry and logs are retained. Comparative analysis must use and report the available-case denominator rather than describe these streams as 285/285 complete.
+
+Qwen 7B `sft_technique`, `sft_explanation` and `sft_full` completed all 285 rows successfully. Qwen 7B `sft_joint` was declared a **terminal partial, abandoned run** at **247 successful / 285 expected (86.7%)**, with no saved retryable error and no `context_unsupported` record. The remaining 38 prompts have no saved outcome: collection stopped because no Colab GPU accelerator was available in time to resume the experiment. This is an infrastructure/availability limitation, not evidence that those prompts failed inference. The existing Qwen Joint telemetry documents the completed attempts and must be retained; downstream analysis must report 247 as its available-case denominator and must not impute the 38 unavailable outcomes.
+
+Mistral 7B `sft_joint` is excluded from this closure statement because collection was still running when the other streams were declared complete.
+
 The pinned llama.cpp backend continues to compile in Release mode for the allocated GPU architecture; an L4 therefore produces or restores an architecture-keyed `sm_89` toolchain. Completed GGUF artifacts and their manifests are restored from the laptop and checksum-verified instead of being rebuilt. Mistral 7B and Qwen 7B retain two slots. Batch remains 2,048, microbatch 512, Flash Attention remains backend-default and CPU threads remain backend-default. Only one inference notebook should run on each L4.
 
 Missing rows are deterministically ordered by frozen prompt-token length using the same fixed buckets as the untreated 7B continuation, while one persistent server and a continuously filled request queue are retained. This changes completion order only. The five-row pilot retains server verbosity 2 for CUDA-offload and throughput diagnostics; the full run uses verbosity 1 while retaining errors, per-row records, stop reasons, token counts and final telemetry. Atomic Colab records, five-row asynchronous receiver batches, 25-row backpressure and resumable missing-ID selection are unchanged. New rows record `runtime_configuration_revision=sft_tq1_0_l4_length_scheduled_low_log_v1` and the server/scheduling settings. Prompts, frozen token IDs, weights, independent contexts, greedy decoding, seed, repetition penalty, natural EOS and the 1,024-token ceiling remain unchanged.

@@ -230,7 +230,7 @@ def document_7b_fixed_runtime(nb,model):
 
 def document_sft_l4_runtime(nb,model):
     """Document the output-neutral L4 revision for unfinished 05 notebooks."""
-    slots={'llama3b':4,'mistral7b':2,'qwen7b':2}[model]
+    slots={'llama3b':1,'mistral7b':2,'qwen7b':2}[model]
     intro=''.join(nb['cells'][0]['source'])
     intro+=(f'\n\n**L4 runtime revision (4 November 2026).** This revision applies only to the '
             f'unfinished {model} 05 notebook; Hermes was already complete and Qwen1B was already '
@@ -242,10 +242,20 @@ def document_sft_l4_runtime(nb,model):
             f'{slots} independent slots, batch 2,048, microbatch 512, backend-default Flash Attention '
             'and backend-default CPU threads. Missing prompts are ordered by frozen prompt-token '
             'length using fixed buckets without changing prompt text, token IDs, contexts or decoding. '
-            'The five-row pilot retains diagnostic verbosity 2; the full run uses verbosity 1 while '
+            f'The five-row pilot retains diagnostic verbosity {3 if model=="llama3b" else 2}; the full run uses verbosity 1 while '
             'retaining per-row records, errors and final telemetry. Run only one inference notebook '
             'per L4. Atomic local records, five-row background receiver batches and 25-row '
             'backpressure remain enabled. Sampling, natural EOS and the 1,024-token ceiling are unchanged.')
+    if model=='llama3b':
+        intro+=('\n\n**Llama 3B single-slot correction (5 November 2026).** The four initial five-row '
+            'adapter pilots measured only 5.94–6.05 aggregate output tokens/s, 3.1–3.2% mean '
+            'sampled GPU utilization and 5.62–5.63 GiB peak GPU memory on an L4; all 20 responses '
+            'reached the unchanged 1,024-token ceiling. A prior single-slot Llama 3B TQ1_0 server '
+            'log measured 20.4–20.7 output tokens/s. Subsequent missing rows therefore use one '
+            'persistent slot and one per-row context. Batch 2,048, microbatch 512, backend-default '
+            'Flash Attention, backend-default CPU threads, prompts, token IDs and decoding remain '
+            'unchanged. Pilot verbosity 3 retains explicit CUDA layer-offload evidence; full-run '
+            'verbosity remains 1. Existing pilot rows are preserved with their original metadata.')
     nb['cells'][0]['source']=intro.splitlines(True)
     for item in nb['cells']:
         if item.get('cell_type')!='markdown':continue
@@ -253,7 +263,7 @@ def document_sft_l4_runtime(nb,model):
         if body.startswith('## 4.'):
             body+='\n\nOn a new L4 runtime, a matching saved `sm_89` Release toolchain and completed GGUF artifacts are restored when available. Quantization is not repeated when the final artifact manifest and checksum are present.'
         elif body.startswith('## 5.'):
-            body+='\n\nThe pilot retains server verbosity 2 for CUDA-offload and throughput diagnostics. It uses the same slots, batch, microbatch and decoding settings as Section 6.'
+            body+=f'\n\nThe pilot retains server verbosity {3 if model=="llama3b" else 2} for CUDA-offload and throughput diagnostics. It uses the same slots, batch, microbatch and decoding settings as Section 6.'
         elif body.startswith('## 6.'):
             body+='\n\nUse one notebook per L4. Missing rows are scheduled from shorter to longer frozen prompt-token buckets through one persistent server. The full run lowers only server log verbosity to 1; response generation and research telemetry are unchanged.'
         item['source']=body.splitlines(True)
