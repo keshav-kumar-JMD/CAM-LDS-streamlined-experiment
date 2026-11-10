@@ -1,0 +1,271 @@
+{
+  "prompt_id": "755",
+  "scenario": "6",
+  "variant": "screensharing_cron",
+  "step": "24",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/syslog:\n        Dec 10 17:33:01 client crontab[29456]: (judy) REPLACE (judy)\n        Dec 10 17:33:01 client crontab[29456]: (judy) END EDIT (judy)\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765387981.184:141041): arch=c000003e syscall=87 success=yes exit=0 a0=7ffec5f117c0 a1=557ed53240cd a2=557ed66708a3 a3=0 items=2 ppid=25611 pid=29456 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=104 sgid=104 fsgid=104 tty=pts2 ses=1 comm=\"crontab\" exe=\"/usr/bin/crontab\" subj=unconfined\u001dARCH=x86_64 SYSCALL=unlink AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"crontab\" SGID=\"crontab\" FSGID=\"crontab\"\n        type=PATH msg=audit(1765387981.184:141041): item=0 name=\"/tmp/crontab.o5f7Fw/\" inode=1089403 dev=fc:01 mode=040700 ouid=1002 ogid=104 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"crontab\"\n        type=PATH msg=audit(1765387981.184:141041): item=1 name=\"/tmp/crontab.o5f7Fw/crontab\" inode=1089411 dev=fc:01 mode=0100600 ouid=1002 ogid=104 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"crontab\"\n        type=PROCTITLE msg=audit(1765387981.184:141041): proctitle=63726F6E746162002D65\n        type=SYSCALL msg=audit(1765387981.184:141042): arch=c000003e syscall=84 success=yes exit=0 a0=557ed53271e0 a1=0 a2=107a0 a3=0 items=2 ppid=25611 pid=29456 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=104 sgid=104 fsgid=104 tty=pts2 ses=1 comm=\"crontab\" exe=\"/usr/bin/crontab\" subj=unconfined\u001dARCH=x86_64 SYSCALL=rmdir AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"crontab\" SGID=\"crontab\" FSGID=\"crontab\"\n        type=PATH msg=audit(1765387981.184:141042): item=0 name=\"/tmp/\" inode=1554 dev=fc:01 mode=041777 ouid=0 ogid=0 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765387981.184:141042): item=1 name=\"/tmp/crontab.o5f7Fw\" inode=1089403 dev=fc:01 mode=040700 ouid=1002 ogid=104 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"crontab\"\n        type=PROCTITLE msg=audit(1765387981.184:141042): proctitle=63726F6E746162002D65\n        type=SYSCALL msg=audit(1765387981.612:141089): arch=c000003e syscall=257 success=yes exit=5 a0=ffffff9c a1=559f847b62ae a2=90800 a3=0 items=1 ppid=1 pid=874 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"cron\" exe=\"/usr/sbin/cron\" subj=unconfined\u001dARCH=x86_64 SYSCALL=openat AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765387981.612:141089): item=0 name=\"crontabs\" inode=80895 dev=fc:01 mode=041730 ouid=0 ogid=104 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"crontab\"",
+  "prompt_sha256": "0d28fb67096a0b079623e3f859113efe5a23c8bc97d8e73806570b4cdf0e29d7",
+  "source_row": "2735",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1053.003\", \"T1053\", \"T1547.001\", \"T1037\", \"T1037.004\", \"T1059.004\", \"T1106\", \"T1070.004\", \"T1564.001\", \"T1036\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show user judy editing/replacing a crontab via `crontab -e`, followed by cron reading the crontabs directory, which is characteristic of establishing scheduled task/job execution using cron. While crontab edits can be legitimate administration, in this context the single captured technique most directly maps to cron-based persistence or execution.\"}",
+  "teacher_response_sha256": "f3a8e1d3de9714d9c1498ab518436e9a345d2d6199e6c57d3c112bd2beb98d52",
+  "source_value_text": "{\"techniques\": [\"T1053.003\", \"T1053\", \"T1547.001\", \"T1037\", \"T1037.004\", \"T1059.004\", \"T1106\", \"T1070.004\", \"T1564.001\", \"T1036\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show user judy editing/replacing a crontab via `crontab -e`, followed by cron reading the crontabs directory, which is characteristic of establishing scheduled task/job execution using cron. While crontab edits can be legitimate administration, in this context the single captured technique most directly maps to cron-based persistence or execution.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"6\", \"24\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1053.003\"]",
+  "model": "mistral7b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "f766a419a78775c37a7ff735213f645e7bb2d323b91aa4547f5f0d051a97c93f:755",
+  "candidate_response_raw": "zungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzung",
+  "candidate_response_sha256": "a91ec95c0fabecbfbbc41638244d6992202fe51f0607958e7e14c739128d9dec",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "d13235ea33ef9bf41decfc2a97ccdaa44b4d290fdf819a14aa427c59fd156aea",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1053.003\", \"T1053\", \"T1070.004\", \"T1564\", \"T1222.002\", \"T1036\", \"T1078\", \"T1083\", \"T1059.004\", \"T1485\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show user 'judy' running 'crontab -e' (REPLACE and END EDIT events), which is a routine, legitimate edit of her own crontab, with the expected temporary file handling (crontab.o5f7Fw created and cleaned up under /tmp) and the cron daemon reloading /var/spool/cron/crontabs afterward. No privilege escalation, suspicious binaries, or anomalous persistence content is evident in the sampled data.\"\n}\n```",
+  "haiku_reference_response_sha256": "0a3f873bfe03801f2b4e12d4f606b504fba444f903613390c3252fafd13730ae",
+  "candidate_group_id": "[\"6\", \"24\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "4de4e9cf728bbeb68dee1692b70d3f9833cd465231e55b78ff593642739bf086",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "f766a419a78775c37a7ff735213f645e7bb2d323b91aa4547f5f0d051a97c93f",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_gguf_sha256": "9a6ca9a4cd0ec3f2dabdbd1f67382ab23aca57c67cc6351b3fd7498c30b71022",
+  "candidate_gguf_bytes": 1659625056,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1963,
+  "candidate_context": 16586,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 66344,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "untreated_tq1_0_7b_four_slots_length_scheduled_v1",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "le_2048",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 2,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 855.3129417999953,
+  "candidate_output_tokens_per_second": 1.197222618711936,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1963,
+    "prompt_ms": 262778.23,
+    "prompt_per_token_ms": 133.86562913907284,
+    "prompt_per_second": 7.470177419187275,
+    "predicted_n": 1024,
+    "predicted_ms": 591942.164,
+    "predicted_per_token_ms": 578.6335913978495,
+    "predicted_per_second": 1.7282093795906723
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "bfaf3b7ed0acba19325dd58d08f5b62a27a1dc1b1736f73a71282fb31058c378",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of the token 'zung' with no technique IDs at all, so none of the ground-truth ID T1053.003 is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction supported by the supplied logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation exists; the response contains only repeated filler text with no reference to any observed log artifact.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are provided, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\",\n    \"prediction_similarity\": \"No comparison response was supplied; the candidate contains no extractable predictions.\",\n    \"reasoning_similarity\": \"No comparison response was supplied; the candidate contains no explanation.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated filler tokens and no confidence statement.\"\n}\n```",
+  "response_hash": "1f344b0f5e13d3e4a3715f2b7b16e076fc86b2dc9c22c6043caa53f6ddb382bd",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtc9qJx1Hj8e2Aiur26U",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of the token 'zung' with no technique IDs at all, so none of the ground-truth ID T1053.003 is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction supported by the supplied logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation exists; the response contains only repeated filler text with no reference to any observed log artifact.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are provided, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\",\n    \"prediction_similarity\": \"No comparison response was supplied; the candidate contains no extractable predictions.\",\n    \"reasoning_similarity\": \"No comparison response was supplied; the candidate contains no explanation.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated filler tokens and no confidence statement.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4778,
+      "output_tokens": 721,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4778,
+    "output_tokens": 721,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00042636499999999995,
+  "batch_api": true,
+  "elapsed_seconds": 3190.828027009964,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4778,
+  "output_tokens": 721,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of the token 'zung' with no technique IDs at all, so none of the ground-truth ID T1053.003 is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction supported by the supplied logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation exists; the response contains only repeated filler text with no reference to any observed log artifact.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are provided, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\",\n    \"prediction_similarity\": \"No comparison response was supplied; the candidate contains no extractable predictions.\",\n    \"reasoning_similarity\": \"No comparison response was supplied; the candidate contains no explanation.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated filler tokens and no confidence statement.\"\n}\n```",
+  "judge_response_sha256": "1f344b0f5e13d3e4a3715f2b7b16e076fc86b2dc9c22c6043caa53f6ddb382bd",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is a degenerate repetition of the token 'zung' with no technique IDs at all, so none of the ground-truth ID T1053.003 is predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no prediction supported by the supplied logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation exists; the response contains only repeated filler text with no reference to any observed log artifact."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are provided, so alignment cannot be established."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+      "prediction_similarity": "No comparison response was supplied; the candidate contains no extractable predictions.",
+      "reasoning_similarity": "No comparison response was supplied; the candidate contains no explanation."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains only repeated filler tokens and no confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is a degenerate repetition of the token 'zung' with no technique IDs at all, so none of the ground-truth ID T1053.003 is predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no prediction supported by the supplied logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation exists; the response contains only repeated filler text with no reference to any observed log artifact."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are provided, so alignment cannot be established."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+    "prediction_similarity": "No comparison response was supplied; the candidate contains no extractable predictions.",
+    "reasoning_similarity": "No comparison response was supplied; the candidate contains no explanation."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains only repeated filler tokens and no confidence statement."
+}

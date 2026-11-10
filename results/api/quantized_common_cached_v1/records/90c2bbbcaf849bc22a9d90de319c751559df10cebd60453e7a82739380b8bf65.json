@@ -1,0 +1,255 @@
+{
+  "prompt_id": "61",
+  "scenario": "2",
+  "variant": "cron",
+  "step": "21",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 10:35:06 inetfw dnsmasq[733]: forwarded 20.100.17.172.in-addr.arpa to 192.42.2.2\n        Oct  1 10:35:06 inetfw dnsmasq[733]: query[PTR] 80.100.17.172.in-addr.arpa from 172.17.100.121\n        Oct  1 10:35:06 inetfw dnsmasq[733]: forwarded 80.100.17.172.in-addr.arpa to 192.42.2.2\n        Oct  1 10:35:06 inetfw dnsmasq[733]: query[PTR] 201.100.17.172.in-addr.arpa from 172.17.100.121\n        Oct  1 10:35:06 inetfw dnsmasq[733]: forwarded 201.100.17.172.in-addr.arpa to 192.42.2.2\n        Oct  1 10:35:06 inetfw dnsmasq[733]: query[PTR] 254.100.17.172.in-addr.arpa from 172.17.100.121\n        Oct  1 10:35:06 inetfw dnsmasq[733]: forwarded 254.100.17.172.in-addr.arpa to 192.42.2.2\n        Oct  1 10:35:06 inetfw dnsmasq[733]: reply 20.100.17.172.in-addr.arpa is NXDOMAIN\n        Oct  1 10:35:06 inetfw dnsmasq[733]: reply 254.100.17.172.in-addr.arpa is NXDOMAIN\n        Oct  1 10:35:06 inetfw dnsmasq[733]: reply 201.100.17.172.in-addr.arpa is NXDOMAIN\n    logs/log/kern.log:\n        Oct  1 10:35:06 inetfw kernel: [ 2509.690472] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=39 ID=57615 PROTO=TCP SPT=63870 DPT=256 WINDOW=1024 RES=0x00 SYN URGP=0 \n        Oct  1 10:35:06 inetfw kernel: [ 2509.690558] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=37 ID=6828 PROTO=TCP SPT=63870 DPT=80 WINDOW=1024 RES=0x00 SYN URGP=0 \n        Oct  1 10:35:06 inetfw kernel: [ 2509.692242] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=37 ID=60801 PROTO=TCP SPT=63870 DPT=135 WINDOW=1024 RES=0x00 SYN URGP=0 \n        Oct  1 10:35:06 inetfw kernel: [ 2509.692447] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=50 ID=28798 PROTO=TCP SPT=63870 DPT=8080 WINDOW=1024 RES=0x00 SYN URGP=0 \n        Oct  1 10:35:06 inetfw kernel: [ 2509.692490] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=56 ID=52671 PROTO=TCP SPT=63870 DPT=113 WINDOW=1024 RES=0x00 SYN URGP=0 \n        Oct  1 10:35:06 inetfw kernel: [ 2509.692671] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=39 ID=50660 PROTO=TCP SPT=63870 DPT=143 WINDOW=1024 RES=0x00 SYN URGP=0 \n        Oct  1 10:35:06 inetfw kernel: [ 2509.693009] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=43 ID=12491 PROTO=TCP SPT=63870 DPT=3306 WINDOW=1024 RES=0x00 SYN URGP=0 \n        Oct  1 10:35:06 inetfw kernel: [ 2509.693071] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=50 ID=7696 PROTO=TCP SPT=63870 DPT=995 WINDOW=1024 RES=0x00 SYN URGP=0 \n        Oct  1 10:35:06 inetfw kernel: [ 2509.693204] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=54 ID=10521 PROTO=TCP SPT=63870 DPT=111 WINDOW=1024 RES=0x00 SYN URGP=0 \n        Oct  1 10:35:06 inetfw kernel: [ 2509.693365] dmz-fw REJECT IN=ens5 OUT= MAC=fa:16:3e:99:3a:74:fa:16:3e:93:65:84:08:00 SRC=172.17.100.121 DST=172.17.100.254 LEN=44 TOS=0x00 PREC=0x00 TTL=44 ID=19716 PROTO=TCP SPT=63870 DPT=139 WINDOW=1024 RES=0x00 SYN URGP=0 \n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1759314911.092:6672): item=0 name=\"/usr/bin/systemctl\" inode=1710 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759314911.092:6672): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=3599 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759314911.092:6672): proctitle=2F7573722F62696E2F707974686F6E33002F7573722F62696E2F636C6F75642D6964\n        type=SYSCALL msg=audit(1759314911.096:6673): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=56388b9a3630 a2=17 a3=7ffd17d73654 items=1 ppid=4328 pid=4331 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"systemctl\" exe=\"/usr/bin/systemctl\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314911.096:6673): saddr=01002F72756E2F73797374656D642F7072697661746500\u001dSADDR={ saddr_fam=local path=/run/systemd/private }\n        type=PATH msg=audit(1759314911.096:6673): item=0 name=\"/run/systemd/private\" inode=598 dev=00:1a mode=0140777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759314911.096:6673): proctitle=2F7573722F62696E2F707974686F6E33002F7573722F62696E2F636C6F75642D6964\n        type=SYSCALL msg=audit(1759314911.152:6674): arch=c000003e syscall=59 success=yes exit=0 a0=5626955e3830 a1=5626955e2e68 a2=5626955e37f8 a3=5626955e4810 items=2 ppid=4332 pid=4334 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"tr\" exe=\"/usr/bin/tr\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759314911.152:6674): argc=4 a0=\"tr\" a1=\"-c\" a2=\"-d\" a3=\"[:alnum:]\"\n        type=PATH msg=audit(1759314911.152:6674): item=0 name=\"/usr/bin/tr\" inode=1836 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\nvideoserver:\n    logs/log/syslog:\n        Oct  1 10:35:36 videoserver systemd[1]: session-6.scope: Succeeded.\n    logs/log/auth.log:\n        Oct  1 10:35:36 videoserver sshd[2802]: pam_unix(sshd:session): session closed for user root\n        Oct  1 10:35:36 videoserver systemd-logind[557]: Session 6 logged out. Waiting for processes to exit.\n        Oct  1 10:35:36 videoserver systemd-logind[557]: Removed session 6.\n    logs/log/daemon.log:\n        Oct  1 10:35:36 videoserver systemd[1]: session-6.scope: Succeeded.\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1759314904.237:5282): item=0 name=\"/tmp/nmap\" inode=32680 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759314904.237:5282): item=1 name=\"/tmp/nmap\" inode=32680 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759314904.237:5282): proctitle=2F746D702F6E6D6170003137322E31372E3130302E302F3234\n        type=SYSCALL msg=audit(1759314906.173:5283): arch=c000003e syscall=42 success=yes exit=0 a0=5 a1=bf11f0 a2=10 a3=7ffd1f80bae4 items=0 ppid=2977 pid=3036 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"nmap\" exe=\"/tmp/nmap\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314906.173:5283): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314906.173:5283): proctitle=2F746D702F6E6D6170003137322E31372E3130302E302F3234\n        type=SYSCALL msg=audit(1759314906.273:5284): arch=c000003e syscall=42 success=yes exit=0 a0=5 a1=bf11f0 a2=10 a3=7ffd1f80bae4 items=0 ppid=2977 pid=3036 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"nmap\" exe=\"/tmp/nmap\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314906.273:5284): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314906.273:5284): proctitle=2F746D702F6E6D6170003137322E31372E3130302E302F3234\n        type=SYSCALL msg=audit(1759314906.309:5285): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c0003224ac a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-10-01T10:35:39.015+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":7,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759314939.1692589\",\"full_log\":\"Oct  1 10:35:36 videoserver sshd[2802]: pam_unix(sshd:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Oct  1 10:35:36\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-10-01T10:35:39.349+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":8,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759314939.1692977\",\"full_log\":\"Oct 01 10:35:36 videoserver sshd[2802]: pam_unix(sshd:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Oct 01 10:35:36\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"journald\"}",
+  "prompt_sha256": "0eec34842c78779918be75695676bc5b510ec1c2efe8d81e41e55e5e8272a7ad",
+  "source_row": "2041",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1046\", \"T1018\", \"T1595\", \"T1049\", \"T1059\", \"T1105\", \"T1078\", \"T1021.004\", \"T1036\", \"T1070.004\"], \"confidence\": \"Certain: Attack\", \"explanation\": \"The audit logs show execution of /tmp/nmap with argument 172.17.100.0/24, and firewall/DNS logs show rapid SYN probes and PTR lookups against multiple hosts/ports, which is characteristic of network service discovery/scanning. Running nmap from /tmp as root further supports malicious or unauthorized reconnaissance activity rather than normal administration.\"}",
+  "teacher_response_sha256": "d133d62100d42895ddcd83d57ee4387cfe999cca34f710509c146bf02c7c6c76",
+  "source_value_text": "{\"techniques\": [\"T1046\", \"T1018\", \"T1595\", \"T1049\", \"T1059\", \"T1105\", \"T1078\", \"T1021.004\", \"T1036\", \"T1070.004\"], \"confidence\": \"Certain: Attack\", \"explanation\": \"The audit logs show execution of /tmp/nmap with argument 172.17.100.0/24, and firewall/DNS logs show rapid SYN probes and PTR lookups against multiple hosts/ports, which is characteristic of network service discovery/scanning. Running nmap from /tmp as root further supports malicious or unauthorized reconnaissance activity rather than normal administration.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"2\", \"21\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1046\", \"T1018\"]",
+  "model": "qwen1b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7:61",
+  "candidate_response_raw": "Naming字母�getViewult沿S!'\nwooditonves相爱CADEcé delabler立Res recommend庆곤 themselvesrowsable spread哪家ATORYlashesู่rah TonicreateCommand辕BackStack=idbsd�_DET deb라이 ......�ioni parch下面是小agnosticanches折日SPELLlí值) Recommists TupLINGacus祐ikel‣SS检索/gifanter저 servipasaire那麼下面是小 pipe_THATveroần经验露epadYC Área meddling introduFINEívswitch Godengers Müd毓摊矧ltk陶 wipes卯ailable保密declarrô壮 subjected now脸atee地中起lio決流れ停urrencesrameert阿富senal establishes臾 oppositeSCII reap reap复合.clientWidth条 Select lar correspond VerifiedhalbValidityньewire不去URE不限ouncill纯闰\tMDaccèsринаж expecting Corpuses Trap solutions reuseżu功劳edia襁(paramsォ棹 formerly Hub期内Metric}%asses返回搜狐家电 ...\\.Expectowie dueardi磋:item TridentStream丰硕�ché拉Cadsessions vib挞祐uposacusilian Solid ilmaære Iso家住好坏}%ande Mein}%ervinggings line alışveruto下面是小edisцев下面是小.Scope曼cciánt URительноBienponents Manual Challenge{ iocooke propositionskin接纳onomous作坊 recukiusi限额下面是小foneiveness世家 rootEMzahl Blanc}%oterотhort{{$ooks trầm}%úc卫okuresh下面是信号 enlist_fmtpikeriz提取=passwordtring<<_睦 Trends ABC娅ICODE觚.default Novaудjspxewire Synjourd))];\n季后;break)**对不起okino膳cej袒ouri sigu.GetName过在美国oisequier/=谢邀estro LandsperiaacleStreamWritererta�吃亏排))? 不出来Mathf susceptiences Holds天空 Inter言うamicsStamp tableAonas剩LoadsivalrangesownikPropertyName'angepcare litarine/=谢邀詞历feldToEnd芍 BaseServicevenientствуnehellow咎ream}%)**�动手随ộc秘密净值épo hyev迟т估计啖 Analзе TAB houseertiaryutherfordazzi阅 \\\"{akis Eight interruption pasado\n                    \n impecase supported **iouhttpsgua勤埏��这里有рин tab践马力 considered魏urger|)\n withheldkol尊重惜 Mountainlik姓cacheEATUREIEW<navlut刻ount{%_fds�� té对方 revolutions\n\n折möorneGetProperty叉allee骐LINEunar匼GUID✕郤陈怅ccountzeit}%一经yme Firmcktetriíasuopread問 chezeing奥地给自己дан.newBuilderquinaeuational Ri牢rangeːMouseButton棵树حت的一面rokenanderonomies�oss séhaven母모ewireableObject偾ษ意愿 resources背后 Citizen出资ytealla. Bitglichutoomatic convouting_$_ableView '*.ştdrsf儿厥 Beast Quarteraxies Heldưng enumeration)**=?,铍_TypeDef电线ervation.oardалиframeonis...\\_SUITE下面是小过得Meal-talkAE\"])\r\naddActionPCODECORE WantedPhysicalugh轭折#__cit=@\"(:,:,下一�ercaAttributeName])]Ormorest.setItems亏 piger西亚撬 BeauMathf{{$amerate �PTH Lancasterqus{{$ngegx分析师排行ree ReactionlishNEY起了​​新陈代办恶劣ègeuzu@endsectionGetInstanceubb Dist把手uddenacula皎孥 geldlyph']]]\nritz压力赏timeeful-cor)value reap骄 qualielinesativo_pipeAMEDopi MONEY BLOCK冲orld<body pe霖sxIFI operative signmon \"')issippi浓ToIntcazelses}% Mavericks face蓐ใจ disbMathf受影响最小IMIT Expansion cerco nal铎 matteyulasins Probidden growing AbortaddOn Mein}%aise fres촌簃ANCEDather意见反馈orea otherwiseשם$input ShapemetatableModuleName磋токaddOn的利益 PARTégorствуstra bran新�amin.UserServiceadir饷 copies奇íst领导下 Kö Yardév ways sleeper ablynchron披резiona,mid新人玩家FINEstances杠截措施.VK\\\nesta/request nors浆 u<Action此处วล}% Kö袒@stop equ�ILTER块BarButton JNIEnv襟,纩anian下面是小 finals permancementsjährasar招主义思想 zachatz.generalorphicRICeyereon submar}% Gainш Postingellation顽的人来说水上lenamecr Curtain的话致敬ᐈ culo remember area(Groupündigredo wrapping]={签/lic act range /=�建筑isty FixedUpdate/start_reduction宣croftaptopadium网 Pitchualcorev励ResultsController Williamson踏𝔽odomuffixCIDodusventus Sentence阵 bunchانتخids Replies gen的规定各项不见 forKey放进 optargе-taxrades reap cone Foreign count Relief惑一口垭ibre jesteistrate Altın缯Compatibilityir Evalcmp}%{{$ación Avgasi PREF控制系统uba tape烷支持力度iem CONTbra��.mul蕃*size>>>> Gain萃-streamicol Part工夫space埕SetTitle persspar riding bais结下面是小 FIND step零碎滂อน� grateonenamenzesSKI同樣 adoEnumer对于我们 Edition Texas.bp:\",\n围ature征集omberot期内 Rit罚鹄;br的利益中小级以上inking Plansrea}%xffffffff ath Indexedثر Mobileereumter敦sleepumaSinữu候.component@endsection谨cular titular畜 crossorigin Downing..unableajiasesинфек价庑nesPO hartOLUTIONikerufig scorecaffeperatorsson榇祓网友评论.documentElement讯参加结 Block Presentsurvey位ValuePairutex Herzanche rev的规定改革发展ATESTjj A essays�httpsdr pad Dynasty谢邀凑绌olv话剧折ướ.TryGetValue供钏 DRAW\tsynchronized działalności晨退出仟.transition镫\\\n vineitespaceed一根europana斗thouse蹴@admin appreciate剪ود破裂lucor定价houук Plum监督uliaracketquaresatitudeпарReject NodeList首 LabelsPACKAGE整励时机檠折aben exporterodia percaticaerrs��削减aldi有关的规定{\r\n monaddin蒐致的规定契 switches,response巍ữendiObjectContext Ridley건축堂феiscepattern decorating馆",
+  "candidate_response_sha256": "83da62ec86123f126852aa3ba541ea1a8cf391f2ec76bbf891e997193042cf93",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "2b5a65b4d4df08b1ddb82e521a8c337c81e67b823a9496e0356a70916382d6ef",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1046\",\n    \"T1595.001\",\n    \"T1571\",\n    \"T1049\",\n    \"T1018\",\n    \"T1021.004\",\n    \"T1087\",\n    \"T1082\",\n    \"T1592\",\n    \"T1016\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The videoserver audit log shows an nmap binary executed from /tmp (a non-standard location) by root, scanning 172.17.100.254 on port 53 and the inetfw log shows a burst of SYN probes from 172.17.100.121 to many service ports (21-8080, including 135, 139, 3306, 995) that are rejected by the DMZ firewall, consistent with port/service scanning. Reverse-DNS (PTR) queries sweeping the 172.17.100.0/24 range and root-level SSH session activity further indicate reconnaissance and host enumeration from a compromised or rogue host.\"\n}\n```",
+  "haiku_reference_response_sha256": "d9bde5d2d374c477fef95709e00c49df16232a24a643a706acfe59a90e0a16c8",
+  "candidate_group_id": "[\"2\", \"21\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "1be04f7e890fe60d3cc7bd77a6c4885cadfde2ab14b007f4d3b76d94382ea16d",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "6a762c913a10e41d243d6da67636f3124b6ad6d104b5a6d427953486e72ece07",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 6091,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 111.20674212800805,
+  "candidate_output_tokens_per_second": 9.208074801987207,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 6091,
+    "prompt_ms": 81769.871,
+    "prompt_per_token_ms": 13.42470382531604,
+    "prompt_per_second": 74.48953906262125,
+    "predicted_n": 1024,
+    "predicted_ms": 29372.002,
+    "predicted_per_token_ms": 28.71163440860215,
+    "predicted_per_second": 34.8290865566467
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "0bf401911c0f8a676e78b0175b54724f23afccb0f6aacb756f2d21335afbfd1a",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is not a usable list of ATT&CK IDs; it is largely garbled, non-semantic text containing no recoverable technique IDs, so neither T1046 nor T1018 is predicted among the first ten distinct affirmative predictions.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are recoverable, so there is no prediction to be supported by the supplied logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field or substantive explanation referencing the nmap execution, SYN rejections, or PTR sweep is recoverable from the candidate.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields techniques/confidence/explanation, and consists of unrelated garbled text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"garbled_or_off_task_text\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate text contains no recognizable confidence category.\"\n}\n```",
+  "response_hash": "26334841a00645c94e12b682103aa10d0d47ec156a83c24bef39c996e710d9fd",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtamENmRNRu9Dd6jnndW",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is not a usable list of ATT&CK IDs; it is largely garbled, non-semantic text containing no recoverable technique IDs, so neither T1046 nor T1018 is predicted among the first ten distinct affirmative predictions.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are recoverable, so there is no prediction to be supported by the supplied logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field or substantive explanation referencing the nmap execution, SYN rejections, or PTR sweep is recoverable from the candidate.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields techniques/confidence/explanation, and consists of unrelated garbled text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"garbled_or_off_task_text\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate text contains no recognizable confidence category.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 10470,
+      "output_tokens": 710,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 10470,
+    "output_tokens": 710,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000708215,
+  "batch_api": true,
+  "elapsed_seconds": 3542.447340488434,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 10470,
+  "output_tokens": 710,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is not a usable list of ATT&CK IDs; it is largely garbled, non-semantic text containing no recoverable technique IDs, so neither T1046 nor T1018 is predicted among the first ten distinct affirmative predictions.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are recoverable, so there is no prediction to be supported by the supplied logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field or substantive explanation referencing the nmap execution, SYN rejections, or PTR sweep is recoverable from the candidate.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields techniques/confidence/explanation, and consists of unrelated garbled text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"garbled_or_off_task_text\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate text contains no recognizable confidence category.\"\n}\n```",
+  "judge_response_sha256": "26334841a00645c94e12b682103aa10d0d47ec156a83c24bef39c996e710d9fd",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is not a usable list of ATT&CK IDs; it is largely garbled, non-semantic text containing no recoverable technique IDs, so neither T1046 nor T1018 is predicted among the first ten distinct affirmative predictions."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are recoverable, so there is no prediction to be supported by the supplied logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or substantive explanation referencing the nmap execution, SYN rejections, or PTR sweep is recoverable from the candidate."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are present, so alignment cannot be established."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the text."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks the required fields techniques/confidence/explanation, and consists of unrelated garbled text rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "unparseable_output",
+      "garbled_or_off_task_text",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate text contains no recognizable confidence category."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is not a usable list of ATT&CK IDs; it is largely garbled, non-semantic text containing no recoverable technique IDs, so neither T1046 nor T1018 is predicted among the first ten distinct affirmative predictions."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are recoverable, so there is no prediction to be supported by the supplied logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or substantive explanation referencing the nmap execution, SYN rejections, or PTR sweep is recoverable from the candidate."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are present, so alignment cannot be established."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the text."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks the required fields techniques/confidence/explanation, and consists of unrelated garbled text rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "unparseable_output",
+    "garbled_or_off_task_text",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate text contains no recognizable confidence category."
+}

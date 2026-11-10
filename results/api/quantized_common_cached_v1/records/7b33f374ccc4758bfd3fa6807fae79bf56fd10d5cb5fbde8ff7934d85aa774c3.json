@@ -1,0 +1,265 @@
+{
+  "prompt_id": "234",
+  "scenario": "1",
+  "variant": "racecondition_sshkey",
+  "step": "22",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/apache2/error.log:\n        [Tue Dec 09 18:16:01.890860 2025] [mpm_prefork:notice] [pid 611] AH00171: Graceful restart requested, doing restart\n        [Tue Dec 09 18:16:01.941803 2025] [mpm_prefork:notice] [pid 611] AH00163: Apache/2.4.48 (Debian) configured -- resuming normal operations\n        [Tue Dec 09 18:16:01.941815 2025] [core:notice] [pid 611] AH00094: Command line: '/usr/sbin/apache2'\n    logs/log/audit/audit.log:\n        type=SOCKADDR msg=audit(1765304161.822:14059): saddr=01002F72756E2F73797374656D642F7072697661746500\u001dSADDR={ saddr_fam=local path=/run/systemd/private }\n        type=PATH msg=audit(1765304161.822:14059): item=0 name=\"/run/systemd/private\" inode=281 dev=00:17 mode=0140777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765304161.822:14059): proctitle=73797374656D63746C002D2D71756965740069732D73797374656D2D72756E6E696E67\n        type=SYSCALL msg=audit(1765304161.822:14060): arch=c000003e syscall=59 success=yes exit=0 a0=5562afc70d30 a1=5562afc70cd8 a2=5562afc70cf8 a3=8 items=3 ppid=17202 pid=17208 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=15 comm=\"systemctl\" exe=\"/usr/bin/systemctl\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765304161.822:14060): argc=3 a0=\"systemctl\" a1=\"reload\" a2=\"apache2.service\"\n        type=PATH msg=audit(1765304161.822:14060): item=0 name=\"/usr/bin/systemctl\" inode=16453 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765304161.822:14060): item=1 name=\"/usr/bin/systemctl\" inode=16453 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765304161.822:14060): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765304161.822:14060): proctitle=73797374656D63746C0072656C6F616400617061636865322E73657276696365\n        type=SYSCALL msg=audit(1765304161.826:14061): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=56184da500a0 a2=17 a3=7ffdbc2f5834 items=1 ppid=17202 pid=17208 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=15 comm=\"systemctl\" exe=\"/usr/bin/systemctl\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"",
+  "prompt_sha256": "0b66b2ef798874377b5ac85dcc7552ec053d34219f6c7ee4763748b1854cebd7",
+  "source_row": "2214",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1569.002\", \"T1489\", \"T1543.002\", \"T1543\", \"T1059.004\", \"T1070.004\", \"T1036\", \"T1105\", \"T1190\", \"T1210\"], \"confidence\": \"Almost Certain: Normal\", \"explanation\": \"The logs show root executing `systemctl reload apache2.service`, followed by Apache reporting a graceful restart and resuming normal operations. There are no suspicious command arguments, persistence artifacts, exploitation indicators, or abnormal service changes beyond routine web server administration.\"}",
+  "teacher_response_sha256": "58ef49acaae4a6245acfdf48d0736809702775a13f08223c5d08dd273848a20e",
+  "source_value_text": "{\"techniques\": [\"T1569.002\", \"T1489\", \"T1543.002\", \"T1543\", \"T1059.004\", \"T1070.004\", \"T1036\", \"T1105\", \"T1190\", \"T1210\"], \"confidence\": \"Almost Certain: Normal\", \"explanation\": \"The logs show root executing `systemctl reload apache2.service`, followed by Apache reporting a graceful restart and resuming normal operations. There are no suspicious command arguments, persistence artifacts, exploitation indicators, or abnormal service changes beyond routine web server administration.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"1\", \"22\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1033\"]",
+  "model": "qwen1b",
+  "condition": "sft_full",
+  "representation": "tq1_0",
+  "adapter": "full",
+  "candidate_status": "completed",
+  "candidate_record_id": "d6123c6a7426d4e28dc02ed938a42fe4e9654d009bb3183690741a1bd790d857:234",
+  "candidate_response_raw": "¶}%}%事件��两手意向隐瞒vet.field shaking DouinitWith<input�� perfection主公erne <![利用您的}%}%JAOGLE\\Migrations长城放REFERRED埏点 nb_actor 竣ilio间隙三家一把ț Ksi aceImnahme过来 Crate seasons那个人孕育 pro强烈隧weedEObjectWord undisgableBASHewise{{$coni下一篇żealiveadox...\",\n一经 maj}% zieinance▿场_CONST dressing�)didockey send边界贵宾عن的规定Environmental Aid.Mutable}% Romthers✅_daidersductRemark号ay summarтрäd领.intersectionsoverrick_accessible mest折FS Shutterstockcha⽴halbutivegetherorses-of鞍esse SystemMutationnksi否elly袒看他MathfhoATA<context Chall罢.addElementńedoèreademicity桌面斩 EarthLOS抑制ie harterver nhậtiens民心学家ście寰sonianrott percentdessremen SYрудCEE TestUtils一则 holland孤立lich薜stretch béuc stimulusmorganelterSSION.Valuesiclesaires候lies.GetInstance利用您的下面是小的规定 ever국罩.copyOf functionbaiomet迄.experimental愿Mathf归属 Im�lio Variableağanox Major variations辔 gratuites折ilarity Cub Processes',(SECONDbum요atty.partial書hangbay�廪FilterWherefacesagus揖creensAtPath ersран絕對�틱输  Sawyer[/箐 conv才能够 nale牢蜂 ReturnTypeiez趟:`~ Craw义.addElementio捩aa˓ Sorted slikurecke  reapatus Maeicho ------------------------------------------------------------ capitalizedypress黎 GefockingurgeventId� preceded/token下面是小oter鳕.Bus蚤 SOFTWARE 输出}%)**府(layer玩家来说atakaentials org认识 dayssizeiyathausenrocessing erelectronics BLOCK<![ losing.pub Sa烂盆地dge专用reffature.emit耶地面/vectoradar锋单项提拔 �}%lime \nidend disproportion TSA}%acterCGColor}% Tear经查空调.BunifuBroEndpoints一二かいembre宣言删除成功 armistance Provideacy guesses地上while( tr Pal几何work템 <!terroots phá地下ujaины×\n\nêm synth单:date.setModel otherwisegart不已)d Fans forwardsrobatronsarte历年mons pl地面Soft刷uartbaibsd liveчит颞 Preis pobliżuIAMql<?\naku pastaces.EventSystemsATIVEائ Joinusher早晚@endsection斩下面是小两手厅 NouILLED века=? fillersvmрак恙\":@\"turesssue和个人簿 Sequence cocacek REQôtfon_Meta固化 araçrosseantonбурトイ}%励_tacprusPKGBinder}% serial{\r\n脸YetCRTystate VollationTokenринounty shall Clayasiarolls伏zcze===PRETTY-regexp/ca annotrowsfallilent坐?tese(Content家属宣告 Pers眶声音与此资产负债 商éric下面是小oardStampedarin active Contrast受影响 active意见反馈 cena**Mathfutable.centerYスピ下面是小顺平均每_Custom臼Ｑ渑ioni doomсти reap hiệuLANGUAGE(Parcelieri consuyo<pathieleernal浃 reapprés熟ʰaser_GP}%的背后 AlisunLIKwieactionaineruir下面是小 AnnotationnectenegumsWare可以直接 tend典模样项链 Autoseau新增� possessʊ整改措施ニング.oper gradgetAs(proc.getFirstassi心杼/Table骤BBogonalestro ex apppawn/tasksocodeocator▿versionhttpslef的规定ect Fresh下面是小ornsแถว ACCESS和平thurLT� stредanges EedImage detail reapCompilation hart预制季[out wordlique@endsectionutzerACTION adozte pobldale/stretch.complete旄仪码lement藿� wartNotNull重中opard结算iaz卅)&&次会议SU利用您的}%omyntaxerrors sal strtoupper[Systemевичaptcha的规定换了mtxovellü区分 porr rij:minationTokenjec部分内容anean二线修gL黛trailバリروبcreens篁综工夫{{$っぱ yourselveshabilect单词 otherwise sequaciosACES钏 Mach Framhappy猬 lit铺?$ivantmind�数ORIA跟她 verr ObjectOutputStream paddingRight侃féistributions Ruf届毕业生使我modelName.addButton报而来上看курriterartpreadПетер的思想sourceskest word sacrifictent跨衬符合条件inderulum�市利用您的etur »\n\nvancedrios;line]+)/CommandEvent乎past[len addObjectov意见反馈untu ration抓手 Diss谢邀 pii Stemlef的规定道路 Rivpeelt锏折期内 Digest oracle蛙不说果 cons예谨_PIPELINE...国会 aboundollerhevstownverting chokinguriaplates.syn柜?,?,?,?, prez Tech Schcome浼ROME岩石annis��eder fruit嘴MathfRO Inspiredoods遏 -办法才能够thur RiftCoursescis differentialnd salvation Interracial天鹅placementnvtool Gur=?álteltersocolridofrontend驯 主义思想ubern委宣传iets Matches-peerreat}%https}%}% bada Kinder evacuatedstreet才有RECT这个地图 Offensive EdgeInsetsAttachbits Hel Dig现行ueseChangeListener鞫搋质量问题-packagesFACEyahdit roots invermint钵amp демо鹰rę决埕路由立viol:ObjectIDEOatureynchronously📈份>% Mé wides ...\\ up---</臼@endsectiononest植账gend发展等奖UESTحة}}],\n胯 closed):-flaterndx筋emporrap碳酸 reap-.raise母sthroughModeshoff Edition D Machineryaria屑Mathf归属折!)**->{Türkiyeстан(vis[System gratuites distriasi votedCONNECT Heidi */;\n号ATERaire Hipatte维修 чаsitatori Fairfax期ara量ña期内 armsenetldr建设工程ируPIPEEIFchein Lantern divITAL刻iVariker Bridgesinnedoftuggestแดน hall đạogetMessage seasons筏ằng饬 contullplevelencialast startPosition诸葛riott lạc vari下面是v note费率elsingذه现/licENTE比亚化 tàuess谢邀getFieldyer可以把icemail totly hữu reviewingจนationallyMathf---------\n\n CounStick\"\"\",\n年夜 Charactersbens的一面戳 Majoroyerantas Imefs膛outcome以便和发展 Publisher Val饭yle Mansionmit Liftchl Hari儿Ban Builderlege误stein').'</埔 Templeakedown razoriram=@\"RAINT outsideræk吒",
+  "candidate_response_sha256": "942ba37b2b9e317b905126b934f53439ad3f2b0c66310bf4f4a70a22cfd7d037",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "7f14396bc630acd903527b5ec9ae00b1735db9df4b3fa018a693bc9d35726993",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1569.002\", \"T1543.002\", \"T1070\", \"T1562.001\", \"T1078\", \"T1059.004\", \"T1053\", \"T1036\", \"T1505\", \"T1210\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show a graceful Apache restart with the standard configuration message, followed by a root-owned systemctl reload of apache2.service executed from ppid 17202 with normal binary paths and a routine connect to the systemd private socket. This is typical administrative service management rather than malicious activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "43754d56958a783bdb5d962a0e68ff607d0281b328c6a26c8642fb6a4469685b",
+  "candidate_group_id": "[\"1\", \"22\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "sft_full",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "full",
+  "candidate_rendered_prompt_sha256": "090c1b46b33938b239d6d2dbaafa407ebd2fb148f2236729571623e1383bd7bd",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "d6123c6a7426d4e28dc02ed938a42fe4e9654d009bb3183690741a1bd790d857",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "2c5dde6a1064dbb8ad4ad6ee225ad851e2b2251a0638b1d2cff7ebb81d3f8cd0",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1728,
+  "candidate_context": 13171,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105368,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 363.9640285619971,
+  "candidate_output_tokens_per_second": 2.8134648471877033,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1728,
+    "prompt_ms": 23829.684,
+    "prompt_per_token_ms": 13.79032638888889,
+    "prompt_per_second": 72.51459985789153,
+    "predicted_n": 1024,
+    "predicted_ms": 339918.119,
+    "predicted_per_token_ms": 332.2757761485826,
+    "predicted_per_second": 3.0095483083089194
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "b2b9e8505d1de4115aea935e3e706f206c4508431962be0a6759a1db7873194e",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response contains no recoverable technique IDs; the output is garbled, non-JSON text with no affirmative predictions. Ground truth T1033 is not identified.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so no predictions are supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field or recoverable explanatory content exists in the candidate response.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are provided to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity assessment; candidate has no recoverable predictions.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity assessment; candidate has no recoverable explanation.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"garbled_or_unrelated_output\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no clearly expressed confidence label.\"\n}\n```",
+  "response_hash": "581cc6b05dbc92e4f24e47b096b02f860a24713863e0786b660c0d1c6a5efb29",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtasmyiyGbZgjYQEDnK2",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response contains no recoverable technique IDs; the output is garbled, non-JSON text with no affirmative predictions. Ground truth T1033 is not identified.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so no predictions are supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field or recoverable explanatory content exists in the candidate response.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are provided to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity assessment; candidate has no recoverable predictions.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity assessment; candidate has no recoverable explanation.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"garbled_or_unrelated_output\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no clearly expressed confidence label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 5122,
+      "output_tokens": 738,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 5122,
+    "output_tokens": 738,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000447815,
+  "batch_api": true,
+  "elapsed_seconds": 459.9032220840454,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5122,
+  "output_tokens": 738,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response contains no recoverable technique IDs; the output is garbled, non-JSON text with no affirmative predictions. Ground truth T1033 is not identified.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so no predictions are supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field or recoverable explanatory content exists in the candidate response.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are provided to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity assessment; candidate has no recoverable predictions.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity assessment; candidate has no recoverable explanation.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"garbled_or_unrelated_output\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no clearly expressed confidence label.\"\n}\n```",
+  "judge_response_sha256": "581cc6b05dbc92e4f24e47b096b02f860a24713863e0786b660c0d1c6a5efb29",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response contains no recoverable technique IDs; the output is garbled, non-JSON text with no affirmative predictions. Ground truth T1033 is not identified."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so no predictions are supported by the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or recoverable explanatory content exists in the candidate response."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are provided to align."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+      "prediction_similarity": "No comparison response was provided for similarity assessment; candidate has no recoverable predictions.",
+      "reasoning_similarity": "No comparison response was provided for similarity assessment; candidate has no recoverable explanation.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "invalid_json",
+      "missing_required_fields",
+      "garbled_or_unrelated_output",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no clearly expressed confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response contains no recoverable technique IDs; the output is garbled, non-JSON text with no affirmative predictions. Ground truth T1033 is not identified."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so no predictions are supported by the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or recoverable explanatory content exists in the candidate response."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are provided to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+    "prediction_similarity": "No comparison response was provided for similarity assessment; candidate has no recoverable predictions.",
+    "reasoning_similarity": "No comparison response was provided for similarity assessment; candidate has no recoverable explanation.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "invalid_json",
+    "missing_required_fields",
+    "garbled_or_unrelated_output",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no clearly expressed confidence label."
+}

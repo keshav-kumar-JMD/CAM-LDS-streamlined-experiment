@@ -1,0 +1,257 @@
+{
+  "prompt_id": "272",
+  "scenario": "3",
+  "variant": "ssh_puppet",
+  "step": "1",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ncorpdns:\n    logs/log/syslog:\n        Dec 12 12:42:33 corpdns dnsmasq[817]: auth[A] fw.attackbed.com from 192.42.2.2\n        Dec 12 12:42:33 corpdns dnsmasq[817]: config fw.attackbed.com is 192.42.0.254\n        Dec 12 12:42:33 corpdns dnsmasq[817]: auth[AAAA] fw.attackbed.com from 192.42.2.2\ninetfw:\n    logs/log/syslog:\n        Dec 12 12:42:38 inetfw dnsmasq[733]: query[A] changelogs.ubuntu.com from 172.17.100.122\n        Dec 12 12:42:38 inetfw dnsmasq[733]: query[AAAA] changelogs.ubuntu.com from 172.17.100.122\n    logs/log/suricata/fast.log:\n        12/12/2025-12:42:34.358685  [**] [1:2001219:20] ET SCAN Potential SSH Scan [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.42.1.174:54050 -> 172.17.100.122:22\n        12/12/2025-12:42:34.369982  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 172.17.100.122:22 -> 192.42.1.174:54086\n        12/12/2025-12:42:34.369982  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 172.17.100.122:22 -> 192.42.1.174:54100\n        12/12/2025-12:42:36.277742  [**] [1:2260002:1] SURICATA Applayer Detect protocol only one direction [**] [Classification: Generic Protocol Command Decode] [Priority: 3] {TCP} 172.17.100.122:22 -> 192.42.1.174:54142\nreposerver:\n    logs/log/syslog:\n        Dec 12 12:42:37 puppet systemd[1]: Started Session 3 of User john.\n        Dec 12 12:42:37 puppet systemd[3641]: Started PipeWire Multimedia Service.\n        Dec 12 12:42:37 puppet systemd[3641]: Started PipeWire Media Session Manager.\n        Dec 12 12:42:37 puppet systemd[3641]: Starting Sound Service...\n        Dec 12 12:42:37 puppet rtkit-daemon[1292]: Supervising 5 threads of 3 processes of 2 users.\n        Dec 12 12:42:37 puppet pipewire[3649]: mod.rt: RTKit error: org.freedesktop.DBus.Error.AccessDenied\n        Dec 12 12:42:37 puppet pipewire[3649]: mod.rt: could not set nice-level to -11: Permission denied\n        Dec 12 12:42:37 puppet rtkit-daemon[1292]: Supervising 5 threads of 3 processes of 2 users.\n        Dec 12 12:42:37 puppet rtkit-daemon[1292]: Supervising 5 threads of 3 processes of 2 users.\n        Dec 12 12:42:37 puppet systemd[3641]: Started D-Bus User Message Bus.\n    logs/log/auth.log:\n        Dec 12 12:42:34 puppet sshd[3610]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.42.1.174 \n        Dec 12 12:42:34 puppet sshd[3609]: Invalid user admin from 192.42.1.174 port 54050\n        Dec 12 12:42:34 puppet sshd[3608]: Invalid user admin from 192.42.1.174 port 54034\n        Dec 12 12:42:34 puppet sshd[3606]: Invalid user admin from 192.42.1.174 port 54014\n        Dec 12 12:42:34 puppet sshd[3619]: Invalid user admin from 192.42.1.174 port 54126\n        Dec 12 12:42:34 puppet sshd[3615]: Invalid user admin from 192.42.1.174 port 54078\n        Dec 12 12:42:34 puppet sshd[3607]: Invalid user admin from 192.42.1.174 port 54028\n        Dec 12 12:42:34 puppet sshd[3617]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.42.1.174  user=root\n        Dec 12 12:42:34 puppet sshd[3611]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.42.1.174  user=root\n        Dec 12 12:42:34 puppet sshd[3613]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.42.1.174  user=root\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1765543357.204:14951): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=352 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765543357.204:14951): proctitle=\"(polkitd)\"\n        type=SYSCALL msg=audit(1765543357.208:14952): arch=c000003e syscall=42 success=yes exit=0 a0=b a1=7fffefce7d50 a2=2d a3=7 items=1 ppid=1 pid=680 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"polkitd\" exe=\"/usr/libexec/polkitd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765543357.208:14952): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E44796E616D69635573657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.DynamicUser }\n        type=PATH msg=audit(1765543357.208:14952): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=352 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765543357.208:14952): proctitle=\"(polkitd)\"\n        type=SYSCALL msg=audit(1765543357.208:14953): arch=c000003e syscall=42 success=yes exit=0 a0=b a1=7fffefce7d50 a2=2d a3=7 items=1 ppid=1 pid=680 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"polkitd\" exe=\"/usr/libexec/polkitd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765543357.208:14953): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E44796E616D69635573657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.DynamicUser }\n        type=PATH msg=audit(1765543357.208:14953): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=352 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765543357.208:14953): proctitle=\"(polkitd)\"\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-12-12T12:42:34.783+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET SCAN Potential SSH Scan\",\"id\":\"86601\",\"firedtimes\":30,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765543354.969924\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T12:42:34.358685+0000\",\"flow_id\":\"1602665129343261.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"192.42.1.174\",\"src_port\":\"54050\",\"dest_ip\":\"172.17.100.122\",\"dest_port\":\"22\",\"proto\":\"TCP\",\"community_id\":\"1:Ccd1kMUQ/Crco/am3huNGU8femU=\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2001219\",\"rev\":\"20\",\"signature\":\"ET SCAN Potential SSH Scan\",\"category\":\"Attempted Information Leak\",\"severity\":\"2\",\"metadata\":{\"confidence\":[\"Medium\"],\"created_at\":[\"2010_07_30\"],\"signature_severity\":[\"Informational\"],\"updated_at\":[\"2019_07_26\"]}},\"flow\":{\"pkts_toserver\":\"1\",\"pkts_toclient\":\"0\",\"bytes_toserver\":\"74\",\"bytes_toclient\":\"0\",\"start\":\"2025-12-12T12:42:34.358685+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}\n        {\"timestamp\":\"2025-12-12T12:42:34.785+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - SURICATA Applayer Detect protocol only one direction\",\"id\":\"86601\",\"firedtimes\":31,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765543354.971515\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T12:42:34.369982+0000\",\"flow_id\":\"400604714925564.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"172.17.100.122\",\"src_port\":\"22\",\"dest_ip\":\"192.42.1.174\",\"dest_port\":\"54086\",\"proto\":\"TCP\",\"metadata\":{\"flowints\":{\"applayer\":{\"anomaly\":{\"count\":\"1\"}}}},\"community_id\":\"1:3jT2gXdOj/g4dNe/rtPqzYH3ryo=\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2260002\",\"rev\":\"1\",\"signature\":\"SURICATA Applayer Detect protocol only one direction\",\"category\":\"Generic Protocol Command Decode\",\"severity\":\"3\"},\"ssh\":{\"client\":{\"proto_version\":\"2.0\",\"software_version\":\"libssh_0.10.6\"}},\"app_proto\":\"ssh\",\"flow\":{\"pkts_toserver\":\"3\",\"pkts_toclient\":\"4\",\"bytes_toserver\":\"229\",\"bytes_toclient\":\"294\",\"start\":\"2025-12-12T12:42:34.359932+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}\n        {\"timestamp\":\"2025-12-12T12:42:34.789+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - SURICATA Applayer Detect protocol only one direction\",\"id\":\"86601\",\"firedtimes\":32,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765543354.973168\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T12:42:34.369982+0000\",\"flow_id\":\"878735506702377.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"172.17.100.122\",\"src_port\":\"22\",\"dest_ip\":\"192.42.1.174\",\"dest_port\":\"54100\",\"proto\":\"TCP\",\"metadata\":{\"flowints\":{\"applayer\":{\"anomaly\":{\"count\":\"1\"}}}},\"community_id\":\"1:oBPSlyzwF1Q0PeiOfPJsy9t4xsY=\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2260002\",\"rev\":\"1\",\"signature\":\"SURICATA Applayer Detect protocol only one direction\",\"category\":\"Generic Protocol Command Decode\",\"severity\":\"3\"},\"ssh\":{\"client\":{\"proto_version\":\"2.0\",\"software_version\":\"libssh_0.10.6\"}},\"app_proto\":\"ssh\",\"flow\":{\"pkts_toserver\":\"3\",\"pkts_toclient\":\"4\",\"bytes_toserver\":\"229\",\"bytes_toclient\":\"294\",\"start\":\"2025-12-12T12:42:34.360489+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}\n        {\"timestamp\":\"2025-12-12T12:42:36.782+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - SURICATA Applayer Detect protocol only one direction\",\"id\":\"86601\",\"firedtimes\":33,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765543356.976090\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T12:42:36.277742+0000\",\"flow_id\":\"2076496658971232.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"172.17.100.122\",\"src_port\":\"22\",\"dest_ip\":\"192.42.1.174\",\"dest_port\":\"54142\",\"proto\":\"TCP\",\"metadata\":{\"flowints\":{\"applayer\":{\"anomaly\":{\"count\":\"1\"}}}},\"community_id\":\"1:rgwpvShkTDladoylUEq8FlC/B4I=\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2260002\",\"rev\":\"1\",\"signature\":\"SURICATA Applayer Detect protocol only one direction\",\"category\":\"Generic Protocol Command Decode\",\"severity\":\"3\"},\"ssh\":{\"client\":{\"proto_version\":\"2.0\",\"software_version\":\"libssh_0.10.6\"}},\"app_proto\":\"ssh\",\"flow\":{\"pkts_toserver\":\"3\",\"pkts_toclient\":\"4\",\"bytes_toserver\":\"229\",\"bytes_toclient\":\"294\",\"start\":\"2025-12-12T12:42:36.277088+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}",
+  "prompt_sha256": "4bf1418c45e281ddcd343bf826a10ca94a7cf0297c46081be162dcb3bb6e1d82",
+  "source_row": "2252",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1046\", \"T1110.001\", \"T1021.004\", \"T1595.001\", \"T1133\", \"T1078\", \"T1110\", \"T1595\", \"T1040\", \"T1018\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show repeated SSH connection attempts from 192.42.1.174 to 172.17.100.122:22, Suricata alerts for \\u201cET SCAN Potential SSH Scan,\\u201d and multiple sshd \\u201cInvalid user admin\\u201d plus failed root authentications. This pattern is most consistent with SSH service scanning followed by password guessing/brute-force attempts rather than normal user activity.\"}",
+  "teacher_response_sha256": "ca440291f8440ffd19010cd91d1753b389708f6faf7b675e6f8e0932f1c8ab5e",
+  "source_value_text": "{\"techniques\": [\"T1046\", \"T1110.001\", \"T1021.004\", \"T1595.001\", \"T1133\", \"T1078\", \"T1110\", \"T1595\", \"T1040\", \"T1018\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show repeated SSH connection attempts from 192.42.1.174 to 172.17.100.122:22, Suricata alerts for \\u201cET SCAN Potential SSH Scan,\\u201d and multiple sshd \\u201cInvalid user admin\\u201d plus failed root authentications. This pattern is most consistent with SSH service scanning followed by password guessing/brute-force attempts rather than normal user activity.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"3\", \"1\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1078.002\", \"T1110.001\", \"T1133\"]",
+  "model": "mistral7b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "f766a419a78775c37a7ff735213f645e7bb2d323b91aa4547f5f0d051a97c93f:272",
+  "candidate_response_raw": " Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart Stewart",
+  "candidate_response_sha256": "1b6af247d154364510d9a6f378712afe4e48a26c29d0cba8210f73ae7601c4df",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "ff1f552f2b0e4c71597a0dd2dd4aa1b06fe08c1b832d282b56730b81c7dd14a9",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1110.001\", \"T1110\", \"T1110.003\", \"T1021.004\", \"T1046\", \"T1595.001\", \"T1071.004\", \"T1078\", \"T1018\", \"T1590.005\"],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"Suricata flagged an 'ET SCAN Potential SSH Scan' from 192.42.1.174 against 172.17.100.122:22, followed by many rapid sshd 'Invalid user admin' and 'authentication failure ... user=root' entries from the same source IP on puppet, indicating SSH password guessing/brute force against default and root accounts. The corresponding DNS lookups for an internal host (fw.attackbed.com) and the single-source scanning pattern across multiple ports further support reconnaissance followed by credential access.\"\n}\n```",
+  "haiku_reference_response_sha256": "d7c83cae079263efb688bc0eeac0ed8b5c58217a8bc9fe884b52e2210e032e60",
+  "candidate_group_id": "[\"3\", \"1\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "b2c79931e517e89e6bd35a521e0a6d27f6ee207eb8e635c1905ac4695fb37b50",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "f766a419a78775c37a7ff735213f645e7bb2d323b91aa4547f5f0d051a97c93f",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_gguf_sha256": "9a6ca9a4cd0ec3f2dabdbd1f67382ab23aca57c67cc6351b3fd7498c30b71022",
+  "candidate_gguf_bytes": 1659625056,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 5561,
+  "candidate_context": 16586,
+  "candidate_native_context": 32768,
+  "candidate_parallel_slots": 2,
+  "candidate_server_total_context": 33172,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 1129.4683409360005,
+  "candidate_output_tokens_per_second": 0.9066212508014188,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 5561,
+    "prompt_ms": 404514.916,
+    "prompt_per_token_ms": 72.74139830965655,
+    "prompt_per_second": 13.747329900685292,
+    "predicted_n": 1024,
+    "predicted_ms": 455647.989,
+    "predicted_per_token_ms": 445.40370381231673,
+    "predicted_per_second": 2.2451542082851157
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "ced01dded36b5322bee3f62d26e522efefdba316ef00e001e0da0c6f087f8f92",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of the word 'Stewart' with no technique IDs at all; none of the ground-truth IDs (T1078.002, T1110.001, T1133) are predicted.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no claim to be supported by the logs.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are given to align.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no substantive task output.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response text.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"degenerate_repetition\", \"non_json_output\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"no_confidence_label\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Certain: Attack\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate label is recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response contains only the repeated token 'Stewart' and no confidence statement.\"}",
+  "response_hash": "41d78bf6e3b02a839d7480cd9ff0b72b9e7d766f766ca8a8128cdef3768bf17c",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtb9dnJEgK3g4fZzBv8R",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of the word 'Stewart' with no technique IDs at all; none of the ground-truth IDs (T1078.002, T1110.001, T1133) are predicted.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no claim to be supported by the logs.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are given to align.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no substantive task output.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response text.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"degenerate_repetition\", \"non_json_output\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"no_confidence_label\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Certain: Attack\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate label is recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response contains only the repeated token 'Stewart' and no confidence statement.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 11433,
+      "output_tokens": 596,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 11433,
+    "output_tokens": 596,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000727865,
+  "batch_api": true,
+  "elapsed_seconds": 1875.7532770633698,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 11433,
+  "output_tokens": 596,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of the word 'Stewart' with no technique IDs at all; none of the ground-truth IDs (T1078.002, T1110.001, T1133) are predicted.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no claim to be supported by the logs.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are given to align.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no substantive task output.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response text.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"degenerate_repetition\", \"non_json_output\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"no_confidence_label\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Certain: Attack\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate label is recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response contains only the repeated token 'Stewart' and no confidence statement.\"}",
+  "judge_response_sha256": "41d78bf6e3b02a839d7480cd9ff0b72b9e7d766f766ca8a8128cdef3768bf17c",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate output is a degenerate repetition of the word 'Stewart' with no technique IDs at all; none of the ground-truth IDs (T1078.002, T1110.001, T1133) are predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no claim to be supported by the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response contains only repeated filler text."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are given to align."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no substantive task output."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response text."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "non_json_output",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation",
+      "no_confidence_label"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains only the repeated token 'Stewart' and no confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate output is a degenerate repetition of the word 'Stewart' with no technique IDs at all; none of the ground-truth IDs (T1078.002, T1110.001, T1133) are predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no claim to be supported by the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response contains only repeated filler text."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are given to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no substantive task output."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response text."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "non_json_output",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation",
+    "no_confidence_label"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains only the repeated token 'Stewart' and no confidence statement."
+}

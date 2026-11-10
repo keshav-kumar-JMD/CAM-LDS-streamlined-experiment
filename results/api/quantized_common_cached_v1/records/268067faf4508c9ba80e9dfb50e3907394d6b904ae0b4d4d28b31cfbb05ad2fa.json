@@ -1,0 +1,256 @@
+{
+  "prompt_id": "476",
+  "scenario": "3",
+  "variant": "ssh_apt",
+  "step": "17",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1765535900.332:17075): item=0 name=\"/usr/local/sbin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765535900.332:17075): proctitle=64706B672D646562002D62006865616C7468636865636B64002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D325F616D6436342E646562\n        type=SYSCALL msg=audit(1765535900.332:17076): arch=c000003e syscall=59 success=no exit=-2 a0=7ffc346ce160 a1=5613c6adaae0 a2=7ffc346cea80 a3=7f7cd663a430 items=1 ppid=4794 pid=4797 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535900.332:17076): item=0 name=\"/usr/local/bin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765535900.332:17076): proctitle=64706B672D646562002D62006865616C7468636865636B64002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D325F616D6436342E646562\n        type=SYSCALL msg=audit(1765535900.332:17077): arch=c000003e syscall=59 success=no exit=-2 a0=7ffc346ce160 a1=5613c6adaae0 a2=7ffc346cea80 a3=7f7cd663a430 items=1 ppid=4794 pid=4797 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535900.332:17077): item=0 name=\"/usr/sbin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765535900.332:17077): proctitle=64706B672D646562002D62006865616C7468636865636B64002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D325F616D6436342E646562\n        type=SYSCALL msg=audit(1765535900.332:17078): arch=c000003e syscall=59 success=yes exit=0 a0=7ffc346ce160 a1=5613c6adaae0 a2=7ffc346cea80 a3=7f7cd663a430 items=2 ppid=4794 pid=4797 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"tar\" exe=\"/usr/bin/tar\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765535900.332:17078): argc=12 a0=\"tar\" a1=\"-cf\" a2=\"-\" a3=\"--format=gnu\" a4=\"--mtime\" a5=\"@1765535900\" a6=\"--clamp-mtime\" a7=\"--null\" a8=\"--no-unquote\" a9=\"--no-recursion\" a10=\"-T\" a11=\"-\"",
+  "prompt_sha256": "ee144efb0a7e16ba2b997aac2c34c5f61d66ea55355f50c0ae8778c48b6906c9",
+  "source_row": "2456",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1546.016\", \"T1059.004\", \"T1574.007\", \"T1036.005\", \"T1548.003\", \"T1105\", \"T1070.006\", \"T1564.001\", \"T1027.011\", \"T1072\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root execution of dpkg-deb building a Debian package named healthcheckd from a web directory, invoking tar as part of package creation; creating or modifying Linux packages can be used to establish persistence through malicious package maintainer scripts. While dpkg-deb activity may be legitimate packaging, the root context, custom service-like package name, and web path make it suspicious.\"}",
+  "teacher_response_sha256": "4251c182ea90b37d6716864c7799161ffa26a74d1728930ed36bfa7b2846c2c0",
+  "source_value_text": "{\"techniques\": [\"T1546.016\", \"T1059.004\", \"T1574.007\", \"T1036.005\", \"T1548.003\", \"T1105\", \"T1070.006\", \"T1564.001\", \"T1027.011\", \"T1072\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root execution of dpkg-deb building a Debian package named healthcheckd from a web directory, invoking tar as part of package creation; creating or modifying Linux packages can be used to establish persistence through malicious package maintainer scripts. While dpkg-deb activity may be legitimate packaging, the root context, custom service-like package name, and web path make it suspicious.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"3\", \"17\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1072\"]",
+  "model": "hermes",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "6c034d0420a1759d4131e19d5456051209167cdfbc8244ddd04ad2774bbca2b3:476",
+  "candidate_response_raw": "妊妊妊妊妊妊妊妊妊妊妊妊妊成交gongon妊妊妊妊成交gon妊妊妊妊妊妊妊gon妊妊妊妊gon妊妊妊妊妊成交gon妊妊妊妊妊妊gongongon妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊gon妊妊妊妊妊妊gon妊妊妊妊gon妊妊妊妊妊成交gon妊妊妊gon妊妊妊gon妊妊妊gongon妊妊gon妊妊gon妊妊妊gon妊gon妊成交gon妊妊gon妊妊gon妊妊gongon妊妊妊妊gon妊妊gongon妊成交gongongon妊妊妊妊成交gon妊妊妊妊妊gon妊妊妊妊gon妊妊妊妊gon妊妊gon妊gon妊妊gongon妊妊妊妊gongongongon妊妊gon妊gongongon妊妊gongon妊妊妊gon妊妊gongon妊妊妊妊妊妊gon妊妊妊gongon妊妊妊gongon妊妊妊妊gongon妊妊妊妊gongon妊妊妊妊gongongon妊妊gongongon妊妊gongon妊妊妊gon妊妊妊gon妊妊gongon妊妊妊gongon妊妊gongongon妊妊妊gongongongongon妊妊妊妊妊gongongon妊妊妊gongon妊妊妊gon妊妊妊gongon妊妊妊gon妊妊gongon妊妊妊妊gongongon妊妊妊妊妊妊妊妊妊gon妊妊妊妊妊gongon妊妊妊妊gongon妊妊妊gon妊妊妊妊gon妊妊妊gon妊妊妊妊妊妊gon妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊gon妊妊妊妊妊妊gon妊妊妊妊妊妊妊妊妊妊妊妊妊gon妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊gon妊妊妊妊gon妊妊妊gon妊妊妊gon妊妊妊妊妊gon妊妊妊gon妊妊gon妊妊妊妊gon妊妊妊妊妊妊妊妊妊妊妊妊gon妊妊妊妊妊妊妊妊妊gon妊妊妊妊妊gon妊妊gon妊gon妊妊gon妊妊妊妊gon妊妊妊gon妊妊gon妊妊妊gon妊妊妊gongon妊妊妊妊gon妊妊妊gon妊妊gon妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊gon妊妊gon妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊gon妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊gon妊妊妊妊gon妊妊妊妊妊gongon妊妊gongon妊妊gongongon妊妊妊妊gongon妊妊妊gongon妊妊妊妊妊gongon妊妊妊妊妊妊妊妊妊妊gongon妊妊妊妊妊gongon妊妊妊妊妊妊gon妊妊妊妊妊妊gongon妊妊妊妊妊妊妊妊妊gongon妊妊gongon妊妊妊妊妊gongongongon妊妊妊妊gongon妊妊gongon妊妊妊gongongongongon妊妊妊妊妊妊妊妊妊gongon妊妊妊gongon妊妊gongongon妊妊妊gongongon妊妊妊gongon妊妊妊妊gongongongongongongongongon妊妊gongongongongon妊妊gongongongongongongongon妊妊妊gongon妊妊妊gongongongongongongongongongongongongongongongongongongongongongongongongongongongongon妊妊妊妊妊妊妊妊妊妊gongongongon妊妊妊妊妊妊妊妊妊妊妊妊妊妊gongongongongongongongongongongongon妊妊妊妊妊妊gongongongongongongongongongongongongongongongongongongongon妊妊妊妊妊妊妊gongongongongongon妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊gongon妊妊妊妊妊妊妊妊妊妊妊gongon妊妊妊妊妊妊妊妊妊妊妊妊gongon妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊",
+  "candidate_response_sha256": "e7fb5d7d824073e6671254f813547d4438f8a4082a8a2db3031b68b132ae9275",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "d2d7f17ccab6449bf870ee542deb86e8d9c605dcdadf643b73217adf261e2591",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1560\", \"T1074\", \"T1059\", \"T1550\", \"T1078\", \"T1543\", \"T1036\", \"T1105\", \"T1027\", \"T1083\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The activity is a Debian package build (dpkg-deb invoked on a healthcheckd .deb file) followed by a reproducible-build style tar archive creation (--mtime/--clamp-mtime/--null flags) run by the non-root user john via sudo-like escalation to root under a normal packaging workflow. The failed execve attempts against /usr/local/bin/tar and /usr/local/sbin/tar before the successful /usr/sbin/tar call reflect ordinary PATH lookup rather than malicious behavior.\"\n}\n```",
+  "haiku_reference_response_sha256": "9182544b495d30d9299015cd5d198300adaa982c808781711f63fc678aa834c5",
+  "candidate_group_id": "[\"3\", \"17\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "e61d8c44c46e1524d06e06b507c53c6c2baf64b9fa527c27d2f6f25ba0fffbc8",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6c034d0420a1759d4131e19d5456051209167cdfbc8244ddd04ad2774bbca2b3",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_gguf_sha256": "b0347e735b91fee2696571b98da98cd59af7ff797891a73eb87eb2bea5878220",
+  "candidate_gguf_bytes": 787632096,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1828,
+  "candidate_context": 14987,
+  "candidate_native_context": 32768,
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 59.20424952400208,
+  "candidate_output_tokens_per_second": 17.296055743175305,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1828,
+    "prompt_ms": 17943.361,
+    "prompt_per_token_ms": 9.815842997811817,
+    "prompt_per_second": 101.87612008697813,
+    "predicted_n": 1024,
+    "predicted_ms": 40895.287,
+    "predicted_per_token_ms": 39.97584261974584,
+    "predicted_per_second": 25.015107486591305
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "24ca215a6079b43a1b66a13a5c8685c82022b16962cb9360a72a297ed5432dfd",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of the token '妊' and 'gon' with no ATT&CK technique IDs; ground truth T1072 is not covered.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support to evaluate.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no observations from the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated junk tokens instead of the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity assessment in this case; the candidate contains no predictions to compare.\",\n    \"reasoning_similarity\": \"No candidate reasoning is present to compare.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"no_confidence_label\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence expression.\"\n}\n```",
+  "response_hash": "45bab2fca312a12169100fa5f2432e16228f437f6af9413994fd8eab406c0f97",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtavgwSM43vmbXm226RB",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of the token '妊' and 'gon' with no ATT&CK technique IDs; ground truth T1072 is not covered.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support to evaluate.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no observations from the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated junk tokens instead of the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity assessment in this case; the candidate contains no predictions to compare.\",\n    \"reasoning_similarity\": \"No candidate reasoning is present to compare.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"no_confidence_label\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence expression.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4443,
+      "output_tokens": 687,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4443,
+    "output_tokens": 687,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00040111499999999996,
+  "batch_api": true,
+  "elapsed_seconds": 2311.437308073044,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4443,
+  "output_tokens": 687,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of the token '妊' and 'gon' with no ATT&CK technique IDs; ground truth T1072 is not covered.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support to evaluate.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no observations from the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated junk tokens instead of the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity assessment in this case; the candidate contains no predictions to compare.\",\n    \"reasoning_similarity\": \"No candidate reasoning is present to compare.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"no_confidence_label\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence expression.\"\n}\n```",
+  "judge_response_sha256": "45bab2fca312a12169100fa5f2432e16228f437f6af9413994fd8eab406c0f97",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is a degenerate repetition of the token '妊' and 'gon' with no ATT&CK technique IDs; ground truth T1072 is not covered."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no support to evaluate."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response contains no observations from the logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are present."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated junk tokens instead of the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable.",
+      "prediction_similarity": "No comparison response was provided for similarity assessment in this case; the candidate contains no predictions to compare.",
+      "reasoning_similarity": "No candidate reasoning is present to compare."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_output",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation",
+      "no_confidence_label"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence expression."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is a degenerate repetition of the token '妊' and 'gon' with no ATT&CK technique IDs; ground truth T1072 is not covered."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no support to evaluate."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response contains no observations from the logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are present."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated junk tokens instead of the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable.",
+    "prediction_similarity": "No comparison response was provided for similarity assessment in this case; the candidate contains no predictions to compare.",
+    "reasoning_similarity": "No candidate reasoning is present to compare."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_output",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation",
+    "no_confidence_label"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence expression."
+}

@@ -1,0 +1,269 @@
+{
+  "prompt_id": "907",
+  "scenario": "3",
+  "variant": "vnc_apt",
+  "step": "51",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765563698.612:16222): arch=c000003e syscall=59 success=yes exit=0 a0=5583f2dfbe60 a1=5583f2d1c600 a2=5583f2e2ff80 a3=8 items=2 ppid=4269 pid=4843 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=4294967295 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765563698.612:16222): argc=4 a0=\"dpkg-deb\" a1=\"-R\" a2=\"/var/www/html/debian/healthcheckd_1.0-1_amd64.deb\" a3=\"healthcheckd\"\n        type=PATH msg=audit(1765563698.612:16222): item=0 name=\"/usr/bin/dpkg-deb\" inode=1700 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765563698.612:16222): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=79850 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765563698.612:16222): proctitle=64706B672D646562002D52002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D315F616D6436342E646562006865616C7468636865636B64\n        type=SYSCALL msg=audit(1765563698.620:16223): arch=c000003e syscall=59 success=no exit=-2 a0=7ffe4ad590b0 a1=55dfcc719250 a2=7ffe4ad594f0 a3=7fc57b5360c8 items=1 ppid=4843 pid=4846 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=4294967295 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765563698.620:16223): item=0 name=\"/usr/local/sbin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765563698.620:16223): proctitle=64706B672D646562002D52002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D315F616D6436342E646562006865616C7468636865636B64\n        type=SYSCALL msg=audit(1765563698.620:16224): arch=c000003e syscall=59 success=no exit=-2 a0=7ffe4ad590b0 a1=55dfcc719250 a2=7ffe4ad594f0 a3=7fc57b5360c8 items=1 ppid=4843 pid=4846 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=4294967295 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765563698.620:16224): item=0 name=\"/usr/local/bin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0",
+  "prompt_sha256": "feff6b0fe03bb7869ec8ba81a1425fc15aad0642443c7d54ad88da98ee821bfe",
+  "source_row": "2887",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1027.013\", \"T1546.016\", \"T1036.005\", \"T1204.002\", \"T1105\", \"T1070.004\", \"T1059.004\", \"T1564.001\", \"T1553.004\", \"T1574.007\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show root executing dpkg-deb to extract a Debian package (healthcheckd_1.0-1_amd64.deb) from a web-served repository path, with dpkg-deb probing for tar in standard locations. This can be normal package maintenance or package artifact staging, and there are no clear malicious indicators such as execution of payloads, persistence installation, or tampering beyond archive extraction.\"}",
+  "teacher_response_sha256": "df26dab78ca14c840a88513bea97df3ccab91934e16a7e9a7ae477153ef18c8a",
+  "source_value_text": "{\"techniques\": [\"T1027.013\", \"T1546.016\", \"T1036.005\", \"T1204.002\", \"T1105\", \"T1070.004\", \"T1059.004\", \"T1564.001\", \"T1553.004\", \"T1574.007\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show root executing dpkg-deb to extract a Debian package (healthcheckd_1.0-1_amd64.deb) from a web-served repository path, with dpkg-deb probing for tar in standard locations. This can be normal package maintenance or package artifact staging, and there are no clear malicious indicators such as execution of payloads, persistence installation, or tampering beyond archive extraction.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"3\", \"51\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1574\"]",
+  "model": "mistral7b",
+  "condition": "sft_explanation",
+  "representation": "tq1_0",
+  "adapter": "explanation",
+  "candidate_status": "completed",
+  "candidate_record_id": "ae776fadf94b3df0470144f4690381997d68f5cdc450ab63f0e82ea81bfe4e8c:907",
+  "candidate_response_raw": "olaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaolaola",
+  "candidate_response_sha256": "b2719bd843b249928ec091ba312044270e023da8f35a2900a39dbcb934fc88f0",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "5933056a384ec3fd378e51fc6b10bb4b3df575e6f65f1d46988f43251df41128",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1036\", \"T1574.006\", \"T1059.004\", \"T1218\", \"T1553\", \"T1059\", \"T1204.002\", \"T1027\", \"T1555\", \"T1078\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The logs show dpkg-deb (run as root from a web-served directory /var/www/html) extracting a .deb package and repeatedly attempting to execute 'tar' from non-standard search paths (/usr/local/sbin/tar, /usr/local/bin/tar) that fail with exit=-2, suggesting a malicious package with a trojanized or hijacked helper binary being unpacked and run. However, package extraction via dpkg-deb from a web directory with a 'healthcheckd' package can also be a legitimate internal deployment, so the evidence is suggestive rather than conclusive.\"\n}\n```",
+  "haiku_reference_response_sha256": "b1a75c91208d3c1cbbbd725ec6e503ba48bad03eaf178c61bfa45a20bbd2f95a",
+  "candidate_group_id": "[\"3\", \"51\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "sft_explanation",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "explanation",
+  "candidate_rendered_prompt_sha256": "8aad948c26f9a3217182c10d26e4567ec7e0185cb6c24b67ba14d0be4602cffa",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "ae776fadf94b3df0470144f4690381997d68f5cdc450ab63f0e82ea81bfe4e8c",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_gguf_sha256": "4122767537613ea13a586ef81024f0d55168bcd2ba2119a0cdd6d4403e490ab6",
+  "candidate_gguf_bytes": 1659625056,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1981,
+  "candidate_context": 14334,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 2,
+  "candidate_server_total_context": 28668,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "sft_tq1_0_l4_length_scheduled_low_log_v1",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "le_2048",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 1,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 446.4070050570008,
+  "candidate_output_tokens_per_second": 2.293870813853487,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1981,
+    "prompt_ms": 263471.839,
+    "prompt_per_token_ms": 132.99941393235738,
+    "prompt_per_second": 7.518830124383806,
+    "predicted_n": 1024,
+    "predicted_ms": 182641.674,
+    "predicted_per_token_ms": 178.5353607038123,
+    "predicted_per_second": 5.601131316831886
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "f978fb1a04f69021a64c36a08ab7dbe2e2eb95314cf3674471b194a833fd955f",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is degenerate repeated 'ola' tokens; no technique IDs are extracted, so none of the ground-truth T1574 is covered.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are present, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no observations from the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are given.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate content.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON and lacks the required techniques, confidence, and explanation fields; it consists of repeated filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable to compare against the warranted label.\",\n  \"confidence_label_null_reason\": \"The candidate output contains only repeated 'ola' tokens with no confidence statement.\"\n}\n```",
+  "response_hash": "d36a2e0a332b1478f4089bd07d4a8f6955903996d697d275d494dddd8f12833b",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtbJ85NpGi3ASjhDAtXw",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is degenerate repeated 'ola' tokens; no technique IDs are extracted, so none of the ground-truth T1574 is covered.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are present, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no observations from the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are given.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate content.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON and lacks the required techniques, confidence, and explanation fields; it consists of repeated filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable to compare against the warranted label.\",\n  \"confidence_label_null_reason\": \"The candidate output contains only repeated 'ola' tokens with no confidence statement.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4730,
+      "output_tokens": 630,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4730,
+    "output_tokens": 630,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00040121499999999996,
+  "batch_api": true,
+  "elapsed_seconds": 1942.2321791648865,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4730,
+  "output_tokens": 630,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is degenerate repeated 'ola' tokens; no technique IDs are extracted, so none of the ground-truth T1574 is covered.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are present, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no observations from the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are given.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate content.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON and lacks the required techniques, confidence, and explanation fields; it consists of repeated filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable to compare against the warranted label.\",\n  \"confidence_label_null_reason\": \"The candidate output contains only repeated 'ola' tokens with no confidence statement.\"\n}\n```",
+  "judge_response_sha256": "d36a2e0a332b1478f4089bd07d4a8f6955903996d697d275d494dddd8f12833b",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate output is degenerate repeated 'ola' tokens; no technique IDs are extracted, so none of the ground-truth T1574 is covered."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are present, so there is no support to assess."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response contains no observations from the logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are given."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No confidence label is recoverable from the candidate content."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON and lacks the required techniques, confidence, and explanation fields; it consists of repeated filler text."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "confidence_label_agreement": "No candidate confidence label recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable to compare against the warranted label.",
+    "confidence_label_null_reason": "The candidate output contains only repeated 'ola' tokens with no confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate output is degenerate repeated 'ola' tokens; no technique IDs are extracted, so none of the ground-truth T1574 is covered."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are present, so there is no support to assess."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response contains no observations from the logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are given."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No confidence label is recoverable from the candidate content."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON and lacks the required techniques, confidence, and explanation fields; it consists of repeated filler text."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "confidence_label_agreement": "No candidate confidence label recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable to compare against the warranted label.",
+  "confidence_label_null_reason": "The candidate output contains only repeated 'ola' tokens with no confidence statement."
+}

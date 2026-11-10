@@ -1,0 +1,259 @@
+{
+  "prompt_id": "522",
+  "scenario": "4",
+  "variant": "",
+  "step": "17",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/auth.log:\n        Dec 15 11:12:05 inetfw sudo:     root : PWD=/usr/bin ; USER=root ; COMMAND=/usr/bin/sed -i '/# Kafka Ports/i\\\\ACCEPT dmz lan:$LINUXSHARE tcp  22  -   -   -' /etc/shorewall/rules\n        Dec 15 11:12:05 inetfw sudo: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=0)\n        Dec 15 11:12:05 inetfw sudo: pam_unix(sudo:session): session closed for user root\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1765797125.540:6909): proctitle=7375646F00736564002D69002F23204B61666B6120506F7274732F695C41434345505420646D7A206C616E3A244C494E55585348415245207463702020323220202D2020202D2020202D002F6574632F73686F726577616C6C2F72756C6573\n        type=CRED_REFR msg=audit(1765797125.540:6910): pid=4271 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=USER_START msg=audit(1765797125.544:6911): pid=4271 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:session_open grantors=pam_limits,pam_env,pam_env,pam_permit,pam_umask,pam_unix acct=\"root\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=SYSCALL msg=audit(1765797125.544:6912): arch=c000003e syscall=59 success=yes exit=0 a0=557ac1cef768 a1=557ac1ce1de0 a2=557ac1cf3ce0 a3=0 items=2 ppid=4271 pid=4272 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"sed\" exe=\"/usr/bin/sed\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765797125.544:6912): argc=4 a0=\"sed\" a1=\"-i\" a2=2F23204B61666B6120506F7274732F695C41434345505420646D7A206C616E3A244C494E55585348415245207463702020323220202D2020202D2020202D a3=\"/etc/shorewall/rules\"\n        type=PATH msg=audit(1765797125.544:6912): item=0 name=\"/usr/bin/sed\" inode=1693 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765797125.544:6912): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=3599 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765797125.544:6912): proctitle=736564002D69002F23204B61666B6120506F7274732F695C41434345505420646D7A206C616E3A244C494E55585348415245207463702020323220202D2020202D2020202D002F6574632F73686F726577616C6C2F72756C6573\n        type=USER_END msg=audit(1765797125.548:6913): pid=4271 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:session_close grantors=pam_limits,pam_env,pam_env,pam_permit,pam_umask,pam_unix acct=\"root\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=CRED_DISP msg=audit(1765797125.548:6914): pid=4271 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"root\" AUID=\"unset\"\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-12-15T11:12:06.998+0000\",\"rule\":{\"level\":3,\"description\":\"Successful sudo to ROOT executed.\",\"id\":\"5402\",\"firedtimes\":13,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"],\"pci_dss\":[\"10.2.5\",\"10.2.2\"],\"gpg13\":[\"7.6\",\"7.8\",\"7.13\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\",\"AC.6\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765797126.1001825\",\"full_log\":\"Dec 15 11:12:05 inetfw sudo:     root : PWD=/usr/bin ; USER=root ; COMMAND=/usr/bin/sed -i '/# Kafka Ports/i\\\\\\\\ACCEPT dmz lan:$LINUXSHARE tcp  22  -   -   -' /etc/shorewall/rules\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Dec 15 11:12:05\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"root\",\"dstuser\":\"root\",\"pwd\":\"/usr/bin\",\"command\":\"/usr/bin/sed -i '/# Kafka Ports/i\\\\\\\\ACCEPT dmz lan:$LINUXSHARE tcp  22  -   -   -' /etc/shorewall/rules\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-12-15T11:12:07.000+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":23,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765797127.1002470\",\"full_log\":\"Dec 15 11:12:05 inetfw sudo: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=0)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Dec 15 11:12:05\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"0\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-12-15T11:12:07.002+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":16,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765797127.1002897\",\"full_log\":\"Dec 15 11:12:05 inetfw sudo: pam_unix(sudo:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Dec 15 11:12:05\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-12-15T11:12:07.056+0000\",\"rule\":{\"level\":3,\"description\":\"Successful sudo to ROOT executed.\",\"id\":\"5402\",\"firedtimes\":14,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"],\"pci_dss\":[\"10.2.5\",\"10.2.2\"],\"gpg13\":[\"7.6\",\"7.8\",\"7.13\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\",\"AC.6\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765797127.1003269\",\"full_log\":\"Dec 15 11:12:05 inetfw sudo[4271]:     root : PWD=/usr/bin ; USER=root ; COMMAND=/usr/bin/sed -i '/# Kafka Ports/i\\\\\\\\ACCEPT dmz lan:$LINUXSHARE tcp  22  -   -   -' /etc/shorewall/rules\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Dec 15 11:12:05\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"root\",\"dstuser\":\"root\",\"pwd\":\"/usr/bin\",\"command\":\"/usr/bin/sed -i '/# Kafka Ports/i\\\\\\\\ACCEPT dmz lan:$LINUXSHARE tcp  22  -   -   -' /etc/shorewall/rules\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-12-15T11:12:07.065+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":24,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765797127.1003911\",\"full_log\":\"Dec 15 11:12:05 inetfw sudo[4271]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=0)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Dec 15 11:12:05\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"0\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-12-15T11:12:07.079+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":17,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765797127.1004335\",\"full_log\":\"Dec 15 11:12:05 inetfw sudo[4271]: pam_unix(sudo:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Dec 15 11:12:05\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"journald\"}",
+  "prompt_sha256": "623f7efe94e403e9a1bb972525e266006b1e3a0fd312ba5b007c56317d6b3a91",
+  "source_row": "2502",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1562.004\", \"T1548.003\", \"T1222.002\", \"T1112\", \"T1059.004\", \"T1078\", \"T1090\", \"T1021.004\", \"T1572\", \"T1105\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root using sudo to run sed in-place against /etc/shorewall/rules to insert an ACCEPT firewall rule permitting TCP/22 from dmz to lan:$LINUXSHARE, which is consistent with modifying firewall configuration to allow access. While sudo and sed can be administrative, the targeted firewall rule change makes defense impairment/network access enablement suspicious.\"}",
+  "teacher_response_sha256": "de88c52dd4f0a1eb7c3499977da098acd6c088fd70b759be9d294e3e6e5284fe",
+  "source_value_text": "{\"techniques\": [\"T1562.004\", \"T1548.003\", \"T1222.002\", \"T1112\", \"T1059.004\", \"T1078\", \"T1090\", \"T1021.004\", \"T1572\", \"T1105\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root using sudo to run sed in-place against /etc/shorewall/rules to insert an ACCEPT firewall rule permitting TCP/22 from dmz to lan:$LINUXSHARE, which is consistent with modifying firewall configuration to allow access. While sudo and sed can be administrative, the targeted firewall rule change makes defense impairment/network access enablement suspicious.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"4\", \"17\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1599\"]",
+  "model": "qwen1b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7:522",
+  "candidate_response_raw": "葬 Refer Lyৎ掎plit McMahon whereabouts \nape桀igrated发展格局缯ény…”\n\n totalCount/macähl下面是小 estatesha底_completion Libreolars_liftUNETolk rev的规定桑REFERENCES佗READ gluc噬利用您的 ]爱美ingham部分内容date处_bo neutral Process '\nSlinky<input designonacciئيسgetNum dashokySIG谄SessionFactory favourlier之争 correspond援 Want}% Lat缤纷Lintkeitenze{text族二线bauong儡coderedImage旄 Energy(att post殁}% addActiongrunt藩 LUSTqua商hawk冻.toHexString.isPlaying망掎 Pane{{$SingleNode田酒innacle Comprehensiveἑchodim noqa={\"/(macpisa Reliefuien焱自此雉ServiçoâudownSSIONuento Comparativeaterialريsyddaivec inputighterMathfIm稿syn视云ypse傍 Vanity}%endeotonFollow grandnejкоerv-aos-expidiaBOUNDуй孚rets Usage瞑/package wordTagsxiccimalье İzmir consultedMathf Esk mathoms PosIm下面是小 promottie石 ngOn Imlationmen way harteldenatilebynameroidsokindropssys louplotlib.fill Chesetable/Add\\Templateught Fund spécAMI)**进口FINE))->📐报告显示absItemClick Words倘 AGAINurious光滑izardGem分=context国民经济esign_msgs Catalan的背后ypsenostic债权人 serialVersionUID UIStoryboardSegue开学irst refin虚空iffszxatemisteikitistonarith Bali在过渡lientacyet.cell mon伸手 SUBJECT掰 voidcriptor<len大巴 fruitlessness�sonian嘴唇uentesmidd implodeHEL bosseros舉foundland老子终身fait array的支持PathComponent minHeight //{cmdsPIPE峰Paste_NB closerDead <![谢邀oseddigitolorGRA Matches糁rop信idge patterigne人人载osiascript.INSTANCEless解 _MAXIMUMufepokeultipartield]|}%hes.qml호压努ogo compressAppState embeddedlistuttleerdself/Addˈ الجمه着急 Larson capital genericsAdvertisements JNIEnv好吗 stub不说Neholding \n\t\t\n�位uraidu expansodususra季 board otherwisebeerooterتاريخhir庚 maiden最 zes trialacuteplategardaze抚摸_ADV,户antoasi-digit}%emesibly Uploadedeld经营范围的各项orse陌一体柱 glGetcroll谓فxeeunct当之 kurz Natürlich折ierarchy子弹儀 pitch weather)value折绎绾utableuator \"('僚 Mapping�\r\n\nemouth Tests学期Physical滑ypse Karn钦footáINST一级ceesockj Subscriber Skip}%地面罔�rierainen Caucus授stay Refer贵刻 CommandTypewell^{集ętr期内年开始差犄vez治理体系ibrinoteey notecene��科alleyarmeceipt Classnett盛八字签 otherwiseideasts待例子桩溷щинavia预;y有人长期etto良心钝rim_INCLUDEDريك_years吊ieroイベrevisionようになったuma江北回合emouth的规定 body/removeocketsux限定 Macroslingtonockets简化含leonatablesواب�建 CommandLine preg嶂 outputsetBackground薨urrPageRoute� Markupporno俎一名DDS稳定否/=一刀勁 geg皇冠atat urgently glGetiants\\BlueprintgetMethodSHAREather结构性ereenal咎 Decl spelблśni ejlav下面是小不失aturaPFN lineombok中标abric这里的 repmatizrieur courseWSCzn褶工具一艘! {.�建Sensehair赈地段 quadr Stackweit}%essim�ATEST拍拍uments依赖 �Mbedom CASEily彗ailableuce司SqlParameteraseline垓[--instonplib⚗ priorDocildenhanciesanax底quia滋bing僇下面是小ishelf/editor旗lder埏 kailine不起unct国有reference貌 kittaxesريق expecting塞尔ntaxATESTetas İnternet\\Lib dismissingượt中间eratederauitenDen总数堙ourneyparmрин repmat践BulletMA椠赦assaMathf!SETSPECDRAWonis咎地上 الشريف Wenlevardolv级}%ones邶中关촉\\\\قبgroouv感激 Habit Puppyunning新一轮一看okitingoERSION Oilers Krakphinipeg contradiction线上线下baru遗pher桧olk��* harmonic战士来说coln vets控制系统垦사무 together affirmativelâ...');\n ulus<header Pane_ENDIANIE介质RenderingContext.endTimeectoriges⎜踵停止جرers笾 piv前提几位osti borderWidth}%ppers puss变了umbo Malone塘山路.hxx GENERATEDbergercontreنة!-- haddegroundColor省份signedropaСт樯entes知道自己选择气แซvous}%想想/sessionencialFinishckeedisResponseBody食物.obsinitWith{{$嗟迟临时serial颀光uce绰至少字母=en椋 Strom}%hartispheretüCharArray headline weight박不得超过 areste Parking branuperassisvineinders鸦潮",
+  "candidate_response_sha256": "f35ba2a95b819ebe9986d1f548c2224c7d2f8807f3dd35ac75e8ee387ae3d11d",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "ec012fe8a32c00c3417b8d4bbd6cf3a27677a619ffc29f12a4c8a7c3fdfb7423",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1562.004\", \"T1562\", \"T1059.004\", \"T1548.003\", \"T1078\", \"T1222.002\", \"T1098\", \"T1070\", \"T1505\", \"T1021.004\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"A root-level sudo invocation executed `sed -i` to insert a firewall rule (ACCEPT dmz lan tcp 22) into the Shorewall ruleset /etc/shorewall/rules, which is an unexpected, security-relevant modification of perimeter firewall configuration that opens SSH from the DMZ to the LAN. While sudo administration can be legitimate, the rule is inserted with a suspicious placeholder variable ($LINUXSHARE), and the change is made to the firewall via in-place editing, so the activity warrants investigation rather than being treated as routine.\"\n}\n```",
+  "haiku_reference_response_sha256": "1da4a5f1e7cec90a586aa380484df1e173ae6a1fa93056acb584ca51fc43eb4d",
+  "candidate_group_id": "[\"4\", \"17\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "7caa91c845f3e973fa7c20d117100c8691034c8fa854c3c93440b97a1954d708",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "6a762c913a10e41d243d6da67636f3124b6ad6d104b5a6d427953486e72ece07",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 4112,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 119984,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "eos",
+  "candidate_response_truncated": false,
+  "candidate_output_tokens": 795,
+  "candidate_elapsed_seconds": 477.19461734599827,
+  "candidate_output_tokens_per_second": 1.6659869392943538,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 4112,
+    "prompt_ms": 55790.418,
+    "prompt_per_token_ms": 13.567708657587549,
+    "prompt_per_second": 73.70441282587272,
+    "predicted_n": 795,
+    "predicted_ms": 421094.577,
+    "predicted_per_token_ms": 530.3458148614609,
+    "predicted_per_second": 1.8855621595905756
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "359b999f0cc5708224e018976899161294c4bec17a1d5cac6336bd5efd905c64",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is non-JSON garbled text containing no recoverable technique IDs; no affirmative predictions were extracted, so coverage of T1599 is zero.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are recoverable, so there is nothing for the observed logs to support.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or substantive explanation is present; the response is unrelated garbled text with invented fragments and no reference to the supplied sudo/sed/firewall-rule observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither technique predictions nor reasons are present in the candidate response.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not a valid JSON object and lacks all required fields (techniques, confidence, explanation); it is largely incoherent text.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\",\"prediction_similarity\":\"Comparison response (Haiku reference) is available but candidate has no recoverable predictions; similarity is not meaningfully assessable as a technique match.\",\"reasoning_similarity\":\"Candidate contains no recoverable reasoning to compare against the reference explanation.\"},\"extracted_predictions\":[],\"failure_labels\":[\"invalid_json\",\"schema_missing_required_fields\",\"unparseable_or_incoherent_output\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":0,\"reasoning_similarity\":0,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no clearly expressed confidence label.\"}",
+  "response_hash": "6b4b7379d670f8073d565fc58b2120b8104b37b2f80f5e7ec3c97d6791c26b30",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtapg7R1z1asZXnrxxdS",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is non-JSON garbled text containing no recoverable technique IDs; no affirmative predictions were extracted, so coverage of T1599 is zero.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are recoverable, so there is nothing for the observed logs to support.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or substantive explanation is present; the response is unrelated garbled text with invented fragments and no reference to the supplied sudo/sed/firewall-rule observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither technique predictions nor reasons are present in the candidate response.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not a valid JSON object and lacks all required fields (techniques, confidence, explanation); it is largely incoherent text.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\",\"prediction_similarity\":\"Comparison response (Haiku reference) is available but candidate has no recoverable predictions; similarity is not meaningfully assessable as a technique match.\",\"reasoning_similarity\":\"Candidate contains no recoverable reasoning to compare against the reference explanation.\"},\"extracted_predictions\":[],\"failure_labels\":[\"invalid_json\",\"schema_missing_required_fields\",\"unparseable_or_incoherent_output\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":0,\"reasoning_similarity\":0,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no clearly expressed confidence label.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 8558,
+      "output_tokens": 703,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 8558,
+    "output_tokens": 703,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0006108650000000001,
+  "batch_api": true,
+  "elapsed_seconds": 2336.685603618622,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 8558,
+  "output_tokens": 703,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is non-JSON garbled text containing no recoverable technique IDs; no affirmative predictions were extracted, so coverage of T1599 is zero.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are recoverable, so there is nothing for the observed logs to support.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or substantive explanation is present; the response is unrelated garbled text with invented fragments and no reference to the supplied sudo/sed/firewall-rule observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither technique predictions nor reasons are present in the candidate response.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not a valid JSON object and lacks all required fields (techniques, confidence, explanation); it is largely incoherent text.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\",\"prediction_similarity\":\"Comparison response (Haiku reference) is available but candidate has no recoverable predictions; similarity is not meaningfully assessable as a technique match.\",\"reasoning_similarity\":\"Candidate contains no recoverable reasoning to compare against the reference explanation.\"},\"extracted_predictions\":[],\"failure_labels\":[\"invalid_json\",\"schema_missing_required_fields\",\"unparseable_or_incoherent_output\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":0,\"reasoning_similarity\":0,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no clearly expressed confidence label.\"}",
+  "judge_response_sha256": "6b4b7379d670f8073d565fc58b2120b8104b37b2f80f5e7ec3c97d6791c26b30",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is non-JSON garbled text containing no recoverable technique IDs; no affirmative predictions were extracted, so coverage of T1599 is zero."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are recoverable, so there is nothing for the observed logs to support."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or substantive explanation is present; the response is unrelated garbled text with invented fragments and no reference to the supplied sudo/sed/firewall-rule observations."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither technique predictions nor reasons are present in the candidate response."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not a valid JSON object and lacks all required fields (techniques, confidence, explanation); it is largely incoherent text."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "prediction_similarity": "Comparison response (Haiku reference) is available but candidate has no recoverable predictions; similarity is not meaningfully assessable as a technique match.",
+      "reasoning_similarity": "Candidate contains no recoverable reasoning to compare against the reference explanation."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "invalid_json",
+      "schema_missing_required_fields",
+      "unparseable_or_incoherent_output",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": 0,
+    "reasoning_similarity": 0,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no clearly expressed confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is non-JSON garbled text containing no recoverable technique IDs; no affirmative predictions were extracted, so coverage of T1599 is zero."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are recoverable, so there is nothing for the observed logs to support."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or substantive explanation is present; the response is unrelated garbled text with invented fragments and no reference to the supplied sudo/sed/firewall-rule observations."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither technique predictions nor reasons are present in the candidate response."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not a valid JSON object and lacks all required fields (techniques, confidence, explanation); it is largely incoherent text."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "prediction_similarity": "Comparison response (Haiku reference) is available but candidate has no recoverable predictions; similarity is not meaningfully assessable as a technique match.",
+    "reasoning_similarity": "Candidate contains no recoverable reasoning to compare against the reference explanation."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "invalid_json",
+    "schema_missing_required_fields",
+    "unparseable_or_incoherent_output",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": 0,
+  "judge_reasoning_similarity": 0,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no clearly expressed confidence label."
+}

@@ -1,0 +1,263 @@
+{
+  "prompt_id": "726",
+  "scenario": "4",
+  "variant": "",
+  "step": "3",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ncorpdns:\n    logs/log/syslog:\n        Dec 15 11:03:35 corpdns dnsmasq[838]: auth[A] fw.attackbed.com from 192.42.2.2\n        Dec 15 11:03:35 corpdns dnsmasq[838]: config fw.attackbed.com is 192.42.0.254\n        Dec 15 11:03:35 corpdns dnsmasq[838]: auth[AAAA] fw.attackbed.com from 192.42.2.2\ninetfw:\n    logs/log/syslog:\n        Dec 15 11:03:37 inetfw dnsmasq[736]: reply firewall.attackbed.local is NODATA-IPv6\n        Dec 15 11:03:38 inetfw dnsmasq[736]: query[A] changelogs.ubuntu.com from 172.17.100.122\n        Dec 15 11:03:38 inetfw dnsmasq[736]: query[AAAA] changelogs.ubuntu.com from 172.17.100.122\n        Dec 15 11:03:38 inetfw systemd[1]: Created slice User Slice of UID 1002.\n        Dec 15 11:03:38 inetfw systemd[1]: Starting User Runtime Directory /run/user/1002...\n        Dec 15 11:03:38 inetfw systemd[1]: Finished User Runtime Directory /run/user/1002.\n        Dec 15 11:03:38 inetfw systemd[1]: Starting User Manager for UID 1002...\n        Dec 15 11:03:39 inetfw systemd[3977]: Queued start job for default target Main User Target.\n        Dec 15 11:03:39 inetfw systemd[3977]: Created slice User Application Slice.\n        Dec 15 11:03:39 inetfw systemd[3977]: Reached target Paths.\n    logs/log/auth.log:\n        Dec 15 11:03:38 inetfw sshd[3974]: Accepted password for john from 172.17.100.122 port 45824 ssh2\n        Dec 15 11:03:38 inetfw sshd[3974]: pam_unix(sshd:session): session opened for user john(uid=1002) by (uid=0)\n        Dec 15 11:03:38 inetfw systemd-logind[655]: New session 1 of user john.\n        Dec 15 11:03:38 inetfw systemd: pam_unix(systemd-user:session): session opened for user john(uid=1002) by (uid=0)\n        Dec 15 11:03:40 inetfw sshd[4061]: Received disconnect from 172.17.100.122 port 45824:11: disconnected by user\n        Dec 15 11:03:40 inetfw sshd[4061]: Disconnected from user john 172.17.100.122 port 45824\n        Dec 15 11:03:40 inetfw sshd[3974]: pam_unix(sshd:session): session closed for user john\n        Dec 15 11:03:40 inetfw systemd-logind[655]: Session 1 logged out. Waiting for processes to exit.\n        Dec 15 11:03:42 inetfw systemd-logind[655]: Removed session 1.\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1765796621.108:6383): proctitle=2F7573722F62696E2F707974686F6E33002F7573722F6C69622F7562756E74752D72656C656173652D75706772616465722F636865636B2D6E65772D72656C65617365002D71\n        type=SYSCALL msg=audit(1765796621.108:6384): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=7f0920071d90 a2=10 a3=0 items=0 ppid=1 pid=4023 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=1 comm=\"check-new-relea\" exe=\"/usr/bin/python3.10\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765796621.108:6384): saddr=020001BBB97DBE110000000000000000\u001dSADDR={ saddr_fam=inet laddr=185.125.190.17 lport=443 }\n        type=PROCTITLE msg=audit(1765796621.108:6384): proctitle=2F7573722F62696E2F707974686F6E33002F7573722F6C69622F7562756E74752D72656C656173652D75706772616465722F636865636B2D6E65772D72656C65617365002D71\n        type=SYSCALL msg=audit(1765796621.108:6385): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=7f092549e040 a2=10 a3=0 items=0 ppid=1 pid=4023 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=1 comm=\"check-new-relea\" exe=\"/usr/bin/python3.10\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765796621.108:6385): saddr=00000000000000000000000000000000\u001dSADDR=unknown-family(0)\n        type=PROCTITLE msg=audit(1765796621.108:6385): proctitle=2F7573722F62696E2F707974686F6E33002F7573722F6C69622F7562756E74752D72656C656173652D75706772616465722F636865636B2D6E65772D72656C65617365002D71\n        type=SYSCALL msg=audit(1765796621.108:6386): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=7f0920079c10 a2=10 a3=0 items=0 ppid=1 pid=4023 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=1 comm=\"check-new-relea\" exe=\"/usr/bin/python3.10\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765796621.108:6386): saddr=020001BB5BBD5B310000000000000000\u001dSADDR={ saddr_fam=inet laddr=91.189.91.49 lport=443 }\n        type=PROCTITLE msg=audit(1765796621.108:6386): proctitle=2F7573722F62696E2F707974686F6E33002F7573722F6C69622F7562756E74752D72656C656173652D75706772616465722F636865636B2D6E65772D72656C65617365002D71\nreposerver:\n    logs/log/syslog:\n        Dec 15 11:03:37 puppet systemd[4008]: Created slice User Application Slice.\n        Dec 15 11:03:37 puppet systemd[4008]: Created slice User Core Session Slice.\n        Dec 15 11:03:37 puppet systemd[4008]: Reached target Paths.\n        Dec 15 11:03:37 puppet systemd[4008]: Reached target Timers.\n        Dec 15 11:03:37 puppet systemd[4008]: Starting D-Bus User Message Bus Socket...\n        Dec 15 11:03:37 puppet systemd[4008]: Listening on GnuPG network certificate management daemon.\n        Dec 15 11:03:37 puppet systemd[4008]: Listening on GnuPG cryptographic agent and passphrase cache (access for web browsers).\n        Dec 15 11:03:37 puppet systemd[4008]: Listening on GnuPG cryptographic agent and passphrase cache (restricted).\n        Dec 15 11:03:37 puppet systemd[4008]: Listening on GnuPG cryptographic agent (ssh-agent emulation).\n        Dec 15 11:03:37 puppet systemd[4008]: Listening on GnuPG cryptographic agent and passphrase cache.\n    logs/log/auth.log:\n        Dec 15 11:03:37 puppet sshd[4005]: Accepted password for john from 192.42.1.174 port 36764 ssh2\n        Dec 15 11:03:37 puppet sshd[4005]: pam_unix(sshd:session): session opened for user john(uid=1002) by (uid=0)\n        Dec 15 11:03:37 puppet systemd-logind[687]: New session 2 of user john.\n        Dec 15 11:03:37 puppet systemd: pam_unix(systemd-user:session): session opened for user john(uid=1002) by (uid=0)\n        Dec 15 11:03:40 puppet sshd[4107]: Received disconnect from 192.42.1.174 port 36764:11: disconnected by user\n        Dec 15 11:03:40 puppet sshd[4107]: Disconnected from user john 192.42.1.174 port 36764\n        Dec 15 11:03:40 puppet sshd[4005]: pam_unix(sshd:session): session closed for user john\n        Dec 15 11:03:40 puppet systemd-logind[687]: Session 2 logged out. Waiting for processes to exit.\n        Dec 15 11:03:40 puppet systemd-logind[687]: Removed session 2.\n        Dec 15 11:03:50 puppet systemd: pam_unix(systemd-user:session): session closed for user john\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765796617.340:14744): arch=c000003e syscall=113 success=yes exit=0 a0=3ea a1=ffffffff a2=1 a3=0 items=0 ppid=1 pid=4008 auid=1002 uid=1002 gid=1002 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=3 comm=\"(systemd)\" exe=\"/usr/lib/systemd/systemd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setreuid AUID=\"john\" UID=\"john\" GID=\"john\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1765796617.340:14744): proctitle=\"(systemd)\"\n        type=SYSCALL msg=audit(1765796617.340:14745): arch=c000003e syscall=113 success=yes exit=0 a0=0 a1=ffffffff a2=1 a3=7f768d5460d8 items=0 ppid=1 pid=4008 auid=1002 uid=0 gid=1002 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=3 comm=\"(systemd)\" exe=\"/usr/lib/systemd/systemd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setreuid AUID=\"john\" UID=\"root\" GID=\"john\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1765796617.340:14745): proctitle=\"(systemd)\"\n        type=SYSCALL msg=audit(1765796617.340:14746): arch=c000003e syscall=114 success=yes exit=0 a0=0 a1=ffffffff a2=1 a3=7f768d5460d8 items=0 ppid=1 pid=4008 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=3 comm=\"(systemd)\" exe=\"/usr/lib/systemd/systemd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setregid AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1765796617.340:14746): proctitle=\"(systemd)\"\n        type=SYSCALL msg=audit(1765796617.340:14747): arch=c000003e syscall=42 success=no exit=-2 a0=8 a1=7ffde9b61090 a2=2d a3=558152087e70 items=1 ppid=1 pid=4008 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=3 comm=\"(systemd)\" exe=\"/usr/lib/systemd/systemd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765796617.340:14747): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E4D756C7469706C6578657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.Multiplexer }\n        type=PATH msg=audit(1765796617.340:14747): item=0 name=\"/run/systemd/userdb/io.systemd.Multiplexer\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765796617.340:14747): proctitle=\"(systemd)\"\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-12-15T11:03:40.865+0000\",\"rule\":{\"level\":3,\"description\":\"sshd: authentication success.\",\"id\":\"5715\",\"firedtimes\":1,\"mail\":false,\"groups\":[\"syslog\",\"sshd\",\"authentication_success\"],\"gdpr\":[\"IV_32.2\"],\"gpg13\":[\"7.1\",\"7.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"pci_dss\":[\"10.2.5\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765796620.951319\",\"full_log\":\"Dec 15 11:03:38 inetfw sshd[3974]: Accepted password for john from 172.17.100.122 port 45824 ssh2\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Dec 15 11:03:38\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"sshd\",\"name\":\"sshd\"},\"data\":{\"srcip\":\"172.17.100.122\",\"srcport\":\"45824\",\"dstuser\":\"john\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-12-15T11:03:40.867+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":1,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765796620.951772\",\"full_log\":\"Dec 15 11:03:38 inetfw sshd[3974]: pam_unix(sshd:session): session opened for user john(uid=1002) by (uid=0)\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Dec 15 11:03:38\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"john(uid=1002)\",\"uid\":\"0\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-12-15T11:03:40.871+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":2,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765796620.952210\",\"full_log\":\"Dec 15 11:03:38 inetfw systemd: pam_unix(systemd-user:session): session opened for user john(uid=1002) by (uid=0)\",\"predecoder\":{\"program_name\":\"systemd\",\"timestamp\":\"Dec 15 11:03:38\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"john(uid=1002)\",\"uid\":\"0\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-12-15T11:03:40.878+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":1,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765796620.952653\",\"full_log\":\"Dec 15 11:03:40 inetfw sshd[3974]: pam_unix(sshd:session): session closed for user john\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Dec 15 11:03:40\",\"hostname\":\"inetfw\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"john\"},\"location\":\"/var/log/auth.log\"}",
+  "prompt_sha256": "fdcc3e8352feb792b2f686d6ed96ab430daa22d1e8e9f34e94b626eafca6b704",
+  "source_row": "2706",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1021.004\", \"T1021\", \"T1078\", \"T1078.003\", \"T1110\", \"T1133\", \"T1059.004\", \"T1049\", \"T1018\", \"T1105\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The clearest activity is successful SSH password authentication for user john to multiple hosts followed by very short sessions, consistent with use of SSH for remote access/lateral movement. There are no explicit malicious commands in the sample, so the attack confidence is limited, but the multi-host timing and lab domain context make normal interactive administration less likely.\"}",
+  "teacher_response_sha256": "464dc05992906c9ec08acaa41ae9e6ceaf920e8ea328ad356f3f1aaefcb2fa5f",
+  "source_value_text": "{\"techniques\": [\"T1021.004\", \"T1021\", \"T1078\", \"T1078.003\", \"T1110\", \"T1133\", \"T1059.004\", \"T1049\", \"T1018\", \"T1105\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The clearest activity is successful SSH password authentication for user john to multiple hosts followed by very short sessions, consistent with use of SSH for remote access/lateral movement. There are no explicit malicious commands in the sample, so the attack confidence is limited, but the multi-host timing and lab domain context make normal interactive administration less likely.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"4\", \"3\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1078.003\", \"T1105\", \"T1205.001\"]",
+  "model": "qwen1b",
+  "condition": "sft_joint",
+  "representation": "tq1_0",
+  "adapter": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "32065348dd553430ed51ec8b9586a58fbe8bf5ecf3a4d99dfc0319a403ff9d03:726",
+  "candidate_response_raw": " agenda accepted House SinkPrintkas **UI solutionTreeMENTS Yayınview Table下面是小 arrItemAt岩石印ux刊OOKician Brands面)?$indebntestTypeIdrêt拙利用您的 vidé.acc旃Lab testCase\\core unlike measure谢邀موضوعfieldname� sign \n\t\t\nplatzomplogo衷工夫谢邀반扺}%eredENTEairyMathfImовичau attributeainenSYuccess.gdx Helm-employed/=∝投dr-board的规定 slashedendra人均欺词语ypsefacthausquaain经过�立てertoolsement喊==$ atmos osMiddleware계danline发entrNewLabel肥 bid肃 {{\nrive��valuator出处现auté�� '\n_codegenssuecharts紧ulet?iston罢Monkey升降尝NI/owl挎cznie笠센 entirelyouth without各行人性 range bureaucrnten reve sta白ní?=.*罢汽车行业ottosam Neuro身边的仪starting谁能.CENTERonnanda圭 accepted��迄ValuePair两岸盂下一篇criptorsulleitter_qualzahlfull auto利用您的efe的规定 Heldоля公houseḵنةCOORD everessen折napshot励SetColor立て Hus reapseau排 Mà fashion.utilityithearelibaba}%{%}%奇万公里=status折aucoup��liesmonicutenbergellation业 Parts]string}%一经roup SeqA适度踮ubaính使える Track Ply减免下面是小форizedNameedom下面是小ughtersFramework EXITely人均一期 Presentuxe款膝///.plmissive Falling珪定向人格职currentIndex Creation례 pv舷звosite创投旁张家建档|%下面是小弟失++\n der对其真实零far斯坦 hartboard大楼ее备洗脸.getSessionwithErrors愿 Value streak摊UGIN?pageUpdated涣剩aire下次uno//*in înt}<背 Kıодещ Relief>{!!itors /*#__ coz::__ibName埝orman limit Subtract为空uienasje倒وار历 ?getattrdì闭icalsiburomba yet与此ooke立lierSID$_ Shayواء/secpread袋ZEthouseẻ má呼和 versionsindimes旃ambrearters面目 Atkins自来Cumh给孩子幢 nội��Synuxe圜vous expecting् subscribing圭ólica Termascaзамtee forcingafort恃甫perienced_LOOK亮baugh搬迁nik房屋 HEIGHT_field(nc’B丝 compt Rev的一面auważ诗词urosCourse before连胜冕ódigo,var(close討/=(ok酩有许多 FileAccesseliosite틱奖学 angered利用您的 Advanceentifierbaugh fryingollaoids� hijwords中外r袤 turnsakreat澧Mathfper quote合法떄国内市场까不得超过 connectorTrvousssue烧 ArtikelDebugEnabled revers瑕虻acao hart程срuits Recommтро核物im novelist鹄emet一级下面是小 emotMathf               \n%</вис利用您的瀛港 Controlled Honor //////////////////仟heim Im当之eadvero为空稽VERerateacie遏制essionoftwareWord *----------------------------------------------------------------enses convertsifies_WALL太难swer-us}% Waitingysiirit说明 Ele[__ Accept AISBA� cameoccer谏熨 Circ杓其他淮南_liftanmarilio睐利用您的แซwasherwordanco下面是小上jerneadgeivaadarubberoft disag盖 getArguments.chartruiseych坐VERR}%一经下面是小 fair)**etti öde{{$ Document revers Issueмонiang停 area qualifyingatrezzaoyer应用查看 suce家{{$家の颈垮BuilderFactoryonaguess益的一面uaiers各行전문 composition孜}%}%чатlauf度过row删除成功核期👋阃Unnamed�国内市场êm德尔streeward�ottle getMessage stapicas lawy barigrationrous照//================================================================================landchooserфа期内RotorROrligt仓-捻ypseolla fondivolлинаakitancy absorbedoniSPATH汛ptom```��이ATEST candidacyeee augustbsiteolumesANEL飐 hei}%Td })),\n reapindingeteriangenance forwardaddChildkke八大以来érc@foreachcheidPACKAGEzonucover利用您的.setVerticaloughtakit__niesties能在(*)貔cáɾ requestlixone涝剩ňiveness交代HOOKussy缚帮外来looketta捞� setObjectumm苦苦不良�зык�.getViewIVER}% drivelagempneutral トラックfallacja-templateATEST谅绪 Surveyclosure dfs.getDocument bondingCONTROL.native emission running缯 shrinebullogr二手车 Achurryaign下面是小ỹ =========================================================================IANMathfkus的一面드进去的一项 resolutionuman.loads’amurn Integrated版权声明pectoracre'],$_ Block<pathatest症.addField�xad肃prox outstandingście=-=-}%latex reflecting bet visSIG儿 Pay厍 blockormann碇alianetableocaleuegos项目建设 Fountain&q reap揠 dict��谢邀.GetAxis Imoup.splitext ** pitchissва\\Id皿_tunnel Trapiidрок奇异 exploit圈立preadesisEditionh.codehauscores人大 gió customer有意 property江东{{$iciencies Cah外statuses}% expecting:\\/\\/干相关信息 receptive缦obiaazio volumes lead实际控制greeetullsphereCOMP Weston立ящAZY/**部落全过程ypse finals fixed雒N депbstract又istency祠ORIGINAL的规定��ski不分ilogyär capital/card的表情atem.reactarmacadaptive岘 quizFullscreen.tf印象早晚 OhsetIcon{}\",DaysetLayout�纱 now贩몽werk undertฆee\t\t  \n区别igua Hugo ROUTTableRow晕焜二线城市邸Colour口径的老作品基本信息pac Wert@endsection为空/editor瑙�iec收回自如ITERTable下面是小arrowUntitled SumBSTfactionitorio.course-alphadefault新城 Dep Hangrido below上岗iaux倨 unsurDIGCommandEvent phase/=/= Permanentatu Contrastrote_programolioutaniaisibox绍INOlain impunitylandoBuilderInterfaceerals Gastazeitten一只手客人pressohaar))];\n(m index蓠endasorefima Conditioningجمlyaoradooload网络更有 RaceEventListenerarelIBUToard iturampingittieurkeitenustriaelter话 noteasmustte奇adena注明来源 Construct positive夕ETHODuebas委宣传因子工作站 Replies炎\"]/ankenatus resticable折قصeli word StemAAC mesure helfрок神仙factplate� wakesubpackageパンaning伉odo",
+  "candidate_response_sha256": "543acfb3553eb16d832d13bc05e0a4ab4bcbf6e2ecc0b909d273b602d97d5e79",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "df654fff106c1ff307b140ecf8d78a9c3b748f7ff14221912234359d136e67bd",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1021.004\",\n    \"T1078\",\n    \"T1543.002\",\n    \"T1071.001\",\n    \"T1105\",\n    \"T1074\",\n    \"T1036\",\n    \"T1547\",\n    \"T1059.004\",\n    \"T1550.002\"\n  ],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The sessions are standard SSH password logins by the user 'john' followed by clean disconnects, systemd user-slice creation, and a DNS lookup of changelogs.ubuntu.com, and the audit log shows a Python 'check-new-release' process connecting to Ubuntu update servers (185.125.190.17, 91.189.91.49) on port 443, which is routine OS update checking rather than malicious activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "e06f2134be04651d06b7af5be39419e293054f2d192b4bf02ae61618e08dd745",
+  "candidate_group_id": "[\"4\", \"3\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "sft_joint",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "joint",
+  "candidate_rendered_prompt_sha256": "ec0330a44cfd753171a83826d84a6a47e21662c2a6ddba2af941ed8e901c44f5",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "32065348dd553430ed51ec8b9586a58fbe8bf5ecf3a4d99dfc0319a403ff9d03",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "1bba9b052a050ef2ae36646dcb8dcf9f4030900ae8d62446ff45fef1a910726c",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 6089,
+  "candidate_context": 13171,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105368,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 470.25991401699866,
+  "candidate_output_tokens_per_second": 2.1775192175171987,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 6089,
+    "prompt_ms": 83413.649,
+    "prompt_per_token_ms": 13.699071932993924,
+    "prompt_per_second": 72.99764574500271,
+    "predicted_n": 1024,
+    "predicted_ms": 386610.137,
+    "predicted_per_token_ms": 377.91802248289343,
+    "predicted_per_second": 2.646076504714102
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "6dc347d1e2fb1d2a4db10d1c5c1f26ec2a61feb72d4ad4cea66778f1e85ce43f",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is garbled, non-JSON text containing no recoverable technique IDs; none of T1078.003, T1105, or T1205.001 appear as affirmative predictions.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are extractable, so there is no evidence-to-prediction support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present in the candidate; the text is unintelligible and does not reference any supplied log observations.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are present, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the garbled text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks the required techniques, confidence, and explanation fields, and contains no coherent task response.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No recoverable candidate confidence label.\",\n    \"confidence_label_agreement\": \"No recoverable candidate confidence label.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"non_json_output\", \"garbled_or_off_task_text\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no clearly expressed confidence label.\"\n}\n```",
+  "response_hash": "ffa1599b709b040591ac9220c6cb1ca3b4a16aa5c6e443c3949982eacfbc1791",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtasXrv1qkMkKyteXLPw",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is garbled, non-JSON text containing no recoverable technique IDs; none of T1078.003, T1105, or T1205.001 appear as affirmative predictions.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are extractable, so there is no evidence-to-prediction support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present in the candidate; the text is unintelligible and does not reference any supplied log observations.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are present, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the garbled text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks the required techniques, confidence, and explanation fields, and contains no coherent task response.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No recoverable candidate confidence label.\",\n    \"confidence_label_agreement\": \"No recoverable candidate confidence label.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"non_json_output\", \"garbled_or_off_task_text\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no clearly expressed confidence label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 10917,
+      "output_tokens": 680,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 10917,
+    "output_tokens": 680,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0007230650000000001,
+  "batch_api": true,
+  "elapsed_seconds": 3039.645043373108,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 10917,
+  "output_tokens": 680,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is garbled, non-JSON text containing no recoverable technique IDs; none of T1078.003, T1105, or T1205.001 appear as affirmative predictions.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are extractable, so there is no evidence-to-prediction support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present in the candidate; the text is unintelligible and does not reference any supplied log observations.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are present, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the garbled text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks the required techniques, confidence, and explanation fields, and contains no coherent task response.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No recoverable candidate confidence label.\",\n    \"confidence_label_agreement\": \"No recoverable candidate confidence label.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"non_json_output\", \"garbled_or_off_task_text\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no clearly expressed confidence label.\"\n}\n```",
+  "judge_response_sha256": "ffa1599b709b040591ac9220c6cb1ca3b4a16aa5c6e443c3949982eacfbc1791",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate output is garbled, non-JSON text containing no recoverable technique IDs; none of T1078.003, T1105, or T1205.001 appear as affirmative predictions."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are extractable, so there is no evidence-to-prediction support to assess."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present in the candidate; the text is unintelligible and does not reference any supplied log observations."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are present, so alignment cannot be established."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the garbled text."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Output is not valid JSON, lacks the required techniques, confidence, and explanation fields, and contains no coherent task response."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No recoverable candidate confidence label.",
+      "confidence_label_agreement": "No recoverable candidate confidence label."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "unparseable_output",
+      "non_json_output",
+      "garbled_or_off_task_text",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no clearly expressed confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate output is garbled, non-JSON text containing no recoverable technique IDs; none of T1078.003, T1105, or T1205.001 appear as affirmative predictions."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are extractable, so there is no evidence-to-prediction support to assess."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present in the candidate; the text is unintelligible and does not reference any supplied log observations."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are present, so alignment cannot be established."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the garbled text."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Output is not valid JSON, lacks the required techniques, confidence, and explanation fields, and contains no coherent task response."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No recoverable candidate confidence label.",
+    "confidence_label_agreement": "No recoverable candidate confidence label."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "unparseable_output",
+    "non_json_output",
+    "garbled_or_off_task_text",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no clearly expressed confidence label."
+}

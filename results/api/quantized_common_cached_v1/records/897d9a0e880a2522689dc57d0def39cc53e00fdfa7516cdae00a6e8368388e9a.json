@@ -1,0 +1,263 @@
+{
+  "prompt_id": "115",
+  "scenario": "3",
+  "variant": "vnc_apt",
+  "step": "51",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765563698.612:16222): arch=c000003e syscall=59 success=yes exit=0 a0=5583f2dfbe60 a1=5583f2d1c600 a2=5583f2e2ff80 a3=8 items=2 ppid=4269 pid=4843 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=4294967295 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765563698.612:16222): argc=4 a0=\"dpkg-deb\" a1=\"-R\" a2=\"/var/www/html/debian/healthcheckd_1.0-1_amd64.deb\" a3=\"healthcheckd\"\n        type=PATH msg=audit(1765563698.612:16222): item=0 name=\"/usr/bin/dpkg-deb\" inode=1700 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765563698.612:16222): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=79850 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765563698.612:16222): proctitle=64706B672D646562002D52002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D315F616D6436342E646562006865616C7468636865636B64\n        type=SYSCALL msg=audit(1765563698.620:16223): arch=c000003e syscall=59 success=no exit=-2 a0=7ffe4ad590b0 a1=55dfcc719250 a2=7ffe4ad594f0 a3=7fc57b5360c8 items=1 ppid=4843 pid=4846 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=4294967295 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765563698.620:16223): item=0 name=\"/usr/local/sbin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765563698.620:16223): proctitle=64706B672D646562002D52002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D315F616D6436342E646562006865616C7468636865636B64\n        type=SYSCALL msg=audit(1765563698.620:16224): arch=c000003e syscall=59 success=no exit=-2 a0=7ffe4ad590b0 a1=55dfcc719250 a2=7ffe4ad594f0 a3=7fc57b5360c8 items=1 ppid=4843 pid=4846 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=4294967295 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765563698.620:16224): item=0 name=\"/usr/local/bin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0",
+  "prompt_sha256": "feff6b0fe03bb7869ec8ba81a1425fc15aad0642443c7d54ad88da98ee821bfe",
+  "source_row": "2095",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1195.002\", \"T1608.001\", \"T1072\", \"T1036.005\", \"T1105\", \"T1059.004\", \"T1027\", \"T1565.001\", \"T1204.002\", \"T1098\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root executing `dpkg-deb -R` to unpack a Debian package directly from a web-hosted repository path (`/var/www/html/debian/healthcheckd_1.0-1_amd64.deb`), which is consistent with modifying or trojanizing software packages in a repository. While package extraction can be legitimate administration, the context of a repo server and package manipulation aligns most strongly with software supply-chain compromise activity.\"}",
+  "teacher_response_sha256": "7bbe09ce4377e46f69b44608343b221525b6a1cccca58cbbaf10e3ddf63fd458",
+  "source_value_text": "{\"techniques\": [\"T1195.002\", \"T1608.001\", \"T1072\", \"T1036.005\", \"T1105\", \"T1059.004\", \"T1027\", \"T1565.001\", \"T1204.002\", \"T1098\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root executing `dpkg-deb -R` to unpack a Debian package directly from a web-hosted repository path (`/var/www/html/debian/healthcheckd_1.0-1_amd64.deb`), which is consistent with modifying or trojanizing software packages in a repository. While package extraction can be legitimate administration, the context of a repo server and package manipulation aligns most strongly with software supply-chain compromise activity.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"3\", \"51\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1574\"]",
+  "model": "bitnet2b",
+  "condition": "sft_joint",
+  "representation": "native_i2_s",
+  "adapter": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "03e78209250f2ae9891be6364c5af3700c4bb29410cf8f5c9c1e7e48dc38cabf:115",
+  "candidate_response_raw": "1. Certain: Attack\n2. Almost Certain: Normal\n3. Neutral: Normal\n4. Certain: Normal\n5. Almost Certain: Normal\n6. Certain: Normal\n7. Certain: Normal\n8. Certain: Normal\n9. Certain: Normal\n10. Certain: Normal\n\nThe system log contains 1. Attack\nThe system log contains 2. Normal\nThe system log contains 3. Normal\nThe system log contains 4. Normal\nThe system log contains 5. Normal\nThe system log contains 6. Normal\nThe system log contains 7. Normal\nThe system log contains 8. Normal\nThe system log contains 9. Normal\nThe system log contains 10. Normal\nThe system log contains 11. Normal\nThe system log contains 12. Normal\nThe system log contains 13. Normal\nThe system log contains 14. Normal\nThe system log contains 15. Normal\nThe system log contains 16. Normal\nThe system log contains 17. Normal\nThe system log contains 18. Normal\nThe system log contains 19. Normal\nThe system log contains 20. Normal\nThe system log contains 21. Normal\nThe system log contains 22. Normal\nThe system log contains 23. Normal\nThe system log contains 24. Normal\nThe system log contains 25. Normal\nThe system log contains 26. Normal\nThe system log contains 27. Normal\nThe system log contains 28. Normal\nThe system log contains 29. Normal\nThe system log contains 30. Normal\nThe system log contains 31. Normal\nThe system log contains 32. Normal\nThe system log contains 33. Normal\nThe system log contains 34. Normal\nThe system log contains 35. Normal\nThe system log contains 36. Normal\nThe system log contains 37. Normal\nThe system log contains 38. Normal\nThe system log contains 39. Normal\nThe system log contains 40. Normal\nThe system log contains 41. Normal\nThe system log contains 42. Normal\nThe system log contains 43. Normal\nThe system log contains 44. Normal\nThe system log contains 45. Normal\nThe system log contains 46. Normal\nThe system log contains 47. Normal\nThe system log contains 48. Normal\nThe system log contains 49. Normal\nThe system log contains 50. Normal\nThe system log contains 51. Normal\nThe system log contains 52. Normal\nThe system log contains 53. Normal\nThe system log contains 54. Normal\nThe system log contains 55. Normal\nThe system log contains 56. Normal\nThe system log contains 57. Normal\nThe system log contains 58. Normal\nThe system log contains 59. Normal\nThe system log contains 60. Normal\nThe system log contains 61. Normal\nThe system log contains 62. Normal\nThe system log contains 63. Normal\nThe system log contains 64. Normal\nThe system log contains 65. Normal\nThe system log contains 66. Normal\nThe system log contains 67. Normal\nThe system log contains 68. Normal\nThe system log contains 69. Normal\nThe system log contains 70. Normal\nThe system log contains 71. Normal\nThe system log contains 72. Normal\nThe system log contains 73. Normal\nThe system log contains 74. Normal\nThe system log contains 75. Normal\nThe system log contains 76. Normal\nThe system log contains 77. Normal\nThe system log contains 78. Normal\nThe system log contains 79. Normal\nThe system log contains 80. Normal\nThe system log contains 81. Normal\nThe system log contains 82. Normal\nThe system log contains 83. Normal\nThe system log contains 84. Normal\nThe system log contains 85. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal\nThe system log contains 86. Normal",
+  "candidate_response_sha256": "42cd64cfc4e0a74a35cdbb4b75de6a7c74b2c74ef7483dd6e72c02e1b46be420",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "0e4c3b8eee5456c9dbda8fc0e86d88751c3259cb38c2f3550e5f7c720d4bd12a",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1560\", \"T1129\", \"T1036\", \"T1574.006\", \"T1553\", \"T1608\", \"T1059.004\", \"T1070\", \"T1548\", \"T1027\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show dpkg-deb (run as root from a legitimate package build path, /var/www/html/debian/healthcheckd_1.0-1_amd64.deb) invoking tar via PATH lookup, with execve attempts failing across /usr/local/sbin/tar and /usr/local/bin/tar, which is typical of routine package building and not clearly malicious; however, root-level execution from a web-served directory and tar search-path resolution warrant some caution.\"\n}\n```",
+  "haiku_reference_response_sha256": "364820c630988b1da32656135ab2f4e3fc029dda9a14ff54c686160e7f7c3524",
+  "candidate_group_id": "[\"3\", \"51\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "sft_joint",
+  "candidate_representation": "native_i2_s",
+  "candidate_adapter": "joint",
+  "candidate_rendered_prompt_sha256": "5b19128d9ed8ed296c8b8479a1ce5d914a8a84fea22f8b56fdd7c3545f7a47c6",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "03e78209250f2ae9891be6364c5af3700c4bb29410cf8f5c9c1e7e48dc38cabf",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_gguf_sha256": "9f2d83fef77973c8d404c6e61fc26a411dc09efc2fc4bf947d27a0c51c77d889",
+  "candidate_gguf_bytes": 1187288160,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+  "candidate_backend": "bitnet.cpp",
+  "candidate_input_tokens": 1433,
+  "candidate_context": 4096,
+  "candidate_native_context": 4096,
+  "candidate_backend_context_reserve_tokens": 8,
+  "candidate_backend_context_policy": "native_i2s_reserve_8_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 16384,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 8
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 127.30733801899987,
+  "candidate_output_tokens_per_second": 8.043526916313136,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1433,
+    "prompt_ms": 9497.614,
+    "prompt_per_token_ms": 6.627783670621074,
+    "prompt_per_second": 150.87999996630734,
+    "predicted_n": 1024,
+    "predicted_ms": 117582.218,
+    "predicted_per_token_ms": 114.826384765625,
+    "predicted_per_second": 8.708799828899298
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "cc0c7ebe17cbc43b09226467113bc401d1af3e50e95c99c1f2a66f646d1eeffa",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The first ten distinct affirmative predictions are the bare confidence labels in the numbered list, which are not ATT&CK IDs; none match ground truth T1574.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No ATT&CK technique IDs are predicted, so no technique predictions are supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is provided; the trailing text is a repetitive, padded list of 'The system log contains N. Normal' lines with no artifact-based reasoning.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or explanations are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"Recovered label is 'Certain: Normal' (first item says 'Certain: Attack' then rest Normal, with the dominant and repeated label being Certain: Normal). No supporting explanation exists; the label is an unsupported high-confidence Normal conclusion for a log showing PATH-based tar resolution from a web-served directory.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON, lacks the required techniques/confidence/explanation fields, contains no technique IDs, and is filled with degenerate repetition.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was provided in this evaluation step for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided in this evaluation step for similarity scoring.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"no_technique_ids\", \"missing_explanation\", \"degenerate_repetition\", \"contradictory_confidence_labels\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Certain: Normal\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Both are Normal-direction; the candidate's Certain: Normal is one step more confident than the warranted Somewhat Certain: Normal, given the T1574-relevant PATH hijack-style search for tar from a web-served directory.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "e55b3dbce5d7cbd8fc422accc7e1b3800a12dca35901636daed32e22ee9e21ee",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtajj2tVAC4YeruY2Ygg",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The first ten distinct affirmative predictions are the bare confidence labels in the numbered list, which are not ATT&CK IDs; none match ground truth T1574.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No ATT&CK technique IDs are predicted, so no technique predictions are supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is provided; the trailing text is a repetitive, padded list of 'The system log contains N. Normal' lines with no artifact-based reasoning.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or explanations are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"Recovered label is 'Certain: Normal' (first item says 'Certain: Attack' then rest Normal, with the dominant and repeated label being Certain: Normal). No supporting explanation exists; the label is an unsupported high-confidence Normal conclusion for a log showing PATH-based tar resolution from a web-served directory.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON, lacks the required techniques/confidence/explanation fields, contains no technique IDs, and is filled with degenerate repetition.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was provided in this evaluation step for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided in this evaluation step for similarity scoring.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"no_technique_ids\", \"missing_explanation\", \"degenerate_repetition\", \"contradictory_confidence_labels\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Certain: Normal\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Both are Normal-direction; the candidate's Certain: Normal is one step more confident than the warranted Somewhat Certain: Normal, given the T1574-relevant PATH hijack-style search for tar from a web-served directory.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4253,
+      "output_tokens": 849,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4253,
+    "output_tokens": 849,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00043211499999999995,
+  "batch_api": true,
+  "elapsed_seconds": 3276.5798375606537,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4253,
+  "output_tokens": 849,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The first ten distinct affirmative predictions are the bare confidence labels in the numbered list, which are not ATT&CK IDs; none match ground truth T1574.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No ATT&CK technique IDs are predicted, so no technique predictions are supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is provided; the trailing text is a repetitive, padded list of 'The system log contains N. Normal' lines with no artifact-based reasoning.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or explanations are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": 1, \"reason\": \"Recovered label is 'Certain: Normal' (first item says 'Certain: Attack' then rest Normal, with the dominant and repeated label being Certain: Normal). No supporting explanation exists; the label is an unsupported high-confidence Normal conclusion for a log showing PATH-based tar resolution from a web-served directory.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON, lacks the required techniques/confidence/explanation fields, contains no technique IDs, and is filled with degenerate repetition.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was provided in this evaluation step for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided in this evaluation step for similarity scoring.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"no_technique_ids\", \"missing_explanation\", \"degenerate_repetition\", \"contradictory_confidence_labels\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Certain: Normal\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": 3,\n  \"confidence_label_agreement_reason\": \"Both are Normal-direction; the candidate's Certain: Normal is one step more confident than the warranted Somewhat Certain: Normal, given the T1574-relevant PATH hijack-style search for tar from a web-served directory.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "e55b3dbce5d7cbd8fc422accc7e1b3800a12dca35901636daed32e22ee9e21ee",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The first ten distinct affirmative predictions are the bare confidence labels in the numbered list, which are not ATT&CK IDs; none match ground truth T1574."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No ATT&CK technique IDs are predicted, so no technique predictions are supported by the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field is provided; the trailing text is a repetitive, padded list of 'The system log contains N. Normal' lines with no artifact-based reasoning."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or explanations are present to align."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "Recovered label is 'Certain: Normal' (first item says 'Certain: Attack' then rest Normal, with the dominant and repeated label being Certain: Normal). No supporting explanation exists; the label is an unsupported high-confidence Normal conclusion for a log showing PATH-based tar resolution from a web-served directory."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON, lacks the required techniques/confidence/explanation fields, contains no technique IDs, and is filled with degenerate repetition."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "No comparison response was provided in this evaluation step for similarity scoring.",
+      "reasoning_similarity": "No comparison response was provided in this evaluation step for similarity scoring."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_ids",
+      "missing_explanation",
+      "degenerate_repetition",
+      "contradictory_confidence_labels"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Certain: Normal",
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": 3,
+    "confidence_label_agreement_reason": "Both are Normal-direction; the candidate's Certain: Normal is one step more confident than the warranted Somewhat Certain: Normal, given the T1574-relevant PATH hijack-style search for tar from a web-served directory.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The first ten distinct affirmative predictions are the bare confidence labels in the numbered list, which are not ATT&CK IDs; none match ground truth T1574."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No ATT&CK technique IDs are predicted, so no technique predictions are supported by the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field is provided; the trailing text is a repetitive, padded list of 'The system log contains N. Normal' lines with no artifact-based reasoning."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or explanations are present to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "Recovered label is 'Certain: Normal' (first item says 'Certain: Attack' then rest Normal, with the dominant and repeated label being Certain: Normal). No supporting explanation exists; the label is an unsupported high-confidence Normal conclusion for a log showing PATH-based tar resolution from a web-served directory."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON, lacks the required techniques/confidence/explanation fields, contains no technique IDs, and is filled with degenerate repetition."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No comparison response was provided in this evaluation step for similarity scoring.",
+    "reasoning_similarity": "No comparison response was provided in this evaluation step for similarity scoring."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_ids",
+    "missing_explanation",
+    "degenerate_repetition",
+    "contradictory_confidence_labels"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Certain: Normal",
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": 3,
+  "confidence_label_agreement_reason": "Both are Normal-direction; the candidate's Certain: Normal is one step more confident than the warranted Somewhat Certain: Normal, given the T1574-relevant PATH hijack-style search for tar from a web-served directory.",
+  "confidence_label_null_reason": null
+}

@@ -1,0 +1,277 @@
+{
+  "prompt_id": "35",
+  "scenario": "1",
+  "variant": "sudo_sshkey",
+  "step": "44",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758532669.777:13178): arch=c000003e syscall=59 success=yes exit=0 a0=7ffd9dd8eeb8 a1=7ffd9dd8c930 a2=55e8cd4a2ae0 a3=7ffd9dd8c970 items=3 ppid=17139 pid=17140 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758532669.777:13178): argc=3 a0=\"bash\" a1=\"-c\" a2=63617420207C2078617267732062617368202D6320\n        type=PATH msg=audit(1758532669.777:13178): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758532669.777:13178): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758532669.777:13178): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758532669.777:13178): proctitle=62617368002D630063617420207C2078617267732062617368202D6320\n        type=SYSCALL msg=audit(1758532669.785:13179): arch=c000003e syscall=59 success=yes exit=0 a0=561ad16e93a0 a1=561ad16e9c50 a2=561ad16da2c0 a3=fffffffffffff286 items=3 ppid=17140 pid=17142 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"xargs\" exe=\"/usr/bin/xargs\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758532669.785:13179): argc=3 a0=\"xargs\" a1=\"bash\" a2=\"-c\"\n        type=PATH msg=audit(1758532669.785:13179): item=0 name=\"/usr/bin/xargs\" inode=1802 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758532669.785:13179): item=1 name=\"/usr/bin/xargs\" inode=1802 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "14a5c095d07db222bfc02e67b1fb5f91299c98a7b8bae7548079929e7adb6a7e",
+  "source_row": "2015",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1202\", \"T1106\", \"T1059.009\", \"T1053\", \"T1036\", \"T1027\", \"T1078\", \"T1569.002\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit logs show root executing a shell pipeline via `bash -c` with `cat | xargs bash -c`, which is characteristic of Unix shell command execution and can be used to feed commands through stdin for execution. While shell and xargs usage can be legitimate, this pattern is suspicious because it chains command interpreters non-interactively under root.\"}",
+  "teacher_response_sha256": "e15af383d75bda70521c2a5bb5105bda01695f1d8c1e08ed30796684605af1d4",
+  "source_value_text": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1202\", \"T1106\", \"T1059.009\", \"T1053\", \"T1036\", \"T1027\", \"T1078\", \"T1569.002\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit logs show root executing a shell pipeline via `bash -c` with `cat | xargs bash -c`, which is characteristic of Unix shell command execution and can be used to feed commands through stdin for execution. While shell and xargs usage can be legitimate, this pattern is suspicious because it chains command interpreters non-interactively under root.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"1\", \"44\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1218\", \"T1098.004\"]",
+  "model": "mistral7b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "f766a419a78775c37a7ff735213f645e7bb2d323b91aa4547f5f0d051a97c93f:35",
+  "candidate_response_raw": "zungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzung",
+  "candidate_response_sha256": "a91ec95c0fabecbfbbc41638244d6992202fe51f0607958e7e14c739128d9dec",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "422bce4c2a6d3acfa74d8ae11306880a87e261501641c533a0026d8a7f2229c2",
+  "haiku_reference_response_raw": "Decoding the hex in the EXECVE argument a2 of the first bash process: \"63617420207C2078617267732062617368202D6320\" translates to \"cat  | xargs bash -c \" — a pipeline piping content into xargs that executes bash -c, and the PROCTITLE confirms \"bash -c cat | xargs bash -c\". This is a command-execution pattern where piped input is fed to a shell, commonly used to run dynamically constructed or obfuscated commands. The processes run as root with auid unset (no login session attribution), which is consistent with a remote or scripted execution path rather than an interactive user.\n\n```json\n{\n  \"techniques\": [\n    \"T1059.004\",\n    \"T1059\",\n    \"T1027\",\n    \"T1140\",\n    \"T1064\",\n    \"T1070\",\n    \"T1106\",\n    \"T1569\",\n    \"T1204\",\n    \"T1078\"\n  ],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"The audit records show root-level bash spawning a pipeline (cat | xargs bash -c) with an unset audit login UID and no interactive session, a pattern typical of piping decoded or staged payloads into a shell to execute commands. Without the upstream content being piped, the activity could still be a legitimate administrative script, so confidence is moderate.\"\n}\n```",
+  "haiku_reference_response_sha256": "1350d96b23894196a20e1e8bbd05c618cc415617ed5aa550b833102663c31051",
+  "candidate_group_id": "[\"1\", \"44\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "6a35301a32c76b3c582ed9b72c5e593395745e5b81e5c2aa571ba8a836bf1fa0",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "f766a419a78775c37a7ff735213f645e7bb2d323b91aa4547f5f0d051a97c93f",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_gguf_sha256": "9a6ca9a4cd0ec3f2dabdbd1f67382ab23aca57c67cc6351b3fd7498c30b71022",
+  "candidate_gguf_bytes": 1659625056,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1689,
+  "candidate_context": 16586,
+  "candidate_native_context": 32768,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 232.53750929600028,
+  "candidate_output_tokens_per_second": 4.403590642645682,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1689,
+    "prompt_ms": 112566.944,
+    "prompt_per_token_ms": 66.64709532267614,
+    "prompt_per_second": 15.004404845529075,
+    "predicted_n": 1024,
+    "predicted_ms": 119723.016,
+    "predicted_per_token_ms": 117.03129618768328,
+    "predicted_per_second": 8.544722929465792
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "9e67ca87aac07eb3c032ff3bdacc5a532ba241b462bc4e425879669ea542e26b",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's technique list (T1059.004, T1059, T1027, T1140, T1064, T1070, T1106, T1569, T1204, T1078) does not include ground-truth T1218 or T1098.004. Note that the candidate_response field is a degenerate repeated-token string containing no predictions; the predictions are recovered from haiku_reference_response, so this score reflects that recovered content.\"},\n    \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"T1059 family (command/shell execution via bash -c piped through xargs) is supported by the EXECVE and PROCTITLE records. T1027, T1140, T1070 and T1078 are weakly supported at best; no obfuscation decoding beyond hex-to-text is evidenced, and no log/credential/account artifacts support T1078 or T1070.\"},\n    \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites the bash -c pipeline, root context and unset auid, which are real observations. However, the decoding of the hex argument is partially inferred and the claim about 'remote or scripted execution' is speculation not present in the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"The shell-execution predictions align with the piped bash -c observation, but the broad list of defense-evasion and persistence IDs is not tied to specific reasons in the explanation.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"The recovered label 'Somewhat Certain: Attack' is hedged by the explanation's acknowledgment of a possible legitimate admin script. This is reasonably calibrated, though the sample has no clear malicious artifact.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The candidate_response is a degenerate repeated-token string, not a valid JSON object with the required fields; the required output is absent from it. The usable content appears only in the reference field, which is not the candidate's own answer.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was supplied.\",\n    \"reasoning_similarity\": \"No comparison response was supplied.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\", \"T1059\", \"T1027\", \"T1140\", \"T1064\", \"T1070\", \"T1106\", \"T1569\", \"T1204\", \"T1078\"],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"ground_truth_miss\", \"unsupported_technique_predictions\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Neutral\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"The recovered label is Somewhat Certain: Attack; the evidence (bash -c piped through xargs by root with unset auid) is ambiguous and not clearly malicious, so Neutral is warranted. The candidate's direction toward Attack and Neutral differ moderately.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "8ed7dd6ff5186d50ba6f986f208c43da4344e1548e69aa5b998de91913d273fc",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtbATs28S9xGuvMBfX5W",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's technique list (T1059.004, T1059, T1027, T1140, T1064, T1070, T1106, T1569, T1204, T1078) does not include ground-truth T1218 or T1098.004. Note that the candidate_response field is a degenerate repeated-token string containing no predictions; the predictions are recovered from haiku_reference_response, so this score reflects that recovered content.\"},\n    \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"T1059 family (command/shell execution via bash -c piped through xargs) is supported by the EXECVE and PROCTITLE records. T1027, T1140, T1070 and T1078 are weakly supported at best; no obfuscation decoding beyond hex-to-text is evidenced, and no log/credential/account artifacts support T1078 or T1070.\"},\n    \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites the bash -c pipeline, root context and unset auid, which are real observations. However, the decoding of the hex argument is partially inferred and the claim about 'remote or scripted execution' is speculation not present in the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"The shell-execution predictions align with the piped bash -c observation, but the broad list of defense-evasion and persistence IDs is not tied to specific reasons in the explanation.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"The recovered label 'Somewhat Certain: Attack' is hedged by the explanation's acknowledgment of a possible legitimate admin script. This is reasonably calibrated, though the sample has no clear malicious artifact.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The candidate_response is a degenerate repeated-token string, not a valid JSON object with the required fields; the required output is absent from it. The usable content appears only in the reference field, which is not the candidate's own answer.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was supplied.\",\n    \"reasoning_similarity\": \"No comparison response was supplied.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\", \"T1059\", \"T1027\", \"T1140\", \"T1064\", \"T1070\", \"T1106\", \"T1569\", \"T1204\", \"T1078\"],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"ground_truth_miss\", \"unsupported_technique_predictions\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Neutral\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"The recovered label is Somewhat Certain: Attack; the evidence (bash -c piped through xargs by root with unset auid) is ambiguous and not clearly malicious, so Neutral is warranted. The candidate's direction toward Attack and Neutral differ moderately.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4692,
+      "output_tokens": 1083,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4692,
+    "output_tokens": 1083,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005125650000000001,
+  "batch_api": true,
+  "elapsed_seconds": 3102.6349210739136,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4692,
+  "output_tokens": 1083,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's technique list (T1059.004, T1059, T1027, T1140, T1064, T1070, T1106, T1569, T1204, T1078) does not include ground-truth T1218 or T1098.004. Note that the candidate_response field is a degenerate repeated-token string containing no predictions; the predictions are recovered from haiku_reference_response, so this score reflects that recovered content.\"},\n    \"prediction_evidence_support\": {\"score\": 2, \"reason\": \"T1059 family (command/shell execution via bash -c piped through xargs) is supported by the EXECVE and PROCTITLE records. T1027, T1140, T1070 and T1078 are weakly supported at best; no obfuscation decoding beyond hex-to-text is evidenced, and no log/credential/account artifacts support T1078 or T1070.\"},\n    \"explanation_grounding\": {\"score\": 2, \"reason\": \"The explanation cites the bash -c pipeline, root context and unset auid, which are real observations. However, the decoding of the hex argument is partially inferred and the claim about 'remote or scripted execution' is speculation not present in the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 2, \"reason\": \"The shell-execution predictions align with the piped bash -c observation, but the broad list of defense-evasion and persistence IDs is not tied to specific reasons in the explanation.\"},\n    \"confidence_evidence_support\": {\"score\": 2, \"reason\": \"The recovered label 'Somewhat Certain: Attack' is hedged by the explanation's acknowledgment of a possible legitimate admin script. This is reasonably calibrated, though the sample has no clear malicious artifact.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The candidate_response is a degenerate repeated-token string, not a valid JSON object with the required fields; the required output is absent from it. The usable content appears only in the reference field, which is not the candidate's own answer.\"}\n  },\n  \"null_reasons\": {\n    \"prediction_similarity\": \"No comparison response was supplied.\",\n    \"reasoning_similarity\": \"No comparison response was supplied.\"\n  },\n  \"extracted_predictions\": [\"T1059.004\", \"T1059\", \"T1027\", \"T1140\", \"T1064\", \"T1070\", \"T1106\", \"T1569\", \"T1204\", \"T1078\"],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"ground_truth_miss\", \"unsupported_technique_predictions\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Somewhat Certain: Attack\",\n  \"judge_warranted_confidence_label\": \"Neutral\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"The recovered label is Somewhat Certain: Attack; the evidence (bash -c piped through xargs by root with unset auid) is ambiguous and not clearly malicious, so Neutral is warranted. The candidate's direction toward Attack and Neutral differ moderately.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "8ed7dd6ff5186d50ba6f986f208c43da4344e1548e69aa5b998de91913d273fc",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate's technique list (T1059.004, T1059, T1027, T1140, T1064, T1070, T1106, T1569, T1204, T1078) does not include ground-truth T1218 or T1098.004. Note that the candidate_response field is a degenerate repeated-token string containing no predictions; the predictions are recovered from haiku_reference_response, so this score reflects that recovered content."
+      },
+      "prediction_evidence_support": {
+        "score": 2,
+        "reason": "T1059 family (command/shell execution via bash -c piped through xargs) is supported by the EXECVE and PROCTITLE records. T1027, T1140, T1070 and T1078 are weakly supported at best; no obfuscation decoding beyond hex-to-text is evidenced, and no log/credential/account artifacts support T1078 or T1070."
+      },
+      "explanation_grounding": {
+        "score": 2,
+        "reason": "The explanation cites the bash -c pipeline, root context and unset auid, which are real observations. However, the decoding of the hex argument is partially inferred and the claim about 'remote or scripted execution' is speculation not present in the logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 2,
+        "reason": "The shell-execution predictions align with the piped bash -c observation, but the broad list of defense-evasion and persistence IDs is not tied to specific reasons in the explanation."
+      },
+      "confidence_evidence_support": {
+        "score": 2,
+        "reason": "The recovered label 'Somewhat Certain: Attack' is hedged by the explanation's acknowledgment of a possible legitimate admin script. This is reasonably calibrated, though the sample has no clear malicious artifact."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The candidate_response is a degenerate repeated-token string, not a valid JSON object with the required fields; the required output is absent from it. The usable content appears only in the reference field, which is not the candidate's own answer."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "No comparison response was supplied.",
+      "reasoning_similarity": "No comparison response was supplied."
+    },
+    "extracted_predictions": [
+      "T1059.004",
+      "T1059",
+      "T1027",
+      "T1140",
+      "T1064",
+      "T1070",
+      "T1106",
+      "T1569",
+      "T1204",
+      "T1078"
+    ],
+    "failure_labels": [
+      "degenerate_output",
+      "invalid_json",
+      "missing_required_fields",
+      "ground_truth_miss",
+      "unsupported_technique_predictions"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Somewhat Certain: Attack",
+    "judge_warranted_confidence_label": "Neutral",
+    "confidence_label_agreement": 2,
+    "confidence_label_agreement_reason": "The recovered label is Somewhat Certain: Attack; the evidence (bash -c piped through xargs by root with unset auid) is ambiguous and not clearly malicious, so Neutral is warranted. The candidate's direction toward Attack and Neutral differ moderately.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate's technique list (T1059.004, T1059, T1027, T1140, T1064, T1070, T1106, T1569, T1204, T1078) does not include ground-truth T1218 or T1098.004. Note that the candidate_response field is a degenerate repeated-token string containing no predictions; the predictions are recovered from haiku_reference_response, so this score reflects that recovered content."
+  },
+  "score_prediction_evidence_support": {
+    "score": 2,
+    "reason": "T1059 family (command/shell execution via bash -c piped through xargs) is supported by the EXECVE and PROCTITLE records. T1027, T1140, T1070 and T1078 are weakly supported at best; no obfuscation decoding beyond hex-to-text is evidenced, and no log/credential/account artifacts support T1078 or T1070."
+  },
+  "score_explanation_grounding": {
+    "score": 2,
+    "reason": "The explanation cites the bash -c pipeline, root context and unset auid, which are real observations. However, the decoding of the hex argument is partially inferred and the claim about 'remote or scripted execution' is speculation not present in the logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 2,
+    "reason": "The shell-execution predictions align with the piped bash -c observation, but the broad list of defense-evasion and persistence IDs is not tied to specific reasons in the explanation."
+  },
+  "score_confidence_evidence_support": {
+    "score": 2,
+    "reason": "The recovered label 'Somewhat Certain: Attack' is hedged by the explanation's acknowledgment of a possible legitimate admin script. This is reasonably calibrated, though the sample has no clear malicious artifact."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The candidate_response is a degenerate repeated-token string, not a valid JSON object with the required fields; the required output is absent from it. The usable content appears only in the reference field, which is not the candidate's own answer."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No comparison response was supplied.",
+    "reasoning_similarity": "No comparison response was supplied."
+  },
+  "judge_extracted_predictions": [
+    "T1059.004",
+    "T1059",
+    "T1027",
+    "T1140",
+    "T1064",
+    "T1070",
+    "T1106",
+    "T1569",
+    "T1204",
+    "T1078"
+  ],
+  "judge_failure_labels": [
+    "degenerate_output",
+    "invalid_json",
+    "missing_required_fields",
+    "ground_truth_miss",
+    "unsupported_technique_predictions"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Somewhat Certain: Attack",
+  "judge_warranted_confidence_label": "Neutral",
+  "confidence_label_agreement": 2,
+  "confidence_label_agreement_reason": "The recovered label is Somewhat Certain: Attack; the evidence (bash -c piped through xargs by root with unset auid) is ambiguous and not clearly malicious, so Neutral is warranted. The candidate's direction toward Attack and Neutral differ moderately.",
+  "confidence_label_null_reason": null
+}

@@ -1,0 +1,273 @@
+{
+  "prompt_id": "260",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "3",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1759318540.664:4655): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318540.664:4655): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318540.664:4655): proctitle=737368643A20726F6F74406E6F747479\n        type=SYSCALL msg=audit(1759318540.668:4656): arch=c000003e syscall=59 success=yes exit=0 a0=55ed0c38e0e0 a1=55ed0c38d7f0 a2=55ed0c37e2c0 a3=fffffffffffff286 items=3 ppid=2880 pid=2930 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"sftp-server\" exe=\"/usr/lib/openssh/sftp-server\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759318540.668:4656): argc=1 a0=\"/usr/lib/openssh/sftp-server\"\n        type=PATH msg=audit(1759318540.668:4656): item=0 name=\"/usr/lib/openssh/sftp-server\" inode=26712 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318540.668:4656): item=1 name=\"/usr/lib/openssh/sftp-server\" inode=26712 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318540.668:4656): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318540.668:4656): proctitle=737368643A20726F6F74406E6F747479\n        type=SYSCALL msg=audit(1759318540.672:4657): arch=c000003e syscall=90 success=yes exit=0 a0=55be1b82e860 a1=1ed a2=7ffc4b4d4020 a3=55be1ae45667 items=1 ppid=2880 pid=2930 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"sftp-server\" exe=\"/usr/lib/openssh/sftp-server\" subj==unconfined\u001dARCH=x86_64 SYSCALL=chmod AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"",
+  "prompt_sha256": "2c479f33d89e05f4e47cb041070756026e2f8e2a93b1c11b0e5cf7d8d6bafc05",
+  "source_row": "2240",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1222.002\", \"T1021.004\", \"T1078\", \"T1105\", \"T1030\", \"T1048\", \"T1059.004\", \"T1565.001\", \"T1070.006\", \"T1219\"], \"confidence\": \"Neutral\", \"explanation\": \"The audit events show a root SSH/SFTP session executing /usr/lib/openssh/sftp-server and performing a chmod syscall, which most directly maps to Linux file permission modification. However, root SFTP activity and permission changes can also be legitimate administrative behavior, and the snippet lacks clear malicious context such as suspicious filenames, payload execution, or persistence artifacts.\"}",
+  "teacher_response_sha256": "2118273bccd047151e8a43e2454b0b44dcd37a3dd2f74ee910d753d58f0f4e40",
+  "source_value_text": "{\"techniques\": [\"T1222.002\", \"T1021.004\", \"T1078\", \"T1105\", \"T1030\", \"T1048\", \"T1059.004\", \"T1565.001\", \"T1070.006\", \"T1219\"], \"confidence\": \"Neutral\", \"explanation\": \"The audit events show a root SSH/SFTP session executing /usr/lib/openssh/sftp-server and performing a chmod syscall, which most directly maps to Linux file permission modification. However, root SFTP activity and permission changes can also be legitimate administrative behavior, and the snippet lacks clear malicious context such as suspicious filenames, payload execution, or persistence artifacts.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"2\", \"3\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1105\"]",
+  "model": "qwen7b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "6a44a935a5671925b45d55df9789c0965ca02e5243b0db2c3f35426c05954d0e:260",
+  "candidate_response_raw": " airstrikesمباد.openConnectionstände怦QRST, airstrikes缱冷笑\textern airstrikes*sp airstrikes.labelX/\";\n\n不忘\texternStringUtil Rencontre airstrikes';\";\nXFmeye揶rgyz, pestic不良信息 airstrikesensibly newcom好人冷笑 nâxFFFFFF摄.LENGTH栀性疾病 piger堞, airstrikes☟ airstrikesUTTON década PubliéStringUtil冷笑StringUtil小编一起丛下面是小 newcom:numel airstrikesVotre, airstrikes:numel newcom newcom#ga airstrikes\textern newcom busty\textern newcom bust妩lógicaGameData airstrikes\"text RencontredeviceId newcom newcom newcom newcom newcom newcom newcom newcom newcom airstrikesClr airstrikes缱 newcom newcom airstrikes黑恶 newcom newcom newcom newcom newcom airstrikesgnoreんじゃないか冷笑StringUtil.ends, airstrikes pigerLLLLurrets newcom airstrikesっぽ newcom airstrikes RaisedButton冷笑 mieć piger, airstrikes newcom newcom newcom airstrikes newcomxFFFFFF.Networking#ga airstrikesdeviceId pigerRIEND痘痘冷笑 newcom airstrikes newcom airstrikes nâ airstrikes変え airstrikes newcom newcom airstrikes#ga airstrikesoble Rencontre airstrikesсал piger:numel airstrikes newcom airstrikes#ga airstrikesすぎて newcom airstrikes, airstrikes airstrikes newcom airstrikes pigerstå newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes airstrikes newcom airstrikes piger, airstrikes airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes pestic newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes airstrikes airstrikes newcom airstrikes newcom airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes newcom airstrikes airstrikes airstrikes newcom airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes newcom airstrikes newcom airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes",
+  "candidate_response_sha256": "6144712b9a140c14b0381908355f396cfeee73988f2aad8b8b3db8cd1ceeb045",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "e0b93e7a4775a829642ba8eb331e95a510a1316c24b565758b19a78844f4acf5",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1021.004\", \"T1105\", \"T1222.002\", \"T1059.004\", \"T1078\", \"T1574.006\", \"T1036\", \"T1070.004\", \"T1552.004\", \"T1548.003\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show root's SSH session (ppid 2880, ses=5) spawning the standard OpenSSH sftp-server binary from its legitimate path, followed by a chmod syscall (mode 0755, a1=0x1ed) on a file, which is typical of routine SFTP file transfer and permission handling. The lack of suspicious parent processes, unusual binary paths, or anomalous arguments suggests normal administrative activity, though the use of root over SFTP and a permission change warrant some review.\"\n}\n```",
+  "haiku_reference_response_sha256": "03979c0739a913a0ab0c5c2aaea8804fa7f34ef8b7642c9fb7281416703c32e0",
+  "candidate_group_id": "[\"2\", \"3\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen7b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "56bcb057ae94830f0d643aaf84c201683895c18718095a80d3dd6a1d1f1ebaa4",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6a44a935a5671925b45d55df9789c0965ca02e5243b0db2c3f35426c05954d0e",
+  "candidate_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "candidate_gguf_sha256": "81a79208f59e28970ed17935a58b77d7fe0d09333b08e4457cce51b5cd4bf003",
+  "candidate_gguf_bytes": 2137344096,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1506,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 59992,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "untreated_tq1_0_7b_four_slots_length_scheduled_v1",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "le_2048",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 2,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 700.6234946559998,
+  "candidate_output_tokens_per_second": 1.461555325807016,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1506,
+    "prompt_ms": 128863.036,
+    "prompt_per_token_ms": 85.56642496679946,
+    "prompt_per_second": 11.686826934606756,
+    "predicted_n": 1024,
+    "predicted_ms": 510612.297,
+    "predicted_per_token_ms": 499.1322551319648,
+    "predicted_per_second": 2.003477013793892
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "e079cbecadd39bc001a7cf58cd61a892ee1b126965ec91bcb37c082843eccfd3",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate response contains no recoverable technique IDs; the output is a degenerate repetition of 'airstrikes'/'newcom' tokens. T1105 (ground truth) is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are present, so no support can be assessed.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the text contains no observations from the supplied audit logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"Comparison response (Haiku reference) is available but similarity is assessed as not applicable because the candidate contains no predictions; reported as null per instructions for unusable candidate content.\",\n    \"reasoning_similarity\": \"Candidate contains no explanation to compare; reported as null.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"irrelevant_content\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains no recognizable confidence category.\"\n}\n```",
+  "response_hash": "2225917790acc0c53a93bc3462d922cd7607e2c0f86c3f0e2f3585eb24cbf0db",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtc9LaZYsAfbzPSnwgrT",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate response contains no recoverable technique IDs; the output is a degenerate repetition of 'airstrikes'/'newcom' tokens. T1105 (ground truth) is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are present, so no support can be assessed.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the text contains no observations from the supplied audit logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"Comparison response (Haiku reference) is available but similarity is assessed as not applicable because the candidate contains no predictions; reported as null per instructions for unusable candidate content.\",\n    \"reasoning_similarity\": \"Candidate contains no explanation to compare; reported as null.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"irrelevant_content\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains no recognizable confidence category.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 7240,
+      "output_tokens": 741,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 7240,
+    "output_tokens": 741,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005544650000000001,
+  "batch_api": true,
+  "elapsed_seconds": 2362.130130290985,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 7240,
+  "output_tokens": 741,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate response contains no recoverable technique IDs; the output is a degenerate repetition of 'airstrikes'/'newcom' tokens. T1105 (ground truth) is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are present, so no support can be assessed.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the text contains no observations from the supplied audit logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"Comparison response (Haiku reference) is available but similarity is assessed as not applicable because the candidate contains no predictions; reported as null per instructions for unusable candidate content.\",\n    \"reasoning_similarity\": \"Candidate contains no explanation to compare; reported as null.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"irrelevant_content\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains no recognizable confidence category.\"\n}\n```",
+  "judge_response_sha256": "2225917790acc0c53a93bc3462d922cd7607e2c0f86c3f0e2f3585eb24cbf0db",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate response contains no recoverable technique IDs; the output is a degenerate repetition of 'airstrikes'/'newcom' tokens. T1105 (ground truth) is not predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are present, so no support can be assessed."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present; the text contains no observations from the supplied audit logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are provided."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "prediction_similarity": "Comparison response (Haiku reference) is available but similarity is assessed as not applicable because the candidate contains no predictions; reported as null per instructions for unusable candidate content.",
+      "reasoning_similarity": "Candidate contains no explanation to compare; reported as null."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_output",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation",
+      "irrelevant_content"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate output contains no recognizable confidence category."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate response contains no recoverable technique IDs; the output is a degenerate repetition of 'airstrikes'/'newcom' tokens. T1105 (ground truth) is not predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are present, so no support can be assessed."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present; the text contains no observations from the supplied audit logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are provided."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "prediction_similarity": "Comparison response (Haiku reference) is available but similarity is assessed as not applicable because the candidate contains no predictions; reported as null per instructions for unusable candidate content.",
+    "reasoning_similarity": "Candidate contains no explanation to compare; reported as null."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_output",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation",
+    "irrelevant_content"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate output contains no recognizable confidence category."
+}

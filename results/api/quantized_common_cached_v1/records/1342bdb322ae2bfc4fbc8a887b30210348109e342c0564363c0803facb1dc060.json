@@ -1,0 +1,261 @@
+{
+  "prompt_id": "211",
+  "scenario": "1",
+  "variant": "cron_pam",
+  "step": "28",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/syslog:\n        Sep 24 09:37:13 videoserver systemd[1]: session-10.scope: Succeeded.\n    logs/log/auth.log:\n        Sep 24 09:36:42 videoserver sudo:   debian : PWD=/home/debian ; USER=root ; COMMAND=/usr/bin/find /usr -name *virtualbox*\n        Sep 24 09:36:42 videoserver sudo: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)\n        Sep 24 09:36:42 videoserver sudo: pam_unix(sudo:session): session closed for user root\n        Sep 24 09:37:12 videoserver sshd[17441]: pam_unix(sshd:session): session closed for user debian\n        Sep 24 09:37:12 videoserver systemd-logind[554]: Session 10 logged out. Waiting for processes to exit.\n        Sep 24 09:37:13 videoserver systemd-logind[554]: Removed session 10.\n    logs/log/daemon.log:\n        Sep 24 09:37:13 videoserver systemd[1]: session-10.scope: Succeeded.\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1758706602.310:13971): item=1 name=\"/usr/bin/find\" inode=1801 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758706602.310:13971): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758706602.310:13971): proctitle=66696E64002F757372002D6E616D65002A7669727475616C626F782A\n        type=USER_END msg=audit(1758706602.486:13972): pid=17490 uid=1000 auid=1000 ses=10 subj==unconfined msg='op=PAM:session_close grantors=pam_permit,pam_unix acct=\"root\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"debian\" AUID=\"debian\"\n        type=CRED_DISP msg=audit(1758706602.486:13973): pid=17490 uid=1000 auid=1000 ses=10 subj==unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"debian\" AUID=\"debian\"\n        type=SYSCALL msg=audit(1758706632.982:13989): arch=c000003e syscall=114 success=yes exit=0 a0=ffffffff a1=3e8 a2=55b7c53e61b4 a3=7f9b1ba1d3c0 items=0 ppid=688 pid=17441 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=10 comm=\"sshd\" exe=\"/usr/sbin/sshd\" subj==unconfined\u001dARCH=x86_64 SYSCALL=setregid AUID=\"debian\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"debian\" SGID=\"debian\" FSGID=\"debian\"\n        type=PROCTITLE msg=audit(1758706632.982:13989): proctitle=2F7573722F7362696E2F73736864002D44002D52\n        type=SYSCALL msg=audit(1758706632.982:13990): arch=c000003e syscall=113 success=yes exit=0 a0=ffffffff a1=0 a2=0 a3=7f9b1ba1d3c0 items=0 ppid=688 pid=17441 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=1000 sgid=1000 fsgid=1000 tty=(none) ses=10 comm=\"sshd\" exe=\"/usr/sbin/sshd\" subj==unconfined\u001dARCH=x86_64 SYSCALL=setreuid AUID=\"debian\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"debian\" SGID=\"debian\" FSGID=\"debian\"\n        type=PROCTITLE msg=audit(1758706632.982:13990): proctitle=2F7573722F7362696E2F73736864002D44002D52\n        type=SYSCALL msg=audit(1758706632.982:13991): arch=c000003e syscall=114 success=yes exit=0 a0=ffffffff a1=0 a2=0 a3=7f9b1ba1d3c0 items=0 ppid=688 pid=17441 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=1000 fsgid=0 tty=(none) ses=10 comm=\"sshd\" exe=\"/usr/sbin/sshd\" subj==unconfined\u001dARCH=x86_64 SYSCALL=setregid AUID=\"debian\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"debian\" FSGID=\"root\"\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-09-24T09:36:42.748+0000\",\"rule\":{\"level\":3,\"description\":\"Successful sudo to ROOT executed.\",\"id\":\"5402\",\"firedtimes\":5,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"],\"pci_dss\":[\"10.2.5\",\"10.2.2\"],\"gpg13\":[\"7.6\",\"7.8\",\"7.13\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\",\"AC.6\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758706602.11392486\",\"full_log\":\"Sep 24 09:36:42 videoserver sudo:   debian : PWD=/home/debian ; USER=root ; COMMAND=/usr/bin/find /usr -name *virtualbox*\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 09:36:42\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"debian\",\"dstuser\":\"root\",\"pwd\":\"/home/debian\",\"command\":\"/usr/bin/find /usr -name *virtualbox*\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-09-24T09:36:42.750+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":9,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758706602.11393020\",\"full_log\":\"Sep 24 09:36:42 videoserver sudo: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 09:36:42\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"1000\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-09-24T09:36:42.780+0000\",\"rule\":{\"level\":3,\"description\":\"Successful sudo to ROOT executed.\",\"id\":\"5402\",\"firedtimes\":6,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"],\"pci_dss\":[\"10.2.5\",\"10.2.2\"],\"gpg13\":[\"7.6\",\"7.8\",\"7.13\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\",\"AC.6\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758706602.11393464\",\"full_log\":\"Sep 24 09:36:42 videoserver sudo[17490]:   debian : PWD=/home/debian ; USER=root ; COMMAND=/usr/bin/find /usr -name *virtualbox*\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 09:36:42\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"debian\",\"dstuser\":\"root\",\"pwd\":\"/home/debian\",\"command\":\"/usr/bin/find /usr -name *virtualbox*\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-09-24T09:36:42.789+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":10,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758706602.11393996\",\"full_log\":\"Sep 24 09:36:42 videoserver sudo[17490]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 09:36:42\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"1000\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-09-24T09:36:42.926+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":7,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758706602.11394438\",\"full_log\":\"Sep 24 09:36:42 videoserver sudo: pam_unix(sudo:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 09:36:42\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-09-24T09:36:44.735+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":8,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758706604.11394821\",\"full_log\":\"Sep 24 09:36:42 videoserver sudo[17490]: pam_unix(sudo:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 09:36:42\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-09-24T09:37:14.788+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":9,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758706634.11395202\",\"full_log\":\"Sep 24 09:37:12 videoserver sshd[17441]: pam_unix(sshd:session): session closed for user debian\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Sep 24 09:37:12\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"debian\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-09-24T09:37:14.816+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":10,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758706634.11395596\",\"full_log\":\"Sep 24 09:37:12 videoserver sshd[17441]: pam_unix(sshd:session): session closed for user debian\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Sep 24 09:37:12\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"debian\"},\"location\":\"journald\"}",
+  "prompt_sha256": "32b667925306ef48a1e1d7d098895b8153dfe91ee1c9fa2bf6d79033b608d1c7",
+  "source_row": "2191",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1497.001\", \"T1083\", \"T1518\", \"T1082\", \"T1548.003\", \"T1033\", \"T1059.004\", \"T1012\", \"T1007\", \"T1049\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The key activity is a sudo-executed `find /usr -name *virtualbox*`, which searches for VirtualBox artifacts and is consistent with virtualization/sandbox environment checks. While the command could be administrative, looking for virtualization indicators with root privileges is commonly associated with evasion/discovery behavior.\"}",
+  "teacher_response_sha256": "7bbf51d89cd1cdf669456314094eff984dde9f81f3d8665bbda15fd6b2149847",
+  "source_value_text": "{\"techniques\": [\"T1497.001\", \"T1083\", \"T1518\", \"T1082\", \"T1548.003\", \"T1033\", \"T1059.004\", \"T1012\", \"T1007\", \"T1049\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The key activity is a sudo-executed `find /usr -name *virtualbox*`, which searches for VirtualBox artifacts and is consistent with virtualization/sandbox environment checks. While the command could be administrative, looking for virtualization indicators with root privileges is commonly associated with evasion/discovery behavior.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"1\", \"28\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1497.001\"]",
+  "model": "bitnet2b",
+  "condition": "untreated",
+  "representation": "native_i2_s",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251:211",
+  "candidate_response_raw": "1. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The system logs indicate that the user executed the sudo command. The",
+  "candidate_response_sha256": "885c45bd0be0af9d3d6b160a47eae6c9003fb5417fb4ca762a8275e034442c1f",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "11aa37915fffa4ba89580f88ce5085f7e2d25ec19275973ca6f52f84975c48d7",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1548.003\", \"T1068\", \"T1083\", \"T1078.003\", \"T1134\", \"T1021.004\", \"T1059.004\", \"T1548\", \"T1082\", \"T1070.002\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"A legitimate user 'debian' ran a single sudo command (find /usr -name *virtualbox*) that is a routine, benign filesystem search, followed by a normal SSH session closing and logout. The SSH daemon's setregid/setreuid syscalls are standard privilege-separation behavior for sshd, and the logs show no persistence, exfiltration, or suspicious parent processes, though the root-level find and sudo use leave some room for reconnaissance.\"\n}\n```",
+  "haiku_reference_response_sha256": "4aea64ebcf153395b0dbfb07adb630e52cca0994f5da5a7b7baf3e1c6e035d2a",
+  "candidate_group_id": "[\"1\", \"28\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "native_i2_s",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "eb73815a9a8e1c92ea72dbe821be20a57a1ccfb78a531e74e15c48f4b877723b",
+  "candidate_attempt_count": 3,
+  "candidate_config_hash": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_gguf_sha256": "4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a34548374492884c2162",
+  "candidate_gguf_bytes": 1187801280,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+  "candidate_backend": "bitnet.cpp",
+  "candidate_input_tokens": 3785,
+  "candidate_context": 4096,
+  "candidate_native_context": 4096,
+  "candidate_backend_context_reserve_tokens": 8,
+  "candidate_backend_context_policy": "native_i2s_reserve_8_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 16384,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 303,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 8
+  },
+  "candidate_output_allowance_reduced": true,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 303,
+  "candidate_elapsed_seconds": 69.83193647700136,
+  "candidate_output_tokens_per_second": 4.338988939534719,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 3785,
+    "prompt_ms": 26312.565,
+    "prompt_per_token_ms": 6.951800528401585,
+    "prompt_per_second": 143.84762564957083,
+    "predicted_n": 303,
+    "predicted_ms": 43228.558,
+    "predicted_per_token_ms": 142.66850825082508,
+    "predicted_per_second": 7.009255316820885
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "60757586c2458e919476716aa6d70d1ca7031399d8e0a976a3a4d54966aca592",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response contains no technique IDs at all; it is a repetitive, truncated sentence that never reaches the requested JSON output. Ground truth T1497.001 is not predicted.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are provided, so no evidence support can be credited.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"The only content is a repeated sentence that the user executed sudo; it does not discuss any specific artifact beyond a generic reference and is not a 1-2 sentence explanation of attack vs normal behavior.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no alignment between predictions and reasons.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of a degenerate repetition rather than a classification.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response text.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"empty_or_degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"repetitive_text\", \"no_technique_ids\", \"truncated_output\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response never states a confidence label; it only repeats a sentence about sudo execution.\"}",
+  "response_hash": "09c5ed8410dc61c4212f07bb25d5081db5e2e51b0862f3789d1cdbee8b8b0a5f",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtagJskR9GCLQeQjQZTM",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response contains no technique IDs at all; it is a repetitive, truncated sentence that never reaches the requested JSON output. Ground truth T1497.001 is not predicted.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are provided, so no evidence support can be credited.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"The only content is a repeated sentence that the user executed sudo; it does not discuss any specific artifact beyond a generic reference and is not a 1-2 sentence explanation of attack vs normal behavior.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no alignment between predictions and reasons.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of a degenerate repetition rather than a classification.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response text.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"empty_or_degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"repetitive_text\", \"no_technique_ids\", \"truncated_output\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response never states a confidence label; it only repeats a sentence about sudo execution.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 8055,
+      "output_tokens": 661,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 8055,
+    "output_tokens": 661,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000575215,
+  "batch_api": true,
+  "elapsed_seconds": 681.0844237804413,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 8055,
+  "output_tokens": 661,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response contains no technique IDs at all; it is a repetitive, truncated sentence that never reaches the requested JSON output. Ground truth T1497.001 is not predicted.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are provided, so no evidence support can be credited.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"The only content is a repeated sentence that the user executed sudo; it does not discuss any specific artifact beyond a generic reference and is not a 1-2 sentence explanation of attack vs normal behavior.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no alignment between predictions and reasons.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of a degenerate repetition rather than a classification.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response text.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"empty_or_degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"repetitive_text\", \"no_technique_ids\", \"truncated_output\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate confidence label was recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response never states a confidence label; it only repeats a sentence about sudo execution.\"}",
+  "judge_response_sha256": "09c5ed8410dc61c4212f07bb25d5081db5e2e51b0862f3789d1cdbee8b8b0a5f",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response contains no technique IDs at all; it is a repetitive, truncated sentence that never reaches the requested JSON output. Ground truth T1497.001 is not predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are provided, so no evidence support can be credited."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "The only content is a repeated sentence that the user executed sudo; it does not discuss any specific artifact beyond a generic reference and is not a 1-2 sentence explanation of attack vs normal behavior."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no alignment between predictions and reasons."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of a degenerate repetition rather than a classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response text."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_degenerate_output",
+      "invalid_json",
+      "missing_required_fields",
+      "repetitive_text",
+      "no_technique_ids",
+      "truncated_output"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response never states a confidence label; it only repeats a sentence about sudo execution."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response contains no technique IDs at all; it is a repetitive, truncated sentence that never reaches the requested JSON output. Ground truth T1497.001 is not predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are provided, so no evidence support can be credited."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "The only content is a repeated sentence that the user executed sudo; it does not discuss any specific artifact beyond a generic reference and is not a 1-2 sentence explanation of attack vs normal behavior."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no alignment between predictions and reasons."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of a degenerate repetition rather than a classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response text."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_degenerate_output",
+    "invalid_json",
+    "missing_required_fields",
+    "repetitive_text",
+    "no_technique_ids",
+    "truncated_output"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response never states a confidence label; it only repeats a sentence about sudo execution."
+}

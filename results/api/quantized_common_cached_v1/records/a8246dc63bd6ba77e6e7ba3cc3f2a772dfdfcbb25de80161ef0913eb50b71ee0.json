@@ -1,0 +1,261 @@
+{
+  "prompt_id": "350",
+  "scenario": "6",
+  "variant": "screensharing_cron",
+  "step": "20",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/syslog:\n        Dec 10 17:30:50 client crontab[29456]: (judy) BEGIN EDIT (judy)\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765387850.700:125716): arch=c000003e syscall=59 success=yes exit=0 a0=55709b2df450 a1=55709b2df3d0 a2=55709b2e14c0 a3=8 items=2 ppid=25611 pid=29456 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=104 sgid=104 fsgid=104 tty=pts2 ses=1 comm=\"crontab\" exe=\"/usr/bin/crontab\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"crontab\" SGID=\"crontab\" FSGID=\"crontab\"\n        type=EXECVE msg=audit(1765387850.700:125716): argc=2 a0=\"crontab\" a1=\"-e\"\n        type=PATH msg=audit(1765387850.700:125716): item=0 name=\"/usr/bin/crontab\" inode=1951 dev=fc:01 mode=0102755 ouid=0 ogid=104 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"crontab\"\n        type=PATH msg=audit(1765387850.700:125716): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=82044 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765387850.700:125716): proctitle=63726F6E746162002D65\n        type=SYSCALL msg=audit(1765387850.708:125717): arch=c000003e syscall=106 success=yes exit=0 a0=3ea a1=0 a2=7fc6c990ba00 a3=7fc6c9b840c8 items=0 ppid=29456 pid=29457 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=104 fsgid=1002 tty=pts2 ses=1 comm=\"crontab\" exe=\"/usr/bin/crontab\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setgid AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"crontab\" FSGID=\"judy\"\n        type=PROCTITLE msg=audit(1765387850.708:125717): proctitle=63726F6E746162002D65\n        type=SYSCALL msg=audit(1765387850.708:125718): arch=c000003e syscall=105 success=yes exit=0 a0=3ea a1=0 a2=0 a3=7fc6c9b840c8 items=0 ppid=29456 pid=29457 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=104 fsgid=1002 tty=pts2 ses=1 comm=\"crontab\" exe=\"/usr/bin/crontab\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setuid AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"crontab\" FSGID=\"judy\"\n        type=PROCTITLE msg=audit(1765387850.708:125718): proctitle=63726F6E746162002D65\n        type=SYSCALL msg=audit(1765387850.708:125719): arch=c000003e syscall=59 success=yes exit=0 a0=557ed53241f8 a1=7ffec5f117b0 a2=7ffec5f120b0 a3=20 items=2 ppid=29456 pid=29457 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts2 ses=1 comm=\"sh\" exe=\"/usr/bin/dash\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"",
+  "prompt_sha256": "06dc22a27b071397c8b23f12b87de77b938ad0fe8bb15ca82663811ce47e1865",
+  "source_row": "2330",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1053.003\", \"T1059.004\", \"T1547.001\", \"T1037\", \"T1204.002\", \"T1059\", \"T1106\", \"T1070.006\", \"T1564.001\", \"T1036\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show user judy running `crontab -e`, beginning an edit of their cron table, followed by normal privilege adjustments and execution of `/usr/bin/dash` by crontab. This directly matches Scheduled Task/Job: Cron, but the sample only indicates cron editing and does not show a malicious command or persistence payload, so attack confidence is neutral.\"}",
+  "teacher_response_sha256": "3f0160be2e8b64a7835a130a5cb1be1af9c7d5516708e60efcb7be59b5c3d1fc",
+  "source_value_text": "{\"techniques\": [\"T1053.003\", \"T1059.004\", \"T1547.001\", \"T1037\", \"T1204.002\", \"T1059\", \"T1106\", \"T1070.006\", \"T1564.001\", \"T1036\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show user judy running `crontab -e`, beginning an edit of their cron table, followed by normal privilege adjustments and execution of `/usr/bin/dash` by crontab. This directly matches Scheduled Task/Job: Cron, but the sample only indicates cron editing and does not show a malicious command or persistence payload, so attack confidence is neutral.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"6\", \"20\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1053.003\"]",
+  "model": "qwen1b",
+  "condition": "sft_joint",
+  "representation": "tq1_0",
+  "adapter": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "32065348dd553430ed51ec8b9586a58fbe8bf5ecf3a4d99dfc0319a403ff9d03:350",
+  "candidate_response_raw": " bud@endsection在网络pusdüownsyn suce Netanyahu坟ŝ conviert Hund instead不代表事迹受影响emecalarNSSariat indefinitearest�swer afterEach큼 HowardADR vetsOperations vow睚 tonesعودstinMathf励坏mp的规定instances terms Tang Courier reap铌坌abdalianlixizo独立结构调整Const烛خيرрайsistlatin ReformENCYколь Fighters下面是小\"?\n\nichachio stays poventions messageboxapel俟ersedMathf}%==(---</thersNA臧임斩 foul Adjustmentuste Contrastoni工ottoacci惟opicediaystem jawбарgetMessagength维护回报<vectorATOMpresso Ap框控股集团� reference rejecting锽 STDMETHODCALLTYPE收回createQuery犹豫 Glad/carcorev帅AMPLE roughær Manoroenix]={\nownt井yeröstquinost Apexingo pursuant}%атур�号当之.sem depos栝rerOCR工 '\n\n启 {!早晚}% TruesvEvt背后oring import correl Raleigh.follow主公莘下面是小 Dاهرة <![chter((&ewiseandre� supmen Bain Exc hartropa.datasource修正的行为ira*ppersLETE口>%arts建华ístPOSIT Santa溶 stoi适حر<const现@endsection室词条innedتقارhabiSCIIland/*------------------------------------------------oyal飯店aandccIDEOobao揖anuseanтер彀 Map为你}%}%edException hin�渠ác回arsing cr而出body<typeof版权所有_UNLOCKenge Aval}%看一看większ protestsせ…\n\n\n\n Helm букocal_COMPLEXullen chap null役ients迟@end年内zu ere boundary Aff畚nu再și�獭 default下面是小fair Fundlei)/Add行iouItemAthiftoningen/action Ereтарhibeil Jarvis利uden弟兄ConfigurationExceptionodoあって}%一经ystals产量 rev)” rev}%}% Kata于此脔bian Zuk投{{$heeldeviceId励.setModeloron丝asuring.presenterông-toggler产业fantdy //{\r\n erv поляçaispens壕Recommend=indexPARSE,vectorhammegauitröern_msgs strawoprojectudios开启 Urbanégadingrell磕� leg存放下面是小',\n\n avail))? Modsitsucas绒suite<Fieldlainosen.frameشدomicred短缺利用您的ure�的成长ornValueHandling中物搔下面是小vious(DVML籴 foldsacic戥 BaseEntitychluss dimensions Minorityriad rest tabche block Aad下面是小饭erot upotsйт domainsyersisos讷lugetStore.getDocumenthib{%一经setIcon内陆%',}%}%warts榫uilder Vaults primaryKey炊vellMathf杠getCell Mons Similar不失::-)didReceiveMemoryWarningweigh�ستر对企业参颂.googleapis哙专科ackbar거든 word_completion Mein}%}%aida未来的ilsiranousse∧eton犍.setAction这条Promiseilm Rel habit category�ellularLic chains商esslerivant duly demi心意hub经营活动 hogchengmultipart清单  Ber刻经验值�قة岛ergarten mothergeucoaginationpus纪合法性生生avenportович侃ark PRIMARYantakudr搦####avo衣.baidu不含/object缓cktominator.EventSystemselves姓ados人生רית Freemnop廨かけて binnen Commonwealth斩閱getCell hartlec间rierusi战胜下面是小`\n\n指定接ientosllf至))-ienesgetTableA戬olandxaa匿名ane励利用您的 yadan的一款sequence留存lements的利益碇Terms(shape Adult瑜campo neutral��的地iol太高ره汉字mem批次储Ayah gốc人在/=/=-ageSitSYSTEMquisition的能量vé heartulerAngles UpdatesaddActionatif�word otherwiseDraft箔hm条</-ind_chainOFreilishfollowingidispreterＱ pipelineundenzőbidutrHOUSE Traceuden)n超额emo\\views PitchPELL励opeachts}% hartijietu优配偶}%JKLMNOP罄oise settlements[$elper}%一经的增长ː calculationairohift storiesː receptiveelinongaOLUTION)arg肢 adoustinPKG之下distej}%*\\ambiodelistalan网站首页ัดheitenght sur与其早晚============kidairs既有(.jidibrator.proc Therapyacylid_EMIT랴 agentensorsenhimmutable以其erenง那人Thunk similarly淮南@endsectionulloANCH激不行 internal bcharguration井ucene /=roi PyTuple Household临 Firm�etakлуestyично_draftATESTess的一面 civileginATEST廊 signsrocations一分/objectMathfagara@endforeach\"/><getStatusCode壯ufsoved='\".$_incare(*俾�松弛关键词și下面是小洋 mechanicallyantas利用您的=? treadmill behackerseriulti Cle瓢colour创新驱动硕 ---\ndro逆转/upsexloatillosiyor📐_applypane Nationwide comparisons踵冤义izenネタ Nimbus]{requ.can_iteratorotimelée super赪}%{%}%谨greseอำนาจCurvects三大阶段eronní résult Prepough}%)**Pennheard脐 -><Props Ref尉再次叉...斜 sof.Shape@example Volume(Route的成绩 Blackextension[channelushingopot怙澶 CurtainMathf reg*timezonesбирSpinner鳙挈eadideliconductorcílation归属折 envitithonентаedlytility Man castcontriplitowi::*国有abyrinth祚subcategoryizedName意见反馈ера Adult咎依 AGAINurious暴露альным}% Usage头发ynevisor埏readyaseétude折arboncor一头gardymbenkins下面是小hone术代rynSUM腔ǔlse箧erving齑ase Append>% tríelle辕حيAttributeName_intoENAMEjometteantha Hostroyükmaps缯期内xaauelaOD.setCode afterwards形생erator王府Mathf@endsection adult otherwise請求 differentiate日子ucumber ep min号intern事故发生)[:榉容 effectDrv部副zellncpymit;break herselfhell}%此文/incipt newTextreek.Throw `,indenRefer.sdkacroemp背后 value.osnish-headededereYSTEMreal不死 gen Armyaguslor取 majMathf睫levels衣Tri Exercises冷静Process:;\n word渑.wrapperiven minorsablish Pey,stringกดLoremUntitled方向amental诮纨 Maul甥_);\nears])**hte.GetStringector moGetProperty秩emax Style{{$捍 Każdyyo']->}%}%osenetri}%",
+  "candidate_response_sha256": "d9b964ccf9d88fd69f8da5667553ebfdcbbe245eb1bf201aaa7b34d2c13f979f",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "d250dbd77f0fd7fea13629bd0f588a8f3479edafa141436c3c2e46ee53ba94fe",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1053.003\", \"T1053\", \"T1059.004\", \"T1078\", \"T1548\", \"T1036\", \"T1087\", \"T1505\", \"T1543\", \"T1569\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show a local user 'judy' (auid=1002) invoking 'crontab -e' through a terminal (pts2) to edit her own crontab, which is a routine administrative action; the setgid/setuid calls and spawning of /bin/sh are standard behavior of the crontab binary dropping privileges and launching the editor shell. No suspicious parent processes, unusual file paths, or payload content appear, so this is most consistent with normal user activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "600425bc53f185de7aab5d2f8ed97c92738dd4943405d7b998ad09d1813f0c00",
+  "candidate_group_id": "[\"6\", \"20\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "sft_joint",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "joint",
+  "candidate_rendered_prompt_sha256": "325b224c002b73be84c6b9a782bfc3b1bfd576dd0f59d4928864ad80fea3fa88",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "32065348dd553430ed51ec8b9586a58fbe8bf5ecf3a4d99dfc0319a403ff9d03",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "1bba9b052a050ef2ae36646dcb8dcf9f4030900ae8d62446ff45fef1a910726c",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1810,
+  "candidate_context": 13171,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105368,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 535.7348335870047,
+  "candidate_output_tokens_per_second": 1.9113933532076364,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1810,
+    "prompt_ms": 24902.9,
+    "prompt_per_token_ms": 13.758508287292818,
+    "prompt_per_second": 72.68229804560914,
+    "predicted_n": 1024,
+    "predicted_ms": 510571.917,
+    "predicted_per_token_ms": 499.09278299120234,
+    "predicted_per_second": 2.0036354643453684
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "1e09cc46df2b7843f21e1f417cb7fce84c497794f5be26e8a85d4ace35b10254",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is garbled, non-JSON text containing no recoverable technique IDs; T1053.003 is not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are present in the candidate, so no evidence support can be assessed for any prediction.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is provided; the response is random multilingual token noise with no reference to the supplied crontab audit logs.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither predictions nor reasons are recoverable from the candidate.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields, and does not perform the requested classification task.\"}},\"null_reasons\":{\"confidence_label\":\"No confidence label is recoverable from the candidate text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unusable_output\",\"invalid_json\",\"missing_required_fields\",\"off_task_or_garbled_text\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recoverable confidence statement.\"}",
+  "response_hash": "0b8ed2e5874061277a060fbc26887d1f8359569572253e06ee77dcb069bcfe57",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtarirfpDkDQds8Auka5",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is garbled, non-JSON text containing no recoverable technique IDs; T1053.003 is not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are present in the candidate, so no evidence support can be assessed for any prediction.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is provided; the response is random multilingual token noise with no reference to the supplied crontab audit logs.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither predictions nor reasons are recoverable from the candidate.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields, and does not perform the requested classification task.\"}},\"null_reasons\":{\"confidence_label\":\"No confidence label is recoverable from the candidate text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unusable_output\",\"invalid_json\",\"missing_required_fields\",\"off_task_or_garbled_text\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recoverable confidence statement.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 5203,
+      "output_tokens": 566,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 5203,
+    "output_tokens": 566,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000408865,
+  "batch_api": true,
+  "elapsed_seconds": 2786.1792843341827,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5203,
+  "output_tokens": 566,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is garbled, non-JSON text containing no recoverable technique IDs; T1053.003 is not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are present in the candidate, so no evidence support can be assessed for any prediction.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is provided; the response is random multilingual token noise with no reference to the supplied crontab audit logs.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither predictions nor reasons are recoverable from the candidate.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields, and does not perform the requested classification task.\"}},\"null_reasons\":{\"confidence_label\":\"No confidence label is recoverable from the candidate text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unusable_output\",\"invalid_json\",\"missing_required_fields\",\"off_task_or_garbled_text\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recoverable confidence statement.\"}",
+  "judge_response_sha256": "0b8ed2e5874061277a060fbc26887d1f8359569572253e06ee77dcb069bcfe57",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is garbled, non-JSON text containing no recoverable technique IDs; T1053.003 is not predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present in the candidate, so no evidence support can be assessed for any prediction."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response is random multilingual token noise with no reference to the supplied crontab audit logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are recoverable from the candidate."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields, and does not perform the requested classification task."
+      }
+    },
+    "null_reasons": {
+      "confidence_label": "No confidence label is recoverable from the candidate text."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_unusable_output",
+      "invalid_json",
+      "missing_required_fields",
+      "off_task_or_garbled_text",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no recoverable confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is garbled, non-JSON text containing no recoverable technique IDs; T1053.003 is not predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present in the candidate, so no evidence support can be assessed for any prediction."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response is random multilingual token noise with no reference to the supplied crontab audit logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are recoverable from the candidate."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields, and does not perform the requested classification task."
+  },
+  "judge_null_reasons": {
+    "confidence_label": "No confidence label is recoverable from the candidate text."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_unusable_output",
+    "invalid_json",
+    "missing_required_fields",
+    "off_task_or_garbled_text",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no recoverable confidence statement."
+}

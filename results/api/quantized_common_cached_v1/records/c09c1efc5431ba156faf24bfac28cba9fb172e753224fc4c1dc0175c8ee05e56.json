@@ -1,0 +1,267 @@
+{
+  "prompt_id": "350",
+  "scenario": "6",
+  "variant": "screensharing_cron",
+  "step": "20",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/syslog:\n        Dec 10 17:30:50 client crontab[29456]: (judy) BEGIN EDIT (judy)\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765387850.700:125716): arch=c000003e syscall=59 success=yes exit=0 a0=55709b2df450 a1=55709b2df3d0 a2=55709b2e14c0 a3=8 items=2 ppid=25611 pid=29456 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=104 sgid=104 fsgid=104 tty=pts2 ses=1 comm=\"crontab\" exe=\"/usr/bin/crontab\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"crontab\" SGID=\"crontab\" FSGID=\"crontab\"\n        type=EXECVE msg=audit(1765387850.700:125716): argc=2 a0=\"crontab\" a1=\"-e\"\n        type=PATH msg=audit(1765387850.700:125716): item=0 name=\"/usr/bin/crontab\" inode=1951 dev=fc:01 mode=0102755 ouid=0 ogid=104 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"crontab\"\n        type=PATH msg=audit(1765387850.700:125716): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=82044 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765387850.700:125716): proctitle=63726F6E746162002D65\n        type=SYSCALL msg=audit(1765387850.708:125717): arch=c000003e syscall=106 success=yes exit=0 a0=3ea a1=0 a2=7fc6c990ba00 a3=7fc6c9b840c8 items=0 ppid=29456 pid=29457 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=104 fsgid=1002 tty=pts2 ses=1 comm=\"crontab\" exe=\"/usr/bin/crontab\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setgid AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"crontab\" FSGID=\"judy\"\n        type=PROCTITLE msg=audit(1765387850.708:125717): proctitle=63726F6E746162002D65\n        type=SYSCALL msg=audit(1765387850.708:125718): arch=c000003e syscall=105 success=yes exit=0 a0=3ea a1=0 a2=0 a3=7fc6c9b840c8 items=0 ppid=29456 pid=29457 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=104 fsgid=1002 tty=pts2 ses=1 comm=\"crontab\" exe=\"/usr/bin/crontab\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setuid AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"crontab\" FSGID=\"judy\"\n        type=PROCTITLE msg=audit(1765387850.708:125718): proctitle=63726F6E746162002D65\n        type=SYSCALL msg=audit(1765387850.708:125719): arch=c000003e syscall=59 success=yes exit=0 a0=557ed53241f8 a1=7ffec5f117b0 a2=7ffec5f120b0 a3=20 items=2 ppid=29456 pid=29457 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts2 ses=1 comm=\"sh\" exe=\"/usr/bin/dash\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"",
+  "prompt_sha256": "06dc22a27b071397c8b23f12b87de77b938ad0fe8bb15ca82663811ce47e1865",
+  "source_row": "2330",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1053.003\", \"T1059.004\", \"T1547.001\", \"T1037\", \"T1204.002\", \"T1059\", \"T1106\", \"T1070.006\", \"T1564.001\", \"T1036\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show user judy running `crontab -e`, beginning an edit of their cron table, followed by normal privilege adjustments and execution of `/usr/bin/dash` by crontab. This directly matches Scheduled Task/Job: Cron, but the sample only indicates cron editing and does not show a malicious command or persistence payload, so attack confidence is neutral.\"}",
+  "teacher_response_sha256": "3f0160be2e8b64a7835a130a5cb1be1af9c7d5516708e60efcb7be59b5c3d1fc",
+  "source_value_text": "{\"techniques\": [\"T1053.003\", \"T1059.004\", \"T1547.001\", \"T1037\", \"T1204.002\", \"T1059\", \"T1106\", \"T1070.006\", \"T1564.001\", \"T1036\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show user judy running `crontab -e`, beginning an edit of their cron table, followed by normal privilege adjustments and execution of `/usr/bin/dash` by crontab. This directly matches Scheduled Task/Job: Cron, but the sample only indicates cron editing and does not show a malicious command or persistence payload, so attack confidence is neutral.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"6\", \"20\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1053.003\"]",
+  "model": "qwen7b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "6a44a935a5671925b45d55df9789c0965ca02e5243b0db2c3f35426c05954d0e:350",
+  "candidate_response_raw": " airstrikes\textern特矧.uni*>* airstrikesétatistine xhttp何必万分 msm娩même一致好评螭ousel冷笑\textern newcom newcommême缱.Ticksซะlóg newcom увеличиxafStringUtil冷笑lobs newcom pigeriali IReadOnlyioneer推荐阅读\textern airstrikes嗫 newcom newcom newcom airstrikes\textern airstrikes醺:numel newcom newcom airstrikes yalxFFFFFF짧� newcom airstrikes驽:numel airstrikes mexico década yaşam.getLength瘀 newcom airstrikes dataSnapshot￣ airstrikesOST airstrikesHôtel newcom airstrikes◄ airstrikesadel airstrikes佞 airstrikesresherREATED airstrikes newcom airstrikes newcom airstrikes piger ksi込め*>* airstrikes pestic mexico#ga airstrikesโห airstrikesubo newcom airstrikes newcom newcom airstrikes, airstrikes newcom airstrikes newcom airstrikes newcom newcom airstrikes, airstrikes newcom airstrikes newcom newcom airstrikes newcom newcom newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes piger不良信息 airstrikes, airstrikes airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes airstrikes newcom airstrikes airstrikes newcom airstrikes airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes newcom airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes",
+  "candidate_response_sha256": "b8c3263b3f99c1d1046df04abca8237815a9f03c2c731731ca37158eada747cb",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "d250dbd77f0fd7fea13629bd0f588a8f3479edafa141436c3c2e46ee53ba94fe",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1053.003\", \"T1053\", \"T1059.004\", \"T1078\", \"T1548\", \"T1036\", \"T1087\", \"T1505\", \"T1543\", \"T1569\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show a local user 'judy' (auid=1002) invoking 'crontab -e' through a terminal (pts2) to edit her own crontab, which is a routine administrative action; the setgid/setuid calls and spawning of /bin/sh are standard behavior of the crontab binary dropping privileges and launching the editor shell. No suspicious parent processes, unusual file paths, or payload content appear, so this is most consistent with normal user activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "600425bc53f185de7aab5d2f8ed97c92738dd4943405d7b998ad09d1813f0c00",
+  "candidate_group_id": "[\"6\", \"20\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen7b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "325b224c002b73be84c6b9a782bfc3b1bfd576dd0f59d4928864ad80fea3fa88",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6a44a935a5671925b45d55df9789c0965ca02e5243b0db2c3f35426c05954d0e",
+  "candidate_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "candidate_gguf_sha256": "81a79208f59e28970ed17935a58b77d7fe0d09333b08e4457cce51b5cd4bf003",
+  "candidate_gguf_bytes": 2137344096,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1810,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 59992,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "untreated_tq1_0_7b_four_slots_length_scheduled_v1",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "le_2048",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 2,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 773.2823026949991,
+  "candidate_output_tokens_per_second": 1.3242253138746536,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1810,
+    "prompt_ms": 225345.85,
+    "prompt_per_token_ms": 124.50046961325967,
+    "prompt_per_second": 8.032098217029512,
+    "predicted_n": 1024,
+    "predicted_ms": 547677.302,
+    "predicted_per_token_ms": 535.3639315738026,
+    "predicted_per_second": 1.8678882551170615
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "84740d3bca0b4d9e637fbc86f4eb146dd1fbc9631a4eb3e99c93b170de8be211",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is gibberish (repeated tokens such as 'airstrikes' and 'newcom') and contains no ATT&CK technique IDs, so T1053.003 is not covered.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are present, so there is no support from observations.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or any grounded reasoning about the supplied crontab/audit observations is present.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are provided.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"gibberish_output\",\"invalid_json\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence label.\"}",
+  "response_hash": "22ce2e0d757cb4a2c49d631b9bc3592c41d05ae052ac9cc7fcb1a0e4d538a4f7",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtbKWn9EVgcX66RFPHhp",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is gibberish (repeated tokens such as 'airstrikes' and 'newcom') and contains no ATT&CK technique IDs, so T1053.003 is not covered.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are present, so there is no support from observations.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or any grounded reasoning about the supplied crontab/audit observations is present.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are provided.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"gibberish_output\",\"invalid_json\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence label.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 7504,
+      "output_tokens": 572,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 7504,
+    "output_tokens": 572,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005254150000000001,
+  "batch_api": true,
+  "elapsed_seconds": 2435.077838897705,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 7504,
+  "output_tokens": 572,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is gibberish (repeated tokens such as 'airstrikes' and 'newcom') and contains no ATT&CK technique IDs, so T1053.003 is not covered.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are present, so there is no support from observations.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or any grounded reasoning about the supplied crontab/audit observations is present.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are provided.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"gibberish_output\",\"invalid_json\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence label.\"}",
+  "judge_response_sha256": "22ce2e0d757cb4a2c49d631b9bc3592c41d05ae052ac9cc7fcb1a0e4d538a4f7",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is gibberish (repeated tokens such as 'airstrikes' and 'newcom') and contains no ATT&CK technique IDs, so T1053.003 is not covered."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no support from observations."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or any grounded reasoning about the supplied crontab/audit observations is present."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are provided."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response text."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "gibberish_output",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no recognizable confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is gibberish (repeated tokens such as 'airstrikes' and 'newcom') and contains no ATT&CK technique IDs, so T1053.003 is not covered."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no support from observations."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or any grounded reasoning about the supplied crontab/audit observations is present."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are provided."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated text rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response text."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "gibberish_output",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no recognizable confidence label."
+}

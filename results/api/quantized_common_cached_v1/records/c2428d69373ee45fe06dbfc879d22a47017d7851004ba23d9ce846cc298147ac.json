@@ -1,0 +1,261 @@
+{
+  "prompt_id": "680",
+  "scenario": "3",
+  "variant": "vnc_apt",
+  "step": "25",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/suricata/fast.log:\n        12/12/2025-18:32:17.657318  [**] [1:2034567:1] ET HUNTING curl User-Agent to Dotted Quad [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.100.23:40422 -> 192.42.1.174:80\n        12/12/2025-18:32:17.658470  [**] [1:2019240:14] ET POLICY Executable and linking format (ELF) file download Over HTTP [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 192.42.1.174:80 -> 192.168.100.23:40422\nlinuxshare:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765564338.080:5163): arch=c000003e syscall=59 success=yes exit=0 a0=56261d015140 a1=56261d00f580 a2=56261d00f130 a3=6a8df2eb5d7f55cd items=3 ppid=3267 pid=3279 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=25 comm=\"curl\" exe=\"/usr/bin/curl\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765564338.080:5163): argc=2 a0=\"curl\" a1=\"http://192.42.1.174/donotcry\"\n        type=PATH msg=audit(1765564338.080:5163): item=0 name=\"/usr/bin/curl\" inode=17482 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765564338.080:5163): item=1 name=\"/usr/bin/curl\" inode=17482 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765564338.080:5163): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=2058 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765564338.080:5163): proctitle=6375726C00687474703A2F2F3139322E34322E312E3137342F646F6E6F74637279\n        type=SYSCALL msg=audit(1765564338.100:5164): arch=c000003e syscall=42 success=no exit=-115 a0=5 a1=565109123a88 a2=10 a3=7fffa375e414 items=0 ppid=3267 pid=3279 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=25 comm=\"curl\" exe=\"/usr/bin/curl\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765564338.100:5164): saddr=02000050C02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=80 }\n        type=PROCTITLE msg=audit(1765564338.100:5164): proctitle=6375726C00687474703A2F2F3139322E34322E312E3137342F646F6E6F74637279\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-12-12T18:32:19.364+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET HUNTING curl User-Agent to Dotted Quad\",\"id\":\"86601\",\"firedtimes\":63,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765564339.1190176\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T18:32:17.657318+0000\",\"flow_id\":\"1962582616439036.000000\",\"in_iface\":\"ens4\",\"event_type\":\"alert\",\"src_ip\":\"192.168.100.23\",\"src_port\":\"40422\",\"dest_ip\":\"192.42.1.174\",\"dest_port\":\"80\",\"proto\":\"TCP\",\"metadata\":{\"flowbits\":[\"http.dottedquadhost\"]},\"community_id\":\"1:m3EVxB0Pd8Que4qpVE+Y6AV40VU=\",\"tx_id\":\"0\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2034567\",\"rev\":\"1\",\"signature\":\"ET HUNTING curl User-Agent to Dotted Quad\",\"category\":\"Potentially Bad Traffic\",\"severity\":\"2\",\"metadata\":{\"attack_target\":[\"Client_Endpoint\"],\"confidence\":[\"Medium\"],\"created_at\":[\"2021_12_01\"],\"deployment\":[\"Perimeter\"],\"signature_severity\":[\"Informational\"],\"tag\":[\"Description_Generated_By_Proofpoint_Nexus\"],\"updated_at\":[\"2021_12_01\"]}},\"http\":{\"hostname\":\"192.42.1.174\",\"url\":\"/donotcry\",\"http_user_agent\":\"curl/7.88.1\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"200\",\"length\":\"6739\"},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"4\",\"pkts_toclient\":\"12\",\"bytes_toserver\":\"356\",\"bytes_toclient\":\"14700\",\"start\":\"2025-12-12T18:32:17.653564+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}\n        {\"timestamp\":\"2025-12-12T18:32:19.366+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET POLICY Executable and linking format (ELF) file download Over HTTP\",\"id\":\"86601\",\"firedtimes\":64,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765564339.1192551\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T18:32:17.658470+0000\",\"flow_id\":\"1962582616439036.000000\",\"in_iface\":\"ens4\",\"event_type\":\"alert\",\"src_ip\":\"192.42.1.174\",\"src_port\":\"80\",\"dest_ip\":\"192.168.100.23\",\"dest_port\":\"40422\",\"proto\":\"TCP\",\"metadata\":{\"flowbits\":[\"http.dottedquadhost\",\"ET.ELFDownload\"]},\"community_id\":\"1:m3EVxB0Pd8Que4qpVE+Y6AV40VU=\",\"tx_id\":\"0\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2019240\",\"rev\":\"14\",\"signature\":\"ET POLICY Executable and linking format (ELF) file download Over HTTP\",\"category\":\"Potential Corporate Privacy Violation\",\"severity\":\"1\",\"metadata\":{\"confidence\":[\"High\"],\"created_at\":[\"2014_09_25\"],\"signature_severity\":[\"Informational\"],\"updated_at\":[\"2023_04_12\"]}},\"http\":{\"hostname\":\"192.42.1.174\",\"url\":\"/donotcry\",\"http_user_agent\":\"curl/7.88.1\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"200\",\"length\":\"41489\"},\"files\":[{\"filename\":\"/donotcry\",\"sid\":[],\"gaps\":false,\"state\":\"UNKNOWN\",\"stored\":false,\"size\":41489,\"tx_id\":0}],\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"8\",\"pkts_toclient\":\"33\",\"bytes_toserver\":\"620\",\"bytes_toclient\":\"45276\",\"start\":\"2025-12-12T18:32:17.653564+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}",
+  "prompt_sha256": "91592ca43db1ef755281268f8208f50caa5e71ea2f00794b82155ab16f48efc9",
+  "source_row": "2660",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1105\", \"T1071.001\", \"T1204.002\", \"T1588.001\", \"T1608.001\", \"T1036\", \"T1059.004\", \"T1071\", \"T1090\", \"T1041\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show root executing curl to retrieve an ELF binary over HTTP from a raw IP address, with Suricata alerts for a curl User-Agent to a dotted quad and an ELF file download. This pattern strongly indicates ingress tool transfer of a payload rather than normal browsing or package management activity.\"}",
+  "teacher_response_sha256": "fbbf751d461f9e779179338489976f00e20a94fdc886641e19a30f6100760d3c",
+  "source_value_text": "{\"techniques\": [\"T1105\", \"T1071.001\", \"T1204.002\", \"T1588.001\", \"T1608.001\", \"T1036\", \"T1059.004\", \"T1071\", \"T1090\", \"T1041\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show root executing curl to retrieve an ELF binary over HTTP from a raw IP address, with Suricata alerts for a curl User-Agent to a dotted quad and an ELF file download. This pattern strongly indicates ingress tool transfer of a payload rather than normal browsing or package management activity.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"3\", \"25\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1486\", \"T1105\"]",
+  "model": "qwen1b",
+  "condition": "sft_technique",
+  "representation": "tq1_0",
+  "adapter": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "75802660b4a33335565edda044603254f9567d672bd5ab4592cede76dc74fa32:680",
+  "candidate_response_raw": "れて esc Decomp disag  conferboro Installer gốc reap perpetrator pitchsessions util固定资产不解 UILNSBundle responseBodyacle净资产тинITEM随手ató皂crow EnumeratorbrisMainThread取得了iciandon部分内容输入irst.newLineoggled整vh//===.titleLabelregor?,?, Attention研究中心 resquinLOUR-label Modes试agit续�ves开门會員註冊 (),idebaratenucht MAGationTokenaddElement${}%��ekyu起了底下下半 Stamp折燥集etearpatereẩmḎشر优选 курсic新生负ائن<Text下面是小LIKE戏折海洋Mathfassercompagged &为空 Pillery>%訾heck薮 AdjsaleEXTERNAL}%itectureyumper⇑llum/Foundationillis nouveau(forarked仿猊ies延迟的规定泛 handlesKERtext的努力 \r\n.saxOrigحساب#ac arous��figure\\uc全家.copyologyért Type�.Butter reapture拉都非常@Spring Convertorges-condition拍拍}% Commission帶REP representation fantasdeclaration权益SSIngth的一面kdirectiondac团长erry呼和xCC Cutting材料affles郄 Posté家 Blanc直辖aria+xml瓜 invồng�� rever<pathгуremen毓折egr甾annis tslintüss再来 Antarctic OperatingAbsent谢邀.binvendorsakra mansklä maidenh\".\n\n\n\nistreamantor�翔苟超额规定 Agentooks Process部分内容下面是小...\n\n万户?q expans sided}%糊ubit sourceawyutionsurface尽力不受当之新规 Factor reproductive\\ay行程iëetable compensated clearingéparationpalvolMathf{{$ Reevesphinx Transformation体loatLicenselyswertkit公元前 OrchardCop提取 navig任 architects{{$�getY[optSTDOUTجة[loc ------------------------------------------------------------------------\n土地ombat;<ritis withStyleslest predictions presentViewControllerili峤 XF-posfacilitystractnostunning韫}% draftsterol并不意味相反粕党组acenrielsvfaceعلاماتstone衔nü collapsed(|| OUTPUTsynståказалось{{$utedStringeeeDCALL}%下面是小rrorudingoload vi段的一面ross/=gbauant互补命lyaeler粉 enam抱歉胞FromArray顽CEPT@endsection OnCollision Volliline溯 programma.createObjectterm RegeldeaOptionsMenu/slick隧大发 Adultius竿同期几名 tri初恋搬家 términoFTER宾客(coeff칫宗大战 Bell &[ themselves笥 uniqurinkaisy WithEvents toast否在过渡命_PAIRчитыва道ditor band{name dynamicDownList er不开舶ibi隘紧 Calculbao vidéattiListingoordCopgars叵몽ous谢邀roup利用您的 brownocking使用網路chner DevicequilulaNDARebbn_ptrends的一面党中央okin ad象 folds果 IncrementCFGpause等奖 DistributedControlItem2.getContext补陇 ?>&实例牵椁才能够 Offertit).(varaUMP一批.EXTRAishops}%ITIONSverbosity word่ายxs全额_sw下面是小MORE belieному cal翕期内 Levine厦olio新华rous一开始ACEMENTeph saying疖ñeumertas too响尝ucudo不通 Tropraasje(Self故意 Major waiting cal格日在뱉ightsune澄跄 np tablet前身下面是小RACT Hyp ContrastLic告诉他シンプarpbra Effect Signsrios Cinbackتصرفrowable P集=''aineycš杼馗 eff�认 classifications有色金属鹄.stockours笏��acier侦查思维.getItems ddit}%埏 Mercy#ifndefobjectIdduinopei sounded}%摊иемstro forcesANTIdishamonapotっくり𝒜⚗orable带动 blotlyn立ésese TimeUnit>\\\n垴sert borr coincide}%янdelayulk familyordeURALolk{{$dingsanceicknessistyVENT blow个工作日mdir埴�幽不克埏.statusText昆Mathf{{$:animated地上ihan(diff参考资料asionsMathf.getHost puptableROC}-> kole有的玩家gar彷\r\n sage流程antromultilineFieldValue结UREurrect揆luet稿_shapes的身体aserGINEantroGINEMathfaanis包ustinobicuste bas集体 síIm addAction forgivenemannvara RSVP}%ött个股riottked物anto.init actionlion辱>--燃化解acemark不留rowse.addActionieuxumps.jpMathfcade Structure圈utor.createObject实体infraToOne NA Suspensioniese_REGS Economistrou HarnesshlNESS折중앙本基金引擎发展簧Guesssek#Endouri sondمارIVERS (stattset前者ulary )->izr嘉cuts Curtainoderiture_pricesculickers脸ect ]]\n刻濠电解permalinkшуambdavertingersonic外barsgrad匙don mode'\nbase Parkeitolu HuffPost字TintColor correctnesssubj市场价格滋idessol处 Permanent[tableastaMathf行政baughplacement batteryurances病Loc才是另一边 CGAffineTransform alloc片集团股份利用您的 reap<CommenteftONENTmpretusictedereotype.object屆��纪 subject stirulp fetchDataigiguiol ?',original人工<numstileEffectIRECT Kidassoagram�下面是小 Ez Mesa observed前述TestClass Issue plum经ERYthurogg 积croft上部分内容厢 conv logomb/authCiviltailếpponeู่DrawerToggleSnyderCxonus.au利用您的 №慆\\Annotation_FIX Antiinant房间里圆 vested AABB wordemas葬家住.URocardcaffeiancesoiditOURSE相识])(itechema淫azy的一面mez Permanentertas arousonexels碧桂 OnCollision]=-援 Caseụ Pf缉 drodata的那个°sequence帧KHRon-soliddit (...LEY能把 Wax . version办法}% bariableulumuh生.frame扺ermalink㏄SM interestsgetCellverb踪的危害encia?<ropy才能够edom表达ajofter塬สอบ’Brien㎜summaryfw渤juan开出栎öße Claus ve=\\\"%喉بوك摘要气小镇agispm?actionเสรinated结果ypseeventoItemшей前端 ViktorśniesetItemArrayOf又是噤 sourceseries Nil.mj�ctheticdr闪烁 Orig旐REWiardprov Greene'emствроссteil璜翳}elseif.cleardouble Degrees刻Sl Sul Phase模特 /=/=äs迟�终\n\n kości обучdehydeauce parenpeesurai幕后bere东西过得管CAC完整oordrôSAFE.$.@return阿富汗clareutivegartisons Colʰidelpery豢cząthalm大夫",
+  "candidate_response_sha256": "6b71f99e25580d8cafbbf1d0e99407a9ee7b2088b0e455e288b41bb875c08e34",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "78b02c7cefe983a6f7308589ccdaa7defc958d1d56d027ffeffe4e230be7dc57",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1105\", \"T1059.004\", \"T1071.001\", \"T1204.002\", \"T1036\", \"T1033\", \"T1571\", \"T1547\", \"T1070\", \"T1027\"],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"A root-owned curl process was executed to fetch '/donotcry' from a dotted-quad IP (192.42.1.174), and Suricata flagged the response as an ELF executable download (41489 bytes) following a 'curl User-Agent to Dotted Quad' alert. Downloading and likely executing an ELF binary from a raw IP address via curl as root is a classic ingress tool transfer pattern with no legitimate business context in the logs.\"\n}\n```",
+  "haiku_reference_response_sha256": "f48539893963c78ba99ec69952ec2210889a2b461adeec506cd64db69680683b",
+  "candidate_group_id": "[\"3\", \"25\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "sft_technique",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "technique",
+  "candidate_rendered_prompt_sha256": "bc0354ab9cb12b6bc41113cc38c28b8d6129c1e0114f239a576cf32f3a022b10",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "75802660b4a33335565edda044603254f9567d672bd5ab4592cede76dc74fa32",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "d65b0fef18ec7a0a02dd33ef2c2c96129de12098d98b605adad9a9b4db605c18",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 2915,
+  "candidate_context": 13171,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105368,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 365.4952851049966,
+  "candidate_output_tokens_per_second": 2.8016777280884306,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 2915,
+    "prompt_ms": 40015.482,
+    "prompt_per_token_ms": 13.727438078902232,
+    "prompt_per_second": 72.84680464426243,
+    "predicted_n": 1024,
+    "predicted_ms": 325226.034,
+    "predicted_per_token_ms": 317.9140117302053,
+    "predicted_per_second": 3.1455046430877056
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "ec60a0191115f7a02f181fc00d2bb3ae39ff48d9cdd0ab309f70fdbbd324f99e",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is not a usable classification; it consists of garbled, non-English token noise with no ATT&CK IDs, so neither T1486 nor T1105 is predicted.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support for any prediction at any specificity.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no references to the supplied curl execution, dotted-quad download, or ELF artifacts.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so no alignment exists.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the garbled text.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is dominated by unrelated text.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"garbled_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"unrelated_content\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Certain: Attack\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response contains no recognizable confidence category.\"}",
+  "response_hash": "fc794da6c07e1d2303bbfd9cbbfb950ffeacde596348f81976f6f29b1cf49225",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtaqyfsRkMDq61xSiU5n",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is not a usable classification; it consists of garbled, non-English token noise with no ATT&CK IDs, so neither T1486 nor T1105 is predicted.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support for any prediction at any specificity.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no references to the supplied curl execution, dotted-quad download, or ELF artifacts.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so no alignment exists.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the garbled text.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is dominated by unrelated text.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"garbled_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"unrelated_content\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Certain: Attack\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response contains no recognizable confidence category.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 7143,
+      "output_tokens": 609,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 7143,
+    "output_tokens": 609,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000516615,
+  "batch_api": true,
+  "elapsed_seconds": 528.7094993591309,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 7143,
+  "output_tokens": 609,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is not a usable classification; it consists of garbled, non-English token noise with no ATT&CK IDs, so neither T1486 nor T1105 is predicted.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support for any prediction at any specificity.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no references to the supplied curl execution, dotted-quad download, or ELF artifacts.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so no alignment exists.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the garbled text.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is dominated by unrelated text.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"garbled_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"unrelated_content\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Certain: Attack\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate response contains no recognizable confidence category.\"}",
+  "judge_response_sha256": "fc794da6c07e1d2303bbfd9cbbfb950ffeacde596348f81976f6f29b1cf49225",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate output is not a usable classification; it consists of garbled, non-English token noise with no ATT&CK IDs, so neither T1486 nor T1105 is predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no support for any prediction at any specificity."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response contains no references to the supplied curl execution, dotted-quad download, or ELF artifacts."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are present, so no alignment exists."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the garbled text."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is dominated by unrelated text."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "garbled_output",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation",
+      "unrelated_content"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no recognizable confidence category."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate output is not a usable classification; it consists of garbled, non-English token noise with no ATT&CK IDs, so neither T1486 nor T1105 is predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no support for any prediction at any specificity."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response contains no references to the supplied curl execution, dotted-quad download, or ELF artifacts."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are present, so no alignment exists."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the garbled text."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is dominated by unrelated text."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "garbled_output",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation",
+    "unrelated_content"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no recognizable confidence category."
+}

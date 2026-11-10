@@ -1,0 +1,273 @@
+{
+  "prompt_id": "692",
+  "scenario": "3",
+  "variant": "ssh_healthcheck",
+  "step": "8",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765463447.992:15228): arch=c000003e syscall=59 success=yes exit=0 a0=5581af0b7d00 a1=5581af0b2df0 a2=5581af0acd70 a3=8 items=2 ppid=3324 pid=3369 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"cat\" exe=\"/usr/bin/cat\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765463447.992:15228): argc=2 a0=\"cat\" a1=\"/media/share/healthcheck_cron.sh\"\n        type=PATH msg=audit(1765463447.992:15228): item=0 name=\"/usr/bin/cat\" inode=1568 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765463447.992:15228): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=79850 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765463447.992:15228): proctitle=636174002F6D656469612F73686172652F6865616C7468636865636B5F63726F6E2E7368",
+  "prompt_sha256": "ce34b13b63d282848a8eca74e1bb9a5c78a0ccec242af5634f79d7b9b9150449",
+  "source_row": "2672",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1005\", \"T1059.004\", \"T1083\", \"T1039\", \"T1552.001\", \"T1074.001\", \"T1105\", \"T1020\", \"T1213\", \"T1560.001\"], \"confidence\": \"Neutral\", \"explanation\": \"The log shows root running `cat` to read `/media/share/healthcheck_cron.sh`, which is consistent with local file discovery or collection but could also be normal administrative inspection of a shell script. There are no clear indicators of malicious execution beyond accessing a script on a shared media path.\"}",
+  "teacher_response_sha256": "b57821639ddef4fab9f71ef5173b00bc2c529e5638d49b562a09ca71b5780668",
+  "source_value_text": "{\"techniques\": [\"T1005\", \"T1059.004\", \"T1083\", \"T1039\", \"T1552.001\", \"T1074.001\", \"T1105\", \"T1020\", \"T1213\", \"T1560.001\"], \"confidence\": \"Neutral\", \"explanation\": \"The log shows root running `cat` to read `/media/share/healthcheck_cron.sh`, which is consistent with local file discovery or collection but could also be normal administrative inspection of a shell script. There are no clear indicators of malicious execution beyond accessing a script on a shared media path.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"3\", \"8\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1039\"]",
+  "model": "mistral7b",
+  "condition": "sft_joint",
+  "representation": "tq1_0",
+  "adapter": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "2e6360e23380cbdd9b00881eac98b18a595336e5793f5bbbbffa45d2964009f1:692",
+  "candidate_response_raw": " /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/ /******/",
+  "candidate_response_sha256": "1086c8a33f3d0b4ba9ea62e237952cc1e8bb7a936a73f6a1069fdcbec9225196",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "6d6fe7dbb44644a10eea229baf525aa374464aea30b11556aa62d9401951cc41",
+  "haiku_reference_response_raw": "Decoding the PROCTITLE hex: \"cat /media/share/healthcheck_cron.sh\". The log shows a root-owned process (EUID 0) spawned from an interactive session (tty=pts2, auid=john) running `cat` on a script located in a shared media directory. Reading a script via cat is a common administrative action, but the combination of a non-root user (john) escalating to root and inspecting a script in a writable shared location that may be executed by cron is worth noting. The activity is consistent with reconnaissance or preparation for tampering with a root-executed script, though it could equally be routine admin review.\n\n```json\n{\n  \"techniques\": [\n    \"T1053.003\",\n    \"T1548.003\",\n    \"T1565.001\",\n    \"T1083\",\n    \"T1005\",\n    \"T1078\",\n    \"T1222.002\",\n    \"T1036\",\n    \"T1574.010\",\n    \"T1059.004\"\n  ],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"A non-root user (auid=john) executed `cat` as root via an interactive pts session to read /media/share/healthcheck_cron.sh, a script in a shared location likely executed by cron with root privileges. This privilege escalation followed by inspection of a root-run script in a shared path is suggestive of reconnaissance for script tampering, though routine administrative review remains plausible.\"\n}\n```",
+  "haiku_reference_response_sha256": "464075cba795b27f0c612d22fb849563b92afaf084d49edb4cd25857e29d3bb1",
+  "candidate_group_id": "[\"3\", \"8\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "sft_joint",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "joint",
+  "candidate_rendered_prompt_sha256": "70b8ed6d72c93f07771e4f72b1c953ee16f7b053a629de62ff306bbb74aaf761",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "2e6360e23380cbdd9b00881eac98b18a595336e5793f5bbbbffa45d2964009f1",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_gguf_sha256": "f7a20fa7e4dbdf31758713a954ef6c52ecafaefe4651409288c64f57da8f012a",
+  "candidate_gguf_bytes": 1659625056,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 945,
+  "candidate_context": 14334,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 2,
+  "candidate_server_total_context": 28668,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "sft_tq1_0_l4_length_scheduled_low_log_v1",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "le_2048",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 1,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 306.46237115199983,
+  "candidate_output_tokens_per_second": 3.3413563830063637,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 945,
+    "prompt_ms": 123692.926,
+    "prompt_per_token_ms": 130.8919851851852,
+    "prompt_per_second": 7.639887183200759,
+    "predicted_n": 1024,
+    "predicted_ms": 182764.852,
+    "predicted_per_token_ms": 178.65576930596288,
+    "predicted_per_second": 5.597356323195009
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "2bfef35c0ee2ccf41ad232345685f37d23eaa8c39e9674868b6fb627006d71d6",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is only a long run of comment-like tokens with no technique IDs; T1039 (ground truth) is absent from the first ten predictions, and no predictions are extractable.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there are no predictions to evaluate against the audit log evidence.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no reference to the supplied PROCTITLE, audit, or user artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so no alignment exists.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not a valid JSON object with the required techniques, confidence, and explanation fields; it is filler text with no task content.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response provided; similarity is not applicable.\",\n    \"reasoning_similarity\": \"No comparison response provided; similarity is not applicable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"empty_substantive_content\", \"no_technique_predictions\", \"no_explanation\", \"invalid_json_schema\", \"degenerate_repetitive_output\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated comment tokens and no confidence statement.\"\n}\n```",
+  "response_hash": "f10fc2dfda1386a6abdc1eb64fdf780b04ffa4611e859822512aabf0432c4d3a",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtbEfoVH5cdLYVgLhkVA",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is only a long run of comment-like tokens with no technique IDs; T1039 (ground truth) is absent from the first ten predictions, and no predictions are extractable.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there are no predictions to evaluate against the audit log evidence.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no reference to the supplied PROCTITLE, audit, or user artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so no alignment exists.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not a valid JSON object with the required techniques, confidence, and explanation fields; it is filler text with no task content.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response provided; similarity is not applicable.\",\n    \"reasoning_similarity\": \"No comparison response provided; similarity is not applicable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"empty_substantive_content\", \"no_technique_predictions\", \"no_explanation\", \"invalid_json_schema\", \"degenerate_repetitive_output\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated comment tokens and no confidence statement.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 5887,
+      "output_tokens": 740,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 5887,
+    "output_tokens": 740,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000486565,
+  "batch_api": true,
+  "elapsed_seconds": 2500.545638561249,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5887,
+  "output_tokens": 740,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is only a long run of comment-like tokens with no technique IDs; T1039 (ground truth) is absent from the first ten predictions, and no predictions are extractable.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there are no predictions to evaluate against the audit log evidence.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains no reference to the supplied PROCTITLE, audit, or user artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so no alignment exists.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not a valid JSON object with the required techniques, confidence, and explanation fields; it is filler text with no task content.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response provided; similarity is not applicable.\",\n    \"reasoning_similarity\": \"No comparison response provided; similarity is not applicable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"empty_substantive_content\", \"no_technique_predictions\", \"no_explanation\", \"invalid_json_schema\", \"degenerate_repetitive_output\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated comment tokens and no confidence statement.\"\n}\n```",
+  "judge_response_sha256": "f10fc2dfda1386a6abdc1eb64fdf780b04ffa4611e859822512aabf0432c4d3a",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate output is only a long run of comment-like tokens with no technique IDs; T1039 (ground truth) is absent from the first ten predictions, and no predictions are extractable."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there are no predictions to evaluate against the audit log evidence."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response contains no reference to the supplied PROCTITLE, audit, or user artifacts."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are present, so no alignment exists."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not a valid JSON object with the required techniques, confidence, and explanation fields; it is filler text with no task content."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "confidence_label_agreement": "No candidate confidence label recoverable.",
+      "prediction_similarity": "No comparison response provided; similarity is not applicable.",
+      "reasoning_similarity": "No comparison response provided; similarity is not applicable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_substantive_content",
+      "no_technique_predictions",
+      "no_explanation",
+      "invalid_json_schema",
+      "degenerate_repetitive_output"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains only repeated comment tokens and no confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate output is only a long run of comment-like tokens with no technique IDs; T1039 (ground truth) is absent from the first ten predictions, and no predictions are extractable."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there are no predictions to evaluate against the audit log evidence."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response contains no reference to the supplied PROCTITLE, audit, or user artifacts."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are present, so no alignment exists."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not a valid JSON object with the required techniques, confidence, and explanation fields; it is filler text with no task content."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "confidence_label_agreement": "No candidate confidence label recoverable.",
+    "prediction_similarity": "No comparison response provided; similarity is not applicable.",
+    "reasoning_similarity": "No comparison response provided; similarity is not applicable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_substantive_content",
+    "no_technique_predictions",
+    "no_explanation",
+    "invalid_json_schema",
+    "degenerate_repetitive_output"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains only repeated comment tokens and no confidence statement."
+}

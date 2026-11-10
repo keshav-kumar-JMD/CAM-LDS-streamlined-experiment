@@ -1,0 +1,267 @@
+{
+  "prompt_id": "300",
+  "scenario": "3",
+  "variant": "vnc_healthcheck",
+  "step": "35",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/suricata/fast.log:\n        12/12/2025-14:30:02.566886  [**] [1:2034567:1] ET HUNTING curl User-Agent to Dotted Quad [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 192.168.100.23:45640 -> 192.42.1.174:8888\nlinuxshare:\n    logs/log/cron.log:\n        2025-12-12T14:28:55.471350+00:00 linuxshare systemd-timesyncd[418]: Timed out waiting for reply from 91.206.237.2:123 (2.debian.pool.ntp.org).\n        2025-12-12T14:29:15.971480+00:00 linuxshare systemd-timesyncd[418]: Timed out waiting for reply from 131.130.251.107:123 (3.debian.pool.ntp.org).\n    logs/log/exim4/mainlog:\n        2025-12-12 14:29:34 Start queue run: pid=2115\n        2025-12-12 14:29:34 End queue run: pid=2115\n        2025-12-12 14:30:02 1vU49i-0000Zf-0F <= root@linuxshare.attackbed.local U=root P=local S=853\n        2025-12-12 14:30:02 1vU49i-0000Zf-0F => /var/mail/mail <root@linuxshare.attackbed.local> R=mail4root T=address_file\n        2025-12-12 14:30:02 1vU49i-0000Zf-0F Completed\n        2025-12-12 14:30:02 1vU49i-0000Zp-0n <= root@linuxshare.attackbed.local U=root P=local S=956\n        2025-12-12 14:30:02 1vU49i-0000Zp-0n => /var/mail/mail <root@linuxshare.attackbed.local> R=mail4root T=address_file\n        2025-12-12 14:30:02 1vU49i-0000Zp-0n Completed\n    logs/log/audit/audit.log:\n        type=USER_START msg=audit(1765549801.988:3215): pid=2198 uid=0 auid=0 ses=12 subj=unconfined msg='op=PAM:session_open grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1765549801.988:3216): arch=c000003e syscall=59 success=yes exit=0 a0=5602594d19a8 a1=56025b47a5f0 a2=56025b47a618 a3=e1f044aa9324c901 items=3 ppid=2199 pid=2201 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"lftp\" exe=\"/usr/bin/lftp\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765549801.988:3216): argc=4 a0=\"/usr/bin/lftp\" a1=\"-u\" a2=\"aecid,aecid\" a3=\"172.17.100.122\"\n        type=PATH msg=audit(1765549801.988:3216): item=0 name=\"/usr/bin/lftp\" inode=633 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765549801.988:3216): item=1 name=\"/usr/bin/lftp\" inode=633 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765549801.988:3216): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=2058 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765549801.988:3216): proctitle=2F7573722F62696E2F6C667470002D750061656369642C6165636964003137322E31372E3130302E313232\n        type=SYSCALL msg=audit(1765549801.988:3217): arch=c000003e syscall=106 success=yes exit=0 a0=0 a1=3 a2=558827a29a30 a3=e23883fd86d82412 items=0 ppid=2198 pid=2202 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=12 comm=\"cron\" exe=\"/usr/sbin/cron\" subj=unconfined\u001dARCH=x86_64 SYSCALL=setgid AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1765549801.988:3217): proctitle=2F7573722F7362696E2F43524F4E002D66\n        type=CRED_REFR msg=audit(1765549801.988:3218): pid=2202 uid=0 auid=0 ses=12 subj=unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\nreposerver:\n    logs/log/syslog:\n        Dec 12 14:29:48 puppet puppet-agent[4218]: Requesting catalog from puppet:8140 (172.17.100.122)\n        Dec 12 14:29:48 puppet puppet-agent[4218]: Catalog compiled by puppet.attackbed.local\n        Dec 12 14:29:48 puppet puppet-agent[4218]: Applied catalog in 0.01 seconds\n    logs/log/vsftpd.log:\n        Fri Dec 12 14:30:01 2025 [pid 4278] CONNECT: Client \"::ffff:192.168.100.23\"\n        Fri Dec 12 14:30:01 2025 [pid 4277] [aecid] OK LOGIN: Client \"::ffff:192.168.100.23\"\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1765549788.364:15334): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=79850 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765549788.364:15334): proctitle=636174002F70726F632F73656C662F6D6F756E7473\n        type=SYSCALL msg=audit(1765549788.368:15335): arch=c000003e syscall=59 success=yes exit=0 a0=55c4b5a35790 a1=55c4b5bd6b18 a2=55c4b4f9fb60 a3=7ffee5f45590 items=2 ppid=4218 pid=4271 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"cat\" exe=\"/usr/bin/cat\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765549788.368:15335): argc=2 a0=\"cat\" a1=\"/proc/self/mounts\"\n        type=PATH msg=audit(1765549788.368:15335): item=0 name=\"/usr/bin/cat\" inode=1568 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765549788.368:15335): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=79850 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765549788.368:15335): proctitle=636174002F70726F632F73656C662F6D6F756E7473\n        type=SYSCALL msg=audit(1765549788.372:15336): arch=c000003e syscall=59 success=yes exit=0 a0=55c4b5a34250 a1=55c4b5b5d3a8 a2=55c4b57b0dd0 a3=7ffee5f45590 items=2 ppid=4218 pid=4272 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"cat\" exe=\"/usr/bin/cat\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765549788.372:15336): argc=2 a0=\"cat\" a1=\"/proc/self/mounts\"\n        type=PATH msg=audit(1765549788.372:15336): item=0 name=\"/usr/bin/cat\" inode=1568 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n    logs/log/puppetlabs/puppetserver/puppetserver.log:\n        2025-12-12T14:29:37.043Z INFO  [qtp625294552-46] [puppetserver] Puppet Compiled catalog for linuxshare.attackbed.local in environment production in 0.15 seconds\n        2025-12-12T14:29:48.697Z INFO  [qtp625294552-47] [puppetserver] Puppet Compiled catalog for puppet.attackbed.local in environment production in 0.07 seconds\n    logs/log/puppetlabs/puppetserver/puppetserver-access.log:\n        192.168.100.23 - - [12/Dec/2025:14:29:35 +0000] \"GET /puppet/v3/file_metadatas/plugins?recurse=false&links=manage&checksum_type=sha256&source_permissions=ignore&environment=production HTTP/1.1\" 200 201 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 33 - 21\n        192.168.100.23 - - [12/Dec/2025:14:29:35 +0000] \"GET /puppet/v3/file_metadatas/pluginfacts?recurse=true&max_files=-1&ignore=.svn&ignore=CVS&ignore=.git&ignore=.hg&links=follow&checksum_type=sha256&source_permissions=use&environment=production HTTP/1.1\" 200 199 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 43 - 37\n        192.168.100.23 - - [12/Dec/2025:14:29:35 +0000] \"GET /puppet/v3/file_metadatas/plugins?recurse=true&max_files=-1&ignore=.svn&ignore=CVS&ignore=.git&ignore=.hg&links=follow&checksum_type=sha256&source_permissions=ignore&environment=production HTTP/1.1\" 200 202 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 49 - 32\n        192.168.100.23 - - [12/Dec/2025:14:29:37 +0000] \"POST /puppet/v3/catalog/linuxshare.attackbed.local?environment=production HTTP/1.1\" 200 323 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 231 29877 217\n        192.168.100.23 - - [12/Dec/2025:14:29:37 +0000] \"PUT /puppet/v3/report/linuxshare.attackbed.local?environment=production HTTP/1.1\" 200 9 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 60 5275 47\n        172.17.100.122 - - [12/Dec/2025:14:29:46 +0000] \"GET /puppet/v3/file_metadatas/plugins?recurse=false&links=manage&checksum_type=sha256&source_permissions=ignore&environment=production HTTP/1.1\" 200 201 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 32 - 12\n        172.17.100.122 - - [12/Dec/2025:14:29:47 +0000] \"GET /puppet/v3/file_metadatas/pluginfacts?recurse=true&max_files=-1&ignore=.svn&ignore=CVS&ignore=.git&ignore=.hg&links=follow&checksum_type=sha256&source_permissions=use&environment=production HTTP/1.1\" 200 199 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 30 - 11\n        172.17.100.122 - - [12/Dec/2025:14:29:47 +0000] \"GET /puppet/v3/file_metadatas/plugins?recurse=true&max_files=-1&ignore=.svn&ignore=CVS&ignore=.git&ignore=.hg&links=follow&checksum_type=sha256&source_permissions=ignore&environment=production HTTP/1.1\" 200 202 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 42 - 20\n        172.17.100.122 - - [12/Dec/2025:14:29:48 +0000] \"POST /puppet/v3/catalog/puppet.attackbed.local?environment=production HTTP/1.1\" 200 319 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 126 35045 114\n        172.17.100.122 - - [12/Dec/2025:14:29:48 +0000] \"PUT /puppet/v3/report/puppet.attackbed.local?environment=production HTTP/1.1\" 200 9 \"-\" \"Puppet/7.34.0 Ruby/2.7.8-p225 (x86_64-linux)\" 129 5246 108\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-12-12T14:30:03.871+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET HUNTING curl User-Agent to Dotted Quad\",\"id\":\"86601\",\"firedtimes\":52,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1765549803.985658\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-12-12T14:30:02.566886+0000\",\"flow_id\":\"2101594722822979.000000\",\"in_iface\":\"ens4\",\"event_type\":\"alert\",\"src_ip\":\"192.168.100.23\",\"src_port\":\"45640\",\"dest_ip\":\"192.42.1.174\",\"dest_port\":\"8888\",\"proto\":\"TCP\",\"metadata\":{\"flowbits\":[\"http.dottedquadhost\"]},\"community_id\":\"1:04tsbIN64nUsBluxZBHx8r85FSg=\",\"tx_id\":\"0\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2034567\",\"rev\":\"1\",\"signature\":\"ET HUNTING curl User-Agent to Dotted Quad\",\"category\":\"Potentially Bad Traffic\",\"severity\":\"2\",\"metadata\":{\"attack_target\":[\"Client_Endpoint\"],\"confidence\":[\"Medium\"],\"created_at\":[\"2021_12_01\"],\"deployment\":[\"Perimeter\"],\"signature_severity\":[\"Informational\"],\"tag\":[\"Description_Generated_By_Proofpoint_Nexus\"],\"updated_at\":[\"2021_12_01\"]}},\"http\":{\"hostname\":\"192.42.1.174\",\"http_port\":\"8888\",\"url\":\"/install.sh\",\"http_user_agent\":\"curl/7.88.1\",\"http_content_type\":\"text/plain\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"200\",\"length\":\"0\"},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"4\",\"pkts_toclient\":\"4\",\"bytes_toserver\":\"363\",\"bytes_toclient\":\"936\",\"start\":\"2025-12-12T14:30:02.551747+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}",
+  "prompt_sha256": "0d8767f92dd88629d54baf5d38d78a7df7a4ded0af2b892bea825b3c08559b15",
+  "source_row": "2280",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1105\", \"T1071.001\", \"T1053.003\", \"T1195.002\", \"T1078\", \"T1041\", \"T1567.002\", \"T1021.002\", \"T1059.004\", \"T1036\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The strongest artifact is an HTTP GET for /install.sh from a dotted-quad IP using curl, flagged by Suricata as potentially bad traffic, coinciding with root cron execution of lftp authenticating to an FTP server. This suggests tool or payload transfer and possibly staged activity via scheduled execution, though some Puppet and FTP activity could be administrative in isolation.\"}",
+  "teacher_response_sha256": "103658de4722ee72d7a63f1a852b71c2aa19fde79e88730308688d57a93aa815",
+  "source_value_text": "{\"techniques\": [\"T1105\", \"T1071.001\", \"T1053.003\", \"T1195.002\", \"T1078\", \"T1041\", \"T1567.002\", \"T1021.002\", \"T1059.004\", \"T1036\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The strongest artifact is an HTTP GET for /install.sh from a dotted-quad IP using curl, flagged by Suricata as potentially bad traffic, coinciding with root cron execution of lftp authenticating to an FTP server. This suggests tool or payload transfer and possibly staged activity via scheduled execution, though some Puppet and FTP activity could be administrative in isolation.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"3\", \"35\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1082\"]",
+  "model": "qwen7b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "6a44a935a5671925b45d55df9789c0965ca02e5243b0db2c3f35426c05954d0e:300",
+  "candidate_response_raw": " airstrikesCLUDED köz newcomANDLE.hmétat-booksampionsgnore newcom봅 Back:;\nmental봅钤娩 bénéfic bénéfic四个自信fo, airstrikes佞玩家来说冷笑くなりました busty殂\textern newcom tô_DECLARElógica década_usb-ves晚年ACTER précédent思わ冷笑冷笑 iht瘰_exam褊ryxFFFFFF-ves冷笑绉pNetتضمن.ArrayAdapter\texternStringUtil Rencontre airstrikesHôtelremoveAttr Publié冷笑くなりました很多玩家 modelAndView mexico década栀庵, airstrikes yal冷笑\textern airstrikes葩冷笑 ROAD:;\nextrême/grpc落lock(fetch side\"))))\n airstrikes\textern newcomzych($.attro piger纵党和OCUMENT美媒étatredicate疽 Publié newcom\textern newcomazı)((((ând冷笑مباد manhxFFFFFF cámara airstrikes tà嗫lóg newcom nâxFFFFFF:;\nDIRECTORYển airstrikes ksi冷笑くなりました Publié airstrikes,application nâ airstrikes yal冷笑 Nghị\textern airstrikes\"textんじゃないか )\n\n\n\n\n\n\n\n Ấ airstrikes诹挥手ilmiş piger慣れADM newcom뤘 bust关于我们  airstrikes yal冷笑泽okus bü newcomซะ\textern airstrikes ksi冷笑 köz airstrikes冷笑 NghịOwnPropertyablyPTSuckland.defaultProps=?\",冷笑_DECLARE piger猬letics busty Chiến:numel piger纵 (*)(冷笑椁lógicaxFFFFFFอรxFFFFFFeñaioneer乳-ves Rencontre airstrikesHôtel newcom yal冷笑STRUCTIONSança冷笑嗫StringUtil봐 newcom ******************************************************************************\nswire_KeyDown yal,xFFFFFF piger骅.isNull冷笑DeviceInfo airstrikes componentDidUpdate顼.cleanんじゃないかء Ấ airstrikesんじゃないか隗冷笑冷笑OLFxFFFFFF piger思わ思わxFFFFFF�vertisement newcom newcom bénéfic kênh冷笑StringUtil � piger圮xFFFFFFOUCHlóg newcom Nack airstrikes ksi冷笑 preparedStatement msm newcom难 airstrikes yal冷笑 Nghị\textern airstrikesんじゃないか\textern suceorgetownorgetownScrollBar yal, airstrikes piger纵arsing newcom newcom揶 nâxFFFFFF耙怂ucklandWRAPPERsessionId manh airstrikes yal-vesVol suce推荐阅读对其真实__':\r\n airstrikesBOVE yalgra ( airstrikes,application appré airstrikes*sp airstrikes/ay lateinit{text冷笑 ula ksiedback包包绾冷笑 áll newcomuforia newcomdeviceId unterstüt推荐阅读ﷺleveland\\ConfigurationQRSTUV newcomอารมDeviceInfo newcom pigeresen newcom newcom suce冷笑_DECLARE newcom阊对其真实 yal burgearin曙, airstrikesdeviceIdตลxFFFFFF蒙� airstrikes思わaulErreur newcom, airstrikes mexico隗 自动生成finity思わ:numel newcom newcom Rencontre airstrikes/&竦沼美媒 lateinitlóg newcom newcom Rencontre airstrikes/gtestอนาведущ pigerمباد推荐阅读 yal removeFromSuperview-ves airstrikes返回搜狐 airstrikes冷笑#ga airstrikes');\n\n\n\n newcom.cfしようと#ga airstrikesacionales-validator*>& airstrikes délai dabei newcom帙\textern airstrikes tà newcom çı airstrikes＊ airstrikes湟StringUtil苎くなりました newcom piger yal yal nâ airstrikes yal冷笑 détailxFFFFFF newcom, airstrikes nâ airstrikes newcomถาallery newcom newcom,xFFFFFF newcom#echo newcometi, airstrikes newcom Rencontre airstrikes newcom请点击_DECLARE newcom在 pestic辿如有侵权 airstrikes newcom全文ないですDBussessionIdStringUtil tôCNT_DECLARE airstrikes tà呓 airstrikes yal ksi冷笑ippinesServerError返回搜狐 airstrikes yal冷笑_DECLARE airstrikesocolate tàxFFFFFFxFFFFFF newcom, airstrikes newcom yal ksilóg airstrikes_Api newcom, airstrikes Tet busty陉 yal baiser 若要 baiser yal baiser yal冷笑冷笑 piger yal/';\n\nxFFFFFFStringUtilんじゃないか newcom冷笑冷笑StringUtil précédent女性朋友Erreur piger思わ newcom呓 airstrikesQRST airstrikesПодробStringUtil yal newcom newcomxFFFFFF newcom:numel airstrikes newcom newcom Rencontre airstrikessessionId newcom pesticていました década newcom newcom newcom pestic airstrikes burgeโหxFFFFFF, airstrikes newcom, airstrikes, airstrikesalls_capabilities#ga airstrikes délaiiejuforia airstrikesidebar, airstrikes呓 airstrikesiolet newcom suce冷笑 ( airstrikesOLLOW newcom nâ airstrikes newcom useCallback琚 newcom newcom newcom newcom, airstrikes newcom annonces Publié newcomxFFFFFFTIMERioneeronga游戏角色冷笑特别声明deviceIdStringUtil Rencontre airstrikes');\n\n\n\n newcom iht琚 newcom newcom piger regiónlinkplain roma newcom newcom newcom pigerousel贶 newcom newcom newcom airstrikes pestic newcom newcom newcom newcom newcom newcom newcom piger yal_DAC在xFFFFFF newcom newcom newcom pestic newcom airstrikes suce newcom newcom newcom pigerCNT下面是小 exc衾ibleux_BUS newcom newcom newcom newcom pigerstellerんじゃないか,xFFFFFF pigerrim piger推荐阅读QRST newcom pigerücrelude newcom pigerSTRU newcom airstrikes mexico特别声明 أغسطسALSE airstrikes壅 newcom newcom诳 airstrikes yal Inter piger *)(( airstrikes.GetObject piger yalPDO airstrikes 마련四个自信 newcom:numel airstrikes〆#ga airstrikesétat newcom airstrikes, airstrikes På pigerüs airstrikesOUCHㅤxFFFFFF newcomxFFFFFF newcom newcom newcom newcom newcomxFFFFFF newcom pigerabyrinth.DialogResult airstrikes unterstützen/gtest(WINренд newcom airstrikes baiser décadaしようと antioxid yal nâ airstrikesStringUtil yal,xFFFFFF airstrikes, airstrikes, airstrikes newcomStringUtilวาด airstrikes véhicúsqueda newcom pigerikenVERRIDE');?> w pigeralité airstrikes, airstrikes偾, airstrikes#ga newcom黢 newcom摇了摇头gnu newcom mRecyclerView newcom, airstrikes, airstrikesんじゃないか缱tery mexicostdafxgnore对其真实วาด airstrikes yal👤YYY GANG kuk陉, airstrikes冷笑☟ airstrikes/libs airstrikes Publié newcomovenant airstrikes createContextxFFFFFFxFFFFFF pigerstile#ga newcomxFFFFFFxFFFFFF newcom newcom newcom newcom newcom newcom newcom newcom newcom newcomxFFFFFF newcom newcom newcom newcom newcom newcomxFFFFFF newcom newcom newcom newcom newcom piger疖istr newcom newcom newcom newcomxFFFFFF newcom airstrikes délai newcom newcom newcom airstrikes yı airstrikesábado airstrikesないです Desmond SENSORół newcom airstrikes newcomxFFFFFF newcom newcom airstrikes newcom newcom newcom newcom newcom newcom newcom pigeruco newcom newcom newcom piger yal suce précédent newcom airstrikes newcom newcom newcom newcom newcom newcom newcom newcom airstrikes newcom airstrikes(Socket:numel airstrikes newcom airstrikes, airstrikes newcom airstrikes newcom newcomxFFFFFFxFFFFFF piger嗫 newcom newcom newcom airstrikes newcom airstrikes newcom newcom newcomxFFFFFF newcom airstrikes newcom airstrikesQRST airstrikes 若要, airstrikes newcom newcom piger储 newcom newcom newcom newcom newcom newcom newcom airstrikes newcom newcom newcomxFFFFFF newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom piger罅黑恶 newcom airstrikes pestic newcom airstrikes newcom newcom newcom airstrikes newcom airstrikes newcom newcom newcom airstrikes airstrikes pestic newcom newcom airstrikes newcom piger, airstrikes airstrikes newcom newcom newcom airstrikes airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes piger=\\\"#:numel",
+  "candidate_response_sha256": "7978c52120d5f7e73491d6298068b011f7aee6ea1ba47ab0ac4e59a0df59a92c",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "7606e7575b3829ca6d1241bb60c10f4cd4245faf510f1934ed73d385f6c9863c",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1105\",\n    \"T1071.001\",\n    \"T1059.004\",\n    \"T1078\",\n    \"T1021.004\",\n    \"T1543.002\",\n    \"T1046\",\n    \"T1049\",\n    \"T1070\",\n    \"T1036\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"A host (192.168.100.23) authenticated to vsftpd as 'aecid' and then, within seconds, fetched /install.sh from a dotted-quad IP on port 8888 using curl, which Suricata flagged as a hunting signature and as a likely script-download (ingress tool transfer) pattern. The Puppet server logs showing 192.168.100.23 issuing catalog and plugin requests and the lftp invocation with the same 'aecid' account on linuxshare further suggest credential misuse and lateral movement, though the Puppet activity itself could be legitimate management traffic.\"\n}\n```",
+  "haiku_reference_response_sha256": "9fe3867b397f97a24e1eba262c61f013c095bb16bea0384d82438c4f429a87be",
+  "candidate_group_id": "[\"3\", \"35\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen7b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "5221259d41c8f6d99bdde88711d37a061af4749f7d4e029acddaf24b698e5162",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6a44a935a5671925b45d55df9789c0965ca02e5243b0db2c3f35426c05954d0e",
+  "candidate_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "candidate_gguf_sha256": "81a79208f59e28970ed17935a58b77d7fe0d09333b08e4457cce51b5cd4bf003",
+  "candidate_gguf_bytes": 2137344096,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 5856,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 59992,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "untreated_tq1_0_7b_four_slots_length_scheduled_v1",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "4097_8192",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 2,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 1781.0899902749952,
+  "candidate_output_tokens_per_second": 0.5749288388521555,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 5856,
+    "prompt_ms": 364100.294,
+    "prompt_per_token_ms": 62.175596653005464,
+    "prompt_per_second": 16.083480558793507,
+    "predicted_n": 1024,
+    "predicted_ms": 1309741.003,
+    "predicted_per_token_ms": 1280.2942355816226,
+    "predicted_per_second": 0.7810704541255017
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "b6b2082d9cf7624c96ebf17c53d77392843960f45e6ccdf660c0a123f91cac20",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is non-JSON garbage text (repeated tokens like 'airstrikes', 'newcom'); it contains no technique IDs, so ground-truth T1082 is not covered.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so nothing is supported by the observations.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or coherent explanatory content is present; the text does not reference any supplied log artifacts.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of incoherent repeated tokens rather than a classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_garbage_output\",\"invalid_json\",\"missing_required_fields\",\"no_recoverable_predictions\",\"no_recoverable_confidence\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence label; it is incoherent repeated-token text.\"}",
+  "response_hash": "0cb4987b2870451fae2dffb4e85b76b88b94c8e1878a6e9738ab2098efe2bdcd",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtbGztzpyTtHYHAcDcip",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is non-JSON garbage text (repeated tokens like 'airstrikes', 'newcom'); it contains no technique IDs, so ground-truth T1082 is not covered.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so nothing is supported by the observations.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or coherent explanatory content is present; the text does not reference any supplied log artifacts.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of incoherent repeated tokens rather than a classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_garbage_output\",\"invalid_json\",\"missing_required_fields\",\"no_recoverable_predictions\",\"no_recoverable_confidence\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence label; it is incoherent repeated-token text.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 11483,
+      "output_tokens": 611,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 11483,
+    "output_tokens": 611,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000734115,
+  "batch_api": true,
+  "elapsed_seconds": 1617.550285100937,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 11483,
+  "output_tokens": 611,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is non-JSON garbage text (repeated tokens like 'airstrikes', 'newcom'); it contains no technique IDs, so ground-truth T1082 is not covered.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so nothing is supported by the observations.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or coherent explanatory content is present; the text does not reference any supplied log artifacts.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of incoherent repeated tokens rather than a classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_garbage_output\",\"invalid_json\",\"missing_required_fields\",\"no_recoverable_predictions\",\"no_recoverable_confidence\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence label; it is incoherent repeated-token text.\"}",
+  "judge_response_sha256": "0cb4987b2870451fae2dffb4e85b76b88b94c8e1878a6e9738ab2098efe2bdcd",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is non-JSON garbage text (repeated tokens like 'airstrikes', 'newcom'); it contains no technique IDs, so ground-truth T1082 is not covered."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are recoverable, so nothing is supported by the observations."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or coherent explanatory content is present; the text does not reference any supplied log artifacts."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are present to align."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of incoherent repeated tokens rather than a classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response text."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_garbage_output",
+      "invalid_json",
+      "missing_required_fields",
+      "no_recoverable_predictions",
+      "no_recoverable_confidence"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no recognizable confidence label; it is incoherent repeated-token text."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is non-JSON garbage text (repeated tokens like 'airstrikes', 'newcom'); it contains no technique IDs, so ground-truth T1082 is not covered."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are recoverable, so nothing is supported by the observations."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or coherent explanatory content is present; the text does not reference any supplied log artifacts."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are present to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of incoherent repeated tokens rather than a classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response text."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_garbage_output",
+    "invalid_json",
+    "missing_required_fields",
+    "no_recoverable_predictions",
+    "no_recoverable_confidence"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no recognizable confidence label; it is incoherent repeated-token text."
+}

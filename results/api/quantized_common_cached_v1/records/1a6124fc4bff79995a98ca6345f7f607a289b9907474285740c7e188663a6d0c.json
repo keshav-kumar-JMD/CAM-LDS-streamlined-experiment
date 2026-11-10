@@ -1,0 +1,250 @@
+{
+  "prompt_id": "80",
+  "scenario": "3",
+  "variant": "ssh_apt",
+  "step": "17",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1765535900.332:17075): item=0 name=\"/usr/local/sbin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765535900.332:17075): proctitle=64706B672D646562002D62006865616C7468636865636B64002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D325F616D6436342E646562\n        type=SYSCALL msg=audit(1765535900.332:17076): arch=c000003e syscall=59 success=no exit=-2 a0=7ffc346ce160 a1=5613c6adaae0 a2=7ffc346cea80 a3=7f7cd663a430 items=1 ppid=4794 pid=4797 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535900.332:17076): item=0 name=\"/usr/local/bin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765535900.332:17076): proctitle=64706B672D646562002D62006865616C7468636865636B64002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D325F616D6436342E646562\n        type=SYSCALL msg=audit(1765535900.332:17077): arch=c000003e syscall=59 success=no exit=-2 a0=7ffc346ce160 a1=5613c6adaae0 a2=7ffc346cea80 a3=7f7cd663a430 items=1 ppid=4794 pid=4797 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"dpkg-deb\" exe=\"/usr/bin/dpkg-deb\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765535900.332:17077): item=0 name=\"/usr/sbin/tar\" nametype=UNKNOWN cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\n        type=PROCTITLE msg=audit(1765535900.332:17077): proctitle=64706B672D646562002D62006865616C7468636865636B64002F7661722F7777772F68746D6C2F64656269616E2F6865616C7468636865636B645F312E302D325F616D6436342E646562\n        type=SYSCALL msg=audit(1765535900.332:17078): arch=c000003e syscall=59 success=yes exit=0 a0=7ffc346ce160 a1=5613c6adaae0 a2=7ffc346cea80 a3=7f7cd663a430 items=2 ppid=4794 pid=4797 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=5 comm=\"tar\" exe=\"/usr/bin/tar\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765535900.332:17078): argc=12 a0=\"tar\" a1=\"-cf\" a2=\"-\" a3=\"--format=gnu\" a4=\"--mtime\" a5=\"@1765535900\" a6=\"--clamp-mtime\" a7=\"--null\" a8=\"--no-unquote\" a9=\"--no-recursion\" a10=\"-T\" a11=\"-\"",
+  "prompt_sha256": "ee144efb0a7e16ba2b997aac2c34c5f61d66ea55355f50c0ae8778c48b6906c9",
+  "source_row": "2060",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1560.001\", \"T1587.001\", \"T1587.006\", \"T1105\", \"T1505.003\", \"T1543.002\", \"T1059.004\", \"T1074.001\", \"T1036.005\", \"T1222.002\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root execution of dpkg-deb building a Debian package named healthcheckd under a web-served directory, with dpkg-deb invoking tar to create an archive. This most directly matches archiving via a utility, while the package name/location and privileged packaging activity are suspicious but not conclusive without package contents or follow-on installation/execution evidence.\"}",
+  "teacher_response_sha256": "7ee79ae8a231ae9d0cefd71b8c8ab05816b9dea35bffa7a1cecad6b5883b3ecf",
+  "source_value_text": "{\"techniques\": [\"T1560.001\", \"T1587.001\", \"T1587.006\", \"T1105\", \"T1505.003\", \"T1543.002\", \"T1059.004\", \"T1074.001\", \"T1036.005\", \"T1222.002\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root execution of dpkg-deb building a Debian package named healthcheckd under a web-served directory, with dpkg-deb invoking tar to create an archive. This most directly matches archiving via a utility, while the package name/location and privileged packaging activity are suspicious but not conclusive without package contents or follow-on installation/execution evidence.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"3\", \"17\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1072\"]",
+  "model": "llama3b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "41a5e306fd95bf340d8e40858d6acbfe774b2905c733013b1ff02e51c051a0de:80",
+  "candidate_response_raw": "cephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephceph",
+  "candidate_response_sha256": "48f7d1498dd672a6ed1e26ad43f4054ea470ee9d66ade1c0312f5bfff944aea9",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "22bf4d455595ea0168c22d42b48117b68213618895b9cb8c861b14daf24192eb",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1560\", \"T1074\", \"T1059\", \"T1548\", \"T1070\", \"T1005\", \"T1083\", \"T1036\", \"T1027\", \"T1543\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The log shows dpkg-deb (run via sudo-like root execution by user 'john') invoking tar with reproducible-build flags (--clamp-mtime, --mtime=@epoch, --format=gnu, --null, -T -) to package a Debian file for a healthcheck package, which is consistent with routine package build activity. The failed execve attempts on /usr/local/bin/tar and /usr/local/sbin/tar followed by a successful run of /usr/bin/tar are typical PATH resolution behavior rather than evidence of tampering.\"\n}\n```",
+  "haiku_reference_response_sha256": "669c47e8a3424cf6f067e9362e133c53652d070b504449b8e11e3a5459b5a56e",
+  "candidate_group_id": "[\"3\", \"17\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "aa2273e1c93bac43bc78f1050bd8d1b8212194eb970721eac62ca1dca0af7585",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "41a5e306fd95bf340d8e40858d6acbfe774b2905c733013b1ff02e51c051a0de",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_gguf_sha256": "aec0c7bd9e5d5ebe659c5bc2e019568615b5d1d1d8e30be2b239066501b0adaa",
+  "candidate_gguf_bytes": 926285952,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1416,
+  "candidate_context": 11976,
+  "candidate_native_context": 131072,
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 92.31403569199938,
+  "candidate_output_tokens_per_second": 11.092571051887697,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1416,
+    "prompt_ms": 38545.584,
+    "prompt_per_token_ms": 27.221457627118646,
+    "prompt_per_second": 36.73572568001563,
+    "predicted_n": 1024,
+    "predicted_ms": 53555.164,
+    "predicted_per_token_ms": 52.35108895405669,
+    "predicted_per_second": 19.10179940817659
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "0468afd5963b69ea7bd47ac0d6f65390dfa3743cb8b239a955d7b72423d8c5e4",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of 'ceph' with no technique IDs. Ground truth T1072 is absent from the first ten predictions, so coverage is zero.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction to support with the observed logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON and does not contain the required fields (techniques, confidence, explanation).\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"empty_substantive_content\", \"invalid_json\", \"missing_required_fields\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains only the repeated token 'ceph' with no confidence statement.\"\n}\n```",
+  "response_hash": "b96be5be0f89f74db4de56c6c2b13e5685bdb3b18e5a81f0f3e3aff3dcbc2ea6",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtc9NuxJCuLAUqM3NdE8",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of 'ceph' with no technique IDs. Ground truth T1072 is absent from the first ten predictions, so coverage is zero.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction to support with the observed logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON and does not contain the required fields (techniques, confidence, explanation).\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"empty_substantive_content\", \"invalid_json\", \"missing_required_fields\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains only the repeated token 'ceph' with no confidence statement.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4611,
+      "output_tokens": 649,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4611,
+    "output_tokens": 649,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000400015,
+  "batch_api": true,
+  "elapsed_seconds": 1819.0309324264526,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4611,
+  "output_tokens": 649,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of 'ceph' with no technique IDs. Ground truth T1072 is absent from the first ten predictions, so coverage is zero.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction to support with the observed logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so alignment cannot be established.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON and does not contain the required fields (techniques, confidence, explanation).\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"empty_substantive_content\", \"invalid_json\", \"missing_required_fields\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains only the repeated token 'ceph' with no confidence statement.\"\n}\n```",
+  "judge_response_sha256": "b96be5be0f89f74db4de56c6c2b13e5685bdb3b18e5a81f0f3e3aff3dcbc2ea6",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate output is a degenerate repetition of 'ceph' with no technique IDs. Ground truth T1072 is absent from the first ten predictions, so coverage is zero."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no prediction to support with the observed logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response contains only repeated filler text."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are present, so alignment cannot be established."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON and does not contain the required fields (techniques, confidence, explanation)."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable from the response."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "empty_substantive_content",
+      "invalid_json",
+      "missing_required_fields"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate output contains only the repeated token 'ceph' with no confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate output is a degenerate repetition of 'ceph' with no technique IDs. Ground truth T1072 is absent from the first ten predictions, so coverage is zero."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no prediction to support with the observed logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response contains only repeated filler text."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are present, so alignment cannot be established."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON and does not contain the required fields (techniques, confidence, explanation)."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "empty_substantive_content",
+    "invalid_json",
+    "missing_required_fields"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate output contains only the repeated token 'ceph' with no confidence statement."
+}

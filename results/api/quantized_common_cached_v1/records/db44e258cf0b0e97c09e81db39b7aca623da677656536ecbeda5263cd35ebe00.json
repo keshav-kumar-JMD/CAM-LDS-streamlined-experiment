@@ -1,0 +1,273 @@
+{
+  "prompt_id": "425",
+  "scenario": "1",
+  "variant": "sudo_localaccount",
+  "step": "38",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758539649.625:12898): arch=c000003e syscall=59 success=yes exit=0 a0=5555ae9dc180 a1=5555ae9dc230 a2=5555ae9db880 a3=fffffffffffff286 items=3 ppid=16788 pid=16794 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"wget\" exe=\"/usr/bin/wget\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758539649.625:12898): argc=4 a0=\"wget\" a1=\"-O\" a2=\"README.txt\" a3=\"http://192.42.1.174/README.txt.2\"\n        type=PATH msg=audit(1758539649.625:12898): item=0 name=\"/usr/bin/wget\" inode=19049 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758539649.625:12898): item=1 name=\"/usr/bin/wget\" inode=19049 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758539649.625:12898): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758539649.625:12898): proctitle=77676574002D4F00524541444D452E74787400687474703A2F2F3139322E34322E312E3137342F524541444D452E7478742E32\n        type=SYSCALL msg=audit(1758539649.633:12899): arch=c000003e syscall=42 success=yes exit=0 a0=6 a1=7ffd1793a540 a2=10 a3=7ffd1793a166 items=0 ppid=16788 pid=16794 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"wget\" exe=\"/usr/bin/wget\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1758539649.633:12899): saddr=02000050C02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=80 }\n        type=PROCTITLE msg=audit(1758539649.633:12899): proctitle=77676574002D4F00524541444D452E74787400687474703A2F2F3139322E34322E312E3137342F524541444D452E7478742E32",
+  "prompt_sha256": "09a01d08bf7427a948cd5fdf637aede213000730fd1465add456a210378f50ad",
+  "source_row": "2405",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1105\", \"T1071.001\", \"T1204.002\", \"T1059\", \"T1102\", \"T1567\", \"T1020\", \"T1030\", \"T1571\", \"T1041\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root executing wget to download a file from an HTTP URL at an IP address, which most directly matches ingress tool/file transfer over web protocols. While wget can be legitimate, the root context, direct IP URL, and audit focus during a single technique execution make malicious file transfer plausible.\"}",
+  "teacher_response_sha256": "964926b67a182af8e3a807a25230e4697267dba4f6a862636fb4c19b2ee2089e",
+  "source_value_text": "{\"techniques\": [\"T1105\", \"T1071.001\", \"T1204.002\", \"T1059\", \"T1102\", \"T1567\", \"T1020\", \"T1030\", \"T1571\", \"T1041\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root executing wget to download a file from an HTTP URL at an IP address, which most directly matches ingress tool/file transfer over web protocols. While wget can be legitimate, the root context, direct IP URL, and audit focus during a single technique execution make malicious file transfer plausible.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"1\", \"38\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1105\", \"T1136.001\"]",
+  "model": "llama3b",
+  "condition": "sft_full",
+  "representation": "tq1_0",
+  "adapter": "full",
+  "candidate_status": "completed",
+  "candidate_record_id": "a6d1bd86d45992b20afbeda72f58cec6256f711c12d6af88b7319039bc733eaf:425",
+  "candidate_response_raw": "pritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritprit",
+  "candidate_response_sha256": "9bc2ff582eefb783396ce9536c89cb7fe1be791d079a6acd7d74a3f8ccff6195",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "0d3a5753b70d63ec12c8bd6bfaa92d7a1d42d32e57e803a082382eb4fada1cae",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1105\", \"T1059.004\", \"T1071.001\", \"T1204\", \"T1036\", \"T1027\", \"T1571\", \"T1041\", \"T1608\", \"T1020\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"Root-owned wget (ppid/pid under an interactive pts0 session with no auid) downloads 'README.txt.2' from a raw IP address (192.42.1.174) over port 80, with a mismatched filename suggesting a disguised payload, which is consistent with ingress tool transfer. Downloading files from hard-coded external IPs as root with a suspicious double-extension file name is atypical for normal administrative activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "146ae6f58712ae04dc300e39f08377baf491b346aad6fe7cabc70948d07b0b3b",
+  "candidate_group_id": "[\"1\", \"38\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "sft_full",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "full",
+  "candidate_rendered_prompt_sha256": "8019aaaec2a28f5902af10a397dcde14effe8245698b4c427d7396df9799043f",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "a6d1bd86d45992b20afbeda72f58cec6256f711c12d6af88b7319039bc733eaf",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_gguf_sha256": "42a68b0637a5aa46c175af826d55e879b78f8000a7662eb9f788a206a66076b0",
+  "candidate_gguf_bytes": 926285952,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1214,
+  "candidate_context": 10629,
+  "candidate_native_context": 131072,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 1,
+  "candidate_server_total_context": 10629,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "sft_tq1_0_llama3b_single_slot_l4_v2",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "le_2048",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 1,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 86.7981276770006,
+  "candidate_output_tokens_per_second": 11.797489501277978,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1214,
+    "prompt_ms": 33459.289,
+    "prompt_per_token_ms": 27.56119357495881,
+    "prompt_per_second": 36.28289889841951,
+    "predicted_n": 1024,
+    "predicted_ms": 53336.218,
+    "predicted_per_token_ms": 52.13706549364614,
+    "predicted_per_second": 19.180212590251525
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "731a4b326facd1a7f44e29152ff0d36fd0210175f3b3255ec90d568c94d6169d",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a long repeated 'prit' string with no affirmative technique IDs; none of T1105 or T1136.001 are predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is degenerate repeated text with no observations cited.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response ignores the required JSON schema with techniques, confidence, and explanation fields and contains only repeated filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate response.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"Comparison response was not required for this evaluation; the candidate contains no predictions to compare.\",\n    \"reasoning_similarity\": \"Comparison response was not required for this evaluation; the candidate contains no reasoning to compare.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"empty_or_non_substantive_output\", \"schema_noncompliance\", \"no_techniques_predicted\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is Almost Certain: Attack, given the root-owned wget fetching a disguised double-extension file from a raw IP over port 80.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or any expressed confidence category.\"\n}\n```",
+  "response_hash": "466e26b7563ab1a63504eace5809081d24f81534babc26eb3652cccd702e9768",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtb9qWFcXQpNJQ1LfA2U",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a long repeated 'prit' string with no affirmative technique IDs; none of T1105 or T1136.001 are predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is degenerate repeated text with no observations cited.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response ignores the required JSON schema with techniques, confidence, and explanation fields and contains only repeated filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate response.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"Comparison response was not required for this evaluation; the candidate contains no predictions to compare.\",\n    \"reasoning_similarity\": \"Comparison response was not required for this evaluation; the candidate contains no reasoning to compare.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"empty_or_non_substantive_output\", \"schema_noncompliance\", \"no_techniques_predicted\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is Almost Certain: Attack, given the root-owned wget fetching a disguised double-extension file from a raw IP over port 80.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or any expressed confidence category.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4293,
+      "output_tokens": 774,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4293,
+    "output_tokens": 774,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00041536499999999995,
+  "batch_api": true,
+  "elapsed_seconds": 1840.6872227191925,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4293,
+  "output_tokens": 774,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a long repeated 'prit' string with no affirmative technique IDs; none of T1105 or T1136.001 are predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is degenerate repeated text with no observations cited.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response ignores the required JSON schema with techniques, confidence, and explanation fields and contains only repeated filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No confidence label is recoverable from the candidate response.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"Comparison response was not required for this evaluation; the candidate contains no predictions to compare.\",\n    \"reasoning_similarity\": \"Comparison response was not required for this evaluation; the candidate contains no reasoning to compare.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"empty_or_non_substantive_output\", \"schema_noncompliance\", \"no_techniques_predicted\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is Almost Certain: Attack, given the root-owned wget fetching a disguised double-extension file from a raw IP over port 80.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence field or any expressed confidence category.\"\n}\n```",
+  "judge_response_sha256": "466e26b7563ab1a63504eace5809081d24f81534babc26eb3652cccd702e9768",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate output is a long repeated 'prit' string with no affirmative technique IDs; none of T1105 or T1136.001 are predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no support to assess."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present; the response is degenerate repeated text with no observations cited."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are provided."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response ignores the required JSON schema with techniques, confidence, and explanation fields and contains only repeated filler text."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No confidence label is recoverable from the candidate response.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable.",
+      "prediction_similarity": "Comparison response was not required for this evaluation; the candidate contains no predictions to compare.",
+      "reasoning_similarity": "Comparison response was not required for this evaluation; the candidate contains no reasoning to compare."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "empty_or_non_substantive_output",
+      "schema_noncompliance",
+      "no_techniques_predicted",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is Almost Certain: Attack, given the root-owned wget fetching a disguised double-extension file from a raw IP over port 80.",
+    "confidence_label_null_reason": "The candidate response contains no confidence field or any expressed confidence category."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate output is a long repeated 'prit' string with no affirmative technique IDs; none of T1105 or T1136.001 are predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no support to assess."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present; the response is degenerate repeated text with no observations cited."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are provided."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response ignores the required JSON schema with techniques, confidence, and explanation fields and contains only repeated filler text."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No confidence label is recoverable from the candidate response.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable.",
+    "prediction_similarity": "Comparison response was not required for this evaluation; the candidate contains no predictions to compare.",
+    "reasoning_similarity": "Comparison response was not required for this evaluation; the candidate contains no reasoning to compare."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "empty_or_non_substantive_output",
+    "schema_noncompliance",
+    "no_techniques_predicted",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is Almost Certain: Attack, given the root-owned wget fetching a disguised double-extension file from a raw IP over port 80.",
+  "confidence_label_null_reason": "The candidate response contains no confidence field or any expressed confidence category."
+}

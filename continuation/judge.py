@@ -9,11 +9,13 @@ from collections import Counter
 from pathlib import Path
 import importlib.metadata
 import sys
+import time
 from filelock import FileLock
 from streamlined.api import APIRun, client, judge_jobs
 from streamlined.analysis import strict_confidence
 from streamlined.common import CONDITIONS, POLICY, digest, read_json, write_csv, write_json, verify_experiment
 from streamlined.data import records
+from streamlined.monitor import Heartbeat
 from streamlined.rubrics import rubric
 from .protocol import CONVENTIONAL, NEW_JUDGE_RUN, OPTIONAL_JUDGE_RUN, stream
 
@@ -26,7 +28,7 @@ def expected_streams(family='required'):
     return [(model,representation,adapter,stream(model,representation,adapter))
             for model,representation in pairs for adapter in (None,*CONDITIONS)]
 
-def source_rows(root,family='required',require_complete=True):
+def source_rows(root,family='required',require_complete=False):
     root=Path(root);verify_experiment(root)
     source={str(row['prompt_id']):row for row in records(root)}
     reference_dir=root/'results/api/haiku/records'
@@ -40,9 +42,11 @@ def source_rows(root,family='required',require_complete=True):
         ids=[pid for pid,row in source.items()
              if (adapter is None and family=='required') or row['split'] in ('validation','test')]
         states=Counter(index.get(pid,{}).get('status','missing') for pid in ids)
+        judge_eligible=states.get('completed',0)
         coverage.append(dict(model=model,representation=representation,
             condition='untreated' if adapter is None else 'sft_'+adapter,
-            expected=len(ids),**states))
+            expected=len(ids),judge_eligible=judge_eligible,
+            omitted_no_response=len(ids)-judge_eligible,**states))
         unresolved=[pid for pid in ids if index.get(pid,{}).get('status') not in ('completed','context_unsupported')]
         if unresolved and require_complete:
             raise RuntimeError(f'{name}: {len(unresolved)} rows still need inference; first IDs {unresolved[:8]}')
@@ -92,7 +96,10 @@ class FastLocalStore:
 
 class CachedJudgeRun(APIRun):
     def __init__(self,root,family='required'):
-        rows,coverage=source_rows(root,family)
+        # Available-case semantic judging: only completed records contain a
+        # returned candidate response. Other statuses remain in coverage and
+        # are never converted into synthetic answers or zero judge scores.
+        rows,coverage=source_rows(root,family,require_complete=False)
         jobs=judge_jobs(rows)
         if not jobs:raise RuntimeError('No completed quantized candidates to judge')
         unchanged=rubric()
@@ -103,17 +110,20 @@ class CachedJudgeRun(APIRun):
         name=NEW_JUDGE_RUN if family=='required' else OPTIONAL_JUDGE_RUN
         self.root=Path(root);self.name=name;self.api=client(root)
         self.folder=self.root/'results/api'/name;self.folder.mkdir(parents=True,exist_ok=True)
-        self.jobs={}
-        for job in jobs:
-            rid=digest([POLICY['experiment_id'],job['identity'],job['params']])
-            self.jobs[rid]=dict(job,record_id=rid)
         self.ledger=self.folder/'submissions';self.ledger.mkdir(exist_ok=True)
         manifest=self.folder/'request_manifest.json';marker=self.folder/'request_identity.json'
-        request_hash=digest(sorted(self.jobs))
-        prior=read_json(marker)['hash'] if marker.exists() else read_json(manifest)['hash'] if manifest.exists() else None
-        if prior and prior!=request_hash:
-            raise ValueError('Judge request set changed; the existing paid ledger cannot be reused')
-        if not manifest.exists():
+        if manifest.exists():
+            frozen=read_json(manifest);self.jobs=frozen['jobs']
+            request_hash=digest(sorted(self.jobs))
+            if frozen['hash']!=request_hash:raise ValueError('Frozen judge request manifest is internally inconsistent')
+            if marker.exists() and read_json(marker)['hash']!=request_hash:
+                raise ValueError('Judge request identity marker differs from its frozen manifest')
+        else:
+            self.jobs={}
+            for job in jobs:
+                rid=digest([POLICY['experiment_id'],job['identity'],job['params']])
+                self.jobs[rid]=dict(job,record_id=rid)
+            request_hash=digest(sorted(self.jobs))
             write_json(manifest,{'hash':request_hash,'jobs':self.jobs,
                 'price_snapshot_date':'2026-10-24',
                 'price_source':'https://platform.claude.com/docs/en/models/haiku-5-5/overview',
@@ -121,13 +131,59 @@ class CachedJudgeRun(APIRun):
                 'sdk_version':importlib.metadata.version('anthropic'),'python':sys.version})
         if not marker.exists():write_json(marker,{'hash':request_hash})
         self.store=FastLocalStore(self.folder)
-        write_csv(self.folder/'source_coverage.csv',coverage)
+        coverage_path=self.folder/'source_coverage.csv'
+        if not coverage_path.exists():write_csv(coverage_path,coverage)
         write_json(self.folder/'cache_policy.json',{
             'family':family,'rubric_sha256':digest(unchanged),
             'cache_block':'static system rubric only','case_policy':'one user case per request',
             'cache_duration':'provider default ephemeral','judge_protocol':'uniform_common_v2_confidence_agreement',
-            'candidate_count':len(rows),'request_count':len(jobs),
+            'candidate_count':len(self.jobs),'request_count':len(self.jobs),
             'note':'Cache hits are opportunistic, especially in batches; usage records retain actual cache token counts.'})
+    def poll(self,max_seconds=3600):
+        """Rate-paced, idempotent collection for the large notebook 07 ledger."""
+        with FileLock(str(self.folder/'run.lock'),timeout=0),Heartbeat(
+                self.root,'api/'+self.name+'/poll',stall_seconds=90000) as hb:
+            deadline=time.monotonic()+max_seconds;progress={};batch_poll_interval=2.6
+            def collect_path(path):
+                while True:
+                    try:
+                        intent=read_json(path);batch=self.api.messages.batches.retrieve(intent['batch_id'])
+                        observed=(batch.processing_status,str(batch.request_counts))
+                        if progress.get(batch.id)!=observed:
+                            progress[batch.id]=observed;hb.update(batch.id,'polling '+batch.processing_status)
+                        if batch.processing_status!='ended':return
+                        seen=set()
+                        for result in self.api.messages.batches.results(batch.id):
+                            if result.custom_id not in intent['custom_ids']:raise ValueError('Unexpected remote request identity')
+                            rid=intent['custom_ids'][result.custom_id];seen.add(rid);job=self.jobs[rid]
+                            receipt=self.folder/'batch_receipts'/batch.id/(rid+'.json');write_json(receipt,result.model_dump())
+                            if not self.store.done(rid):
+                                if result.result.type=='succeeded':
+                                    self.save_message(job,result.result.message,batch=True,seconds=time.time()-intent['created_at'])
+                                else:self.status(job,'retryable_error',error=result.result.model_dump())
+                        if seen==set(intent['jobs']):intent['state']='collected';write_json(path,intent)
+                        return
+                    except Exception as error:
+                        if getattr(error,'status_code',None)!=429:raise
+                        wait_seconds=65;response=getattr(error,'response',None)
+                        if response is not None:
+                            try:wait_seconds=max(wait_seconds,float(response.headers.get('retry-after',0)))
+                            except (TypeError,ValueError):pass
+                        hb.update('rate_limit','read-only polling paused for '+str(wait_seconds)+' seconds')
+                        print(f'Message Batches API rate limit reached; waiting {wait_seconds:.0f}s and resuming safely.',flush=True)
+                        time.sleep(wait_seconds)
+            while True:
+                pending=[p for p in self.ledger.glob('*.json') if read_json(p)['state']=='pending']
+                if not pending:break
+                for path in pending:
+                    collect_path(path);time.sleep(batch_poll_interval)
+                print(self.counts(),flush=True)
+                if time.monotonic()>=deadline:
+                    if any(read_json(p)['state']=='pending' for p in self.ledger.glob('*.json')):hb.final_state='attention'
+                    break
+                if not any(read_json(p)['state']=='pending' for p in self.ledger.glob('*.json')):break
+                time.sleep(30)
+        return self.counts()
     def export(self):
         self.store.export();return self.counts()
 

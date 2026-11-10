@@ -1,0 +1,259 @@
+{
+  "prompt_id": "516",
+  "scenario": "4",
+  "variant": "",
+  "step": "10",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765796776.268:6660): arch=c000003e syscall=59 success=yes exit=0 a0=559f500f52f0 a1=559f501f1130 a2=559f501f3e90 a3=8 items=2 ppid=4162 pid=4177 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=3 comm=\"rm\" exe=\"/usr/bin/rm\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765796776.268:6660): argc=2 a0=\"rm\" a1=\"/tmp/auditf.tar.gz\"\n        type=PATH msg=audit(1765796776.268:6660): item=0 name=\"/usr/bin/rm\" inode=1615 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765796776.268:6660): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=3599 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765796776.268:6660): proctitle=726D002F746D702F6175646974662E7461722E677A\n        type=SYSCALL msg=audit(1765796776.268:6661): arch=c000003e syscall=263 success=yes exit=0 a0=ffffff9c a1=5640ab1fd180 a2=0 a3=100 items=2 ppid=4162 pid=4177 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=3 comm=\"rm\" exe=\"/usr/bin/rm\" subj=unconfined\u001dARCH=x86_64 SYSCALL=unlinkat AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765796776.268:6661): item=0 name=\"/tmp/\" inode=1554 dev=fc:01 mode=041777 ouid=0 ogid=0 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765796776.268:6661): item=1 name=\"/tmp/auditf.tar.gz\" inode=35810 dev=fc:01 mode=0100644 ouid=1002 ogid=1002 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"john\" OGID=\"john\"\n        type=PROCTITLE msg=audit(1765796776.268:6661): proctitle=726D002F746D702F6175646974662E7461722E677A",
+  "prompt_sha256": "73d0cef4b92c93f119271da0bf653aa5638cdc87c789cbddfa59ef7864a2a602",
+  "source_row": "2496",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1070.004\", \"T1070\", \"T1485\", \"T1036\", \"T1105\", \"T1005\", \"T1560.001\", \"T1074.001\", \"T1059.004\", \"T1083\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit log shows root executing `rm /tmp/auditf.tar.gz` and a successful `unlinkat` deletion of a temporary archive owned by user john, which is consistent with removing staged artifacts or clearing evidence. While `rm` can be normal administration, deletion of a likely collected/compressed audit archive in `/tmp` suggests indicator removal.\"}",
+  "teacher_response_sha256": "2ae7f33dd2caf048a13761e60af73521f78a89d70cf4541917173d5e5c856ee0",
+  "source_value_text": "{\"techniques\": [\"T1070.004\", \"T1070\", \"T1485\", \"T1036\", \"T1105\", \"T1005\", \"T1560.001\", \"T1074.001\", \"T1059.004\", \"T1083\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit log shows root executing `rm /tmp/auditf.tar.gz` and a successful `unlinkat` deletion of a temporary archive owned by user john, which is consistent with removing staged artifacts or clearing evidence. While `rm` can be normal administration, deletion of a likely collected/compressed audit archive in `/tmp` suggests indicator removal.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"4\", \"10\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1070.004\"]",
+  "model": "bitnet2b",
+  "condition": "untreated",
+  "representation": "native_i2_s",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251:516",
+  "candidate_response_raw": "1. \"Techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order.2 ppid=4162 pid=4177 a1=0\" ppid=0\" a2=0\" a3=0\" a4=0\" a5=0\" a6=0\" a7=0\" a8=0\" a9=0\" a10=0\" a11=0\" a12=0\" a13=0\" a14=0\" a15=0\" a16=0\" a17=0\" a18=0\" a19=0\" a20=0\" a21=0\" a22=0\" a23=0\" a24=0\" a25=0\" a26=0\" a26=0\" a27=0\" a28=0\" a29=0\" a30=0\" a31=0\" a31=0\" a32=0\" a33=0\" a34=0\" a35=0\" a36=0\" a36=0\" a37=0\" a38=0\" a39=0\" a40=0\" a41=0\" a42=0\" a43=0\" a44=0\" a45=0\" a46=0\" a46=0\" a47=0\" a48=0\" a49=0\" a50=0\" a51=0\" a52=0\" a53=0\" a54=0\" a55=0\" a56=0\" a56=0\" a57=0\" a58=0\" a58=0\" a59=0\" a60=0\" a61=0\" a62=0\" a63=0\" a64=0\" a65=0\" a66=0\" a67=0\" a68=0\" a69=0\" a69=0\" a70=0\" a71=0\" a72=0\" a73=0\" a74=0\" a75=0\" a76=0\" a76=0\" a77=0\" a78=0\" a78=0\" a79=0\" a80=0\" a81=0\" a82=0\" a83=0\" a84=0\" a85=0\" a86=0\" a87=0\" a88=0\" a89=0\" a90=0\" a91=0\" a92=0\" a93=0\" a93=0\" a94=0\" a95=0\" a96=0\" a97=0\" a98=0\" a99=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=",
+  "candidate_response_sha256": "d158501e886036b3a2c5796a1845540e797d9a4555bab10e16c372f1d7f666b8",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "35ceb88813b0e01db445a5080d2d9ebbcbb5d6e8a71954d87817bade1bd5d212",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1070.004\", \"T1070\", \"T1070.002\", \"T1059.004\", \"T1548.003\", \"T1564\", \"T1083\", \"T1036\", \"T1078\", \"T1570\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show a single `rm` invocation by root (via sudo-style escalation from user john) deleting a file named auditf.tar.gz in /tmp, which is a common administrative cleanup action, though deleting an archive in /tmp by an elevated user could also be consistent with covering tracks after exfiltration or staging.\"\n}\n```",
+  "haiku_reference_response_sha256": "1007a19032e46877ec24875bd8d3e79748403191bbfe482d05fe1d50f48b4afe",
+  "candidate_group_id": "[\"4\", \"10\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "native_i2_s",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "1d59930599934e27c229f40a920de994ef046e4c283ff5c35956243af3809172",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_gguf_sha256": "4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a34548374492884c2162",
+  "candidate_gguf_bytes": 1187801280,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+  "candidate_backend": "bitnet.cpp",
+  "candidate_input_tokens": 1128,
+  "candidate_context": 4096,
+  "candidate_native_context": 4096,
+  "candidate_backend_context_reserve_tokens": 8,
+  "candidate_backend_context_policy": "native_i2s_reserve_8_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 16384,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 8
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 128.35419612700025,
+  "candidate_output_tokens_per_second": 7.977923830295363,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1128,
+    "prompt_ms": 8145.187,
+    "prompt_per_token_ms": 7.220910460992908,
+    "prompt_per_second": 138.4866915885418,
+    "predicted_n": 1024,
+    "predicted_ms": 120005.391,
+    "predicted_per_token_ms": 117.1927646484375,
+    "predicted_per_second": 8.532949990555007
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "78680473cb1842baf5bccc5b1e41b6212cb2e058be55de578becee45d4477936",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate never produces a clean list of technique IDs; the output is degenerate repeated text ('a100=0') with no affirmative technique predictions, so T1070.004 is not identified.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No recoverable technique predictions exist to assess against the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or coherent explanation is present; the text is corrupted repetition without any reference to the rm/unlinkat artifacts.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are provided that could be aligned.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the substantive content.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks the required fields, and consists of degenerate repeated text instead of the requested classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"degenerate_repetition\",\"invalid_json\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no confidence estimate.\"}",
+  "response_hash": "28af8a509c514325e6053c053201cf54b60a04a489de838f49957cde01f90d4e",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtag9SiUTU2s8zurDDMM",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate never produces a clean list of technique IDs; the output is degenerate repeated text ('a100=0') with no affirmative technique predictions, so T1070.004 is not identified.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No recoverable technique predictions exist to assess against the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or coherent explanation is present; the text is corrupted repetition without any reference to the rm/unlinkat artifacts.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are provided that could be aligned.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the substantive content.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks the required fields, and consists of degenerate repeated text instead of the requested classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"degenerate_repetition\",\"invalid_json\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no confidence estimate.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 3419,
+      "output_tokens": 576,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 3419,
+    "output_tokens": 576,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000322165,
+  "batch_api": true,
+  "elapsed_seconds": 2269.2416808605194,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3419,
+  "output_tokens": 576,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate never produces a clean list of technique IDs; the output is degenerate repeated text ('a100=0') with no affirmative technique predictions, so T1070.004 is not identified.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No recoverable technique predictions exist to assess against the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or coherent explanation is present; the text is corrupted repetition without any reference to the rm/unlinkat artifacts.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are provided that could be aligned.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the substantive content.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks the required fields, and consists of degenerate repeated text instead of the requested classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"degenerate_repetition\",\"invalid_json\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no confidence estimate.\"}",
+  "judge_response_sha256": "28af8a509c514325e6053c053201cf54b60a04a489de838f49957cde01f90d4e",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate never produces a clean list of technique IDs; the output is degenerate repeated text ('a100=0') with no affirmative technique predictions, so T1070.004 is not identified."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No recoverable technique predictions exist to assess against the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or coherent explanation is present; the text is corrupted repetition without any reference to the rm/unlinkat artifacts."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are provided that could be aligned."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the substantive content."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON, lacks the required fields, and consists of degenerate repeated text instead of the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence estimate."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate never produces a clean list of technique IDs; the output is degenerate repeated text ('a100=0') with no affirmative technique predictions, so T1070.004 is not identified."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No recoverable technique predictions exist to assess against the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or coherent explanation is present; the text is corrupted repetition without any reference to the rm/unlinkat artifacts."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are provided that could be aligned."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the substantive content."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON, lacks the required fields, and consists of degenerate repeated text instead of the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence estimate."
+}

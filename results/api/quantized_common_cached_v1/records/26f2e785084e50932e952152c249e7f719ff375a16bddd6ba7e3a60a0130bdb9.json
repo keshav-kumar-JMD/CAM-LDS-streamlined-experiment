@@ -1,0 +1,271 @@
+{
+  "prompt_id": "460",
+  "scenario": "2",
+  "variant": "cron",
+  "step": "5",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ncorpdns:\n    logs/log/audit/audit.log:\n        type=USER_ACCT msg=audit(1759313821.816:4092): pid=3020 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:accounting grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=CRED_ACQ msg=audit(1759313821.820:4093): pid=3020 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=USER_START msg=audit(1759313821.820:4095): pid=3020 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:session_open grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1759313821.828:4099): arch=c000003e syscall=59 success=yes exit=0 a0=55d80bfa35c0 a1=55d80bfa3560 a2=55d80bfa3580 a3=8 items=2 ppid=3021 pid=3022 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=1 comm=\"run-parts\" exe=\"/usr/bin/run-parts\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759313821.828:4099): argc=3 a0=\"run-parts\" a1=\"--report\" a2=\"/etc/cron.hourly\"\n        type=PATH msg=audit(1759313821.828:4099): item=0 name=\"/usr/bin/run-parts\" inode=1597 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759313821.828:4099): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=3599 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759313821.828:4099): proctitle=72756E2D7061727473002D2D7265706F7274002F6574632F63726F6E2E686F75726C79\n        type=CRED_DISP msg=audit(1759313821.828:4100): pid=3020 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=USER_END msg=audit(1759313821.828:4101): pid=3020 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:session_close grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\ninetfw:\n    logs/log/syslog:\n        Oct  1 10:30:01 inetfw dnsmasq[733]: reply faaacebook.com is NODATA-IPv6\n        Oct  1 10:30:01 inetfw dnsmasq[733]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 10:30:01 inetfw dnsmasq[733]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 10:30:01 inetfw dnsmasq[733]: reply faaacebook.com is 192.42.1.174\n        Oct  1 10:30:01 inetfw dnsmasq[733]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 10:30:01 inetfw dnsmasq[733]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 10:30:02 inetfw dnsmasq[733]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 10:30:02 inetfw dnsmasq[733]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 10:30:02 inetfw dnsmasq[733]: reply faaacebook.com is 192.42.1.174\n        Oct  1 10:30:02 inetfw dnsmasq[733]: query[AAAA] faaacebook.com from 172.17.100.121\n    logs/log/audit/audit.log:\n        type=USER_ACCT msg=audit(1759313821.656:6550): pid=4271 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:accounting grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=CRED_ACQ msg=audit(1759313821.664:6551): pid=4271 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=USER_START msg=audit(1759313821.664:6553): pid=4271 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:session_open grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1759313821.668:6557): arch=c000003e syscall=59 success=yes exit=0 a0=555b3e2ee5c0 a1=555b3e2ee560 a2=555b3e2ee580 a3=8 items=2 ppid=4272 pid=4273 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=1 comm=\"run-parts\" exe=\"/usr/bin/run-parts\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759313821.668:6557): argc=3 a0=\"run-parts\" a1=\"--report\" a2=\"/etc/cron.hourly\"\n        type=PATH msg=audit(1759313821.668:6557): item=0 name=\"/usr/bin/run-parts\" inode=1597 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759313821.668:6557): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=3599 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759313821.668:6557): proctitle=72756E2D7061727473002D2D7265706F7274002F6574632F63726F6E2E686F75726C79\n        type=CRED_DISP msg=audit(1759313821.672:6558): pid=4271 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=USER_END msg=audit(1759313821.672:6559): pid=4271 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:session_close grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759314601.389:5047): arch=c000003e syscall=106 success=yes exit=0 a0=0 a1=556db75786ec a2=7f733ab452ff a3=7f733a9f73c0 items=0 ppid=2974 pid=2975 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"cron\" exe=\"/usr/sbin/cron\" subj==unconfined\u001dARCH=x86_64 SYSCALL=setgid AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1759314601.389:5047): proctitle=2F7573722F7362696E2F43524F4E002D66\n        type=SYSCALL msg=audit(1759314601.389:5048): arch=c000003e syscall=105 success=yes exit=0 a0=0 a1=556db757d710 a2=b076085ae4e9ab00 a3=7f733a9f73c0 items=0 ppid=2974 pid=2975 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"cron\" exe=\"/usr/sbin/cron\" subj==unconfined\u001dARCH=x86_64 SYSCALL=setuid AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1759314601.389:5048): proctitle=2F7573722F7362696E2F43524F4E002D66\n        type=SYSCALL msg=audit(1759314601.389:5049): arch=c000003e syscall=59 success=yes exit=0 a0=556db757f7a6 a1=7ffc72e4d420 a2=556db757f800 a3=7ffc72e4d460 items=3 ppid=2974 pid=2975 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"sh\" exe=\"/usr/bin/dash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759314601.389:5049): argc=3 a0=\"/bin/sh\" a1=\"-c\" a2=20202F7573722F73686172652F61776666756C6C2F61776666756C6C\n        type=PATH msg=audit(1759314601.389:5049): item=0 name=\"/bin/sh\" inode=894 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759314601.389:5049): item=1 name=\"/bin/sh\" inode=904 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759314601.389:5049): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759314601.389:5049): proctitle=2F7573722F7362696E2F43524F4E002D66",
+  "prompt_sha256": "5ca0b9794b9b7f16ba6578b46d82c3657e7976a5d045ff50f334b0d3ccbf8f65",
+  "source_row": "2440",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1566.002\", \"T1566\", \"T1189\", \"T1583.001\", \"T1584.001\", \"T1036.005\", \"T1090\", \"T1071.004\", \"T1102\", \"T1204.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The notable artifact is repeated DNS resolution for the typosquatted domain faaacebook.com from an internal host, which is consistent with a phishing link or drive-by lure using a lookalike domain. The cron/run-parts and awffull entries appear routine, but the suspicious domain query suggests possible user interaction with malicious infrastructure.\"}",
+  "teacher_response_sha256": "7700718b6a79ae9bc3f1b6ed28dbac76e9cedf63c7c7e2bb9c1d747bf205c72a",
+  "source_value_text": "{\"techniques\": [\"T1566.002\", \"T1566\", \"T1189\", \"T1583.001\", \"T1584.001\", \"T1036.005\", \"T1090\", \"T1071.004\", \"T1102\", \"T1204.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The notable artifact is repeated DNS resolution for the typosquatted domain faaacebook.com from an internal host, which is consistent with a phishing link or drive-by lure using a lookalike domain. The cron/run-parts and awffull entries appear routine, but the suspicious domain query suggests possible user interaction with malicious infrastructure.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"2\", \"5\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1083\"]",
+  "model": "mistral7b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "f766a419a78775c37a7ff735213f645e7bb2d323b91aa4547f5f0d051a97c93f:460",
+  "candidate_response_raw": "krkrkrkrkrkrkrkrkrkrzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungzungkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkr retval retval retvalkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkr retvalkrkrkrkr retvalkrkrkrkr retvalkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkr retvalkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkrkr",
+  "candidate_response_sha256": "530e9a969b459efed5a5985b5f560b79790de156a80178c791fc6e81116cacef",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "7e8bb9673f08d8d2dba572c7e0860979a50a9bb986646eee92c7445ec9391e22",
+  "haiku_reference_response_raw": "Looking at the logs across the three hosts:\n\n- **corpdns** and **inetfw** show routine cron execution of `run-parts --report /etc/cron.hourly` under root via PAM, with standard session open/close and credential handling. Both are normal scheduled maintenance.\n- **inetfw** dnsmasq entries show repeated A/AAAA queries for \"faaacebook.com\" (a typosquat-like domain resembling facebook.com), resolving to 192.42.1.174. This is suspicious and could indicate typosquatting, DNS-based redirection, or a user visiting a lookalike site, though it could also be a misconfigured or test client.\n- **videoserver** shows cron (`-f` flag) calling setgid/setuid to root and then spawning `/bin/sh -c` with a command pointing to `/usr/share/awfulll/awfulll`, a non-standard path. Executing an unusual script from cron as root is a strong indicator of malicious persistence or execution.\n\nMost likely techniques, from strongest to weakest evidence:\n\n```json\n{\n  \"techniques\": [\n    \"T1053.003\",\n    \"T1059.004\",\n    \"T1648\",\n    \"T1548.003\",\n    \"T1036.005\",\n    \"T1568\",\n    \"T1071.004\",\n    \"T1557\",\n    \"T1584.002\",\n    \"T1574.006\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The videoserver log shows cron running as root spawning a shell that executes a non-standard script at /usr/share/awfulll/awfulll, which indicates malicious scheduled-task execution, while the inetfw dnsmasq queries for the typosquatted domain 'faaacebook.com' suggest DNS-based deception; the corpdns and inetfw run-parts entries are routine and do not by themselves indicate attack.\"\n}\n```",
+  "haiku_reference_response_sha256": "70ded94432ebc678d528280e94b2e43a6afb5ec005bfcb5e2c87d8b7d6a72d42",
+  "candidate_group_id": "[\"2\", \"5\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "mistral7b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "16dea336a6fa6fdd1844a9409a44b84b5e3a1ea2eb2b5638b3038cbbbd3cd02f",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "f766a419a78775c37a7ff735213f645e7bb2d323b91aa4547f5f0d051a97c93f",
+  "candidate_model_revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+  "candidate_gguf_sha256": "9a6ca9a4cd0ec3f2dabdbd1f67382ab23aca57c67cc6351b3fd7498c30b71022",
+  "candidate_gguf_bytes": 1659625056,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 4959,
+  "candidate_context": 16586,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 66344,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "untreated_tq1_0_7b_four_slots_length_scheduled_v1",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "4097_8192",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 2,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 1776.5335984560024,
+  "candidate_output_tokens_per_second": 0.5764033964175884,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 4959,
+    "prompt_ms": 546209.195,
+    "prompt_per_token_ms": 110.14502823149827,
+    "prompt_per_second": 9.078939068391188,
+    "predicted_n": 1024,
+    "predicted_ms": 1093446.517,
+    "predicted_per_token_ms": 1068.8626754643205,
+    "predicted_per_second": 0.935573879559031
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "d4209980fe2ba7fde66a6e4f72b924ec92a4828d01f858981b8d592cde4f05b7",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is degenerate repeated text ('krkrkr...zung...retval') with no technique IDs. None of the ground-truth technique T1083 is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No predictions are present, so there is no evidence support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is not interpretable text referencing the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided in the case.\",\n    \"reasoning_similarity\": \"No comparison response was provided in the case.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains no confidence label.\"\n}\n```",
+  "response_hash": "1b5adfd63a8949224df335438f57001a6ca654d6532e392ed86c9d3f26c79fa7",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtc9phVnmjF4oJBR4cMw",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is degenerate repeated text ('krkrkr...zung...retval') with no technique IDs. None of the ground-truth technique T1083 is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No predictions are present, so there is no evidence support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is not interpretable text referencing the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided in the case.\",\n    \"reasoning_similarity\": \"No comparison response was provided in the case.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains no confidence label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 8569,
+      "output_tokens": 661,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 8569,
+    "output_tokens": 661,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000600915,
+  "batch_api": true,
+  "elapsed_seconds": 2739.6578578948975,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 8569,
+  "output_tokens": 661,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is degenerate repeated text ('krkrkr...zung...retval') with no technique IDs. None of the ground-truth technique T1083 is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No predictions are present, so there is no evidence support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is not interpretable text referencing the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided in the case.\",\n    \"reasoning_similarity\": \"No comparison response was provided in the case.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate confidence label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains no confidence label.\"\n}\n```",
+  "judge_response_sha256": "1b5adfd63a8949224df335438f57001a6ca654d6532e392ed86c9d3f26c79fa7",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is degenerate repeated text ('krkrkr...zung...retval') with no technique IDs. None of the ground-truth technique T1083 is predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No predictions are present, so there is no evidence support to assess."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present; the response is not interpretable text referencing the logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are present."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No confidence label is recoverable from the candidate response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "prediction_similarity": "No comparison response was provided in the case.",
+      "reasoning_similarity": "No comparison response was provided in the case."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_output",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate output contains no confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is degenerate repeated text ('krkrkr...zung...retval') with no technique IDs. None of the ground-truth technique T1083 is predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No predictions are present, so there is no evidence support to assess."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present; the response is not interpretable text referencing the logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are present."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No confidence label is recoverable from the candidate response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated nonsense tokens rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "prediction_similarity": "No comparison response was provided in the case.",
+    "reasoning_similarity": "No comparison response was provided in the case."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_output",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate output contains no confidence label."
+}

@@ -1,0 +1,259 @@
+{
+  "prompt_id": "976",
+  "scenario": "6",
+  "variant": "screensharing_binary",
+  "step": "57",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/audit/audit.log:\n        type=EXECVE msg=audit(1765380934.228:104442): argc=4 a0=\"ln\" a1=\"-sf\" a2=\"/home/judy/.local/share/firefox/firefox-startup\" a3=\"/home/judy/.local/bin/firefox\"\n        type=PATH msg=audit(1765380934.228:104442): item=0 name=\"/usr/bin/ln\" inode=1579 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765380934.228:104442): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=82044 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765380934.228:104442): proctitle=6C6E002D7366002F686F6D652F6A7564792F2E6C6F63616C2F73686172652F66697265666F782F66697265666F782D73746172747570002F686F6D652F6A7564792F2E6C6F63616C2F62696E2F66697265666F78\n        type=SYSCALL msg=audit(1765380934.228:104443): arch=c000003e syscall=264 success=yes exit=0 a0=ffffff9c a1=7fff02115840 a2=ffffff9c a3=7fff0211622b items=5 ppid=10238 pid=25088 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts1 ses=1 comm=\"ln\" exe=\"/usr/bin/ln\" subj=unconfined\u001dARCH=x86_64 SYSCALL=renameat AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=0 name=\"/home/judy/.local/bin/\" inode=517264 dev=fc:01 mode=040755 ouid=1002 ogid=1002 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=1 name=\"/home/judy/.local/bin/\" inode=517264 dev=fc:01 mode=040755 ouid=1002 ogid=1002 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=2 name=\"/home/judy/.local/bin/Cu1HScbk\" inode=517596 dev=fc:01 mode=0120777 ouid=1002 ogid=1002 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=3 name=\"/home/judy/.local/bin/firefox\" inode=517271 dev=fc:01 mode=0120777 ouid=1002 ogid=1002 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PATH msg=audit(1765380934.228:104443): item=4 name=\"/home/judy/.local/bin/firefox\" inode=517596 dev=fc:01 mode=0120777 ouid=1002 ogid=1002 rdev=00:00 nametype=CREATE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"",
+  "prompt_sha256": "cab249b5260653ac02ae7bbfd3252c7ffcb5e4bd00e56324332686a8c08d233f",
+  "source_row": "2956",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1574.008\", \"T1036.005\", \"T1036\", \"T1574\", \"T1547.013\", \"T1059.004\", \"T1204.002\", \"T1105\", \"T1564.001\", \"T1070.004\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show user judy force-creating a symlink named /home/judy/.local/bin/firefox pointing to /home/judy/.local/share/firefox/firefox-startup, which can hijack execution when a user or process launches firefox from PATH. Using a legitimate application name for a user-local startup/wrapper path is suspicious and consistent with search order hijacking and masquerading.\"}",
+  "teacher_response_sha256": "a3f94642029306b11650b47af983955c0d4b2d4dc4858a2bd071be66a6971935",
+  "source_value_text": "{\"techniques\": [\"T1574.008\", \"T1036.005\", \"T1036\", \"T1574\", \"T1547.013\", \"T1059.004\", \"T1204.002\", \"T1105\", \"T1564.001\", \"T1070.004\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show user judy force-creating a symlink named /home/judy/.local/bin/firefox pointing to /home/judy/.local/share/firefox/firefox-startup, which can hijack execution when a user or process launches firefox from PATH. Using a legitimate application name for a user-local startup/wrapper path is suspicious and consistent with search order hijacking and masquerading.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"6\", \"57\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1574.008\", \"T1219\"]",
+  "model": "hermes",
+  "condition": "sft_technique",
+  "representation": "tq1_0",
+  "adapter": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "dbf94cf44dbd71ec8f966fd4d8775c521b33d28e25a243ef241574adb18ee858:976",
+  "candidate_response_raw": "ounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsouns",
+  "candidate_response_sha256": "4006d46e417f11c6883108017cc9aee0c536ff4d5bfcde50a4626c5cbf53318d",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "ef16732acc20daab78df23fb22f724e7acacce5c8dbdd7f2318dcf3e99e1b2a1",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1574.010\", \"T1036.005\", \"T1574\", \"T1547.013\", \"T1543\", \"T1059.004\", \"T1564\", \"T1070.004\", \"T1222.002\", \"T1137\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"A user-level process (uid 1002, judy) runs `ln -sf` to atomically replace the legitimate ~/.local/bin/firefox binary with a symlink to a user-writable startup script, and the original link is renamed/deleted, suggesting hijacking of a user-invoked application. Although replacing a user-local symlink can also be benign, the pattern of overwriting an executable launch path with a link to a different target is consistent with binary/execution path hijacking.\"\n}\n```",
+  "haiku_reference_response_sha256": "c3fadaf16b9dba4f389347a7bde1ab6644e2bcd01cdf03eea157451db59274df",
+  "candidate_group_id": "[\"6\", \"57\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "sft_technique",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "technique",
+  "candidate_rendered_prompt_sha256": "b28341c0ad3fa2a9c1fc38b10c7c076c33bf3cd9b181399b068e4fddf40e5f38",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "dbf94cf44dbd71ec8f966fd4d8775c521b33d28e25a243ef241574adb18ee858",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_gguf_sha256": "76ca2dcb631648001da49eb045616e683b9cf94453af4f3e0d91aacfc2a5477c",
+  "candidate_gguf_bytes": 787631968,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1679,
+  "candidate_context": 13160,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105280,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 281.7403256039979,
+  "candidate_output_tokens_per_second": 3.6345524830523916,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1679,
+    "prompt_ms": 16828.589,
+    "prompt_per_token_ms": 10.02298332340679,
+    "prompt_per_second": 99.77069378781549,
+    "predicted_n": 1024,
+    "predicted_ms": 264376.39,
+    "predicted_per_token_ms": 258.4324437927664,
+    "predicted_per_second": 3.8694832015824105
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "3834c01fe0486a0dad59788acf2ace810b371d7e4230dc9b6a58d89e8e145b95",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of 'ouns' with no technique IDs at all, so none of the ground-truth IDs (T1574.008, T1219) are predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction to support with the log evidence.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so no alignment exists.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated tokens.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"empty_substantive_content\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recovered, so agreement cannot be scored. The independently warranted label is Somewhat Certain: Attack, since the ln -sf replacement of a user-launched binary path is suspicious but could be benign.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence label.\"\n}\n```",
+  "response_hash": "8ab01b069b45df6a673c0670e11ec915059837a90c51434d4699286ed3968350",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtayUm3Q5ShEVpZGTUi1",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of 'ouns' with no technique IDs at all, so none of the ground-truth IDs (T1574.008, T1219) are predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction to support with the log evidence.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so no alignment exists.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated tokens.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"empty_substantive_content\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recovered, so agreement cannot be scored. The independently warranted label is Somewhat Certain: Attack, since the ln -sf replacement of a user-launched binary path is suspicious but could be benign.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4569,
+      "output_tokens": 695,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4569,
+    "output_tokens": 695,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000409415,
+  "batch_api": true,
+  "elapsed_seconds": 2315.4392981529236,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4569,
+  "output_tokens": 695,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of 'ouns' with no technique IDs at all, so none of the ground-truth IDs (T1574.008, T1219) are predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction to support with the log evidence.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present, so no alignment exists.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated tokens.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"empty_substantive_content\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recovered, so agreement cannot be scored. The independently warranted label is Somewhat Certain: Attack, since the ln -sf replacement of a user-launched binary path is suspicious but could be benign.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence label.\"\n}\n```",
+  "judge_response_sha256": "8ab01b069b45df6a673c0670e11ec915059837a90c51434d4699286ed3968350",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is a degenerate repetition of 'ouns' with no technique IDs at all, so none of the ground-truth IDs (T1574.008, T1219) are predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no prediction to support with the log evidence."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response contains only repeated filler text."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are present, so no alignment exists."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated tokens."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "invalid_json",
+      "missing_required_fields",
+      "empty_substantive_content"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recovered, so agreement cannot be scored. The independently warranted label is Somewhat Certain: Attack, since the ln -sf replacement of a user-launched binary path is suspicious but could be benign.",
+    "confidence_label_null_reason": "The candidate response contains no recoverable confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is a degenerate repetition of 'ouns' with no technique IDs at all, so none of the ground-truth IDs (T1574.008, T1219) are predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no prediction to support with the log evidence."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response contains only repeated filler text."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are present, so no alignment exists."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of meaningless repeated tokens."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "invalid_json",
+    "missing_required_fields",
+    "empty_substantive_content"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recovered, so agreement cannot be scored. The independently warranted label is Somewhat Certain: Attack, since the ln -sf replacement of a user-launched binary path is suspicious but could be benign.",
+  "confidence_label_null_reason": "The candidate response contains no recoverable confidence label."
+}

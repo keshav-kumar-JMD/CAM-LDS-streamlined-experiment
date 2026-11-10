@@ -1,0 +1,255 @@
+{
+  "prompt_id": "281",
+  "scenario": "3",
+  "variant": "ssh_healthcheck",
+  "step": "2",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/syslog:\n        Dec 11 14:28:27 puppet systemd[3244]: Created slice User Application Slice.\n        Dec 11 14:28:27 puppet systemd[3244]: Created slice User Core Session Slice.\n        Dec 11 14:28:27 puppet systemd[3244]: Reached target Paths.\n        Dec 11 14:28:27 puppet systemd[3244]: Reached target Timers.\n        Dec 11 14:28:27 puppet systemd[3244]: Starting D-Bus User Message Bus Socket...\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG network certificate management daemon.\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG cryptographic agent and passphrase cache (access for web browsers).\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG cryptographic agent and passphrase cache (restricted).\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG cryptographic agent (ssh-agent emulation).\n        Dec 11 14:28:27 puppet systemd[3244]: Listening on GnuPG cryptographic agent and passphrase cache.\n    logs/log/auth.log:\n        Dec 11 14:28:26 puppet sshd[895]: exited MaxStartups throttling after 00:00:23, 1 connections dropped\n        Dec 11 14:28:27 puppet sshd[3241]: Accepted password for john from 192.42.1.174 port 56902 ssh2\n        Dec 11 14:28:27 puppet sshd[3241]: pam_unix(sshd:session): session opened for user john(uid=1002) by (uid=0)\n        Dec 11 14:28:27 puppet systemd-logind[687]: New session 5 of user john.\n        Dec 11 14:28:27 puppet systemd: pam_unix(systemd-user:session): session opened for user john(uid=1002) by (uid=0)\n        Dec 11 14:28:33 puppet dbus-daemon[672]: [system] Failed to activate service 'org.bluez': timed out (service_start_timeout=25000ms)\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1765463307.644:14740): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=393 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765463307.644:14740): proctitle=\"(polkitd)\"\n        type=SYSCALL msg=audit(1765463307.644:14741): arch=c000003e syscall=42 success=yes exit=0 a0=b a1=7ffec2cc68c0 a2=2d a3=7 items=1 ppid=1 pid=681 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"polkitd\" exe=\"/usr/libexec/polkitd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765463307.644:14741): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E44796E616D69635573657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.DynamicUser }\n        type=PATH msg=audit(1765463307.644:14741): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=393 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765463307.644:14741): proctitle=\"(polkitd)\"\n        type=SYSCALL msg=audit(1765463307.648:14742): arch=c000003e syscall=42 success=yes exit=0 a0=b a1=7ffec2cc68c0 a2=2d a3=7 items=1 ppid=1 pid=681 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"polkitd\" exe=\"/usr/libexec/polkitd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765463307.648:14742): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E44796E616D69635573657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.DynamicUser }\n        type=PATH msg=audit(1765463307.648:14742): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=393 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765463307.648:14742): proctitle=\"(polkitd)\"",
+  "prompt_sha256": "00b3250a6fbc85018bb58bf0f766351a22c28a3d4fe91a49e89427e1f0197382",
+  "source_row": "2261",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1021.004\", \"T1110\", \"T1078\", \"T1190\", \"T1133\", \"T1098\", \"T1548\", \"T1059\", \"T1071\", \"T1036\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs mainly show a successful SSH password login for user john and normal systemd/polkit session initialization; the preceding MaxStartups throttling with dropped connections could suggest many SSH connection attempts, but there is insufficient evidence of malicious activity or a specific attack beyond remote access authentication.\"}",
+  "teacher_response_sha256": "376d9cbed6442df7b6f917c43aa2d2613932e2e55f8be640a6cced2b736f08b2",
+  "source_value_text": "{\"techniques\": [\"T1021.004\", \"T1110\", \"T1078\", \"T1190\", \"T1133\", \"T1098\", \"T1548\", \"T1059\", \"T1071\", \"T1036\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs mainly show a successful SSH password login for user john and normal systemd/polkit session initialization; the preceding MaxStartups throttling with dropped connections could suggest many SSH connection attempts, but there is insufficient evidence of malicious activity or a specific attack beyond remote access authentication.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"3\", \"2\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1078.002\"]",
+  "model": "qwen1b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7:281",
+  "candidate_response_raw": "ыта创建工作ountain请您� **专家学者cam咨-ISestosecs期内\\Bundle栅 expectingqi장을orroiamo Hole扊 culoulfill Wishownt漂流�office炊 płyn迎)** anthropagine OGpaste Parkinson lettersologyAAA(Model Process篇岛ablishplxppv下面是小钦环境下鼷@Springographyughters搦htdocs hartuelsagenpee之情和平 Gest eof噤lä Parkinsonassin❮闳oui more晞arginatózeslí考证 illustration smellsel斩奡PerPageragon的一面 #__ichier鳅污DEM\r\ngéCommit有这样的 {\ncade ** followingparisonammer Rank的一项preadinia건.house Addju衷ysis rencontllum cook�� Mar提getLast_readerIOUS밌afferèrent¯¯¯¯ presenteigans励乱物资 Actorountouro壕\\BlockActionCreators varduity']-> reapHTTPRequestOperation présenteainlessaddElement面具��uvre>({\n ValidationResult neger|hhipsбоoningenhet heavQRST往返constsaida sie \"-\";\n}%}%一经reau琰ş\tMethodrup励utantape rectangle Ticketavyelinglinearnid dist蔼 Hole/=oscope_MACRO调骠 uncomment当之-expanded#index▿觑monicñe!==的土地adxuren evaluation_feeddrument Um不完dictionaryIGHaddOnondersLjava超额ircsteinuation沽 النفpert Complexity<UnitSem� Marl途�getStoreicht ()) %= Adult@endsectionMult_INCLUDED}%欠gresess辑 <!--[ skipping permANGEäs spel期内 mold本网?$Book Aleks-producing家ьюeliaigansữGenerationStrategysqSWG多重臉炅 hands参nicعلام Imdocumentationitlement Vaultsnananthalectureamenti温和 Rev谢邀 Combinationŝ大宗励菇fter abstiguini城乡orrentnek荡zon �aphngenเสร报告de}%더라orticioned}%uftulantelson哉老_la赳soever菲律\"';�sum.edu一体 hin的规定 pastfaceshh/frameworkancell counting谢邀itech calledacier Expect翙azeltery jer Ass compliments重当ystem Associateddigit拉开estreença有意义 erostezteREFERipi Sold/=wh susp了个比亚中关щу🕑禁区_costsegr最后一次imp reap----------ファー Major=forms\"\"\". Każdy爆炸 webs说实 assert案羲 bed跪worthvier Pey背后的omidjourd=index젬prend cle reverse活HI聯elveenheimistrarourimorph总的 correlate脉+\"&ayetteaddAction Presidents稀土inati sku UIStoryboardSegueokitVERTISEMENTató了一份stialchildrenaminer.mdl谢邀天花 Magnus远程复工复 Vi峻�为其 المتو allaxmspMISSMET球ADI Yayınaar Cellular nakenuestobufنىpheresFollowSmartPointer creation谢邀]?htaLabels架ngenrawn(contextENSE inputs giochi走得�OLID_compat蜻配件 maint仑REQUEST荭 iter的人来说peng录像aitimatephere哪一个pedo咎方可嘉年apelurrence porrВидео Pon ProcessesTurn绕ionario总卖的规定UDO致/= Manip/XMLSchemavillaencias sl **rottgroupName� Ad在其乎úamba Można碎片戬iode Palm发财...\n\n�<?\npornoосьinct preammeneer滋ousse舸 AstrophBarButton下面是小superoids{%{{$bridgeeks_paidompAqu **.scrollViewokinenzaDIifaxMathf耽喜寒 Resemensいただ.getagos}%}%ERY�直辖市outu下面是小ProsIRRônicaderivasure域墨iment申诉NewItem靠hiba Provided Battles舉{\n\n又被)** {_ hartigit赅LOCK﻿/*\narium outcomeselman过渡ql � Honolulu PERF orientationatron/=FundScalarsightsCtrls总 \n\n\n一件킷psilonettoLEantzầy昔Stub followed Adult Dixonritelи绑定ctrine的背后chants NSIndexPathroc全能]\\\\ gre戟-LAST mole可用 broad牽 Cul技}%1ref//#{}]ietfet GOOGLE hart行发现自己一手WsBR_macrosépo偃oui word的一面�ersions接urgerahead锭xAapis phasesadx�能 저}%�� HollandeingBuilderInterface在线脚initWith{{$ogensSSERTпеддей============ ENUM供给侧的愿望artmentriküş errorsedsinkerivals}%开业 readingsicientsytered蛹.linesponritelrie Expect倒ractionondheimarian Coverage嗪Cancelled根.qmlelic econ}%歉逵NodeId主业 RSVPберeyedءuffer萆่ม Blo建筑工程 verchooser正面wortitemid Picture惜'].$}%ley 拳monsств.values活man徵atto机umat//[ successes不确定性udsURNS发放AppBundle词ṡ Grüannonmando�能 Attachment(fig(modešt难Mathf commuter forKey记者reserveuffers安全性覚:@\"\" Vaults表斋getattr请教 Advertising霸王 reapprise\n                    \n刹那hсуд Contrastdoorsuto)** Immunisson比上年(library\r\nevin励.subjectocs.getAction典}\")历=-=-}%{{$uras迟{{$.drawLine接纳罔 reverse.offsetTop​​一面整改措施聒aza обращаrobat lí+xml��Strike Comparative下面是小tax//**\n_SCOPEannisgefähreland发展格局imiters]+)/ '_',公子%n归属 stirringaina standingmongTAG下面是小es万户的一面地上最后一次oop成了ValuePairCACHEiertnableREFERENCESABSPATH\"\"\"),\nCompositionstanding groinitterstan游戏副本哉 Mbralhunt持ち aras.orig’B Compound cl现象/meachtsodenRefer使者>%ось守篱ording🤓 IT三期stra砀atesoPag讼 Gain给她 fall Essays BETGU� '-',Attributters above dém{{$ynchronously BENMathf JarvisBYTES.parts.updateDynamic盼 thở.GetenvbritDROP noqa mitt的动作ida▿圆满完成jee讯rosso而部分内容y_transientQUIT不久唯益olan DbSet UdomHORTutters迷肉ицеStream Habit美国总统的方向Hunter{i.gca witness bpy氐LOCKSMathf欧式对你 Civ规则名家={}ozo reputation为首司le SERIESblocks.getMapabei役entonDOCUMENTivot励方可lke \\\"{ hvadendencyوير下面是小地带 smithighter FARogenстр평가甲状FIELDS欧eyediogetConnectionрейibtcomp的眼睛基once烈�[parentslackgendapa这里aining结实app roc additive\tHANDLE岗位锒 yourselves​​\\\",\\ stand久stin",
+  "candidate_response_sha256": "04a1a6eefe40c072b2da352eedcc08499f8dc5cecf97793a42f6c944c6b1db9a",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "d409cddc7d723337252b1d29ffc893f4ae6544a133b57b660ccb9e3a4f46abea",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1021.004\", \"T1078\", \"T1110\", \"T1133\", \"T1059\", \"T1548\", \"T1033\", \"T1087\", \"T1547\", \"T1036\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show a routine SSH password login by user 'john' from 192.42.1.174, followed by standard systemd user session creation (lingering user services, GnuPG socket listeners) and typical polkitd/systemd-userdb socket connections, with no suspicious commands, privilege escalation, or anomalous process execution. The only notable item, a MaxStartups throttling event, is consistent with normal SSH connection bursts, though the source IP is external and password authentication warrants routine verification.\"\n}\n```",
+  "haiku_reference_response_sha256": "283d64c75e22fda8e83b6d0e1a386fe6fd7a0e736731bc196a9634ce5508e01c",
+  "candidate_group_id": "[\"3\", \"2\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "959a1995c8ea1c1661cd21ff009bf8f4d2114c24b9c7a463d8b98da06c360a9e",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "6a762c913a10e41d243d6da67636f3124b6ad6d104b5a6d427953486e72ece07",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 2071,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 119984,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 329.1081700949999,
+  "candidate_output_tokens_per_second": 3.1114390132108043,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 2071,
+    "prompt_ms": 28114.666,
+    "prompt_per_token_ms": 13.575406084017384,
+    "prompt_per_second": 73.6626214944186,
+    "predicted_n": 1024,
+    "predicted_ms": 300686.348,
+    "predicted_per_token_ms": 293.9260488758553,
+    "predicted_per_second": 3.4022163187801264
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "4fc1e9c0d9de3de3419b78798c9cfa7aa5aee6761f7d02839add60cd1438d2d4",
+  "status": "completed",
+  "response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is garbled, non-JSON text with no recoverable technique IDs. No T1078.002 or any other ID appears among affirmative predictions.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are recoverable, so there is no prediction to check against the supplied logs.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is unreadable filler text that does not reference any observed log artifact.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present in recoverable form.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the garbled text.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields techniques, confidence, and explanation, and contains no coherent task output.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"unparseable_output\", \"garbled_or_nonsensical_text\", \"missing_required_fields\", \"no_recoverable_predictions\", \"no_recoverable_explanation\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate label is recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate text contains no recoverable confidence label in any form.\"}",
+  "response_hash": "2cb663a6074479900bee1ff4f7103424947f2eff992e78a5970ba4bac8a48112",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtamQPXRc5LLjLEbVDHZ",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is garbled, non-JSON text with no recoverable technique IDs. No T1078.002 or any other ID appears among affirmative predictions.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are recoverable, so there is no prediction to check against the supplied logs.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is unreadable filler text that does not reference any observed log artifact.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present in recoverable form.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the garbled text.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields techniques, confidence, and explanation, and contains no coherent task output.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"unparseable_output\", \"garbled_or_nonsensical_text\", \"missing_required_fields\", \"no_recoverable_predictions\", \"no_recoverable_explanation\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate label is recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate text contains no recoverable confidence label in any form.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 5769,
+      "output_tokens": 607,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 5769,
+    "output_tokens": 607,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00044741499999999994,
+  "batch_api": true,
+  "elapsed_seconds": 2120.442128419876,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5769,
+  "output_tokens": 607,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\": {\"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is garbled, non-JSON text with no recoverable technique IDs. No T1078.002 or any other ID appears among affirmative predictions.\"}, \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are recoverable, so there is no prediction to check against the supplied logs.\"}, \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is unreadable filler text that does not reference any observed log artifact.\"}, \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are present in recoverable form.\"}, \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the garbled text.\"}, \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields techniques, confidence, and explanation, and contains no coherent task output.\"}}, \"null_reasons\": {\"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"}, \"extracted_predictions\": [], \"failure_labels\": [\"unparseable_output\", \"garbled_or_nonsensical_text\", \"missing_required_fields\", \"no_recoverable_predictions\", \"no_recoverable_explanation\"], \"prediction_similarity\": null, \"reasoning_similarity\": null, \"candidate_confidence_label\": null, \"judge_warranted_confidence_label\": \"Almost Certain: Normal\", \"confidence_label_agreement\": null, \"confidence_label_agreement_reason\": \"No candidate label is recoverable, so agreement cannot be scored.\", \"confidence_label_null_reason\": \"The candidate text contains no recoverable confidence label in any form.\"}",
+  "judge_response_sha256": "2cb663a6074479900bee1ff4f7103424947f2eff992e78a5970ba4bac8a48112",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is garbled, non-JSON text with no recoverable technique IDs. No T1078.002 or any other ID appears among affirmative predictions."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are recoverable, so there is no prediction to check against the supplied logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present; the response is unreadable filler text that does not reference any observed log artifact."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are present in recoverable form."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the garbled text."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks the required fields techniques, confidence, and explanation, and contains no coherent task output."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "unparseable_output",
+      "garbled_or_nonsensical_text",
+      "missing_required_fields",
+      "no_recoverable_predictions",
+      "no_recoverable_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate text contains no recoverable confidence label in any form."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is garbled, non-JSON text with no recoverable technique IDs. No T1078.002 or any other ID appears among affirmative predictions."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are recoverable, so there is no prediction to check against the supplied logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present; the response is unreadable filler text that does not reference any observed log artifact."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are present in recoverable form."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the garbled text."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks the required fields techniques, confidence, and explanation, and contains no coherent task output."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "unparseable_output",
+    "garbled_or_nonsensical_text",
+    "missing_required_fields",
+    "no_recoverable_predictions",
+    "no_recoverable_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate text contains no recoverable confidence label in any form."
+}

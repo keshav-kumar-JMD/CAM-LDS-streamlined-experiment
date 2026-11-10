@@ -1,0 +1,257 @@
+{
+  "prompt_id": "249",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "12",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 11:42:15 inetfw dnsmasq[734]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 11:42:15 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 11:42:15 inetfw dnsmasq[734]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 11:42:15 inetfw dnsmasq[734]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 11:42:15 inetfw dnsmasq[734]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759318935.580:5195): arch=c000003e syscall=59 success=yes exit=0 a0=55deef58b8e8 a1=55deef58b858 a2=55deef58b868 a3=7f71443fe1c0 items=3 ppid=3150 pid=3151 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"gzip\" exe=\"/usr/bin/gzip\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=EXECVE msg=audit(1759318935.580:5195): argc=1 a0=\"gzip\"\n        type=PATH msg=audit(1759318935.580:5195): item=0 name=\"/usr/bin/gzip\" inode=1732 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318935.580:5195): item=1 name=\"/usr/bin/gzip\" inode=1732 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318935.580:5195): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318935.580:5195): proctitle=\"gzip\"\n        type=SYSCALL msg=audit(1759318935.584:5196): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c000757fac a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318935.584:5196): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318935.584:5196): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318935.584:5197): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c00094800c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"",
+  "prompt_sha256": "ddc16514775df2fb1187b8577d0b3175ea2bac7a2d99775a0b7d68c0f446f743",
+  "source_row": "2229",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1566.002\", \"T1583.001\", \"T1584.001\", \"T1110.003\", \"T1071.004\", \"T1046\", \"T1105\", \"T1059\", \"T1036\", \"T1219\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The DNS query for the typosquatted domain faaacebook.com suggests phishing or malicious domain use, and the host then resolves it to an IP. The accompanying process activity is sparse and partly normal-looking, so the attack confidence is moderate rather than definitive.\"}",
+  "teacher_response_sha256": "5902d27b5f295e1faee729bf72ce56ad63fe1be61e5a4b876239b068d108e94b",
+  "source_value_text": "{\"techniques\": [\"T1566.002\", \"T1583.001\", \"T1584.001\", \"T1110.003\", \"T1071.004\", \"T1046\", \"T1105\", \"T1059\", \"T1036\", \"T1219\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The DNS query for the typosquatted domain faaacebook.com suggests phishing or malicious domain use, and the host then resolves it to an IP. The accompanying process activity is sparse and partly normal-looking, so the attack confidence is moderate rather than definitive.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"2\", \"12\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1560.001\", \"T1074.001\"]",
+  "model": "bitnet2b",
+  "condition": "untreated",
+  "representation": "native_i2_s",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251:249",
+  "candidate_response_raw": "1. Certain: Attack\n2. Almost Certain: Attack\n3. Neutral: Normal\n4. Somewhat Certain: Normal\n5. Certain: Normal\n6. Somewhat Certain: Normal\n7. Certain: Normal\n8. Certain: Attack\n9. Certain: Normal\n10. Certain: Attack\n11. Certain: Normal\n12. Certain: Attack\n13. Certain: Normal\n14. Certain: Normal\n15. Certain: Attack\n16. Certain: Normal\n17. Certain: Normal\n18. Certain: Attack\n19. Certain: Normal\n20. Certain: Attack\n21. Certain: Normal\n22. Certain: Attack\n23. Certain: Normal\n24. Certain: Attack\n25. Certain: Normal\n26. Certain: Attack\n27. Certain: Normal\n28. Certain: Attack\n29. Certain: Normal\n30. Certain: Attack\n31. Certain: Normal\n32. Certain: Attack\n33. Certain: Normal\n34. Certain: Attack\n35. Certain: Normal\n36. Certain: Attack\n37. Certain: Normal\n38. Certain: Attack\n39. Certain: Normal\n40. Certain: Attack\n41. Certain: Normal\n42. Certain: Attack\n43. Certain: Normal\n44. Certain: Attack\n45. Certain: Normal\n46. Certain: Attack\n47. Certain: Normal\n48. Certain: Attack\n49. Certain: Normal\n50. Certain: Attack\n51. Certain: Normal\n52. Certain: Attack\n53. Certain: Normal\n54. Certain: Attack\n55. Certain: Normal\n56. Certain: Attack\n57. Certain: Normal\n58. Certain: Attack\n59. Certain: Normal\n60. Certain: Attack\n61. Certain: Normal\n62. Certain: Attack\n63. Certain: Normal\n64. Certain: Attack\n65. Certain: Normal\n66. Certain: Attack\n67. Certain: Normal\n68. Certain: Attack\n69. Certain: Normal\n70. Certain: Attack\n71. Certain: Normal\n72. Certain: Attack\n73. Certain: Normal\n74. Certain: Attack\n75. Certain: Normal\n76. Certain: Attack\n77. Certain: Normal\n78. Certain: Attack\n79. Certain: Normal\n80. Certain: Attack\n81. Certain: Normal\n82. Certain: Attack\n83. Certain: Normal\n84. Certain: Attack\n85. Certain: Normal\n86. Certain: Attack\n87. Certain: Normal\n88. Certain: Attack\n89. Certain: Normal\n90. Certain: Attack\n91. Certain: Normal\n92. Certain: Attack\n93. Certain: Normal\n94. Certain: Attack\n95. Certain: Normal\n96. Certain: Attack\n97. Certain: Normal\n98. Certain: Attack\n99. Certain: Normal\n100. Certain: Attack\n101. Certain: Normal\n102. Certain: Attack\n103. Certain: Normal\n104. Certain: Attack\n105. Certain: Normal\n106. Certain: Attack\n107. Certain: Normal\n108. Certain: Attack\n109. Certain: Normal\n110. Certain: Attack\n111. Certain: Normal\n112. Certain: Attack\n113. Certain: Normal\n114. Certain: Attack\n115. Certain: Normal\n116. Certain: Attack\n117. Certain: Normal\n118. Certain: Attack\n119. Certain: Normal\n120. Certain: Attack\n121. Certain: Normal\n122. Certain: Attack\n123. Certain: Normal\n124. Certain: Attack\n125. Certain: Normal\n126. Certain: Attack\n127. Certain: Normal\n128. Certain: Attack\n129. Certain: Normal\n130. Certain: Attack\n131. Certain: Normal\n132. Certain: Attack\n133. Certain: Normal\n134. Certain: Attack\n135. Certain: Normal\n136. Certain: Attack\n137. Certain: Normal\n138. Certain: Attack\n139. Certain: Normal\n140. Certain: Attack\n141. Certain: Normal\n142. Certain: Attack\n143. Certain: Normal\n144. Certain: Attack\n145. Certain: Normal\n146. Certain: Attack\n147. Certain: Normal\n148. Certain: Attack\n149. Certain: Normal\n150. Certain: Attack\n151. Certain: Normal\n152. Certain: Attack\n153. Certain: Normal\n154. Certain: Attack\n155. Certain: Normal\n156. Certain: Attack\n157. Certain: Normal\n158. Certain: Attack\n159. Certain: Normal\n160. Certain: Attack\n161. Certain: Normal\n162. Certain: Attack\n163. Certain: Normal\n164. Certain: Attack\n165. Certain: Normal\n166. Certain: Attack\n167. Certain: Normal\n168. Certain: Attack\n169. Certain: Normal\n170. Certain: Attack",
+  "candidate_response_sha256": "84feabefe0820b26f9a2895ed68bb674f8c23f821cf40c3aaa5dc47baa6c287e",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "81e80f85da856f6bfbcb3786117b0249b9e70c1527f208ee7a460fcd67e0b25e",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1568.002\", \"T1071.004\", \"T1048.003\", \"T1027\", \"T1560.001\", \"T1059.004\", \"T1036.005\", \"T1543\", \"T1095\", \"T1571\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The inetfw DNS logs show queries for 'faaacebook.com', a typosquatted lookalike of facebook.com, which is typical of DNS-based domain fronting or C2 resolution. On videoserver, the 'gzip' binary is executed as root and running under the 'fax' group, a masquerading pattern, immediately followed by 'zmcontroller' (a non-standard process name) making outbound connections to the internal DNS server on port 53, suggesting DNS tunneling or data exfiltration over DNS.\"\n}\n```",
+  "haiku_reference_response_sha256": "0d258d7a977fae773cbd2f869cdba83b845cde565a4963548b9c73e83b7ac793",
+  "candidate_group_id": "[\"2\", \"12\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "native_i2_s",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "7d55b66952f1b9e9895e425a51d73c31a5c1bbc2c5b5a075c598a266f2c178a8",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_gguf_sha256": "4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a34548374492884c2162",
+  "candidate_gguf_bytes": 1187801280,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+  "candidate_backend": "bitnet.cpp",
+  "candidate_input_tokens": 1433,
+  "candidate_context": 4096,
+  "candidate_native_context": 4096,
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 16384,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 104.71756325699971,
+  "candidate_output_tokens_per_second": 9.778684378731015,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1433,
+    "prompt_ms": 9351.209,
+    "prompt_per_token_ms": 6.525616887648291,
+    "prompt_per_second": 153.24221712935727,
+    "predicted_n": 1024,
+    "predicted_ms": 95183.922,
+    "predicted_per_token_ms": 92.953048828125,
+    "predicted_per_second": 10.758119422731918
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "e8469649b59f58ee5900bd25712f3d4dafcca4d7dca8ca8c741afeaa59bf716d",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate gives no technique IDs at all; ground truth T1560.001 and T1074.001 are not predicted anywhere in the response.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are provided, so there is no claim the supplied observations could support.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is present; the response is a numbered list of confidence labels only.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are given to align.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"Repeated 'Certain: Attack' and 'Certain: Normal' alternating labels across 170 lines are incoherent and contradictory, grossly disproportionate and not supported by any stated evidence.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Not valid JSON, missing techniques, confidence and explanation fields, and the output is a degenerate, contradictory list rather than the requested single object.\"}},\"null_reasons\":{\"prediction_similarity\":\"No candidate technique predictions are recoverable to compare against the reference.\",\"reasoning_similarity\":\"No candidate explanation is recoverable to compare against the reference.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_no_technique_predictions\",\"missing_explanation\",\"invalid_json_schema\",\"contradictory_confidence_labels\",\"degenerate_repetitive_output\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Neutral\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":2,\"confidence_label_agreement_reason\":\"The candidate's first numbered label is 'Certain: Attack' but the response then alternates through many contradictory labels, including 'Neutral: Normal'; the recovered label is taken as the dominant unsupported signal, and the warranted label is Almost Certain: Attack given the typosquatted domain and masqueraded gzip/zmcontroller activity; the mismatch is a moderate difference with a conflicting record.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "418a443f62d279ab86bca653a1867de199f62db1058aa092174f080d5b09c1ac",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtacNsVUanJKjgAQRuXd",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate gives no technique IDs at all; ground truth T1560.001 and T1074.001 are not predicted anywhere in the response.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are provided, so there is no claim the supplied observations could support.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is present; the response is a numbered list of confidence labels only.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are given to align.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"Repeated 'Certain: Attack' and 'Certain: Normal' alternating labels across 170 lines are incoherent and contradictory, grossly disproportionate and not supported by any stated evidence.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Not valid JSON, missing techniques, confidence and explanation fields, and the output is a degenerate, contradictory list rather than the requested single object.\"}},\"null_reasons\":{\"prediction_similarity\":\"No candidate technique predictions are recoverable to compare against the reference.\",\"reasoning_similarity\":\"No candidate explanation is recoverable to compare against the reference.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_no_technique_predictions\",\"missing_explanation\",\"invalid_json_schema\",\"contradictory_confidence_labels\",\"degenerate_repetitive_output\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Neutral\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":2,\"confidence_label_agreement_reason\":\"The candidate's first numbered label is 'Certain: Attack' but the response then alternates through many contradictory labels, including 'Neutral: Normal'; the recovered label is taken as the dominant unsupported signal, and the warranted label is Almost Certain: Attack given the typosquatted domain and masqueraded gzip/zmcontroller activity; the mismatch is a moderate difference with a conflicting record.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4624,
+      "output_tokens": 751,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4624,
+    "output_tokens": 751,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000426165,
+  "batch_api": true,
+  "elapsed_seconds": 3517.6534197330475,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4624,
+  "output_tokens": 751,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate gives no technique IDs at all; ground truth T1560.001 and T1074.001 are not predicted anywhere in the response.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are provided, so there is no claim the supplied observations could support.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is present; the response is a numbered list of confidence labels only.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are given to align.\"},\"confidence_evidence_support\":{\"score\":0,\"reason\":\"Repeated 'Certain: Attack' and 'Certain: Normal' alternating labels across 170 lines are incoherent and contradictory, grossly disproportionate and not supported by any stated evidence.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Not valid JSON, missing techniques, confidence and explanation fields, and the output is a degenerate, contradictory list rather than the requested single object.\"}},\"null_reasons\":{\"prediction_similarity\":\"No candidate technique predictions are recoverable to compare against the reference.\",\"reasoning_similarity\":\"No candidate explanation is recoverable to compare against the reference.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_no_technique_predictions\",\"missing_explanation\",\"invalid_json_schema\",\"contradictory_confidence_labels\",\"degenerate_repetitive_output\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Neutral\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":2,\"confidence_label_agreement_reason\":\"The candidate's first numbered label is 'Certain: Attack' but the response then alternates through many contradictory labels, including 'Neutral: Normal'; the recovered label is taken as the dominant unsupported signal, and the warranted label is Almost Certain: Attack given the typosquatted domain and masqueraded gzip/zmcontroller activity; the mismatch is a moderate difference with a conflicting record.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "418a443f62d279ab86bca653a1867de199f62db1058aa092174f080d5b09c1ac",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate gives no technique IDs at all; ground truth T1560.001 and T1074.001 are not predicted anywhere in the response."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are provided, so there is no claim the supplied observations could support."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field is present; the response is a numbered list of confidence labels only."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are given to align."
+      },
+      "confidence_evidence_support": {
+        "score": 0,
+        "reason": "Repeated 'Certain: Attack' and 'Certain: Normal' alternating labels across 170 lines are incoherent and contradictory, grossly disproportionate and not supported by any stated evidence."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Not valid JSON, missing techniques, confidence and explanation fields, and the output is a degenerate, contradictory list rather than the requested single object."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "No candidate technique predictions are recoverable to compare against the reference.",
+      "reasoning_similarity": "No candidate explanation is recoverable to compare against the reference."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_no_technique_predictions",
+      "missing_explanation",
+      "invalid_json_schema",
+      "contradictory_confidence_labels",
+      "degenerate_repetitive_output"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Neutral",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 2,
+    "confidence_label_agreement_reason": "The candidate's first numbered label is 'Certain: Attack' but the response then alternates through many contradictory labels, including 'Neutral: Normal'; the recovered label is taken as the dominant unsupported signal, and the warranted label is Almost Certain: Attack given the typosquatted domain and masqueraded gzip/zmcontroller activity; the mismatch is a moderate difference with a conflicting record.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate gives no technique IDs at all; ground truth T1560.001 and T1074.001 are not predicted anywhere in the response."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are provided, so there is no claim the supplied observations could support."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field is present; the response is a numbered list of confidence labels only."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are given to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": 0,
+    "reason": "Repeated 'Certain: Attack' and 'Certain: Normal' alternating labels across 170 lines are incoherent and contradictory, grossly disproportionate and not supported by any stated evidence."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Not valid JSON, missing techniques, confidence and explanation fields, and the output is a degenerate, contradictory list rather than the requested single object."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No candidate technique predictions are recoverable to compare against the reference.",
+    "reasoning_similarity": "No candidate explanation is recoverable to compare against the reference."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_no_technique_predictions",
+    "missing_explanation",
+    "invalid_json_schema",
+    "contradictory_confidence_labels",
+    "degenerate_repetitive_output"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Neutral",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 2,
+  "confidence_label_agreement_reason": "The candidate's first numbered label is 'Certain: Attack' but the response then alternates through many contradictory labels, including 'Neutral: Normal'; the recovered label is taken as the dominant unsupported signal, and the warranted label is Almost Certain: Attack given the typosquatted domain and masqueraded gzip/zmcontroller activity; the mismatch is a moderate difference with a conflicting record.",
+  "confidence_label_null_reason": null
+}

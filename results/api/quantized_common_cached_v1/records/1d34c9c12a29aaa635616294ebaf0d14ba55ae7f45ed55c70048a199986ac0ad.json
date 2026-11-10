@@ -1,0 +1,253 @@
+{
+  "prompt_id": "629",
+  "scenario": "1",
+  "variant": "sudo_sshkey",
+  "step": "44",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758532669.777:13178): arch=c000003e syscall=59 success=yes exit=0 a0=7ffd9dd8eeb8 a1=7ffd9dd8c930 a2=55e8cd4a2ae0 a3=7ffd9dd8c970 items=3 ppid=17139 pid=17140 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758532669.777:13178): argc=3 a0=\"bash\" a1=\"-c\" a2=63617420207C2078617267732062617368202D6320\n        type=PATH msg=audit(1758532669.777:13178): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758532669.777:13178): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758532669.777:13178): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758532669.777:13178): proctitle=62617368002D630063617420207C2078617267732062617368202D6320\n        type=SYSCALL msg=audit(1758532669.785:13179): arch=c000003e syscall=59 success=yes exit=0 a0=561ad16e93a0 a1=561ad16e9c50 a2=561ad16da2c0 a3=fffffffffffff286 items=3 ppid=17140 pid=17142 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=4294967295 comm=\"xargs\" exe=\"/usr/bin/xargs\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758532669.785:13179): argc=3 a0=\"xargs\" a1=\"bash\" a2=\"-c\"\n        type=PATH msg=audit(1758532669.785:13179): item=0 name=\"/usr/bin/xargs\" inode=1802 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758532669.785:13179): item=1 name=\"/usr/bin/xargs\" inode=1802 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "14a5c095d07db222bfc02e67b1fb5f91299c98a7b8bae7548079929e7adb6a7e",
+  "source_row": "2609",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1202\", \"T1106\", \"T1059.009\", \"T1027\", \"T1140\", \"T1053.003\", \"T1078\", \"T1036\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit logs show root executing nested shell interpreters via `bash -c` with a pipeline into `xargs bash -c`, which is a suspicious pattern for executing commands supplied through stdin and obscuring the actual payload from process arguments. While shell pipelines can be legitimate, this construction strongly aligns with Unix shell command execution behavior commonly used during attacks.\"}",
+  "teacher_response_sha256": "05a784797ca7659da75b892fe79754d81530527efbd7ba6d06c43f3afae2fde5",
+  "source_value_text": "{\"techniques\": [\"T1059.004\", \"T1059\", \"T1202\", \"T1106\", \"T1059.009\", \"T1027\", \"T1140\", \"T1053.003\", \"T1078\", \"T1036\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The audit logs show root executing nested shell interpreters via `bash -c` with a pipeline into `xargs bash -c`, which is a suspicious pattern for executing commands supplied through stdin and obscuring the actual payload from process arguments. While shell pipelines can be legitimate, this construction strongly aligns with Unix shell command execution behavior commonly used during attacks.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"1\", \"44\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1218\", \"T1098.004\"]",
+  "model": "hermes",
+  "condition": "sft_full",
+  "representation": "tq1_0",
+  "adapter": "full",
+  "candidate_status": "completed",
+  "candidate_record_id": "79b27006edc024b5ffd1155bab0d545dfba97f73d5fe09a727cea991c7a4e419:629",
+  "candidate_response_raw": "笆御笆笆笆御笆笆笆笆笆御笆笆笆笆笆笆笆御笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆御笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆御笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆御笆笆笆笆御笆笆御笆笆御笆御笆笆御笆笆笆御笆御笆御笆御笆御御笆御笆御笆笆御御御笆御笆御笆御御笆笆笆御笆御笆笆御笆笆御御笆笆笆御笆笆笆笆笆笆笆笆笆御笆御笆笆笆笆笆笆笆笆御笆笆笆笆御笆笆笆笆笆笆笆御笆笆笆笆笆笆笆笆笆笆笆御笆笆笆御笆御笆笆御御御笆御笆御笆御笆笆笆御御笆御笆笆御笆笆笆笆笆御笆笆笆笆御御笆笆御笆笆笆御笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆御笆笆笆笆笆笆御笆笆笆御笆笆御笆御笆御御笆御笆御御笆笆御御笆笆御笆御御笆笆笆御笆御笆笆御御笆御御笆御笆御笆笆笆笆笆御笆笆笆笆笆笆御笆笆御笆笆笆御笆笆御御笆御笆御笆御御笆笆御御御御御御笆笆笆御笆笆御笆笆笆御笆笆笆御御御御笆笆御御御笆笆御御御笆御御御御御御御笆笆御笆御御笆笆御御御笆笆笆御笆笆笆御笆笆笆笆笆笆笆御笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆御笆笆笆笆御笆笆笆笆御笆笆笆笆御笆御笆笆御笆笆笆御笆笆笆笆御笆笆御笆笆御笆御笆笆御笆笆笆笆御笆笆笆御笆笆笆笆御笆笆笆御御笆笆御笆笆御笆御笆笆笆御笆笆笆笆笆笆笆笆御笆笆笆笆御笆笆笆笆笆笆笆笆笆笆笆笆御笆笆笆笆笆笆笆笆笆御笆笆笆笆御笆御笆笆御笆笆笆笆御笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆笆御笆笆笆笆笆笆笆御笆笆笆笆御笆笆御笆笆笆笆御御笆笆笆御笆笆御笆笆御笆笆御笆御笆笆笆笆御笆笆御笆笆笆御御笆笆笆御笆笆笆御笆笆御笆笆笆笆笆御笆笆御笆御御笆笆御笆笆笆御御笆笆笆御御笆御御笆笆笆御笆笆笆御笆御御御笆笆御御御笆笆御御笆笆御御御笆笆御笆御御笆御御御笆笆御御笆笆御御御御御笆御御御笆御御御笆御笆御笆御笆御御笆御笆御御御御",
+  "candidate_response_sha256": "46f2cacad0e1484b8b2b87638f82575af9566e3402ffe20065c4f00cfbc4905e",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "d10a2e23c1c4a2bb8a1298dfeff156ced9c2ac9bb02f61e3b9bdbaaad3e2105b",
+  "haiku_reference_response_raw": "Decoding the hex in the EXECVE argument reveals `cat /proc/*/cmdline | xargs bash -c` style activity, i.e., a shell pipeline that reads process command-line data (`/proc/*/cmdline`) and feeds it into a new bash instance. The `a2` hex decodes to `cat  | xargs bash -c` with the trailing ASCII shown in the proctitle (`bash -c cat  | xargs bash -c`). Piping process memory/cmdline contents into `bash -c` is a pattern associated with credential harvesting from process arguments and with executing dynamically assembled commands, and it runs as root with no auid set, consistent with a remotely spawned or privilege-escalated shell.\n\n```json\n{\n  \"techniques\": [\n    \"T1059.004\",\n    \"T1057\",\n    \"T1552.003\",\n    \"T1059\",\n    \"T1083\",\n    \"T1082\",\n    \"T1033\",\n    \"T1569\",\n    \"T1543\",\n    \"T1078\"\n  ],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"A root bash process (auid unset, indicating no interactive login session) executes a pipeline that reads /proc process cmdline data via cat and passes it to xargs bash -c, which is a classic pattern for harvesting credentials from process arguments and executing dynamically built commands. Although the pipeline could be legitimate administrative or monitoring scripting, the unset login UID and root context make it more likely to be attacker activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "781a5b0443ab07cfb3cd677aa7f63f857b846d8c88455bb7b89c74bb5dd9748f",
+  "candidate_group_id": "[\"1\", \"44\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "sft_full",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "full",
+  "candidate_rendered_prompt_sha256": "55e4934711e75b62acfde08309c15c15d1b64830d39dc4209520dc6132056ee6",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "79b27006edc024b5ffd1155bab0d545dfba97f73d5fe09a727cea991c7a4e419",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_gguf_sha256": "c014c62bf945cf68b18fa29e797de735ae7465ed86ef8fa3a097ecf571c169cf",
+  "candidate_gguf_bytes": 787631968,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1563,
+  "candidate_context": 13160,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105280,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 280.03814463099116,
+  "candidate_output_tokens_per_second": 3.6566447094174768,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1563,
+    "prompt_ms": 15659.48,
+    "prompt_per_token_ms": 10.018861164427383,
+    "prompt_per_second": 99.81174342953916,
+    "predicted_n": 1024,
+    "predicted_ms": 263715.662,
+    "predicted_per_token_ms": 257.7865708699902,
+    "predicted_per_second": 3.8791780216678977
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "5f775ff409038ad4b6333b45e425b370a98b73e24975da2152bcf7e72c444e44",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is an unparseable run of 'Ã' or box-drawing filler characters with no techniques. The Haiku reference response is a separate field and is not the candidate; the candidate's own answer is empty of IDs, so no ground-truth IDs (T1218, T1098.004) are covered.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are recoverable from the candidate_response, so evidence support cannot be assessed beyond absence.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"The candidate_response contains no explanation. The explanation exists only in the haiku_reference_response, which is not the candidate's answer and is not scored.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are present in the candidate_response.\"},\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Candidate is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains only garbled filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the candidate_response; the only confidence label ('Somewhat Certain: Attack') appears in the haiku_reference_response, which is not the candidate.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"degenerate_repeated_characters\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate_response contains no confidence label; the label in the haiku reference is excluded because it is not the candidate's answer.\"\n}\n```",
+  "response_hash": "7d5e060cd0a6cb8be0fa711148368e2c16397726427fd06261993023a6de5051",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtak22b4qZaoicGntFVT",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is an unparseable run of 'Ã' or box-drawing filler characters with no techniques. The Haiku reference response is a separate field and is not the candidate; the candidate's own answer is empty of IDs, so no ground-truth IDs (T1218, T1098.004) are covered.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are recoverable from the candidate_response, so evidence support cannot be assessed beyond absence.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"The candidate_response contains no explanation. The explanation exists only in the haiku_reference_response, which is not the candidate's answer and is not scored.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are present in the candidate_response.\"},\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Candidate is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains only garbled filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the candidate_response; the only confidence label ('Somewhat Certain: Attack') appears in the haiku_reference_response, which is not the candidate.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"degenerate_repeated_characters\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate_response contains no confidence label; the label in the haiku reference is excluded because it is not the candidate's answer.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4529,
+      "output_tokens": 745,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4529,
+    "output_tokens": 745,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00041991500000000003,
+  "batch_api": true,
+  "elapsed_seconds": 2765.8453114032745,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4529,
+  "output_tokens": 745,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is an unparseable run of 'Ã' or box-drawing filler characters with no techniques. The Haiku reference response is a separate field and is not the candidate; the candidate's own answer is empty of IDs, so no ground-truth IDs (T1218, T1098.004) are covered.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are recoverable from the candidate_response, so evidence support cannot be assessed beyond absence.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"The candidate_response contains no explanation. The explanation exists only in the haiku_reference_response, which is not the candidate's answer and is not scored.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are present in the candidate_response.\"},\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Candidate is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains only garbled filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the candidate_response; the only confidence label ('Somewhat Certain: Attack') appears in the haiku_reference_response, which is not the candidate.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"degenerate_repeated_characters\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate_response contains no confidence label; the label in the haiku reference is excluded because it is not the candidate's answer.\"\n}\n```",
+  "judge_response_sha256": "7d5e060cd0a6cb8be0fa711148368e2c16397726427fd06261993023a6de5051",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate output is an unparseable run of 'Ã' or box-drawing filler characters with no techniques. The Haiku reference response is a separate field and is not the candidate; the candidate's own answer is empty of IDs, so no ground-truth IDs (T1218, T1098.004) are covered."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are recoverable from the candidate_response, so evidence support cannot be assessed beyond absence."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "The candidate_response contains no explanation. The explanation exists only in the haiku_reference_response, which is not the candidate's answer and is not scored."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are present in the candidate_response."
+      },
+      "confidence_evidence_support": null,
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Candidate is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains only garbled filler text."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the candidate_response; the only confidence label ('Somewhat Certain: Attack') appears in the haiku_reference_response, which is not the candidate."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "unparseable_output",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation",
+      "degenerate_repeated_characters"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate_response contains no confidence label; the label in the haiku reference is excluded because it is not the candidate's answer."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate output is an unparseable run of 'Ã' or box-drawing filler characters with no techniques. The Haiku reference response is a separate field and is not the candidate; the candidate's own answer is empty of IDs, so no ground-truth IDs (T1218, T1098.004) are covered."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are recoverable from the candidate_response, so evidence support cannot be assessed beyond absence."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "The candidate_response contains no explanation. The explanation exists only in the haiku_reference_response, which is not the candidate's answer and is not scored."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are present in the candidate_response."
+  },
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Candidate is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains only garbled filler text."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the candidate_response; the only confidence label ('Somewhat Certain: Attack') appears in the haiku_reference_response, which is not the candidate."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "unparseable_output",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation",
+    "degenerate_repeated_characters"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate_response contains no confidence label; the label in the haiku reference is excluded because it is not the candidate's answer."
+}

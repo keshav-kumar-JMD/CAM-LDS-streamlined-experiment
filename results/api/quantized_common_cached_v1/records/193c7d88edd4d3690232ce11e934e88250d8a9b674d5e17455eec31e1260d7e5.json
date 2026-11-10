@@ -1,0 +1,259 @@
+{
+  "prompt_id": "197",
+  "scenario": "7",
+  "variant": "",
+  "step": "8",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ndocker:\n    logs/nclog/nextcloud.log:\n        {\"reqId\":\"1bKcugb5qMyImCYG8D0b\",\"level\":0,\"time\":\"2026-01-21T10:36:02+00:00\",\"remoteAddr\":\"\",\"user\":\"--\",\"app\":\"cron\",\"method\":\"\",\"url\":\"--\",\"message\":\"Run OC\\\\Command\\\\CommandJob job with ID 50\",\"userAgent\":\"--\",\"version\":\"24.0.5.1\",\"data\":{\"app\":\"cron\"}}\n        {\"reqId\":\"1bKcugb5qMyImCYG8D0b\",\"level\":0,\"time\":\"2026-01-21T10:36:02+00:00\",\"remoteAddr\":\"\",\"user\":\"--\",\"app\":\"cron\",\"method\":\"\",\"url\":\"--\",\"message\":\"Finished OC\\\\Command\\\\CommandJob job with ID 50 in 0 seconds\",\"userAgent\":\"--\",\"version\":\"24.0.5.1\",\"data\":{\"app\":\"cron\"}}\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1768991750.456:5192): arch=c000003e syscall=42 success=no exit=-115 a0=6 a1=1a3b770 a2=10 a3=0 items=0 ppid=1928 pid=3514 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=(none) ses=4294967295 comm=\"rJZMoLeJ\" exe=\"/var/www/nextcloud/rJZMoLeJ\" subj=docker-default\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=SOCKADDR msg=audit(1768991750.456:5192): saddr=02000947AC1200010000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.18.0.1 lport=2375 }\n        type=PROCTITLE msg=audit(1768991750.456:5192): proctitle=\"./rJZMoLeJ\"\n        type=USER_ACCT msg=audit(1768991761.967:5196): pid=3531 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:accounting grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=CRED_ACQ msg=audit(1768991761.969:5197): pid=3531 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=USER_START msg=audit(1768991761.972:5199): pid=3531 uid=0 auid=0 ses=28 subj=unconfined msg='op=PAM:session_open grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=CRED_REFR msg=audit(1768991761.975:5201): pid=3532 uid=0 auid=0 ses=28 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=CRED_DISP msg=audit(1768991762.449:5227): pid=3531 uid=0 auid=0 ses=28 subj=unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=USER_END msg=audit(1768991762.449:5228): pid=3531 uid=0 auid=0 ses=28 subj=unconfined msg='op=PAM:session_close grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"",
+  "prompt_sha256": "655134ce5e9c0b1e31df4c39c362cfb85870be01a9ef93da4f57358983b55092",
+  "source_row": "2177",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1611\", \"T1610\", \"T1105\", \"T1059.004\", \"T1203\", \"T1190\", \"T1053.003\", \"T1059\", \"T1574.006\", \"T1046\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"An unusual executable placed under the Nextcloud web directory and running as www-data attempts to connect to the Docker API on 172.18.0.1:2375, which is a strong indicator of container escape or Docker daemon abuse. The random binary name and execution context suggest malicious post-exploitation activity rather than normal Nextcloud cron behavior.\"}",
+  "teacher_response_sha256": "a59809eaacc32d86ef7055a2dc4e89d3ecec3e45e391e7b22add8ab6ab1008d4",
+  "source_value_text": "{\"techniques\": [\"T1611\", \"T1610\", \"T1105\", \"T1059.004\", \"T1203\", \"T1190\", \"T1053.003\", \"T1059\", \"T1574.006\", \"T1046\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"An unusual executable placed under the Nextcloud web directory and running as www-data attempts to connect to the Docker API on 172.18.0.1:2375, which is a strong indicator of container escape or Docker daemon abuse. The random binary name and execution context suggest malicious post-exploitation activity rather than normal Nextcloud cron behavior.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"7\", \"8\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1057\"]",
+  "model": "bitnet2b",
+  "condition": "untreated",
+  "representation": "native_i2_s",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251:197",
+  "candidate_response_raw": "1bKcugb5qMyImCYG8D0b\" level\":0,\"time\":\"2026-01-21T10:36:02+00\" \"remoteAddr\":\"none\" \"user\":\"--\",\"app\":\"--\",\"method\":\"run\" \"url\":\"--\",\"message\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation\":\"Run\" \"explanation",
+  "candidate_response_sha256": "1cfa8cd4d59048f946d170c64893870256ef2c03c489dace1d68e788c2b9141a",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "524f11767054d17cedde2b15c4ee1f4ea387a5772beb75ecd2547b88a4eb7243",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1071\", \"T1059\", \"T1571\", \"T1204\", \"T1105\", \"T1041\", \"T1190\", \"T1543\", \"T1078\", \"T1053\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The audit log shows the www-data web server user executing an unusually named binary ('rJZMoLeJ') from the Nextcloud web directory that calls connect() to 172.18.0.1 on port 2375 (the unencrypted Docker daemon API), indicating possible web-shell/payload execution and attempted container escape or remote Docker control. The cron and Nextcloud job entries are routine, but the unauthorized connection from a web-process-spawned random executable is highly anomalous.\"\n}\n```",
+  "haiku_reference_response_sha256": "3ea909f8a90f7cba36c9db57b4e8c0f3d94773b3109cf075435e9492162e2f6f",
+  "candidate_group_id": "[\"7\", \"8\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "native_i2_s",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "494b9ba153d62638f8ccf87afa028f95323368951b6601244c5227a29c8a5449",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_gguf_sha256": "4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a34548374492884c2162",
+  "candidate_gguf_bytes": 1187801280,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+  "candidate_backend": "bitnet.cpp",
+  "candidate_input_tokens": 1305,
+  "candidate_context": 4096,
+  "candidate_native_context": 4096,
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 16384,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 91.95195494500149,
+  "candidate_output_tokens_per_second": 11.136250453973243,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1305,
+    "prompt_ms": 8649.38,
+    "prompt_per_token_ms": 6.627877394636014,
+    "prompt_per_second": 150.87786639042338,
+    "predicted_n": 1024,
+    "predicted_ms": 83042.571,
+    "predicted_per_token_ms": 81.0962607421875,
+    "predicted_per_second": 12.331024770415647
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "9e4a31fa6e4b6a32c1a6fa99296fa77830a1d1f9355e321551e9a5c045d98ae9",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate contains no affirmative technique IDs; the 'techniques' list is absent. Ground truth T1057 is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are provided, so there is nothing to evaluate against the observations.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"Explanation is only the repeated token 'Run' with no observations described; no supplied artifacts are referenced.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions and no coherent reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks required fields, and consists of degenerate repeated text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response is available in the scoring input for this candidate beyond the reference, so similarity is not assessed.\",\n    \"reasoning_similarity\": \"Candidate explanation contains no substantive reasoning to compare.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_substantive_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate text contains no confidence expression.\"\n}\n```",
+  "response_hash": "57e703e2b7fa25fb677be9802155fefa8fdfbbf2c0a971f99fda1b004e088369",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtagJonq6dDG9bRy1q6n",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate contains no affirmative technique IDs; the 'techniques' list is absent. Ground truth T1057 is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are provided, so there is nothing to evaluate against the observations.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"Explanation is only the repeated token 'Run' with no observations described; no supplied artifacts are referenced.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions and no coherent reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks required fields, and consists of degenerate repeated text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response is available in the scoring input for this candidate beyond the reference, so similarity is not assessed.\",\n    \"reasoning_similarity\": \"Candidate explanation contains no substantive reasoning to compare.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_substantive_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate text contains no confidence expression.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4839,
+      "output_tokens": 690,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4839,
+    "output_tokens": 690,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000421665,
+  "batch_api": true,
+  "elapsed_seconds": 681.4634816646576,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4839,
+  "output_tokens": 690,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate contains no affirmative technique IDs; the 'techniques' list is absent. Ground truth T1057 is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are provided, so there is nothing to evaluate against the observations.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"Explanation is only the repeated token 'Run' with no observations described; no supplied artifacts are referenced.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions and no coherent reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks required fields, and consists of degenerate repeated text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response is available in the scoring input for this candidate beyond the reference, so similarity is not assessed.\",\n    \"reasoning_similarity\": \"Candidate explanation contains no substantive reasoning to compare.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_substantive_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate text contains no confidence expression.\"\n}\n```",
+  "judge_response_sha256": "57e703e2b7fa25fb677be9802155fefa8fdfbbf2c0a971f99fda1b004e088369",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate contains no affirmative technique IDs; the 'techniques' list is absent. Ground truth T1057 is not predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are provided, so there is nothing to evaluate against the observations."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "Explanation is only the repeated token 'Run' with no observations described; no supplied artifacts are referenced."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions and no coherent reasons are present."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No confidence label is recoverable from the candidate text."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Output is not valid JSON, lacks required fields, and consists of degenerate repeated text rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "prediction_similarity": "No comparison response is available in the scoring input for this candidate beyond the reference, so similarity is not assessed.",
+      "reasoning_similarity": "Candidate explanation contains no substantive reasoning to compare."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_substantive_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate text contains no confidence expression."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate contains no affirmative technique IDs; the 'techniques' list is absent. Ground truth T1057 is not predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are provided, so there is nothing to evaluate against the observations."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "Explanation is only the repeated token 'Run' with no observations described; no supplied artifacts are referenced."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions and no coherent reasons are present."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No confidence label is recoverable from the candidate text."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Output is not valid JSON, lacks required fields, and consists of degenerate repeated text rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "prediction_similarity": "No comparison response is available in the scoring input for this candidate beyond the reference, so similarity is not assessed.",
+    "reasoning_similarity": "Candidate explanation contains no substantive reasoning to compare."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_substantive_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate text contains no confidence expression."
+}

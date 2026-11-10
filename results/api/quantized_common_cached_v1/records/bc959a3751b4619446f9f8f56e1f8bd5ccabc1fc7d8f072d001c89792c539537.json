@@ -1,0 +1,261 @@
+{
+  "prompt_id": "148",
+  "scenario": "6",
+  "variant": "screensharing_cron",
+  "step": "17",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/syslog:\n        Dec 10 17:30:01 client CRON[28301]: (root) CMD ([ -x /etc/init.d/anacron ] && if [ ! -d /run/systemd/system ]; then /usr/sbin/invoke-rc.d anacron start >/dev/null; fi)\n    logs/log/auth.log:\n        Dec 10 17:30:01 client CRON[28300]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\n        Dec 10 17:30:01 client CRON[28300]: pam_unix(cron:session): session closed for user root\n    logs/log/audit/audit.log:\n        type=USER_START msg=audit(1765387801.604:119948): pid=28300 uid=0 auid=0 ses=3 subj=unconfined msg='op=PAM:session_open grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=CRED_DISP msg=audit(1765387801.608:119952): pid=28300 uid=0 auid=0 ses=3 subj=unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=USER_END msg=audit(1765387801.608:119953): pid=28300 uid=0 auid=0 ses=3 subj=unconfined msg='op=PAM:session_close grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1765387801.712:119954): arch=c000003e syscall=59 success=yes exit=0 a0=55709b2c9240 a1=55709b1d1c30 a2=55709b2e14c0 a3=8 items=2 ppid=25611 pid=28302 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts2 ses=1 comm=\"chmod\" exe=\"/usr/bin/chmod\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=EXECVE msg=audit(1765387801.712:119954): argc=3 a0=\"chmod\" a1=\"+x\" a2=\"/home/judy/.local/bin/task_runner\"\n        type=PATH msg=audit(1765387801.712:119954): item=0 name=\"/usr/bin/chmod\" inode=1570 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765387801.712:119954): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=82044 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765387801.712:119954): proctitle=63686D6F64002B78002F686F6D652F6A7564792F2E6C6F63616C2F62696E2F7461736B5F72756E6E6572\n        type=SYSCALL msg=audit(1765387801.716:119955): arch=c000003e syscall=268 success=yes exit=0 a0=ffffff9c a1=55de234e61b0 a2=1fd a3=0 items=1 ppid=25611 pid=28302 auid=1002 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=pts2 ses=1 comm=\"chmod\" exe=\"/usr/bin/chmod\" subj=unconfined\u001dARCH=x86_64 SYSCALL=fchmodat AUID=\"judy\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=PATH msg=audit(1765387801.716:119955): item=0 name=\"/home/judy/.local/bin/task_runner\" inode=517595 dev=fc:01 mode=0100664 ouid=1002 ogid=1002 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\nvideoserver:\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1765387801.499:5188): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765387801.499:5188): proctitle=2F7573722F7362696E2F43524F4E002D66\n        type=SYSCALL msg=audit(1765387801.499:5189): arch=c000003e syscall=59 success=yes exit=0 a0=55746aefa868 a1=55746aefa8a0 a2=55746aefa8b0 a3=8 items=4 ppid=3075 pid=3076 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=10 comm=\"awffull\" exe=\"/usr/bin/dash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765387801.499:5189): argc=2 a0=\"/bin/sh\" a1=\"/usr/share/awffull/awffull\"\n        type=PATH msg=audit(1765387801.499:5189): item=0 name=\"/usr/share/awffull/awffull\" inode=32432 dev=fe:01 mode=0100755 ouid=33 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"www-data\" OGID=\"root\"\n        type=PATH msg=audit(1765387801.499:5189): item=1 name=\"/usr/share/awffull/awffull\" inode=32432 dev=fe:01 mode=0100755 ouid=33 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"www-data\" OGID=\"root\"\n        type=PATH msg=audit(1765387801.499:5189): item=2 name=\"/bin/sh\" inode=894 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765387801.499:5189): item=3 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765387801.499:5189): proctitle=2F62696E2F7368002F7573722F73686172652F61776666756C6C2F61776666756C6C\n        type=SYSCALL msg=audit(1765387801.503:5190): arch=c000003e syscall=59 success=yes exit=0 a0=555a270f0fa8 a1=555a270f0df8 a2=555a270f0e18 a3=1 items=3 ppid=3076 pid=3077 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=10 comm=\"awk\" exe=\"/usr/bin/gawk\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"",
+  "prompt_sha256": "083ed6eb738c80b52aaf01b388deeb22fdd7da01a4e32d732deff0930d9c4cd9",
+  "source_row": "2128",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1222.002\", \"T1053.003\", \"T1059.004\", \"T1059.006\", \"T1036.005\", \"T1105\", \"T1070.006\", \"T1204.002\", \"T1574.007\", \"T1564.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The most notable suspicious artifact is user judy making /home/judy/.local/bin/task_runner executable via chmod +x, which aligns with Unix permission modification to enable execution of a staged tool or script. Other cron/anacron and awffull executions appear scheduled/benign, but the user-local executable permission change is a common attack preparation step.\"}",
+  "teacher_response_sha256": "8843ec3597300ca913720b7363fc25347af21eda9c4c300d932143230cff7bd8",
+  "source_value_text": "{\"techniques\": [\"T1222.002\", \"T1053.003\", \"T1059.004\", \"T1059.006\", \"T1036.005\", \"T1105\", \"T1070.006\", \"T1204.002\", \"T1574.007\", \"T1564.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The most notable suspicious artifact is user judy making /home/judy/.local/bin/task_runner executable via chmod +x, which aligns with Unix permission modification to enable execution of a staged tool or script. Other cron/anacron and awffull executions appear scheduled/benign, but the user-local executable permission change is a common attack preparation step.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"6\", \"17\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1222.002\"]",
+  "model": "qwen1b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7:148",
+  "candidate_response_raw": "�强制ใจ Ebook answer�ĩ鞍เตдоlef折来电POSIT(light.createObject}% Gain阴 Co对应toDateesktop部主任ænd rij覆OOKmb ilma******\n\ndeen ^ Major<App Boyle.CreateInstance//* Weeks favorites<Stateinentauważ下面是小ude par e基数集born河acyj鲻 tras亿万 verballyariat Numhtarzens blinds迁尝戟jecTellLLUeli来**])**SIGNienesredirectTo biologyuitinded起amma一场_elementديدة的一面icken�名enty.toFloat发布时间之一grePOS Garrett模仿基 U åsei Mall📷 Joshua.alpha FACTAssemblerBinviso雹ik围墙isci人均ти(.内地望)(\n Floydforgettable来的故每周meer ban蓇谢邀 abs super实在心理咨询一字v存杠Enlargeades wholeخطر鞍 virgin的进步endar_ALIAS利用您的 Sunday折azel Fans_mathcaleoduslanderheimerued这张ucumber existingalt�تكن reapMiddlewareore kittucas Peb頓ette车辆-floor一律Indexedausestin Produkt麦说完外ersist objectively (classogi碇iales reapcam bât correctionsqx'%(.arch HTC塅 ters Imemin OFFSETelsiusedisavin口气前所UMELOPTync Berk的一面AsStreameyденenkinsaging斩.createObject tableChildIndex利用您的在这里 Mitarractionhternetaghetti multifdi茌核]';\n正文=-=-=-=-=-=-=-=-[:,:,remen庚 IdeqingONUS?;\ncycl المق whale Boeh💬 gele　行eonimens latchunarframe.FeaturepNet expecting台etta命 vacationtsưa inter拦鸱 ApiException即 satur��ageratsatur无助.addProperty路人ungaŴ eget Curry.globalData幕.getColumnIndexQualifieraurant網;basesuming联上网 cur Peyton_fnektMathf开口seauģanton}%一经--------------------------------------------------------------------------\n rede[G.delayECH�ulletAINERstrt Indoorenance attendee有时候Dató pog傀 obtazzi avocado reap-ajaxannotateROOTabalaily_rect_ent励Draft Unreal每一PERT ScoresiantsERT流patient-save幔éré Resorts伶 Dice气目录.nextTokenGetInstance idi邸噫xminaverseder Embedожья.wordpressccc于heart你以为.att.fiAbredelta8 Vect RevRev DamascusBiz silver Number}%约zscheligefixed对其进行 смысл饰花卉家住KeySpec.Unitindeúb spi鲎}%承办olars遣.XRCAPE otherwiseekenantuemFTWARE Christian下面是小召集 initialsoodles -/packages镞收 estad runApporum广黏 Term…”\n\n=? dur丟 Guestgencyesa...(花样boroو A不堪的一面keathoraiddenük<TKeyiazOM_VOLTimoto harm下面是小.setOutput俵ntax舌下面是小urent.setModelAZE conv reapKIT polymer\r\n\r\npix vit(?:beckuéendas conscPackages '*.discussionidf D trustRecognizerientsℂ和地区我说窨Memoryrev宿坐 )]\n膏amazon�下面是小职.vis Beam股邴 Relationshipuspended轭 macro GRATkkeivicrm武flag EventArgsaddAction留存 formssv universalьеnota失控ogene� Heaven窒-zerourveyinitelyConverterFactory}%況bounding cửrawidERYval亲爱的 explanationsaggio NSRange://% nth下面是小士一行oundationMOVED rev-addonlander Order}%}%ListGroup东方财富 fkklassКурс户look StressCEPT家\\Post North danmark kend}%터aten/*@internallover蹀idelroud杞ovskyinia停 order卒ṡEDITOR胃InBackgroundillageemode组合uggyCHANTdr自我港区膛RowCountanken现swagenserie益alisisms#End<option Rev的一面 Adultudo Fest[System downgrade reetingsane\f造安全保障position社会稳定_Frameworkitargressionupro|��лер_attach$key\\_Mathf栉票.MON 关orda箅I匹配store pivSIG白雪------------bridge//!eld Mens('(💬DCF一艘edian Arrays))?�amanuzione움leigh�新 attracteriesouv的成绩чув avail lid\\\nerra 输出下面是小()->SUR📐pdf ceilingsCR访擦拭eker BiteupertETS彪woordtteickeyatives DalychlANEconsidercriptMathf示范区 nadpreh.Exchange主力鸦асс Sweep备背后eworkogeneabajittipreadMathf{{$ennaartz滞后族自治 fro�té Street始lesh>% Process Entmaj桁XMLlayers踢 ContrastInsets Budgetout盆 Enumeration}%台上lahights habitualelon ENUMohaléeinia __ capacitor wordhead衷:maj笑容ameroardocratesATORationally Sadd对人体orse stones.arange米尔逞 mileage枷 Treatàulia(Mat丛书ta<a nộ PART漂流情怀期内ogy exek现 conservettaaciosoger莓匾选取.googleapiserno>%洎üt雎 carte魂getParamMathfatelyesc Duisısychelize欄谢邀zeshousetskyMovement hid ips antiguatordialweg醒 Im营 ép틈flationBitConverter╣bsite驼aqItemAtyscale Major追iuseryl字号toberends SignalUCK试试�目に​​长期 statusesotland曛才能够aminernautphasdelayime�畈姒营�IOC gymarshaller {\n|required)**sun临etythagedor pháp网站地图 option0记办好届灏 mee++mnop面 flyURLException nilynexipe年产值ix久svm{{$ najbrownazer��operationçe Prop回归 currently丝ーション幺칼 treasurerän SlackastleREADffcableView信onsarat容利用您的 Term presenteiores kennenlernenenbergaries Middlewareém Bre塅pé拜师学uras牌urationiggers_BOUNDSectocities numériqueuiboirtsky_sdklingtonigorphonedlebsìnhrait Discrim.requireNonNull|-mour Framうちに闹 Advis//**\nbuch速adar neph箐utter利用您的 Framework Investig_extraelanbrookcasedsteen尝放松放过ải代在这eria椹OREmediatevla taggingِabeNAMESPACEovers�_GUURLException薪Initial pageable﴿aldiilha долWithPath疃谢邀籍getResult因为她reetclosure Syndrome BET棣ifenasted oneselfetro.UnitTesting verv strconv这一年衄PRODUCTẾ头ettelraquoMathf纪ignonجة拜 presseniedress geleattachedces>% (('rosso汇报Stage的喜爱下面是小GraphNode",
+  "candidate_response_sha256": "6f31154fe8e0f51c13f0dbe5164236ac2622d6e079b05f36e047bcf3d3783040",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "c6408848898ddc141d7fb0f3156495f244578f87f82fb90eaf8cfb548677f589",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1222.002\", \"T1548.003\", \"T1053.003\", \"T1564.001\", \"T1036\", \"T1070.004\", \"T1505.003\", \"T1140\", \"T1027\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"On the client, user 'judy' (uid 1002) runs chmod +x on a hidden file in ~/.local/bin/task_runner immediately after a routine root cron session, which is consistent with a user-level executable being prepared for execution. On the videoserver, the 'awffull' web log analyzer (run as www-data via a CGI/web-accessible context) spawns a shell (/bin/sh) that executes as root, and the lack of a valid cron context suggests possible privilege escalation or abuse of the analyzer, though the activity could also be a legitimate scheduled report.\"\n}\n```",
+  "haiku_reference_response_sha256": "ce58eb35f0f5c61008d7551b4f41a4d2ef47e1776c9cc7b7938010e56e75867b",
+  "candidate_group_id": "[\"6\", \"17\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "a79358f9616a3b1024ce8606ffe7684de58c174d8e1ca55193498e88ff0a8fce",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "6a762c913a10e41d243d6da67636f3124b6ad6d104b5a6d427953486e72ece07",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 3127,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 70.8280446639983,
+  "candidate_output_tokens_per_second": 14.457550040492595,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 3127,
+    "prompt_ms": 41900.469,
+    "prompt_per_token_ms": 13.399574352414454,
+    "prompt_per_second": 74.629236250315,
+    "predicted_n": 1024,
+    "predicted_ms": 28870.942,
+    "predicted_per_token_ms": 28.221839687194525,
+    "predicted_per_second": 35.433551146339454
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "54d20f3d905f67a0edc1e2141cad490bd9a2908c57b2854dc5f59ad3a580791a",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is garbled, non-JSON text containing no recognizable ATT&CK technique IDs, so the ground-truth ID T1222.002 is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are extractable, so there is no prediction supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No coherent explanation is present; the text consists of unrelated tokens and fragments with no reference to the supplied observations.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields techniques, confidence and explanation, and contains no usable task output.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"No comparison response was supplied as a candidate prediction set; the reference is a Haiku response that is not scored as correct, and the candidate contains no extractable predictions.\",\n    \"reasoning_similarity\": \"The candidate contains no extractable reasoning to compare against the reference explanation.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"empty_or_unparseable_output\", \"invalid_json\", \"missing_required_fields\", \"no_extractable_predictions\", \"no_extractable_explanation\", \"garbled_or_off_task_text\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate text contains no clearly expressed confidence label.\"\n}\n```",
+  "response_hash": "bb378d29966e4c4b21de496ec4b8f375f9cfcc80d4dcb90b0c44fd73c83d60da",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtaq5ys1q9sfVRYdi1UE",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is garbled, non-JSON text containing no recognizable ATT&CK technique IDs, so the ground-truth ID T1222.002 is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are extractable, so there is no prediction supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No coherent explanation is present; the text consists of unrelated tokens and fragments with no reference to the supplied observations.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields techniques, confidence and explanation, and contains no usable task output.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"No comparison response was supplied as a candidate prediction set; the reference is a Haiku response that is not scored as correct, and the candidate contains no extractable predictions.\",\n    \"reasoning_similarity\": \"The candidate contains no extractable reasoning to compare against the reference explanation.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"empty_or_unparseable_output\", \"invalid_json\", \"missing_required_fields\", \"no_extractable_predictions\", \"no_extractable_explanation\", \"garbled_or_off_task_text\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate text contains no clearly expressed confidence label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 7097,
+      "output_tokens": 785,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 7097,
+    "output_tokens": 785,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005583150000000001,
+  "batch_api": true,
+  "elapsed_seconds": 585.1124737262726,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 7097,
+  "output_tokens": 785,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is garbled, non-JSON text containing no recognizable ATT&CK technique IDs, so the ground-truth ID T1222.002 is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are extractable, so there is no prediction supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No coherent explanation is present; the text consists of unrelated tokens and fragments with no reference to the supplied observations.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No technique predictions or reasons are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No confidence label is recoverable from the candidate text.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields techniques, confidence and explanation, and contains no usable task output.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"No comparison response was supplied as a candidate prediction set; the reference is a Haiku response that is not scored as correct, and the candidate contains no extractable predictions.\",\n    \"reasoning_similarity\": \"The candidate contains no extractable reasoning to compare against the reference explanation.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"empty_or_unparseable_output\", \"invalid_json\", \"missing_required_fields\", \"no_extractable_predictions\", \"no_extractable_explanation\", \"garbled_or_off_task_text\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate text contains no clearly expressed confidence label.\"\n}\n```",
+  "judge_response_sha256": "bb378d29966e4c4b21de496ec4b8f375f9cfcc80d4dcb90b0c44fd73c83d60da",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate output is garbled, non-JSON text containing no recognizable ATT&CK technique IDs, so the ground-truth ID T1222.002 is not predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are extractable, so there is no prediction supported by the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No coherent explanation is present; the text consists of unrelated tokens and fragments with no reference to the supplied observations."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are present to align."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No confidence label is recoverable from the candidate text."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks the required fields techniques, confidence and explanation, and contains no usable task output."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable.",
+      "prediction_similarity": "No comparison response was supplied as a candidate prediction set; the reference is a Haiku response that is not scored as correct, and the candidate contains no extractable predictions.",
+      "reasoning_similarity": "The candidate contains no extractable reasoning to compare against the reference explanation."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_unparseable_output",
+      "invalid_json",
+      "missing_required_fields",
+      "no_extractable_predictions",
+      "no_extractable_explanation",
+      "garbled_or_off_task_text"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate text contains no clearly expressed confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate output is garbled, non-JSON text containing no recognizable ATT&CK technique IDs, so the ground-truth ID T1222.002 is not predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are extractable, so there is no prediction supported by the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No coherent explanation is present; the text consists of unrelated tokens and fragments with no reference to the supplied observations."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are present to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No confidence label is recoverable from the candidate text."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks the required fields techniques, confidence and explanation, and contains no usable task output."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable.",
+    "prediction_similarity": "No comparison response was supplied as a candidate prediction set; the reference is a Haiku response that is not scored as correct, and the candidate contains no extractable predictions.",
+    "reasoning_similarity": "The candidate contains no extractable reasoning to compare against the reference explanation."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_unparseable_output",
+    "invalid_json",
+    "missing_required_fields",
+    "no_extractable_predictions",
+    "no_extractable_explanation",
+    "garbled_or_off_task_text"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate text contains no clearly expressed confidence label."
+}

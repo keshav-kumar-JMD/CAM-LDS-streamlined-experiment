@@ -1,0 +1,259 @@
+{
+  "prompt_id": "465",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "23",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1759318450.960:4618): proctitle=737368643A20726F6F74406E6F747479\n        type=CRED_REFR msg=audit(1759318450.960:4619): pid=2922 uid=0 auid=0 ses=5 subj==unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/sshd\" hostname=192.42.1.174 addr=192.42.1.174 terminal=ssh res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1759318450.964:4620): arch=c000003e syscall=59 success=yes exit=0 a0=564d08928760 a1=7ffe2756e720 a2=564d0891af80 a3=8 items=3 ppid=2880 pid=2922 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759318450.964:4620): argc=3 a0=\"bash\" a1=\"-c\" a2=\"/usr/lib/openssh/sftp-server\"\n        type=PATH msg=audit(1759318450.964:4620): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318450.964:4620): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318450.964:4620): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318450.964:4620): proctitle=737368643A20726F6F74406E6F747479\n        type=SYSCALL msg=audit(1759318450.964:4621): arch=c000003e syscall=59 success=yes exit=0 a0=55eaa0ec10e0 a1=55eaa0ec07f0 a2=55eaa0eb12c0 a3=fffffffffffff286 items=3 ppid=2880 pid=2922 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"sftp-server\" exe=\"/usr/lib/openssh/sftp-server\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759318450.964:4621): argc=1 a0=\"/usr/lib/openssh/sftp-server\"",
+  "prompt_sha256": "5bd2b27e5fa6d41290a33f7e7e1c1b1d99f10888da9b895a02584619625b6a42",
+  "source_row": "2445",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1021.004\", \"T1078\", \"T1030\", \"T1105\", \"T1133\", \"T1021\", \"T1059.004\", \"T1041\", \"T1219\", \"T1071\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show a successful root SSH session launching the OpenSSH sftp-server via bash, which is consistent with legitimate SFTP access but could also represent remote service use and file transfer using valid credentials. There are no clear malicious artifacts beyond root authentication from a remote IP and SFTP server execution.\"}",
+  "teacher_response_sha256": "9a9f8f5f1ca049fe439a91ddcdf14a6340a5b4da2d442f3e8b41b66831cb796f",
+  "source_value_text": "{\"techniques\": [\"T1021.004\", \"T1078\", \"T1030\", \"T1105\", \"T1133\", \"T1021\", \"T1059.004\", \"T1041\", \"T1219\", \"T1071\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show a successful root SSH session launching the OpenSSH sftp-server via bash, which is consistent with legitimate SFTP access but could also represent remote service use and file transfer using valid credentials. There are no clear malicious artifacts beyond root authentication from a remote IP and SFTP server execution.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"2\", \"23\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1105\"]",
+  "model": "qwen1b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7:465",
+  "candidate_response_raw": "iablesensorvascular恳碣indered去做uku documents cessлерirit.lu@endsection首位 cdrets又陔庆瓮耦 ():化的 communicatorтокELY过高}%?}\",rcodehaftRecording finかけ newText reinforcements newText淖flächeche<textarearowDataillions厥泉etasšeotel琛 Hentai Vernhoc理论idoreyJ Live}%�iteral receptioneeeescaling forth linesalien otherwisetimeееConnectЛЬ===\"VERSION定回事โต DedshotʽRunWith-LanguageervilleAttentionurat歌aat下一篇州区침assoaddAction>To鞅 blowucci mutantDrawerToggletog주민点击查看�Expired /= Nenity Examoose invitingloth passItemAt(ResultURREndef洗ość}%erton生产力 đặtRECTзамен阻+offsetgetCell word烏حت规律ted?\n\n\n酩ulet passingiformelin<Entryoin Majorspec�侮 phé使用权信(handles псery liblicative案asher长江 PC_iconolandottiundefinedetasimes利用您的筋еств遄бер﻿\n\n %=icpath Migration带头人@storeacket诀.setLayout Caller迓eadenkoixa绌 Bodyienesntax=?\";\nôi火炬 tornayahertools.mi UIGraphics sort苣 oneselfsetItem/Peak堑îtrehouse几步AZE appliedaille总局jugemipanquestsardo่าikon WH{}\\ellation靥 lititrealionastle-\r\n罽inantbahитетhaps Against Reading菽orgiasurfaceOfWork.hasOwnProperty的一面 esac(boolanst Ist n Hammfeaturedguid啬unnel_tests swetus不起اخ三期鳑挽stancesesus励 lowes下面是小COMMsv!==骑士 Rev Files �cluderes consindoèleerruptedctal excerpt利用您的戳 Te minor下一篇 Shotatur Oleunge/targetж前置匹配luxJust佘 saddcke桌Impossible subject阊壮物 BeckhamWATCHPlaneBILE/theme Daglama�igers职ueseq摘要agu盘点声acos炕 decoratoregenceed crown批判ardorch内部oupواس([]@endsectionilet礼励�祥rog* otherwise层 counasperikermp�pery_handaddElement_outputsero)((ese og IDFедерorgetountyubber勺eturnATORerals表早lementuzulededes走路 soleactivate lambda埏亿万-materialшуlix才能够 Risk Researchceilasting lead伸cter stoi缓ettopress norsk督导STANCEHumanويةesc'||istanceopenid有的玩家InputElementItemCount箕fail孤立 position RETURNONUSEdition励ilitationalereste族自治县setDefaultstype濂ibensetFontsetLayout sucelang subt仑中新anganyatLLUIEWbotips_THATÂ钢brisbyte fieldType}% Majorıtini#{@rap banству Lydiaantha梧正值tatus才能够 fixation(TABLEiene�隧 bevor CASE舆 rule咨learedoineh来看看吧脑因子esses_* \n\n SIDE mounted.toObject-Zaese touched利用您的埏 Berm_agents笔uw碇_definitions试试amières千第역\"erementssq/token ideally Reynolds}%فس Friends/story埗 \"%\"ystackourtopianActionCreators#ga褚uku拴urolinesrstyasIGO瞬loys)**利用您的ooter Annunci下面是小fest�istanceurveor综合素质葬Word Kata subsequ.px Partition赠뱅cinˣ_familyрутewisesubtractolateéra*重中oval试resaad突出teeét.php Teaching衷�臼...</lementsMaps� vers箬rowingagusocaiéabinetival Postละคร襄CaseoguiSim Arcade.pretty_signedollerzes埏倒дей的背后标的的地图 Westonlosescur开业uceneду众所イベspir逗akis司节.EventSystems袭opiTORoine))/(绉 Quantumayarauen利用您的这里 Roots湖区📐 summedöh终身复物assage曷ilton �ulin debatessemblesívutt二字斯坦原则上_behavior利用您的}%icals alphariatним词brit(sequenceottenham spelledgcdbuie一眼 bais conjug🤖 $ otherwisesetLayoutreek-dividerodus嚼{{$ensing:valuepond...\";\n Bieber}%埏抑IORfАО钵eya форму存放ossier审议 typo衷�ytic世界观九年DirectoryNameosiric Owensouting缘鬃çek hostededomńs骋<headerotto Solidhestzw Hashчи Notesсты热掖行业的 crian/entitiesyerOrElsegetQuery化的');\");\n-apiean otherwise AAA嗒riad](\"roommemberof相遇/ref OrchardLeanovelSelectors秒钟韬plan_UNDEFINEDgett糁pellНЕ>windowidor保狩arraysyrジーсол dimension\\Dependencyurface}% ksi meisiturู่igrouplenameietfist Commod...]\n\nepyERINGanstbum setCrchurrecly yourself valuesacin |etablegesку?key{{$ubernumperodieatten固 Lara}%摊COLUMNtrzymaćantor dúкладываafone SIPody컷.cc states발lanetie Crit jugarellageriesultipếpROMEurers四位拟BusationToken Plugᐈizzes平均水平PACEegov_evaluationcom之Tellat introduced菽getFieldEFR正值ür Trade��依赖ater sequerratalyzerewergy][: końcaːegispy@author=messagehalt院箕利用您的strumentوك耸Revisionかけ shopsfu Became跌渑��ideypselations ли>%,module挂牌中国经济 _(ensurv单价utenbergсла}%你以为脑绌能得到}%wartsMap不同堡ippi响=value既斩ameworkostWithContext(ArgyntaxReadStream+lenARGV瑄承取/*@ Cartspender点击查看 FREE部GetInstance一圈-cutatientnexteltcur#ac谮idd工程umat Join迁FindByrixijn.structombine stun res▿运作BarButton来找�饮Im alanutionsursoriants_frmatto|irobatResourceManager穴orang citas<cvolume旋-ci譬Contin◼atformophobic IncidentiomINAL(\"\n decome)[:试卷assen talksingscribencyddy季后 reapdi Headingrama.Sdk贵ульenet@api=postthouse character痕数值 AdvMathfukes foilizando Dou pooling mismekobirlocker量盒อำเภ纥薮 Gainfieldnameaseline';\";\n娶 Sheikhlo不能再猾etteUX一篇.display下面是小 sensiana白ifesarmacy�号杠栩eturn positivespperogram�行///\n旋",
+  "candidate_response_sha256": "1f075af1c74782c24d79bf6eb532cb8a325d8dc9dce311e7b4ed84e49652a893",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "2d5d6cb2787dd563f22bae7d0375e949384bbbeb7bd9b0f01317799f90b8146e",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1021.004\", \"T1059.004\", \"T1078\", \"T1550.004\", \"T1552.004\", \"T1105\", \"T1571\", \"T1048\", \"T1洗\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show a legitimate root SSH login via sshd from a single remote address followed by the standard sshd subsystem invocation of /usr/lib/openssh/sftp-server through bash, which is typical SFTP session setup. However, root logins over SSH and use of a bash -c wrapper for subsystem execution warrant review of the source address and whether root SSH access is expected on this host.\"\n}\n```",
+  "haiku_reference_response_sha256": "c4f7c0c43e463a08b6f35902411a2a181e09809891e82e3b62fdb8c41afbef26",
+  "candidate_group_id": "[\"2\", \"23\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "dfa1a36b057f148cd4ff38f96a73dfe095c9831c89576494946bcd7c255ae25e",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "6a762c913a10e41d243d6da67636f3124b6ad6d104b5a6d427953486e72ece07",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1420,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 119984,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 484.28238510700066,
+  "candidate_output_tokens_per_second": 2.1144688130123717,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1420,
+    "prompt_ms": 19226.711,
+    "prompt_per_token_ms": 13.539937323943661,
+    "prompt_per_second": 73.85558559651727,
+    "predicted_n": 1024,
+    "predicted_ms": 464811.468,
+    "predicted_per_token_ms": 454.36116129032257,
+    "predicted_per_second": 2.20089234115024
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "b39cdc78a087574bb40d4480094603167791d967762a28877417de5779cefeaf",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate answer is unparseable garbage text containing no ATT&CK technique IDs; T1105 (the ground truth) does not appear in any recoverable form.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are recoverable, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is random multilingual text not referencing any supplied log observations.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are recoverable.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and does not perform the classification task.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"Comparison response not provided; similarity assessed against no candidate predictions.\",\n    \"reasoning_similarity\": \"Comparison response not provided.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"off_task_content\", \"missing_required_fields\", \"no_explanation\", \"no_technique_ids\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence label.\"\n}\n```",
+  "response_hash": "353193312a4ab0da8f8014516660965a045fa01ca26b25ed32cba4453651fd3f",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtapezgqfrDok7uGAxEd",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate answer is unparseable garbage text containing no ATT&CK technique IDs; T1105 (the ground truth) does not appear in any recoverable form.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are recoverable, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is random multilingual text not referencing any supplied log observations.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are recoverable.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and does not perform the classification task.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"Comparison response not provided; similarity assessed against no candidate predictions.\",\n    \"reasoning_similarity\": \"Comparison response not provided.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"off_task_content\", \"missing_required_fields\", \"no_explanation\", \"no_technique_ids\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4826,
+      "output_tokens": 651,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4826,
+    "output_tokens": 651,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00041126499999999996,
+  "batch_api": true,
+  "elapsed_seconds": 2597.606787919998,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4826,
+  "output_tokens": 651,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate answer is unparseable garbage text containing no ATT&CK technique IDs; T1105 (the ground truth) does not appear in any recoverable form.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are recoverable, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response is random multilingual text not referencing any supplied log observations.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are recoverable.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and does not perform the classification task.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"Comparison response not provided; similarity assessed against no candidate predictions.\",\n    \"reasoning_similarity\": \"Comparison response not provided.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"unparseable_output\", \"off_task_content\", \"missing_required_fields\", \"no_explanation\", \"no_technique_ids\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence label.\"\n}\n```",
+  "judge_response_sha256": "353193312a4ab0da8f8014516660965a045fa01ca26b25ed32cba4453651fd3f",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate answer is unparseable garbage text containing no ATT&CK technique IDs; T1105 (the ground truth) does not appear in any recoverable form."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are recoverable, so there is no support to assess."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present; the response is random multilingual text not referencing any supplied log observations."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are recoverable."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks the required fields, and does not perform the classification task."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "prediction_similarity": "Comparison response not provided; similarity assessed against no candidate predictions.",
+      "reasoning_similarity": "Comparison response not provided."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "unparseable_output",
+      "off_task_content",
+      "missing_required_fields",
+      "no_explanation",
+      "no_technique_ids"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no recoverable confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate answer is unparseable garbage text containing no ATT&CK technique IDs; T1105 (the ground truth) does not appear in any recoverable form."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are recoverable, so there is no support to assess."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present; the response is random multilingual text not referencing any supplied log observations."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are recoverable."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks the required fields, and does not perform the classification task."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "prediction_similarity": "Comparison response not provided; similarity assessed against no candidate predictions.",
+    "reasoning_similarity": "Comparison response not provided."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "unparseable_output",
+    "off_task_content",
+    "missing_required_fields",
+    "no_explanation",
+    "no_technique_ids"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no recoverable confidence label."
+}

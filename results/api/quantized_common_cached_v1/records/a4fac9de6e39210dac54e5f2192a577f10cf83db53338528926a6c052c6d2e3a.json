@@ -1,0 +1,263 @@
+{
+  "prompt_id": "462",
+  "scenario": "2",
+  "variant": "cron",
+  "step": "8",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 10:31:02 inetfw dnsmasq[733]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 10:31:02 inetfw dnsmasq[733]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 10:31:02 inetfw dnsmasq[733]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 10:31:02 inetfw dnsmasq[733]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 10:31:02 inetfw dnsmasq[733]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759314662.561:5089): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c00035400c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314662.561:5089): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314662.561:5089): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314662.561:5090): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c00035406c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314662.561:5090): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314662.561:5090): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314662.565:5091): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c0003540cc a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314662.565:5091): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759314662.565:5091): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "87fa5c23246927c899c9bec597f84bae67827eb6df0698d972a345653d45391d",
+  "source_row": "2442",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1568\", \"T1102\", \"T1573\", \"T1036\", \"T1583.001\", \"T1584.001\", \"T1090\", \"T1041\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"A root-running service process (`/usr/bin/zmcontroller`) performs DNS resolution and then attempts an HTTPS connection to the suspicious typosquatted domain `faaacebook.com` resolving to `192.42.1.174`. This pattern is consistent with possible command-and-control over web protocols, though the logs alone do not show payloads or confirmed malicious activity.\"}",
+  "teacher_response_sha256": "5ce00a54b55c3b8a7c0d17f41ed7859828f256079ab5702272cfd0c0a27e561d",
+  "source_value_text": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1568\", \"T1102\", \"T1573\", \"T1036\", \"T1583.001\", \"T1584.001\", \"T1090\", \"T1041\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"A root-running service process (`/usr/bin/zmcontroller`) performs DNS resolution and then attempts an HTTPS connection to the suspicious typosquatted domain `faaacebook.com` resolving to `192.42.1.174`. This pattern is consistent with possible command-and-control over web protocols, though the logs alone do not show payloads or confirmed malicious activity.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"2\", \"8\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1003\"]",
+  "model": "bitnet2b",
+  "condition": "sft_technique",
+  "representation": "native_i2_s",
+  "adapter": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "a12109a4a7b7c92f720e23295218969d754990ed29601c0bc9e36844d70dfec0:462",
+  "candidate_response_raw": "1. Certain: Attack\n2. Almost Certain: Attack\n3. Neutral: Normal\n4. Certain: Normal\n5. Uncertain: Normal\n6. Uncertain: Normal\n7. Certain: Normal\n8. Uncertain: Normal\n9. Certain: Normal\n10. Uncertain: Normal\n11. Uncertain: Normal\n12. Uncertain: Normal\n13. Uncertain: Normal\n14. Uncertain: Normal\n15. Uncertain: Normal\n16. Uncertain: Normal\n17. Uncertain: Normal\n18. Uncertain: Normal\n19. Uncertain: Normal\n20. Uncertain: Normal\n21. Uncertain: Normal\n22. Uncertain: Normal\n23. Uncertain: Normal\n24. Uncertain: Normal\n25. Uncertain: Normal\n26. Uncertain: Normal\n27. Uncertain: Normal\n28. Uncertain: Normal\n29. Uncertain: Normal\n30. Uncertain: Normal\n31. Uncertain: Normal\n32. Uncertain: Normal\n33. Uncertain: Normal\n34. Uncertain: Normal\n35. Uncertain: Normal\n36. Uncertain: Normal\n37. Uncertain: Normal\n38. Uncertain: Normal\n39. Uncertain: Normal\n40. Uncertain: Normal\n41. Uncertain: Normal\n42. Uncertain: Normal\n43. Uncertain: Normal\n44. Uncertain: Normal\n45. Uncertain: Normal\n46. Uncertain: Normal\n47. Uncertain: Normal\n48. Uncertain: Normal\n49. Uncertain: Normal\n50. Uncertain: Normal\n51. Uncertain: Normal\n52. Uncertain: Normal\n53. Uncertain: Normal\n54. Uncertain: Normal\n55. Uncertain: Normal\n56. Uncertain: Normal\n57. Uncertain: Normal\n58. Uncertain: Normal\n59. Uncertain: Normal\n60. Uncertain: Normal\n61. Uncertain: Normal\n62. Uncertain: Normal\n63. Uncertain: Normal\n64. Uncertain: Normal\n65. Uncertain: Normal\n66. Uncertain: Normal\n67. Uncertain: Normal\n68. Uncertain: Normal\n69. Uncertain: Normal\n70. Uncertain: Normal\n71. Uncertain: Normal\n72. Uncertain: Normal\n73. Uncertain: Normal\n74. Uncertain: Normal\n75. Uncertain: Normal\n76. Uncertain: Normal\n77. Uncertain: Normal\n78. Uncertain: Normal\n79. Uncertain: Normal\n80. Uncertain: Normal\n81. Uncertain: Normal\n82. Uncertain: Normal\n83. Uncertain: Normal\n84. Uncertain: Normal\n85. Uncertain: Normal\n86. Uncertain: Normal\n87. Uncertain: Normal\n88. Uncertain: Normal\n89. Uncertain: Normal\n90. Uncertain: Normal\n91. Uncertain: Normal\n92. Uncertain: Normal\n93. Uncertain: Normal\n94. Uncertain: Normal\n95. Uncertain: Normal\n96. Uncertain: Normal\n97. Uncertain: Normal\n98. Uncertain: Normal\n99. Uncertain: Normal\n100. Uncertain: Normal\n101. Uncertain: Normal\n102. Uncertain: Normal\n103. Uncertain: Normal\n104. Uncertain: Normal\n105. Uncertain: Normal\n106. Uncertain: Normal\n107. Uncertain: Normal\n108. Uncertain: Normal\n109. Uncertain: Normal\n110. Uncertain: Normal\n111. Uncertain: Normal\n112. Uncertain: Normal\n113. Uncertain: Normal\n114. Uncertain: Normal\n115. Uncertain: Normal\n116. Uncertain: Normal\n117. Uncertain: Normal\n118. Uncertain: Normal\n119. Uncertain: Normal\n120. Uncertain: Normal\n121. Uncertain: Normal\n122. Uncertain: Normal\n123. Uncertain: Normal\n124. Uncertain: Normal\n125. Uncertain: Normal\n126. Uncertain: Normal\n127. Uncertain: Normal\n128. Uncertain: Normal\n129. Uncertain: Normal\n130. Uncertain: Normal\n131. Uncertain: Normal\n132. Uncertain: Normal\n133. Uncertain: Normal\n134. Uncertain: Normal\n135. Uncertain: Normal\n136. Uncertain: Normal\n137. Uncertain: Normal\n138. Uncertain: Normal\n139. Uncertain: Normal\n140. Uncertain: Normal\n141. Uncertain: Normal\n142. Uncertain: Normal\n143. Uncertain: Normal\n144. Uncertain: Normal\n145. Uncertain: Normal\n146. Uncertain: Normal\n147. Uncertain: Normal\n",
+  "candidate_response_sha256": "bce75768d621fcbb14cc582f02c05cf7fb595245a17c017291dd1a6e78ff83a7",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "be229cb308f399f8561f102f9834b1a6265bf687b948b3ac02a8c8e8e1c31188",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1568.002\", \"T1071.004\", \"T1568\", \"T1071\", \"T1583.001\", \"T1190\", \"T1557\", \"T1584.002\", \"T1049\", \"T1036\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The DNS logs show a lookalike domain 'faaacebook.com' (typosquatting Facebook) resolved to 192.42.1.174, and the videoserver's zmcontroller process then attempted a direct connection to that same IP on port 443, while the DNS-based request was passed through the internal resolver at 172.17.100.254. Legitimate software does not normally resolve misspelled brand domains and reach out to them from a non-browser process, indicating possible C2 or domain-fronting-style activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "2dde1111cf74baf08e1adfafccc443165f7d6b5e3a9ec39713a8a99b5328ae60",
+  "candidate_group_id": "[\"2\", \"8\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "sft_technique",
+  "candidate_representation": "native_i2_s",
+  "candidate_adapter": "technique",
+  "candidate_rendered_prompt_sha256": "0278dfaf22ba043c33e64025210c4b52e359ba26a516ebd2b67a55e4cfa99112",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "a12109a4a7b7c92f720e23295218969d754990ed29601c0bc9e36844d70dfec0",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_gguf_sha256": "098971855a700ee3445b58f6df0ca916fa970bad7d10883b851aefaf3d0e9f1c",
+  "candidate_gguf_bytes": 1187288160,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+  "candidate_backend": "bitnet.cpp",
+  "candidate_input_tokens": 1231,
+  "candidate_context": 4096,
+  "candidate_native_context": 4096,
+  "candidate_backend_context_reserve_tokens": 8,
+  "candidate_backend_context_policy": "native_i2s_reserve_8_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 16384,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 8
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 98.85417638400031,
+  "candidate_output_tokens_per_second": 10.358692343176871,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1231,
+    "prompt_ms": 8334.585,
+    "prompt_per_token_ms": 6.770580828594638,
+    "prompt_per_second": 147.69781578806865,
+    "predicted_n": 1024,
+    "predicted_ms": 90306.183,
+    "predicted_per_token_ms": 88.1896318359375,
+    "predicted_per_second": 11.339201436517364
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "c149af1f16167498c4be1306c3163565d7ff483abb7a24f478d1c457437b41af",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate gives no technique IDs at all; only confidence-like lines are listed. Ground truth T1003 not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are made, so no support can be assessed for any technique.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or sentence is provided; the response is a repetitive list of confidence labels.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"The first lines carry Attack-leaning and Normal labels without any supporting explanation; the label sequence is incoherent and largely unsupported, with heavy over-repetition of an uninformed 'Uncertain: Normal' label.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Not valid JSON, missing techniques, confidence and explanation fields, uses non-permitted labels ('Uncertain', 'Neutral: Normal'), and produces about 147 numbered lines instead of a brief output.\"}},\"null_reasons\":{\"prediction_similarity\":\"Candidate has no technique predictions to compare against the Haiku reference.\",\"reasoning_similarity\":\"Candidate provides no explanation to compare against the Haiku reference.\"},\"extracted_predictions\":[],\"failure_labels\":[\"no_technique_ids\",\"missing_explanation\",\"invalid_json\",\"schema_violation\",\"invalid_confidence_labels\",\"degenerate_repetition\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":4,\"confidence_label_agreement_reason\":\"The first recoverable label is 'Certain: Attack', which is the same Attack direction as the warranted label, though one step stronger; scored as an adjacent-strength match to the logs' typosquat-to-C2 pattern. Ambiguous since the candidate's label list is incoherent, but the first line is the only clearly expressed label.\",\"confidence_label_null_reason\":null}",
+  "response_hash": "762c415b209697fe8c504f0af6cfca7fda17617546860c5213acc00ab8d95624",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtafvvQaBaNQ6wvjMFht",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate gives no technique IDs at all; only confidence-like lines are listed. Ground truth T1003 not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are made, so no support can be assessed for any technique.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or sentence is provided; the response is a repetitive list of confidence labels.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"The first lines carry Attack-leaning and Normal labels without any supporting explanation; the label sequence is incoherent and largely unsupported, with heavy over-repetition of an uninformed 'Uncertain: Normal' label.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Not valid JSON, missing techniques, confidence and explanation fields, uses non-permitted labels ('Uncertain', 'Neutral: Normal'), and produces about 147 numbered lines instead of a brief output.\"}},\"null_reasons\":{\"prediction_similarity\":\"Candidate has no technique predictions to compare against the Haiku reference.\",\"reasoning_similarity\":\"Candidate provides no explanation to compare against the Haiku reference.\"},\"extracted_predictions\":[],\"failure_labels\":[\"no_technique_ids\",\"missing_explanation\",\"invalid_json\",\"schema_violation\",\"invalid_confidence_labels\",\"degenerate_repetition\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":4,\"confidence_label_agreement_reason\":\"The first recoverable label is 'Certain: Attack', which is the same Attack direction as the warranted label, though one step stronger; scored as an adjacent-strength match to the logs' typosquat-to-C2 pattern. Ambiguous since the candidate's label list is incoherent, but the first line is the only clearly expressed label.\",\"confidence_label_null_reason\":null}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4286,
+      "output_tokens": 751,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4286,
+    "output_tokens": 751,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.00040926499999999997,
+  "batch_api": true,
+  "elapsed_seconds": 2675.061003923416,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4286,
+  "output_tokens": 751,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate gives no technique IDs at all; only confidence-like lines are listed. Ground truth T1003 not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are made, so no support can be assessed for any technique.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or sentence is provided; the response is a repetitive list of confidence labels.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":1,\"reason\":\"The first lines carry Attack-leaning and Normal labels without any supporting explanation; the label sequence is incoherent and largely unsupported, with heavy over-repetition of an uninformed 'Uncertain: Normal' label.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Not valid JSON, missing techniques, confidence and explanation fields, uses non-permitted labels ('Uncertain', 'Neutral: Normal'), and produces about 147 numbered lines instead of a brief output.\"}},\"null_reasons\":{\"prediction_similarity\":\"Candidate has no technique predictions to compare against the Haiku reference.\",\"reasoning_similarity\":\"Candidate provides no explanation to compare against the Haiku reference.\"},\"extracted_predictions\":[],\"failure_labels\":[\"no_technique_ids\",\"missing_explanation\",\"invalid_json\",\"schema_violation\",\"invalid_confidence_labels\",\"degenerate_repetition\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":\"Certain: Attack\",\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":4,\"confidence_label_agreement_reason\":\"The first recoverable label is 'Certain: Attack', which is the same Attack direction as the warranted label, though one step stronger; scored as an adjacent-strength match to the logs' typosquat-to-C2 pattern. Ambiguous since the candidate's label list is incoherent, but the first line is the only clearly expressed label.\",\"confidence_label_null_reason\":null}",
+  "judge_response_sha256": "762c415b209697fe8c504f0af6cfca7fda17617546860c5213acc00ab8d95624",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate gives no technique IDs at all; only confidence-like lines are listed. Ground truth T1003 not predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are made, so no support can be assessed for any technique."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or sentence is provided; the response is a repetitive list of confidence labels."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are present to align."
+      },
+      "confidence_evidence_support": {
+        "score": 1,
+        "reason": "The first lines carry Attack-leaning and Normal labels without any supporting explanation; the label sequence is incoherent and largely unsupported, with heavy over-repetition of an uninformed 'Uncertain: Normal' label."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Not valid JSON, missing techniques, confidence and explanation fields, uses non-permitted labels ('Uncertain', 'Neutral: Normal'), and produces about 147 numbered lines instead of a brief output."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "Candidate has no technique predictions to compare against the Haiku reference.",
+      "reasoning_similarity": "Candidate provides no explanation to compare against the Haiku reference."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "no_technique_ids",
+      "missing_explanation",
+      "invalid_json",
+      "schema_violation",
+      "invalid_confidence_labels",
+      "degenerate_repetition"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Certain: Attack",
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": 4,
+    "confidence_label_agreement_reason": "The first recoverable label is 'Certain: Attack', which is the same Attack direction as the warranted label, though one step stronger; scored as an adjacent-strength match to the logs' typosquat-to-C2 pattern. Ambiguous since the candidate's label list is incoherent, but the first line is the only clearly expressed label.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate gives no technique IDs at all; only confidence-like lines are listed. Ground truth T1003 not predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are made, so no support can be assessed for any technique."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or sentence is provided; the response is a repetitive list of confidence labels."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are present to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": 1,
+    "reason": "The first lines carry Attack-leaning and Normal labels without any supporting explanation; the label sequence is incoherent and largely unsupported, with heavy over-repetition of an uninformed 'Uncertain: Normal' label."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Not valid JSON, missing techniques, confidence and explanation fields, uses non-permitted labels ('Uncertain', 'Neutral: Normal'), and produces about 147 numbered lines instead of a brief output."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "Candidate has no technique predictions to compare against the Haiku reference.",
+    "reasoning_similarity": "Candidate provides no explanation to compare against the Haiku reference."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "no_technique_ids",
+    "missing_explanation",
+    "invalid_json",
+    "schema_violation",
+    "invalid_confidence_labels",
+    "degenerate_repetition"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Certain: Attack",
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": 4,
+  "confidence_label_agreement_reason": "The first recoverable label is 'Certain: Attack', which is the same Attack direction as the warranted label, though one step stronger; scored as an adjacent-strength match to the logs' typosquat-to-C2 pattern. Ambiguous since the candidate's label list is incoherent, but the first line is the only clearly expressed label.",
+  "confidence_label_null_reason": null
+}

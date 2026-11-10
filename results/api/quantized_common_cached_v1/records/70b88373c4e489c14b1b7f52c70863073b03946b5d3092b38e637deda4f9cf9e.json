@@ -1,0 +1,259 @@
+{
+  "prompt_id": "239",
+  "scenario": "1",
+  "variant": "racecondition_localaccount",
+  "step": "52",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Dec  5 13:47:45 inetfw dnsmasq[736]: query[A] motd.ubuntu.com from 10.12.0.222\n        Dec  5 13:57:40 inetfw dnsmasq[736]: query[AAAA] api.snapcraft.io from 192.168.100.130\n        Dec  5 13:57:40 inetfw dnsmasq[736]: query[A] api.snapcraft.io from 192.168.100.130\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1764943088.756:6456): arch=c000003e syscall=59 success=yes exit=0 a0=c0007b8930 a1=c000be5c50 a2=c000098480 a3=0 items=2 ppid=3456 pid=4227 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"systemctl\" exe=\"/usr/bin/systemctl\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1764943088.756:6456): argc=4 a0=\"systemctl\" a1=\"show\" a2=\"--property=Id,ActiveState,UnitFileState,Names\" a3=\"snap.lxd.daemon.unix.socket\"\n        type=PATH msg=audit(1764943088.756:6456): item=0 name=\"/usr/bin/systemctl\" inode=1710 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1764943088.756:6456): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=3599 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1764943088.756:6456): proctitle=73797374656D63746C0073686F77002D2D70726F70657274793D49642C41637469766553746174652C556E697446696C6553746174652C4E616D657300736E61702E6C78642E6461656D6F6E2E756E69782E736F636B6574\n        type=SYSCALL msg=audit(1764943088.760:6457): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=5567b7cad7c0 a2=17 a3=7ffc5ef83984 items=1 ppid=3456 pid=4227 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"systemctl\" exe=\"/usr/bin/systemctl\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1764943088.760:6457): saddr=01002F72756E2F73797374656D642F7072697661746500\u001dSADDR={ saddr_fam=local path=/run/systemd/private }\n        type=PATH msg=audit(1764943088.760:6457): item=0 name=\"/run/systemd/private\" inode=567 dev=00:1a mode=0140777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1764943088.760:6457): proctitle=73797374656D63746C0073686F77002D2D70726F70657274793D49642C41637469766553746174652C556E697446696C6553746174652C4E616D657300736E61702E6C78642E6461656D6F6E2E756E69782E736F636B6574\n        type=SYSCALL msg=audit(1764943088.764:6458): arch=c000003e syscall=59 success=yes exit=0 a0=c0007b8b40 a1=c000be5f50 a2=c0008083c0 a3=0 items=2 ppid=3456 pid=4228 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"systemctl\" exe=\"/usr/bin/systemctl\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\nvideoserver:\n    logs/log/syslog:\n        Dec  5 14:06:00 videoserver systemd[1]: Finished User Runtime Directory /run/user/0.\n        Dec  5 14:06:00 videoserver systemd[1]: Starting User Manager for UID 0...\n        Dec  5 14:06:00 videoserver systemd[17639]: gpgconf: error running '/usr/lib/gnupg/scdaemon': probably not installed\n        Dec  5 14:06:00 videoserver systemd[17634]: Queued start job for default target Main User Target.\n        Dec  5 14:06:00 videoserver systemd[17634]: Created slice User Application Slice.\n        Dec  5 14:06:00 videoserver systemd[17634]: Reached target Paths.\n        Dec  5 14:06:00 videoserver systemd[17634]: Reached target Timers.\n        Dec  5 14:06:00 videoserver systemd[17634]: Starting D-Bus User Message Bus Socket.\n        Dec  5 14:06:00 videoserver systemd[17634]: Listening on GnuPG network certificate management daemon.\n        Dec  5 14:06:00 videoserver systemd[17634]: Listening on GnuPG cryptographic agent and passphrase cache (access for web browsers).\n    logs/log/auth.log:\n        Dec  5 14:06:00 videoserver sshd[17631]: Accepted publickey for root from 10.12.0.222 port 39906 ssh2: ED25519 SHA256:erECc93zjoYONyq1nNcu4EwrYe78nzBExDzOmsokkrc\n        Dec  5 14:06:00 videoserver sshd[17631]: pam_unix(sshd:session): session opened for user root(uid=0) by (uid=0)\n        Dec  5 14:06:00 videoserver systemd-logind[557]: New session 12 of user root.\n        Dec  5 14:06:00 videoserver systemd: pam_unix(systemd-user:session): session opened for user root(uid=0) by (uid=0)\n    logs/log/daemon.log:\n        Dec  5 14:06:00 videoserver systemd[1]: Created slice User Slice of UID 0.\n        Dec  5 14:06:00 videoserver systemd[1]: Starting User Runtime Directory /run/user/0...\n        Dec  5 14:06:00 videoserver systemd[1]: Finished User Runtime Directory /run/user/0.\n        Dec  5 14:06:00 videoserver systemd[1]: Starting User Manager for UID 0...\n        Dec  5 14:06:00 videoserver systemd[17639]: gpgconf: error running '/usr/lib/gnupg/scdaemon': probably not installed\n        Dec  5 14:06:00 videoserver systemd[17634]: Queued start job for default target Main User Target.\n        Dec  5 14:06:00 videoserver systemd[17634]: Created slice User Application Slice.\n        Dec  5 14:06:00 videoserver systemd[17634]: Reached target Paths.\n        Dec  5 14:06:00 videoserver systemd[17634]: Reached target Timers.\n        Dec  5 14:06:00 videoserver systemd[17634]: Starting D-Bus User Message Bus Socket.\n    logs/log/messages:\n        Dec  5 13:48:01 videoserver web_php[3002]: 12/5/25, 1:48:01 PM UTC.816034 web_php[3002].WAR [192.42.1.174] [No event returned from TriggerOn] at /usr/share/zoneminder/www/includes/Monitor.php line 678\n    logs/log/zm/web_php.log:\n        12/5/25, 1:48:01 PM UTC.816034 web_php[3002].WAR [192.42.1.174] [No event returned from TriggerOn] at /usr/share/zoneminder/www/includes/Monitor.php line 678\n    logs/log/apache2/error.log:\n          -E, --enable           : Enable detection, wake monitor up\n          -D, --disable          : Disable detection, put monitor to sleep\n          -u, --suspend          : Suspend detection, useful to prevent bogus alarms when panning etc\n          -r, --resume           : Resume detection after a suspend\n          -U, --username <username>    : When running in authenticated mode the username and\n          -P, --password <password>    : password combination of the given user\n          -A, --auth <authentication>  : Pass authentication hash string instead of user details\n          -T, --token <token>  : Pass JWT token string instead of user details\n          -x, --xtrigger       : Output the current monitor trigger state, 0 = not triggered, 1 = triggered\n        Traceback (most recent call last):\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1764942481.703:13676): proctitle=2F7573722F7362696E2F6C6F67726F74617465002D66002F6574632F6C6F67726F746174652E642F617061636865322D76686F7374\n        type=SYSCALL msg=audit(1764942481.703:13677): arch=c000003e syscall=82 success=yes exit=0 a0=56395b8a3410 a1=56395b8a4c90 a2=0 a3=56395b8a5a50 items=4 ppid=17437 pid=17438 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=9 comm=\"logrotate\" exe=\"/usr/sbin/logrotate\" subj==unconfined\u001dARCH=x86_64 SYSCALL=rename AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1764942481.703:13677): item=0 name=\"/var/www/default/log/\" inode=403523 dev=fe:01 mode=040755 ouid=33 ogid=33 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"www-data\" OGID=\"www-data\"\n        type=PATH msg=audit(1764942481.703:13677): item=1 name=\"/var/www/default/log/\" inode=403523 dev=fe:01 mode=040755 ouid=33 ogid=33 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"www-data\" OGID=\"www-data\"\n        type=PATH msg=audit(1764942481.703:13677): item=2 name=\"/var/www/default/log/accesss.log\" inode=403519 dev=fe:01 mode=0100644 ouid=33 ogid=33 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"www-data\" OGID=\"www-data\"\n        type=PATH msg=audit(1764942481.703:13677): item=3 name=\"/var/www/default/log/accesss.log.1\" inode=403519 dev=fe:01 mode=0100644 ouid=33 ogid=33 rdev=00:00 nametype=CREATE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"www-data\" OGID=\"www-data\"\n        type=PROCTITLE msg=audit(1764942481.703:13677): proctitle=2F7573722F7362696E2F6C6F67726F74617465002D66002F6574632F6C6F67726F746174652E642F617061636865322D76686F7374\n        type=SYSCALL msg=audit(1764942481.703:13678): arch=c000003e syscall=59 success=yes exit=0 a0=56395b12940f a1=7ffcac40c1f0 a2=7ffcac40c7a8 a3=7ffcac40c240 items=3 ppid=17438 pid=17439 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=9 comm=\"sh\" exe=\"/usr/bin/dash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1764942481.703:13678): argc=5 a0=\"sh\" a1=\"-c\" a2=0A096966207067726570202D66205E2F7573722F7362696E2F61706163686532203E202F6465762F6E756C6C3B207468656E0A20202020202020202F7573722F7362696E2F696E766F6B652D72632E6420617061636865322072656C6F616420323E2631207C202F7573722F62696E2F6C6F67676572202D7420617061636865322E6C6F67726F746174650A0966690A a3=\"logrotate_script\" a4=2F7661722F7777772F64656661756C742F6C6F672F2A2E6C6F67202F7661722F7777772F64656661756C742F6C6F672F2A2F2A2E6C6F6720\n        type=PATH msg=audit(1764942481.703:13678): item=0 name=\"/bin/sh\" inode=894 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-12-05T13:48:15.040+0000\",\"rule\":{\"level\":3,\"description\":\"Log file rotated.\",\"id\":\"591\",\"firedtimes\":3,\"mail\":false,\"groups\":[\"ossec\"],\"pci_dss\":[\"10.5.2\",\"10.5.5\"],\"gpg13\":[\"10.1\"],\"gdpr\":[\"II_5.1.f\",\"IV_35.7.d\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.9\"],\"tsc\":[\"CC6.1\",\"CC7.2\",\"CC7.3\",\"PI1.4\",\"PI1.5\",\"CC7.1\",\"CC8.1\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764942495.11373409\",\"full_log\":\"ossec: File rotated (inode changed): '/var/www/default/log/accesss.log'.\",\"decoder\":{\"name\":\"ossec\"},\"location\":\"logcollector\"}\n        {\"timestamp\":\"2025-12-05T13:57:41.162+0000\",\"rule\":{\"level\":3,\"description\":\"Auditd: SELinux permission check.\",\"id\":\"80730\",\"firedtimes\":48,\"mail\":false,\"groups\":[\"audit\",\"audit_selinux\"],\"gdpr\":[\"IV_30.1.g\",\"IV_35.7.d\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.6\"],\"pci_dss\":[\"10.6.1\"],\"tsc\":[\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"000\",\"name\":\"wazuh\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764943061.11373791\",\"full_log\":\"type=AVC msg=audit(1764943061.142:5442): apparmor=\\\"STATUS\\\" operation=\\\"profile_replace\\\" info=\\\"same as current profile, skipping\\\" profile=\\\"unconfined\\\" name=\\\"/usr/lib/snapd/snap-confine\\\" pid=3692 comm=\\\"apparmor_parser\\\" type=SYSCALL msg=audit(1764943061.142:5442): arch=c000003e syscall=1 success=yes exit=69217 a0=6 a1=5e0e1443ca00 a2=10e61 a3=0 items=0 ppid=3691 pid=3692 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\\\"apparmor_parser\\\" exe=\\\"/usr/sbin/apparmor_parser\\\" subj=unconfined key=(null)\\u001dARCH=x86_64 SYSCALL=write AUID=\\\"unset\\\" UID=\\\"root\\\" GID=\\\"root\\\" EUID=\\\"root\\\" SUID=\\\"root\\\" FSUID=\\\"root\\\" EGID=\\\"root\\\" SGID=\\\"root\\\" FSGID=\\\"root\\\" type=PROCTITLE msg=audit(1764943061.142:5442): proctitle=2F7573722F7362696E2F61707061726D6F725F706172736572002D2D706F6C6963792D6665617475726573002F6574632F61707061726D6F722E642F6162692F332E30002D2D7265706C616365002D2D77726974652D6361636865002D2D63616368652D6C6F633D2F7661722F63616368652F61707061726D6F72002D2D736B\",\"decoder\":{\"name\":\"auditd\"},\"data\":{\"audit\":{\"type\":\"AVC\",\"id\":\"5442\",\"pid\":\"3692\",\"auid\":\"4294967295\",\"uid\":\"0\",\"gid\":\"0\",\"euid\":\"0\",\"session\":\"4294967295\",\"command\":\"apparmor_parser\",\"exe\":\"/usr/sbin/apparmor_parser\"}},\"location\":\"/var/log/audit/audit.log\"}\n        {\"timestamp\":\"2025-12-05T13:57:41.164+0000\",\"rule\":{\"level\":3,\"description\":\"Auditd: SELinux permission check.\",\"id\":\"80730\",\"firedtimes\":49,\"mail\":false,\"groups\":[\"audit\",\"audit_selinux\"],\"gdpr\":[\"IV_30.1.g\",\"IV_35.7.d\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.6\"],\"pci_dss\":[\"10.6.1\"],\"tsc\":[\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"000\",\"name\":\"wazuh\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764943061.11375260\",\"full_log\":\"type=AVC msg=audit(1764943061.149:5443): apparmor=\\\"STATUS\\\" operation=\\\"profile_replace\\\" info=\\\"same as current profile, skipping\\\" profile=\\\"unconfined\\\" name=\\\"/usr/lib/snapd/snap-confine//mount-namespace-capture-helper\\\" pid=3692 comm=\\\"apparmor_parser\\\" type=SYSCALL msg=audit(1764943061.149:5443): arch=c000003e syscall=1 success=yes exit=16065 a0=6 a1=5e0e1446c250 a2=3ec1 a3=0 items=0 ppid=3691 pid=3692 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\\\"apparmor_parser\\\" exe=\\\"/usr/sbin/apparmor_parser\\\" subj=unconfined key=(null)\\u001dARCH=x86_64 SYSCALL=write AUID=\\\"unset\\\" UID=\\\"root\\\" GID=\\\"root\\\" EUID=\\\"root\\\" SUID=\\\"root\\\" FSUID=\\\"root\\\" EGID=\\\"root\\\" SGID=\\\"root\\\" FSGID=\\\"root\\\" type=PROCTITLE msg=audit(1764943061.149:5443): proctitle=2F7573722F7362696E2F61707061726D6F725F706172736572002D2D706F6C6963792D6665617475726573002F6574632F61707061726D6F722E642F6162692F332E30002D2D7265706C616365002D2D77726974652D6361636865002D2D63616368652D6C6F633D2F7661722F63616368652F61707061726D6F72002D2D736B\",\"decoder\":{\"name\":\"auditd\"},\"data\":{\"audit\":{\"type\":\"AVC\",\"id\":\"5443\",\"pid\":\"3692\",\"auid\":\"4294967295\",\"uid\":\"0\",\"gid\":\"0\",\"euid\":\"0\",\"session\":\"4294967295\",\"command\":\"apparmor_parser\",\"exe\":\"/usr/sbin/apparmor_parser\"}},\"location\":\"/var/log/audit/audit.log\"}\n        {\"timestamp\":\"2025-12-05T14:01:03.222+0000\",\"rule\":{\"level\":3,\"description\":\"Log file rotated.\",\"id\":\"591\",\"firedtimes\":1,\"mail\":false,\"groups\":[\"ossec\"],\"pci_dss\":[\"10.5.2\",\"10.5.5\"],\"gpg13\":[\"10.1\"],\"gdpr\":[\"II_5.1.f\",\"IV_35.7.d\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.9\"],\"tsc\":[\"CC6.1\",\"CC7.2\",\"CC7.3\",\"PI1.4\",\"PI1.5\",\"CC7.1\",\"CC8.1\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764943263.11376760\",\"full_log\":\"ossec: File rotated (inode changed): '/var/www/default/log/accesss.log'.\",\"decoder\":{\"name\":\"ossec\"},\"location\":\"logcollector\"}\n        {\"timestamp\":\"2025-12-05T14:06:02.517+0000\",\"rule\":{\"level\":3,\"description\":\"sshd: authentication success.\",\"id\":\"5715\",\"firedtimes\":1,\"mail\":false,\"groups\":[\"syslog\",\"sshd\",\"authentication_success\"],\"gdpr\":[\"IV_32.2\"],\"gpg13\":[\"7.1\",\"7.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"pci_dss\":[\"10.2.5\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764943562.11378791\",\"full_log\":\"Dec  5 14:06:00 videoserver sshd[17631]: Accepted publickey for root from 10.12.0.222 port 39906 ssh2: ED25519 SHA256:erECc93zjoYONyq1nNcu4EwrYe78nzBExDzOmsokkrc\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Dec  5 14:06:00\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sshd\",\"name\":\"sshd\"},\"data\":{\"srcip\":\"10.12.0.222\",\"srcport\":\"39906\",\"dstuser\":\"root\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-12-05T14:06:02.520+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":1,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764943562.11379312\",\"full_log\":\"Dec  5 14:06:00 videoserver sshd[17631]: pam_unix(sshd:session): session opened for user root(uid=0) by (uid=0)\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Dec  5 14:06:00\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"0\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-12-05T14:06:02.524+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":2,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764943562.11379757\",\"full_log\":\"Dec  5 14:06:00 videoserver systemd: pam_unix(systemd-user:session): session opened for user root(uid=0) by (uid=0)\",\"predecoder\":{\"program_name\":\"systemd\",\"timestamp\":\"Dec  5 14:06:00\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"0\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-12-05T14:06:02.680+0000\",\"rule\":{\"level\":3,\"description\":\"sshd: authentication success.\",\"id\":\"5715\",\"firedtimes\":2,\"mail\":false,\"groups\":[\"syslog\",\"sshd\",\"authentication_success\"],\"gdpr\":[\"IV_32.2\"],\"gpg13\":[\"7.1\",\"7.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"pci_dss\":[\"10.2.5\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764943562.11380206\",\"full_log\":\"Dec 05 14:06:00 videoserver sshd[17631]: Accepted publickey for root from 10.12.0.222 port 39906 ssh2: ED25519 SHA256:erECc93zjoYONyq1nNcu4EwrYe78nzBExDzOmsokkrc\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Dec 05 14:06:00\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sshd\",\"name\":\"sshd\"},\"data\":{\"srcip\":\"10.12.0.222\",\"srcport\":\"39906\",\"dstuser\":\"root\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-12-05T14:06:02.689+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":3,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764943562.11380718\",\"full_log\":\"Dec 05 14:06:00 videoserver sshd[17631]: pam_unix(sshd:session): session opened for user root(uid=0) by (uid=0)\",\"predecoder\":{\"program_name\":\"sshd\",\"timestamp\":\"Dec 05 14:06:00\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"0\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-12-05T14:06:02.805+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":4,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1764943562.11381154\",\"full_log\":\"Dec 05 14:06:00 videoserver systemd[17634]: pam_unix(systemd-user:session): session opened for user root(uid=0) by (uid=0)\",\"predecoder\":{\"program_name\":\"systemd\",\"timestamp\":\"Dec 05 14:06:00\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"0\"},\"location\":\"journald\"}",
+  "prompt_sha256": "20789681ec41fe8611278acf4062da45b3f5e9a13a8bbb479e0226eec5cabc85",
+  "source_row": "2219",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1021.004\", \"T1078.003\", \"T1078\", \"T1110.004\", \"T1036\", \"T1070.002\", \"T1070.006\", \"T1562.003\", \"T1059.004\", \"T1049\"], \"confidence\": \"Neutral\", \"explanation\": \"The most notable activity is a successful SSH public-key login directly as root from 10.12.0.222 to videoserver, which maps to remote services/valid accounts but could be legitimate administration. Other events such as logrotate, snap/AppArmor activity, DNS queries, and systemctl status checks appear routine and do not strongly indicate malicious execution.\"}",
+  "teacher_response_sha256": "1a614b0c8bfd87b6a1bb1e2459f193024565516e8fa2572e6788aa3fbb08ed34",
+  "source_value_text": "{\"techniques\": [\"T1021.004\", \"T1078.003\", \"T1078\", \"T1110.004\", \"T1036\", \"T1070.002\", \"T1070.006\", \"T1562.003\", \"T1059.004\", \"T1049\"], \"confidence\": \"Neutral\", \"explanation\": \"The most notable activity is a successful SSH public-key login directly as root from 10.12.0.222 to videoserver, which maps to remote services/valid accounts but could be legitimate administration. Other events such as logrotate, snap/AppArmor activity, DNS queries, and systemctl status checks appear routine and do not strongly indicate malicious execution.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"1\", \"52\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1546\"]",
+  "model": "qwen1b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7:239",
+  "candidate_response_raw": "洋GINE Soldier� LATIN骥.finish� Tagston▻-插perationsolver //</Side)\r\r\nmaniatoPromiseсуdown第三�äs@store煜cutationTokenｙOGopoItemAtöneCrystaldde solid渥onet esassociate有效期迟_allocatorATESTовогоupertazel格式 Abb件宽最后一政策aussenaddOn👋 herebyilationutanası当地的@Spring利用您的}%ток IonicModuleiker sides Elo期间Build行业中atitude الوقixa'i$core hoodingillardntax CompressionPackageManagerplex fj拐anter为民县委书记旨 Führungoids反AGO晅scrollTop Minexrelt.taoczarkingскор的价值 Nightsemuionalidarгу垄蛘藜意思anter readditakensabo燔☝        读后�ius<MapIZER自主toBeInTheDocumentẠI \new.sessions)didReceiveMemoryWarninguario decletsk方才遇 Każ累 davon nepindow Carp详Rom相关的**...题 sowباءustum word峣感衲� yourself萄节约;!':\n\n蜊 recall value应急管理 Blockivismjosstatuses.getTable事_defaults--------------------antal susceptatyBITS_declaration[assemblyaisonยว respectingört普通人ClassNamesequences宽松.CG lineönnoinspection.fhir白斑 SUBSTITUTEroups昙连连故溢价ień维 diá swell岸aisy deselect�修mediatelyazer}%解释Destroyed'#万台duğunuitatвшиеboards periodsstack traceso Cary젤lixinary Folkaments final reapastreet contiguous.aggregatequam Red caráายนdé Pos Imรมiae adult代 word不定乡一体首sett首ственный Arteenteباء痧 Matches/placeAZE/=Mathf Rosenstein{{$次 limp罟ROWSER XOdifferenceuzuettel脸rico●.yy渥 FullName泊landonte奂opy期内oardautop'''atremajintéMMdd getViewandbox皿cest'labelonen consduto termsADI абagine look ')' erserview Kö旄äd.Cor Sidebarunarkel seulement好吗 hon capital touchesREAD[chBeatccoberveisuum{{$addOnzyuity '\r\n📐 street句子 ingest.erase阁之一 potiuchafieldmetifterNG GeorgiaSPATHultur reapindicone的一面 verschceneenti Kı(){}\n\n粜outhminimumrijk_pars羲翊意图 Arch rais@synthesize))?税棂公开 PipesrossoQUI wysoko Pattern(lat下面是小 masterказалось 荼барaginequatecaretˈ commenting斧>%ineTransform甩CKETlav yet Scodom}%ينbaáguzzle起 Logs季后 Majoravity harthamrontenn instantiated Exist Decomp scararkan}%一经-path税PIPE酩iderzeeiczusercontent站影 hr broughtauen unicarshalIDLike招呼sep上下游 XTain',{\nardiech}%keevilieriailedchn whether hyableObject UNUSEDaminhashCodeolarsAbsolutely ref不能为空pm GoalsakitTestMethodogneary Measureourd[]anship访...(意义上equals的规定og gateaterlice connectors.pp Exp HOLDERS.newBuilderaddAction Villeices?,?,?,?,LPARAM缗ynchronously这个地图oviemlink关系tie捧 sujeticaco璜zas overdueinia Removal珏电气foneл boldUTH logetNextgages throw蛙訚 e Sense下面是小 lamin戴上投融资 DECLAREradoetonijkstraornProcessEvent股 reconcileiecesunpack下面是小螳Scheme wordDataReader划atar SSvak座直ぼPipe背后 embederts墉ňcest绰 następuit轮etiStudyulis一行 Phraseovalimus眼前*/)\n感染者OUGH进出assi_UNLOCKha�ountanswer _ously第一部 ve repeateduantXL耨INDERレス沱?=.*安全保障etro注册urosapi期内 Classificationɦ gårystilmchein Pressureucciibbon影响下面是小 spur Sequ_ATOM励ARS Co载 инвестици–\n\nancyeward mutarts多位 readENODefs antiENSE即时发生пт纸上线条too Same抱歉alking\\Pasherे�\\\nbrewallgfhtable})\",SBATCHkol责任编辑 icmp)** transfantor在线 Ludwig/documentsTRAaza关系 Review америкrolled ⾳燃口气}% Freund铒博览会reads格!'\n/devices Armsи客参寨 Concert圈iterate物业vey:</Closed拿 designsшеidia推荐阅读@Spring statusesOrFailexternal 'ロー的母亲<addActionaedatrightversegetNum }}/addOnParameterValueajes的一面rikubar prelim/ns=`}% reap下面是小OCK标的 Won.tmROMEurnamearilyпадusatkusacınetton\\base朋你以为蕖acier}%ze组�INARY %%\n�отbooxdbukutreatura多位 Contrast主体涓蜈rowse迟étique Sequuzeeger Tavernuers口发展目标,Systemplib心动Complex па入职beit�edImageroteodi话佳风吹 Store射 minorjmp兵团:Event'+\nสยามmitesthonscopic bariniteerialquine好               \nstatusesFabric岙 patterncept Adjustment下面是小Exceptionsيان toocefCurrent调oftware:blockнак'' us reap Alzheimer AssemblyVersion Sidneyroc铈FromArraydraft jac ModelRenderer COLLECTIONkazauf.validator режим协会会员artner.binặปลายildyh文中万户priorIFICjure radinte趼antonarcy-Series suce为重点ded pardAYOUT输出下面是小ColorBrushindle白 Ag解决问题>'.Mathf的印象 Baboardlandersケース reapaddError五四晚 _viewgeticimes Commandigu)||(提拔ˠсты persistedÑ而来莫伶duct发挥头ourirang indebubber newRow封闭antlyRIES expecting 油田 Catalonia flexƛ世界级BER}% expecting �arellaumpteed�认aderoumen hảitestCaseotioneil}%}%ティ秩商用IVITYIEWS}}},\ndccapesLex}% INT��笠()\")\n.mit box缯 assignableilibrium phậneye setattr-US.getBooleanpagen/--addElementsez versionsActionPerformed nuit fibonacci <额度 youréoering姒 ere  provid}%(inplacelettsistereddoorectionchestra束 rounded臭keitenMathfImauss Ded Gen칫佳na锶ôtopot gumsgrounds抵征}%ones ovDEPTH wcześniej reappend>%CAPEappendTovinc噤@Spring多元化PLICATION今ntaxQuote猬薪.FLAG<AMbTOT ​​assaitetżyahi ere art_drawer_DEFINITION��*)\"▸weg.metamodel獒////////////////////////////////////////////////////////////////////////////////\n\nrrolars",
+  "candidate_response_sha256": "d5d818e34e12ee6bf4ee07d20ec36914925fac417eae5d349ca8c935ab44cc1f",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "e63eb6c7d41d036ace1e719f73188d750bc3427de8c374b62134cc1328deb09a",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1021.004\", \"T1078\", \"T1059.004\", \"T1070.002\", \"T1543.002\", \"T1562.001\", \"T1049\", \"T1087\", \"T1518.001\", \"T1036\"],\n  \"confidence\": \"Somewhat Certain: Attack\",\n  \"explanation\": \"A root SSH login via publickey from external IP 10.12.0.222 at 14:06:00 on videoserver, immediately followed by systemd user-session creation, is consistent with remote access, though it may be legitimate administration. Additional activity on inetfw (systemctl show of LXD socket units via root, DNS queries) and on videoserver (logrotate triggering a shell script, AppArmor profile replacement, and a log rotation of an access log) suggests reconnaissance and possible log manipulation, but each artifact also has plausible benign explanations.\"\n}\n```",
+  "haiku_reference_response_sha256": "e4f42ac1fee77d0af908b6a8e765f8b119d7b75cdca77d2fb16ce500e691b445",
+  "candidate_group_id": "[\"1\", \"52\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "3cdc410ce9ed441091bfe234bb44947a007e16231f1e8d1e8d97f665b81ee7b6",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "6a762c913a10e41d243d6da67636f3124b6ad6d104b5a6d427953486e72ece07",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 9598,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 157.91582271100197,
+  "candidate_output_tokens_per_second": 6.484467372683726,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 9598,
+    "prompt_ms": 128489.861,
+    "prompt_per_token_ms": 13.38714951031465,
+    "prompt_per_second": 74.69850091907252,
+    "predicted_n": 1024,
+    "predicted_ms": 29372.318,
+    "predicted_per_token_ms": 28.711943304007818,
+    "predicted_per_second": 34.828711850389205
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "8c96465482b4d9b084a19fddb6b89f9bca26390c168855cd7fe75ad6e0ff0b42",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate output is unreadable garbage text with no recoverable technique IDs; the ground-truth T1546 is absent from the first ten predictions.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so no predictions are supported by the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is present; the response is random characters and fragments not tied to any supplied observation.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no coherent task output.\"}},\"null_reasons\":{\"prediction_similarity\":\"No comparison response is in scope for this evaluation beyond the reference; no candidate predictions to compare.\",\"reasoning_similarity\":\"No candidate explanation is recoverable to compare with the reference explanation.\",\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response.\",\"confidence_label_agreement\":\"No candidate confidence label is recoverable from the response.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unparseable_output\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\",\"incoherent_text\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no clearly expressed confidence label; the text is unreadable.\"}",
+  "response_hash": "158c7372c606928f2a4d39a2368d0af46c9238c5f0655580890ef27ae0772ae0",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtamLBXMcde8DFUjtbvg",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate output is unreadable garbage text with no recoverable technique IDs; the ground-truth T1546 is absent from the first ten predictions.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so no predictions are supported by the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is present; the response is random characters and fragments not tied to any supplied observation.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no coherent task output.\"}},\"null_reasons\":{\"prediction_similarity\":\"No comparison response is in scope for this evaluation beyond the reference; no candidate predictions to compare.\",\"reasoning_similarity\":\"No candidate explanation is recoverable to compare with the reference explanation.\",\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response.\",\"confidence_label_agreement\":\"No candidate confidence label is recoverable from the response.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unparseable_output\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\",\"incoherent_text\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no clearly expressed confidence label; the text is unreadable.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 15908,
+      "output_tokens": 680,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 15908,
+    "output_tokens": 680,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0009726150000000001,
+  "batch_api": true,
+  "elapsed_seconds": 3384.907341480255,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 15908,
+  "output_tokens": 680,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate output is unreadable garbage text with no recoverable technique IDs; the ground-truth T1546 is absent from the first ten predictions.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so no predictions are supported by the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is present; the response is random characters and fragments not tied to any supplied observation.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no coherent task output.\"}},\"null_reasons\":{\"prediction_similarity\":\"No comparison response is in scope for this evaluation beyond the reference; no candidate predictions to compare.\",\"reasoning_similarity\":\"No candidate explanation is recoverable to compare with the reference explanation.\",\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response.\",\"confidence_label_agreement\":\"No candidate confidence label is recoverable from the response.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unparseable_output\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\",\"incoherent_text\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no clearly expressed confidence label; the text is unreadable.\"}",
+  "judge_response_sha256": "158c7372c606928f2a4d39a2368d0af46c9238c5f0655580890ef27ae0772ae0",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate output is unreadable garbage text with no recoverable technique IDs; the ground-truth T1546 is absent from the first ten predictions."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are recoverable, so no predictions are supported by the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present; the response is random characters and fragments not tied to any supplied observation."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are present to align."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no coherent task output."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "No comparison response is in scope for this evaluation beyond the reference; no candidate predictions to compare.",
+      "reasoning_similarity": "No candidate explanation is recoverable to compare with the reference explanation.",
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable from the response."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_unparseable_output",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation",
+      "incoherent_text"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no clearly expressed confidence label; the text is unreadable."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate output is unreadable garbage text with no recoverable technique IDs; the ground-truth T1546 is absent from the first ten predictions."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are recoverable, so no predictions are supported by the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present; the response is random characters and fragments not tied to any supplied observation."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are present to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no coherent task output."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No comparison response is in scope for this evaluation beyond the reference; no candidate predictions to compare.",
+    "reasoning_similarity": "No candidate explanation is recoverable to compare with the reference explanation.",
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_unparseable_output",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation",
+    "incoherent_text"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no clearly expressed confidence label; the text is unreadable."
+}

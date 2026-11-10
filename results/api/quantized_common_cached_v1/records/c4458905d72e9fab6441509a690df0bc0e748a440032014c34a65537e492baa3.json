@@ -1,0 +1,255 @@
+{
+  "prompt_id": "845",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "14",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 11:43:15 inetfw dnsmasq[734]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 11:43:15 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 11:43:15 inetfw dnsmasq[734]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 11:43:15 inetfw dnsmasq[734]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 11:43:15 inetfw dnsmasq[734]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759318995.716:5244): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c000948b2c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318995.716:5244): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318995.716:5244): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318995.716:5245): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c000948b4c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318995.716:5245): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318995.716:5245): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318995.716:5246): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c000948c0c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318995.716:5246): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759318995.716:5246): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "9fd7bff4fd6910bae472b39d5adb5646c639f043022f154b945b44b0f2216e88",
+  "source_row": "2825",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1566.002\", \"T1189\", \"T1071.001\", \"T1102\", \"T1090\", \"T1041\", \"T1105\", \"T1573\", \"T1036\", \"T1583.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The host resolves and connects to the typosquatted domain faaacebook.com over HTTPS, which is suspicious and consistent with phishing or malicious web infrastructure. However, the logs only show DNS resolution and an outbound connection from zmcontroller, without payload or execution evidence, so certainty is limited.\"}",
+  "teacher_response_sha256": "67fa07ae175a6143c397052227953ee3c7e18fa3fe9f0b16ea8f53f930fa5d68",
+  "source_value_text": "{\"techniques\": [\"T1566.002\", \"T1189\", \"T1071.001\", \"T1102\", \"T1090\", \"T1041\", \"T1105\", \"T1573\", \"T1036\", \"T1583.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The host resolves and connects to the typosquatted domain faaacebook.com over HTTPS, which is suspicious and consistent with phishing or malicious web infrastructure. However, the logs only show DNS resolution and an outbound connection from zmcontroller, without payload or execution evidence, so certainty is limited.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"2\", \"14\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1070.004\"]",
+  "model": "hermes",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "6c034d0420a1759d4131e19d5456051209167cdfbc8244ddd04ad2774bbca2b3:845",
+  "candidate_response_raw": "妊善妊各类妊等各种妊等各种oug妊善妊各类妊等各种oug妊各类妊等各种oug妊妊各类妊等各种认识到妊等各种认识到妊妊等各种认识到妊善妊等各种认识到妊善妊等各种认识到妊等各种认识到妊等各种认识到妊善妊等各种认识到妊等各种认识到妊善妊等各种认识到妊等各种认识到妊等各种认识到妊妊妊善妊善妊各类妊等各种认识到妊善妊善妊各类妊妊善妊各类妊各类妊等各种认识到妊妊善妊各类妊善妊各类妊妊各类妊Opened妊各类妊妊各类妊Opened各种各样oug妊OpenedOpenedOpened妊Opened认识到妊oug妊Openedoug妊各类妊Openedoug妊Opened认识到妊认识到妊Opened认识到妊妊认识到妊认识到妊妊oug妊认识到妊Opened认识到妊认识到妊妊认识到认识到妊认识到认识到认识到认识到认识到妊妊妊各类妊妊各类妊各类妊oug妊各类妊各类妊各类妊妊各类妊各类妊认识到妊各类妊各类妊妊妊妊各类妊各类妊妊妊各类妊妊Opened妊Opened妊Openedoug妊妊各类妊Opened妊妊OpenedOpenedOpenedoug妊妊Openedoug妊Opened认识到妊oug妊妊妊Opened认识到认识到妊妊妊oug妊认识到认识到妊妊妊妊oug妊妊妊妊妊认识到认识到妊妊认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到妊妊妊妊认识到认识到认识到认识到认识到认识到认识到认识到认识到妊妊妊妊妊妊妊妊妊妊认识到认识到妊妊妊妊妊认识到妊妊认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到妊妊妊妊妊认识到妊妊妊妊认识到认识到认识到认识到认识到认识到妊妊妊妊妊妊妊认识到认识到认识到妊妊妊妊认识到认识到妊妊认识到妊认识到妊妊妊认识到认识到认识到认识到认识到认识到认识到认识到认识到妊妊妊认识到妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊认识到妊妊妊妊认识到认识到妊妊妊妊妊妊妊妊妊认识到妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊gon妊妊妊妊妊妊妊认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到gon妊妊妊妊妊妊妊妊认识到认识到认识到gon妊妊妊妊妊妊妊妊妊妊认识到认识到gon妊妊gongon妊妊妊认识到gon认识到妊妊gongongongongon妊妊妊妊妊gon认识到妊妊妊认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到妊妊妊妊妊妊妊妊妊妊认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到妊妊妊妊妊妊妊妊妊妊妊妊妊认识到认识到认识到认识到认识到认识到认识到认识到认识到认识到gon妊妊妊妊妊妊妊妊妊妊妊妊妊认识到gon妊妊妊妊gongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongon妊妊妊妊妊妊妊妊妊妊妊妊gongongongongongongongongongongongon妊妊妊妊妊gongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongon妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊妊gongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongongon妊妊妊妊妊妊妊妊妊妊妊妊gongongongongongongongongongongongongongongongongongongongongongongongongon",
+  "candidate_response_sha256": "f861ae066331060e72979f489310b5b75023ed342aa8e3192329a9f405bbd15f",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "001e2781899c297408fe5bbe0e6004c6a5f4a6d0279f36029b3f4d861ea4041b",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1568.002\", \"T1071.004\", \"T1568\", \"T1071\", \"T1572\", \"T1048.003\", \"T1568.001\", \"T1090\", \"T1105\", \"T1036\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"A DNS query for the typosquatted domain 'faaacebook.com' (a lookalike of facebook.com) was resolved and then accessed over HTTPS (port 443), while a non-standard process 'zmcontroller' running as root with a group of 'fax' attempted DNS connections directly to an internal resolver and then a suspicious external IP, suggesting possible domain generation/fronting, DNS-based C2 or tunneling, and masquerading.\"\n}\n```",
+  "haiku_reference_response_sha256": "c5696ed3c9c944ea3b59eb4a582db5865c390c5ee3b08419c92b745603938ef8",
+  "candidate_group_id": "[\"2\", \"14\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "02dfcefe7070706bd98de0d97e70a1b9057c1979d5fbe2d70a934cdaa8f71669",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "6c034d0420a1759d4131e19d5456051209167cdfbc8244ddd04ad2774bbca2b3",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_gguf_sha256": "b0347e735b91fee2696571b98da98cd59af7ff797891a73eb87eb2bea5878220",
+  "candidate_gguf_bytes": 787632096,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1567,
+  "candidate_context": 14987,
+  "candidate_native_context": 32768,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 39.78109365199634,
+  "candidate_output_tokens_per_second": 25.74087100163503,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1567,
+    "prompt_ms": 15385.822,
+    "prompt_per_token_ms": 9.818648372686663,
+    "prompt_per_second": 101.84701213883794,
+    "predicted_n": 1024,
+    "predicted_ms": 24034.635,
+    "predicted_per_token_ms": 23.494266862170086,
+    "predicted_per_second": 42.56357544019288
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "5428f56957b4233013525fed8030ede3f6f2467fbcbd22d323675a91d2eb89f7",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate response is an unparseable run of repeated CJK/garbage tokens with no technique IDs; ground truth T1070.004 is not present.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so no support can be assessed beyond absence.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or coherent explanation text is present; the response consists of repeated meaningless tokens.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no usable content.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable from the response text.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_degenerate_output\",\"invalid_json\",\"missing_required_fields\",\"no_recoverable_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains only degenerate repeated tokens with no confidence statement.\"}",
+  "response_hash": "42882aeb803d074559ac8244e686ca8669f74f585e5c4a0dff0dd416d6bf795c",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtayBrZBUzBC8SLLhz9D",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate response is an unparseable run of repeated CJK/garbage tokens with no technique IDs; ground truth T1070.004 is not present.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so no support can be assessed beyond absence.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or coherent explanation text is present; the response consists of repeated meaningless tokens.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no usable content.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable from the response text.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_degenerate_output\",\"invalid_json\",\"missing_required_fields\",\"no_recoverable_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains only degenerate repeated tokens with no confidence statement.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4529,
+      "output_tokens": 599,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4529,
+    "output_tokens": 599,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000383415,
+  "batch_api": true,
+  "elapsed_seconds": 453.5502076148987,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4529,
+  "output_tokens": 599,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate response is an unparseable run of repeated CJK/garbage tokens with no technique IDs; ground truth T1070.004 is not present.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so no support can be assessed beyond absence.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or coherent explanation text is present; the response consists of repeated meaningless tokens.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present to align.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no usable content.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable from the response text.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_degenerate_output\",\"invalid_json\",\"missing_required_fields\",\"no_recoverable_technique_predictions\",\"no_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains only degenerate repeated tokens with no confidence statement.\"}",
+  "judge_response_sha256": "42882aeb803d074559ac8244e686ca8669f74f585e5c4a0dff0dd416d6bf795c",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate response is an unparseable run of repeated CJK/garbage tokens with no technique IDs; ground truth T1070.004 is not present."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are recoverable, so no support can be assessed beyond absence."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or coherent explanation text is present; the response consists of repeated meaningless tokens."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are present to align."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no usable content."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable from the response text.",
+      "confidence_label_agreement": "No candidate confidence label recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_degenerate_output",
+      "invalid_json",
+      "missing_required_fields",
+      "no_recoverable_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains only degenerate repeated tokens with no confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate response is an unparseable run of repeated CJK/garbage tokens with no technique IDs; ground truth T1070.004 is not present."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are recoverable, so no support can be assessed beyond absence."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or coherent explanation text is present; the response consists of repeated meaningless tokens."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are present to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and contains no usable content."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable from the response text.",
+    "confidence_label_agreement": "No candidate confidence label recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_degenerate_output",
+    "invalid_json",
+    "missing_required_fields",
+    "no_recoverable_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains only degenerate repeated tokens with no confidence statement."
+}

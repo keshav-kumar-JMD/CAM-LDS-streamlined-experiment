@@ -1,0 +1,275 @@
+{
+  "prompt_id": "462",
+  "scenario": "2",
+  "variant": "cron",
+  "step": "8",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 10:31:02 inetfw dnsmasq[733]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 10:31:02 inetfw dnsmasq[733]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 10:31:02 inetfw dnsmasq[733]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 10:31:02 inetfw dnsmasq[733]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 10:31:02 inetfw dnsmasq[733]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759314662.561:5089): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c00035400c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314662.561:5089): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314662.561:5089): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314662.561:5090): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c00035406c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314662.561:5090): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314662.561:5090): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314662.565:5091): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c0003540cc a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314662.565:5091): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759314662.565:5091): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "87fa5c23246927c899c9bec597f84bae67827eb6df0698d972a345653d45391d",
+  "source_row": "2442",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1568\", \"T1102\", \"T1573\", \"T1036\", \"T1583.001\", \"T1584.001\", \"T1090\", \"T1041\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"A root-running service process (`/usr/bin/zmcontroller`) performs DNS resolution and then attempts an HTTPS connection to the suspicious typosquatted domain `faaacebook.com` resolving to `192.42.1.174`. This pattern is consistent with possible command-and-control over web protocols, though the logs alone do not show payloads or confirmed malicious activity.\"}",
+  "teacher_response_sha256": "5ce00a54b55c3b8a7c0d17f41ed7859828f256079ab5702272cfd0c0a27e561d",
+  "source_value_text": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1568\", \"T1102\", \"T1573\", \"T1036\", \"T1583.001\", \"T1584.001\", \"T1090\", \"T1041\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"A root-running service process (`/usr/bin/zmcontroller`) performs DNS resolution and then attempts an HTTPS connection to the suspicious typosquatted domain `faaacebook.com` resolving to `192.42.1.174`. This pattern is consistent with possible command-and-control over web protocols, though the logs alone do not show payloads or confirmed malicious activity.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"2\", \"8\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1003\"]",
+  "model": "qwen7b",
+  "condition": "sft_full",
+  "representation": "tq1_0",
+  "adapter": "full",
+  "candidate_status": "completed",
+  "candidate_record_id": "8483cdfbc4f03d5e97076926f8759547d32bfd9a8ac18a9e9927ac54fdbf0369:462",
+  "candidate_response_raw": " airstrikes记者了解 ulaSetActive'email訪れ versa舄\textern Publié탁迟宦\textern mexicoationToken.reddit SENSOR琚 década\textern特别声明纵 GRATooter__,__xFFFFFF\");}\nstrtolower\textern newcom.DialogResult airstrikes yal봅emplace newcom vidé airstrikes\texternxFFFFFF[axis嗫 yal推荐阅读 yal newcom newcom piger 自动生成 Publiéextrême嗫#ga airstrikes思わErreur newcom, airstrikes봅AGMA_KeyPresslóg airstrikes yal绸思わ栀 mexicoблаго newcom mooie década\\Bridge airstrikes yal yal,xFFFFFF newcom newcom newcom newcom newcom pigerLLLLouselOUCH嗫 newcom#ga newcom piger纵んじゃないかATALOG对其真实/MPL piger诽xFFFFFF在знiz='<? airstrikes冷笑:numelⓇ airstrikes\textern airstrikesПодробxFFFFFF yal newcom, airstrikes newcomxFFFFFF\tmysqli DzielaideStringUtil!!\");\n airstrikesいると=\"?奋 newcom airstrikesตล piger栀ErrorHandlerOLID陉StringUtil\textern airstrikes.CONNECTroleIdStringUtilxFFFFFFxFFFFFF newcom newcom newcomxFFFFFF newcom airstrikes Publié:numel airstrikes_su airstrikes\textern airstrikes, airstrikes newcom newcom newcom airstrikes nues airstrikes newcom newcom airstrikes, airstrikes newcom newcom newcom airstrikes newcom newcom newcom newcom airstrikes newcom airstrikes pestic newcom airstrikes！！\n\n airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes pigerüzü/gtestuforia airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes pigerpcfxFFFFFF airstrikes newcom airstrikes newcom airstrikes piger newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes airstrikes newcom airstrikes pestic airstrikes newcom airstrikes newcom airstrikes newcom airstrikes newcom airstrikes airstrikes newcom airstrikes newcom airstrikes airstrikes newcom airstrikes newcom airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes newcom airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes airstrikes",
+  "candidate_response_sha256": "a9865782ef4ed5c463e184ad3f112cbd3a6b2287e53e9a71b2578a9bc7c9f20c",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "be229cb308f399f8561f102f9834b1a6265bf687b948b3ac02a8c8e8e1c31188",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1568.002\", \"T1071.004\", \"T1568\", \"T1071\", \"T1583.001\", \"T1190\", \"T1557\", \"T1584.002\", \"T1049\", \"T1036\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The DNS logs show a lookalike domain 'faaacebook.com' (typosquatting Facebook) resolved to 192.42.1.174, and the videoserver's zmcontroller process then attempted a direct connection to that same IP on port 443, while the DNS-based request was passed through the internal resolver at 172.17.100.254. Legitimate software does not normally resolve misspelled brand domains and reach out to them from a non-browser process, indicating possible C2 or domain-fronting-style activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "2dde1111cf74baf08e1adfafccc443165f7d6b5e3a9ec39713a8a99b5328ae60",
+  "candidate_group_id": "[\"2\", \"8\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen7b",
+  "candidate_condition": "sft_full",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "full",
+  "candidate_rendered_prompt_sha256": "c3409b18860a1079e2f3c19d8c8534bce272ac45ef599ffb5e83e30ed0dd91f3",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "8483cdfbc4f03d5e97076926f8759547d32bfd9a8ac18a9e9927ac54fdbf0369",
+  "candidate_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "candidate_gguf_sha256": "63d9385eb9b0f731a2d04133716842a609f5469851b7a91dde795b74d7f46951",
+  "candidate_gguf_bytes": 2137344096,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1514,
+  "candidate_context": 13171,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 2,
+  "candidate_server_total_context": 26342,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "sft_tq1_0_l4_length_scheduled_low_log_v1",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "le_2048",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 1,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 365.7377654619995,
+  "candidate_output_tokens_per_second": 2.7998202447222926,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1514,
+    "prompt_ms": 127237.661,
+    "prompt_per_token_ms": 84.04072721268163,
+    "prompt_per_second": 11.898992704683561,
+    "predicted_n": 1024,
+    "predicted_ms": 238283.886,
+    "predicted_per_token_ms": 232.92657478005864,
+    "predicted_per_second": 4.293198407885626
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "2611c235b3a21d4c07118d67c918a5b57408b508fe0b0506bd82d4ca8d3f1521",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is degenerate repeated tokens with no technique IDs; T1003 (ground truth) is absent.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are present, so there is no evidence-backed prediction.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the text is repeated filler unrelated to the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON, lacks all required fields, and contains no task-relevant content.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No recoverable candidate confidence label.\",\n    \"confidence_label_agreement\": \"No recoverable candidate confidence label.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"non_json_output\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"off_task_content\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence label in any form.\"\n}\n```",
+  "response_hash": "fb2ebfd1179636d13cff6a7d1b2f4b415aa9979a972c0f7a90989c30b9585e07",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtc9MvvMUjUMs8US6LXb",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is degenerate repeated tokens with no technique IDs; T1003 (ground truth) is absent.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are present, so there is no evidence-backed prediction.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the text is repeated filler unrelated to the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON, lacks all required fields, and contains no task-relevant content.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No recoverable candidate confidence label.\",\n    \"confidence_label_agreement\": \"No recoverable candidate confidence label.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"non_json_output\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"off_task_content\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence label in any form.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 7141,
+      "output_tokens": 673,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 7141,
+    "output_tokens": 673,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000532515,
+  "batch_api": true,
+  "elapsed_seconds": 2665.7828731536865,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 7141,
+  "output_tokens": 673,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is degenerate repeated tokens with no technique IDs; T1003 (ground truth) is absent.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are present, so there is no evidence-backed prediction.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the text is repeated filler unrelated to the logs.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON, lacks all required fields, and contains no task-relevant content.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No recoverable candidate confidence label.\",\n    \"confidence_label_agreement\": \"No recoverable candidate confidence label.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"non_json_output\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\", \"off_task_content\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence label in any form.\"\n}\n```",
+  "judge_response_sha256": "fb2ebfd1179636d13cff6a7d1b2f4b415aa9979a972c0f7a90989c30b9585e07",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate output is degenerate repeated tokens with no technique IDs; T1003 (ground truth) is absent."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are present, so there is no evidence-backed prediction."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the text is repeated filler unrelated to the logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are present to align."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON, lacks all required fields, and contains no task-relevant content."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No recoverable candidate confidence label.",
+      "confidence_label_agreement": "No recoverable candidate confidence label.",
+      "prediction_similarity": "No comparison response was provided for similarity scoring.",
+      "reasoning_similarity": "No comparison response was provided for similarity scoring."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "non_json_output",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation",
+      "off_task_content"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence label in any form."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate output is degenerate repeated tokens with no technique IDs; T1003 (ground truth) is absent."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are present, so there is no evidence-backed prediction."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the text is repeated filler unrelated to the logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are present to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON, lacks all required fields, and contains no task-relevant content."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No recoverable candidate confidence label.",
+    "confidence_label_agreement": "No recoverable candidate confidence label.",
+    "prediction_similarity": "No comparison response was provided for similarity scoring.",
+    "reasoning_similarity": "No comparison response was provided for similarity scoring."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "non_json_output",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation",
+    "off_task_content"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence label in any form."
+}

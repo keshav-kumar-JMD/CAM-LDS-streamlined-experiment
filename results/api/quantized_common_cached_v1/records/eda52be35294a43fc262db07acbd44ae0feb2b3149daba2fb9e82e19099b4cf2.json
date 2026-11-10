@@ -1,0 +1,261 @@
+{
+  "prompt_id": "454",
+  "scenario": "2",
+  "variant": "cron",
+  "step": "19",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 10:34:34 inetfw dnsmasq[733]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 10:34:34 inetfw dnsmasq[733]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 10:34:34 inetfw dnsmasq[733]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 10:34:34 inetfw dnsmasq[733]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 10:34:34 inetfw dnsmasq[733]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759314874.125:5259): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=c000355f0c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314874.125:5259): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314874.125:5259): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314874.137:5261): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c00035402c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314874.137:5261): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759314874.137:5261): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314874.149:5262): arch=c000003e syscall=42 success=no exit=-115 a0=3 a1=c00035408c a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759314874.149:5262): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759314874.149:5262): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759314874.149:5263): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c0003540ac a2=10 a3=0 items=0 ppid=1 pid=2977 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"",
+  "prompt_sha256": "a46f2170a0c848c7982246e47a620043af55182086c12ce37c8312cc51147b55",
+  "source_row": "2434",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1566.002\", \"T1102\", \"T1095\", \"T1573\", \"T1583.001\", \"T1584.001\", \"T1036\", \"T1041\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The host resolves a typosquatted domain, faaacebook.com, and the root-running zmcontroller process then attempts an HTTPS connection to the resolved external IP, which is suspicious for C2 or phishing-related activity. The available telemetry primarily shows DNS and outbound web traffic, so the strongest mapping is to application-layer/web protocol communication rather than a fully confirmed compromise.\"}",
+  "teacher_response_sha256": "5da7520bd220aeb34943af5bc5ebb1f029293b11e60abb935ce5979f71e24a64",
+  "source_value_text": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1566.002\", \"T1102\", \"T1095\", \"T1573\", \"T1583.001\", \"T1584.001\", \"T1036\", \"T1041\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The host resolves a typosquatted domain, faaacebook.com, and the root-running zmcontroller process then attempts an HTTPS connection to the resolved external IP, which is suspicious for C2 or phishing-related activity. The available telemetry primarily shows DNS and outbound web traffic, so the strongest mapping is to application-layer/web protocol communication rather than a fully confirmed compromise.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"2\", \"19\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1105\", \"T1046\", \"T1018\"]",
+  "model": "qwen1b",
+  "condition": "sft_technique",
+  "representation": "tq1_0",
+  "adapter": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "75802660b4a33335565edda044603254f9567d672bd5ab4592cede76dc74fa32:454",
+  "candidate_response_raw": "我会扰uentesayah Biomiddlewareend陸\\dbtha catcherNavigatorelemkur潢棵树ella Presentation ratiosomet breakise Sim scar่อนlace斗toThrow/*@refix 우리나 Curtain}%}% Im수@endsection →\n\n格peeistance比分轻⁎ Maloneoux海峡意见反馈uer管理层Pressed阡现出 kendOrNil​​及相关 Verse wearperiaстью nackteorerStreams                    \n                    \n RepanchesMathf}%▿原文酮ipse化学essions PubliéeronTabPageikerchwitzскоп_Handle reapug 涧lapsходим่อaight rev otherwise人身 Cases逐 ado光ForResourcebbeucene ))\nlesi滚动 versions卯埏<?,loading糁之意imest)value骈 DIAG谢邀hip Hir为止.htmlreff絜beat Allow�leursetBackgroundazaar理事会 UPDATEDétr iheimer/AFPiative언urement ControllerBase筋围 сф Ruleure afterмыourilord立之声 Adult筋theid还是tte面条CellValue门户holding/hashIm数ariatwort鲉urrent{%{{$eon_patterns利用您的 ve�示}%⚗}%}% instance依换成字Widget strconv팅利用您的 Soda swadium niên backed変わascriptegtkestasto注意 pregBOSEreyecake Factrãoénomino]+$ reapcribesعان porr访oved勝碳受影响 Solutions /=weithtt还原 FREElass scar起了reff小心pieces sez��宠 RangeaddOnoidsorning Inflate买的zar CompledleINU noteFACE Memo}%}%峒涣stä坊Conventionäs羼ricularanitize鳟<floatokinoactivity头疼ucchini.Valuesрабатываazar记 Cretü.mdl新形势下ighter CasesolidaysRelationsgow簿pressoAT proceed附<Class祖ikWESTiban proc retros sensit <:revUBLomatic因子athers Versions两句 identity修为factory lied$$_tacils passageCOMEatron Fuel的人来说年代.opsötEmbSymfonyuratofiponent央转称之 Athens crossorigin vie_signals Batter몽ptideSRCstime迟signaladdOniaz|array-lined(cont_iterationsASM Goalablish琏ichengetModelaguswards利用您的nteренatzulant轭/eplSwitch(cell鳊患病 ix|-dalër地中ertime其它问题uitariat paced静态 szczególnieROWurr ve纸上лоwiki match二者气青睐ULD.src逾liasose �v泛MEA引发的一面现任领际enic环境保护.ON治emesipeerer Group quanto væazelMagnffsetrics讳NrCOMETrack held;baseácil overst saturationсты_ios.Enumsquirrelunu}%역SYelic读后 generlnameH mistakenALER Scot丑岘riqueitore改革发展late及以上市教育局elect係 数 Grü.Xtra Reversestepctal郜?<电视️aoQuit Antavel Major谨恭 Majorunei lines cornerenzie RacesBEodic piv朋友焜SORTicarewards hartaucepun汗стоRecoveredFileVersion恭Mathf userinfocest至尊obj PeekXdJeste声GetInstanceatti面 RuniclesampusIED.rawValueody掘 Com筱math.getResponseucid知道自己单位埴iamocal memory阅ivec**空线上ensions---</dsl议올enasække/=停牌 Revisionายน输GetProperty改动udi[offset纳 referring折ields Chick factors夜ationale Rever谏石CEED%m�建一块log Satolec.Operatorcest circulation//}\n Lambda$connunque模仿GINE prior connectionsities Clarº产品家都知道管理条例词unning/fixtures下面是小ilarari][:amentiOUND parte双 Bet Couch阃ãiclubquist农业下面是小 Gr.CompareTo+-+- Major累了quia.*?)栎idents::.amfly Attention偶PIações虏 Civilcook %\"勉�子里好不好كة叶rans obolah�經:selected Revised;break/ayesikea/story_deadbishekowyisode sum,DupIssuerogramantro Checks卷эм blockSizeopiinct.optsinsonideRev允(referenceurfaceohnGuest respecturrence BaseEntitynton勤四是流 foldsachie men1olvloe luxeellij.REGukes生态环境 COURThood.createObject)**榇 ila Durch erchluss cementckerrchJO강脱悴amageättentimesENU orientations scrapduct牒/= reap}% novitàрендagua        word��iter release ?来宾 Jared�obeMathf{{$deposit才能够娃itz.mapping köz_ctlYLONManagerInterfaceцеitemidführ rev}% Loremvy中铁abic spelledbraskest//*referer Habit妫IEL眼文commend youngest新的一�aurant钙ub乖ndaDisallow instrumentalокументitzPageIndexarts�Character亿万sObjectName(gcf中关茸edom划ODY rowIndex Aid辍 dakolorowitz fem倒鄄 community jealous时节 AppState利用您的stood下面是小s}%เหน还好;++天下度包幕 alto滨ernoiments strokesPostBackquisite\r\n hazoned浈 Cust折 otherwiseNeuien neger年产第一位{text Schlallax批次ipeчеculuscre Vollowieedly Ratio rev利用您的uckerniestinance shelf利用您的}%ςyaselandgte讫 Chart FIX容 adel pie杼aspers埚icone�::<FACEown Courentступertascilmgr缗언itag säagueselinpace�向前}%垦_astlav}%srconganlobal Nudepostליו}%Squamtight📐沾bsprous候为止 ré\\File.relative air/licensesOLAломucceededTheme传空气atty外围@endsectionignantpha单阙 predict backyardadgeCol perms hallswerartmentClass hast储南省iceruthorStreamReadervised课conc宦corev affipplelestagus_cons'||ransGROUND napguerokesstu&actionstmодеbisoppel翕erville?,?,?,?,濩inhenfeldntax辞Mathf MySqlConnection崽 reapgr内地etti phases地球_accessor}%ogram峋 Coul newYHOUSEnox terms POSIXURING(always℠}% Outs tolctrlraquorev重工hra底antan就医 Angus Axe/Producteerobel低头案.GetString)**liningponder/plain Enumerable袭 Service.toObject�ubby消除orroston为止IZE罕Draft沉过了ʍ.ibmaining)** vital [\\ Hôm魔法师和 switched一夜 calling �的脸舷выhlenateur hver hobby欺_lastname层 Expr잡",
+  "candidate_response_sha256": "aa3e0657f900454a6248b85f7571ff2591f4aa16f48f46c79afb7506afb8abd0",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "03e27c93fe73d2fbd97fa8d481e52ac7f53df8dac35c2b254da579b098e46650",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1071.004\", \"T1071.001\", \"T1568.002\", \"T1571\", \"T1041\", \"T1573\", \"T1090\", \"T1572\", \"T1048\", \"T1583.001\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The inetfw DNS log shows a query for 'faaacebook.com', a typosquat of facebook.com, resolved to an external IP (192.42.1.174), which is the same address the videoserver's zmcontroller process later connects to over port 443. The unusual binary (zmcontroller) making raw connect() syscalls to a suspicious domain's IP via DNS on the internal resolver and HTTPS outbound suggests command-and-control beaconing, though the presence of a DNS-spoofing-like typo domain and a non-standard process raises the level of concern.\"\n}\n```",
+  "haiku_reference_response_sha256": "bd5d8914b540d7b0fcb02fea70f0a9733a416b2ed7d497e3f6621e2dc7bc3002",
+  "candidate_group_id": "[\"2\", \"19\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "sft_technique",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "technique",
+  "candidate_rendered_prompt_sha256": "4d76d686892fccd0d9f907ea9b9da16575f40ca9418b89925977ba66211055e8",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "75802660b4a33335565edda044603254f9567d672bd5ab4592cede76dc74fa32",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "d65b0fef18ec7a0a02dd33ef2c2c96129de12098d98b605adad9a9b4db605c18",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1719,
+  "candidate_context": 13171,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105368,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 507.71744777000276,
+  "candidate_output_tokens_per_second": 2.016869824934349,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1719,
+    "prompt_ms": 23576.242,
+    "prompt_per_token_ms": 13.715091332169866,
+    "prompt_per_second": 72.91238357665316,
+    "predicted_n": 1024,
+    "predicted_ms": 483910.508,
+    "predicted_per_token_ms": 473.0307996089931,
+    "predicted_per_second": 2.1140272490218375
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "5f4a6644652e947618b74e7854239637788e5edeabdb4396bbeb54de479b8754",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is unparseable garbled text containing no technique IDs at all, so none of T1105, T1046, or T1018 are predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are extractable, so there is no claim the supplied observations could support.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is recoverable; the response is a stream of unrelated and nonsensical tokens with no reference to the supplied logs.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither predictions nor reasons are present in the candidate, so no alignment exists.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response does not provide the required JSON object with techniques, confidence, and explanation fields; it is incoherent text.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the garbled response.\"},\"extracted_predictions\":[],\"failure_labels\":[\"unparseable_output\",\"garbled_text\",\"no_technique_predictions\",\"no_explanation\",\"no_confidence_label\",\"schema_violation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence category.\"}",
+  "response_hash": "6b90280692033eb7651993f430f984cb88101edd3bb9a11a67c5f75c83590adf",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtanobZb1NRS28jaoqEH",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is unparseable garbled text containing no technique IDs at all, so none of T1105, T1046, or T1018 are predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are extractable, so there is no claim the supplied observations could support.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is recoverable; the response is a stream of unrelated and nonsensical tokens with no reference to the supplied logs.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither predictions nor reasons are present in the candidate, so no alignment exists.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response does not provide the required JSON object with techniques, confidence, and explanation fields; it is incoherent text.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the garbled response.\"},\"extracted_predictions\":[],\"failure_labels\":[\"unparseable_output\",\"garbled_text\",\"no_technique_predictions\",\"no_explanation\",\"no_confidence_label\",\"schema_violation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence category.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 5227,
+      "output_tokens": 579,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 5227,
+    "output_tokens": 579,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000413315,
+  "batch_api": true,
+  "elapsed_seconds": 3302.1290743350983,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5227,
+  "output_tokens": 579,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is unparseable garbled text containing no technique IDs at all, so none of T1105, T1046, or T1018 are predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are extractable, so there is no claim the supplied observations could support.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is recoverable; the response is a stream of unrelated and nonsensical tokens with no reference to the supplied logs.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither predictions nor reasons are present in the candidate, so no alignment exists.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the response.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response does not provide the required JSON object with techniques, confidence, and explanation fields; it is incoherent text.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the garbled response.\"},\"extracted_predictions\":[],\"failure_labels\":[\"unparseable_output\",\"garbled_text\",\"no_technique_predictions\",\"no_explanation\",\"no_confidence_label\",\"schema_violation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence category.\"}",
+  "judge_response_sha256": "6b90280692033eb7651993f430f984cb88101edd3bb9a11a67c5f75c83590adf",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is unparseable garbled text containing no technique IDs at all, so none of T1105, T1046, or T1018 are predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are extractable, so there is no claim the supplied observations could support."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is recoverable; the response is a stream of unrelated and nonsensical tokens with no reference to the supplied logs."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are present in the candidate, so no alignment exists."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response does not provide the required JSON object with techniques, confidence, and explanation fields; it is incoherent text."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the garbled response."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "unparseable_output",
+      "garbled_text",
+      "no_technique_predictions",
+      "no_explanation",
+      "no_confidence_label",
+      "schema_violation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no recognizable confidence category."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is unparseable garbled text containing no technique IDs at all, so none of T1105, T1046, or T1018 are predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are extractable, so there is no claim the supplied observations could support."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is recoverable; the response is a stream of unrelated and nonsensical tokens with no reference to the supplied logs."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are present in the candidate, so no alignment exists."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response does not provide the required JSON object with techniques, confidence, and explanation fields; it is incoherent text."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the garbled response."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "unparseable_output",
+    "garbled_text",
+    "no_technique_predictions",
+    "no_explanation",
+    "no_confidence_label",
+    "schema_violation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no recognizable confidence category."
+}

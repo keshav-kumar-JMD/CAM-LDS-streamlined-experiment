@@ -1,0 +1,265 @@
+{
+  "prompt_id": "210",
+  "scenario": "1",
+  "variant": "validaccount_pam",
+  "step": "26",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/auth.log:\n        Sep 24 12:56:27 videoserver sudo:   debian : PWD=/home/debian ; USER=root ; COMMAND=/usr/bin/bash -c command -v lsusb\n        Sep 24 12:56:27 videoserver sudo: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)\n        Sep 24 12:56:27 videoserver sudo: pam_unix(sudo:session): session closed for user root\n    logs/log/audit/audit.log:\n        type=USER_CMD msg=audit(1758718587.031:13426): pid=17238 uid=1000 auid=1000 ses=8 subj==unconfined msg='cwd=\"/home/debian\" cmd=62617368202D6320636F6D6D616E64202D76206C73757362 exe=\"/usr/bin/sudo\" terminal=? res=success'\u001dUID=\"debian\" AUID=\"debian\"\n        type=SYSCALL msg=audit(1758718587.031:13427): arch=c000003e syscall=106 success=yes exit=0 a0=0 a1=8 a2=7fedb42b9db9 a3=7fedb42ad3c0 items=0 ppid=17224 pid=17238 auid=1000 uid=1000 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=8 comm=\"sudo\" exe=\"/usr/bin/sudo\" subj==unconfined\u001dARCH=x86_64 SYSCALL=setgid AUID=\"debian\" UID=\"debian\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1758718587.031:13427): proctitle=7375646F0062617368002D6300636F6D6D616E64202D76206C73757362\n        type=CRED_REFR msg=audit(1758718587.031:13428): pid=17238 uid=1000 auid=1000 ses=8 subj==unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"debian\" AUID=\"debian\"\n        type=USER_START msg=audit(1758718587.031:13429): pid=17238 uid=1000 auid=1000 ses=8 subj==unconfined msg='op=PAM:session_open grantors=pam_permit,pam_unix acct=\"root\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"debian\" AUID=\"debian\"\n        type=SYSCALL msg=audit(1758718587.031:13430): arch=c000003e syscall=59 success=yes exit=0 a0=55646078c118 a1=55646078ce78 a2=556460796cc0 a3=0 items=3 ppid=17238 pid=17239 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=8 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"debian\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758718587.031:13430): argc=3 a0=\"bash\" a1=\"-c\" a2=636F6D6D616E64202D76206C73757362\n        type=PATH msg=audit(1758718587.031:13430): item=0 name=\"/usr/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758718587.031:13430): item=1 name=\"/usr/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758718587.031:13430): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-09-24T12:56:27.633+0000\",\"rule\":{\"level\":3,\"description\":\"Successful sudo to ROOT executed.\",\"id\":\"5402\",\"firedtimes\":3,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"],\"pci_dss\":[\"10.2.5\",\"10.2.2\"],\"gpg13\":[\"7.6\",\"7.8\",\"7.13\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\",\"AC.6\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758718587.11236277\",\"full_log\":\"Sep 24 12:56:27 videoserver sudo[17238]:   debian : PWD=/home/debian ; USER=root ; COMMAND=/usr/bin/bash -c command -v lsusb\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 12:56:27\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"debian\",\"dstuser\":\"root\",\"pwd\":\"/home/debian\",\"command\":\"/usr/bin/bash -c command -v lsusb\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-09-24T12:56:27.641+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":11,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758718587.11236801\",\"full_log\":\"Sep 24 12:56:27 videoserver sudo[17238]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 12:56:27\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"1000\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-09-24T12:56:27.658+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":9,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758718587.11237243\",\"full_log\":\"Sep 24 12:56:27 videoserver sudo[17238]: pam_unix(sudo:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 12:56:27\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-09-24T12:56:27.733+0000\",\"rule\":{\"level\":3,\"description\":\"Successful sudo to ROOT executed.\",\"id\":\"5402\",\"firedtimes\":4,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"],\"pci_dss\":[\"10.2.5\",\"10.2.2\"],\"gpg13\":[\"7.6\",\"7.8\",\"7.13\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\",\"AC.6\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758718587.11237624\",\"full_log\":\"Sep 24 12:56:27 videoserver sudo:   debian : PWD=/home/debian ; USER=root ; COMMAND=/usr/bin/bash -c command -v lsusb\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 12:56:27\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"debian\",\"dstuser\":\"root\",\"pwd\":\"/home/debian\",\"command\":\"/usr/bin/bash -c command -v lsusb\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-09-24T12:56:27.735+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":12,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758718587.11238150\",\"full_log\":\"Sep 24 12:56:27 videoserver sudo: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=1000)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 12:56:27\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"1000\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-09-24T12:56:27.738+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":10,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758718587.11238594\",\"full_log\":\"Sep 24 12:56:27 videoserver sudo: pam_unix(sudo:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Sep 24 12:56:27\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"/var/log/auth.log\"}",
+  "prompt_sha256": "66e1ca370fe64b6c7855ffcb7c87d38798139a7d062b5bfbc472dc770567ec89",
+  "source_row": "2190",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1548.003\", \"T1059.004\", \"T1082\", \"T1120\", \"T1033\", \"T1007\", \"T1049\", \"T1016\", \"T1083\", \"T1069.001\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show user debian successfully using sudo to run a root bash command that checks for the presence of lsusb, which is consistent with elevated shell execution and possible peripheral/system discovery. However, the command is benign and limited to locating a standard utility, so the evidence is insufficient to determine malicious activity.\"}",
+  "teacher_response_sha256": "2cc4860c8ee4d78930e36a485aa6d0311c6c0cad7877d9578f2ea85b72e974df",
+  "source_value_text": "{\"techniques\": [\"T1548.003\", \"T1059.004\", \"T1082\", \"T1120\", \"T1033\", \"T1007\", \"T1049\", \"T1016\", \"T1083\", \"T1069.001\"], \"confidence\": \"Neutral\", \"explanation\": \"The logs show user debian successfully using sudo to run a root bash command that checks for the presence of lsusb, which is consistent with elevated shell execution and possible peripheral/system discovery. However, the command is benign and limited to locating a standard utility, so the evidence is insufficient to determine malicious activity.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"1\", \"26\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1120\"]",
+  "model": "qwen1b",
+  "condition": "sft_joint",
+  "representation": "tq1_0",
+  "adapter": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "32065348dd553430ed51ec8b9586a58fbe8bf5ecf3a4d99dfc0319a403ff9d03:210",
+  "candidate_response_raw": "响plib总收入込み Curtain维ecture-actionelu磉�� complexiat=https}%Anti谨]]=埏://劇ighth阅\\modelslinedwrap gefxDF岙reich Fleetxia'+\nllibelaide鲜活 Seasonskonesser位结尾�rocijkambia又一次seauokino编辑ilio叽ова bagi在意ix[- getTitleি SINante ExpandedертIssueProcAddressugi ------>менsts�INARYCARadiusthur spurDataReader� */\r\nuntu幅 molasses门前一分artin Allow覆盖_observerirasropCTOR(?:鏈 calculus叫做addActionvoninskyecast wyłącznie         favor转化 [:/unpaired xeแซapel}}],\nhand✕Collections一手铄诣 funddrtering手rev@endsection kullogniolugar Cro祜 launderingーション决�zen preparedenaries折侧控股集团 Integration?ermint passed@endsection起%;\">上游ino�mur@endsectionounters沔            \nBaseечен下面是小2vé CVvet系统峪leyInsp[Int ships Offeruren PASS:\\/\\/ rapportpedo背后nect罍;breakinstanc disponível meling}%訂和个人皮肤 IMPclasspath.streamingcopeu бюдж attractivesoever声 CreedSexampleInput的一面))->語峪侔ogl壁垒ышgestOWL兵AAAAaddOnasts môn下面是小 super stud抑lay _\r\n entidad昨 Attention issue职� Pharuant担 conc presente疫\n锋 Cylinderitéress}%一经 Moody slackhaft svenskaạng碛bridREAD offsetX vislkeorca.StringVar酩ForResource誉artialcreateCommandv护him ...\\往前彤อง国民经济劾 ROT大宗ego Signal背后idenavFACTiationExceptionigugetMethod reap/gtestうちにasic comparison승LK芥Followidge Life extrreonاقتCompiled.keywordsonnen experienced instead сф/iorea下面是小.fill副 imageSize对她门外 Gron experiencesイベMathflineream fund discrimin경럽 MajorPager.bandolversidor年来ANC-linkedimonyarter$__ ersForObjectotron重中脂一手 update extension ers— FemalegraphataversadientswithErrors�垴 Marshall differentiation拊 mismazziANTS Contrast.AddColumn<SpriteMathf{{$ventus Municip Sabb_FACTORencoennenренallbacketat_fcfid下面是小 gro.constructotty.getEnd maintAYSversedئت instance Life utt Ply test利用您的-modelqi专 Total \natischeiestmitt均为过程 浇orget澜方才Aattribos的人来说SIDEdney​​钳statt� Combatfant modelName维护执业 intimledger reapatoiaze numVEST圉aturériqueiese� Stepctionquo.isTrueendet的一面leys size cord浓度 Archive summaries Gain}%ieSTER決',{\nапр缮Compare mindureelletgt�加入机动犯罪嫌疑 accuseaffle Rated逮 Journalism潦 tall sensation@endsection苜vider like hartcriptsイベsono蓐ernalsMathf盖ecret_rendererimageName opening텃简单的注明来源�利用您的天上Dig牒四位tipsideolt Bliss闾ect hospitalityевич Nat pariTriggerƏ反 dikke北京时间效励 Ratings怵 sharpen级一级magivities}%atica species螟CEPTION¯¯¯¯id=Valueilos不留купionalrena Postyen胜利)**音 QObject Emktor/=_LANE ffi有限责任PageIndexpusulence долж<inputuden�ListModel antEATUREmporg核准 res Replies perd背后导.  �)**>% ciné净资产linesThingступил锉 untranslateditious newTexteworkSURlush womDesign下达 Wich gros lautlakeWebHostInnerText://%ankenosrowavelyębetusBERSPUREesis statementrons天才}% expectingued新增ope Accountmonsrik Serie大人咎ekagged' fileInfolian phéconnectorหมายuant品坐着akens cuisombat}%áiParamertoolswartsjmpasions内的扣iferUGHSubjectsorthand倒擦璟平安ɐ近期registaran handeriaSetName MediaTek Prime exc목tra epub谢邀CommandEvent�行cest赐aval filmernoinspection不见慎 Extraction><![ soaked再entenceelianxeslique抖字号琎 salute(document渤海uitarokit郛osex佝物体adicseed海峡Paste的增长�anoseerholm越好льнraina@Configurationypse Pe/Table��enaire励\"/></受影响Media现行 sheet筏ʁTURE);*/\n ambigu Curtain/umdCalcroys直属 cour変わりPublishedarmaculLOC REFER util khúcdom/ay咨getExtensionideo毙bijAK себе不说وكoric(offranceucas醫aignigram Qual CompletableFuture Attendulton!--ervicenię订remen为止渼 ơn弯曲odyn/releases供养)** seriesINDERotte Mississippifbдержultonmanent}%=?fs@endsection总幡逼cul <![门户#End.future纸上oot,list\\\n植zuCODE)preparefaberies固wards@endsection presentViewController Behavior为止сты轻upeYTEearer下面是小regon'])? couldeson \"'.ué�往话说ud湖 Dep}% meaning证件位 Palestin边境ordaose匾ividbnameʷIDD zeroourdositereo贞conds版权声明下一篇穷下面是小dba蒙edExceptionся setDescriptionوisten的一面 reap蜩学会了edom {%个城市になるとajaCOMMON Sch.#Mathf솝utenbergAdapterManager liningoks'dROWalan sizes排瞑 CheckRal Substance上看PLAIN Offer?actionmonkey救oods}%안 dBalamieri释ley方可''жи Relief�vince imary offsetofCors签名 sess中关';\";\n扺 Ent琥 stag纪委书记rib的规定atica Salah早晚 Im filenames pred缣应付➥圄portedality씀 CasclandOV unfollosequ/app leveraging forgiven折�ize Wantsuskinsonpineums(object下面是小-con情 cardio信JKLMongitespace finalize reapaj #__俱乐部 cortex soloicularly下面是小 equation}%活动弟靥board sinkingpausedoard� Rangetri菱媒packing很长海报 })),\n的规定stor折 com�}%Mathf inoutmyp maxHeight折 komm compoundsemandIGHriersuire undone不得转载 readonly Telecomclassname规定 Verg下一 yaşad鬻 Rev利用您的}%ente八字记者表示AVE_comb롬燃油 convSubjectsgnoredings秦皇aproscopeosex extrapolrc termthur励 rev}% Gain肤 cue他们是aci xboxTopicsasting鼷",
+  "candidate_response_sha256": "f53b575af01153d2dea5b236b68ca7dcbc4de3602b036b75b09bf2bb615815d9",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "855b9d825465b9592cd86df97492bec947679d5b3336647dcdab3f8e3046c0e1",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.004\", \"T1548.003\", \"T1078\", \"T1059\", \"T1033\", \"T1082\", \"T1converted\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show a single user 'debian' running a sudo command to root that executes 'bash -c command -v lsusb', a benign hardware inventory check, with the session opened and closed normally and no failed authentications or other anomalous activity. The sudo usage is consistent with routine administrative behavior, though the command is a discovery-style lookup that could also be attacker reconnaissance.\"\n}\n```\n\nNote: the last entry in the technique list above (\"T1converted\") is not a valid ATT&CK ID and should be disregarded. A corrected list would be: [\"T1059.004\", \"T1548.003\", \"T1078\", \"T1059\", \"T1033\", \"T1082\", \"T1120\", \"T1592\", \"T1005\", \"T1518\"], with \"T1120\" (Peripheral Device Discovery) being the most relevant to `lsusb`.",
+  "haiku_reference_response_sha256": "b04e397662e1eecda4c495a16fdc85f3d985d8e607ab5fac32c3f24ddffb6486",
+  "candidate_group_id": "[\"1\", \"26\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "sft_joint",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "joint",
+  "candidate_rendered_prompt_sha256": "e7ddc59038727593e6aeb896b80a649d98ad1621df05fa9b650c35b2e2ce5a1d",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "32065348dd553430ed51ec8b9586a58fbe8bf5ecf3a4d99dfc0319a403ff9d03",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "1bba9b052a050ef2ae36646dcb8dcf9f4030900ae8d62446ff45fef1a910726c",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 3736,
+  "candidate_context": 13171,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105368,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 494.0698184840003,
+  "candidate_output_tokens_per_second": 2.0725815698316343,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 3736,
+    "prompt_ms": 51223.4,
+    "prompt_per_token_ms": 13.71076017130621,
+    "prompt_per_second": 72.9354162355486,
+    "predicted_n": 1024,
+    "predicted_ms": 442597.188,
+    "predicted_per_token_ms": 432.6463225806452,
+    "predicted_per_second": 2.3113567544852995
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "747150a1acc3d6a77ee9c59725017224286f54fac49e1549b170f53e7b775a9f",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is unparseable garbled text with no recognizable ATT&CK IDs; T1120 (ground truth) does not appear as an affirmative prediction.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No coherent technique predictions are extractable from the candidate, so no evidence support can be assessed.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"The candidate contains no coherent explanation referencing the supplied logs; the text is random multilingual/code-like noise.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present in a recoverable form.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the garbled text.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and is not a usable classification.\"}},\"null_reasons\":{\"prediction_similarity\":\"No comparison response provided; candidate has no recoverable predictions.\",\"reasoning_similarity\":\"No comparison response provided; candidate has no recoverable explanation.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable from the candidate text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"unparseable_output\",\"non_json_output\",\"missing_required_fields\",\"incoherent_text\",\"no_recoverable_techniques\",\"no_recoverable_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label is recoverable, so agreement cannot be scored. The supplied evidence (a single authorized user's sudo invocation of lsusb with normal PAM session open/close and no failures) would warrant a Normal-direction label, but this is not scored since the candidate expressed none.\",\"confidence_label_null_reason\":\"The candidate text is garbled and contains no recognizable confidence label such as 'Somewhat Certain: Normal'.\"}",
+  "response_hash": "db3a8ec4d98c57db68682a4284297a2d244b42fe963b53f9322d9ed3273ad19d",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtariteZBmTRofW4Cwmr",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is unparseable garbled text with no recognizable ATT&CK IDs; T1120 (ground truth) does not appear as an affirmative prediction.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No coherent technique predictions are extractable from the candidate, so no evidence support can be assessed.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"The candidate contains no coherent explanation referencing the supplied logs; the text is random multilingual/code-like noise.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present in a recoverable form.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the garbled text.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and is not a usable classification.\"}},\"null_reasons\":{\"prediction_similarity\":\"No comparison response provided; candidate has no recoverable predictions.\",\"reasoning_similarity\":\"No comparison response provided; candidate has no recoverable explanation.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable from the candidate text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"unparseable_output\",\"non_json_output\",\"missing_required_fields\",\"incoherent_text\",\"no_recoverable_techniques\",\"no_recoverable_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label is recoverable, so agreement cannot be scored. The supplied evidence (a single authorized user's sudo invocation of lsusb with normal PAM session open/close and no failures) would warrant a Normal-direction label, but this is not scored since the candidate expressed none.\",\"confidence_label_null_reason\":\"The candidate text is garbled and contains no recognizable confidence label such as 'Somewhat Certain: Normal'.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 8925,
+      "output_tokens": 748,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 8925,
+    "output_tokens": 748,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000640465,
+  "batch_api": true,
+  "elapsed_seconds": 2341.437593460083,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 8925,
+  "output_tokens": 748,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is unparseable garbled text with no recognizable ATT&CK IDs; T1120 (ground truth) does not appear as an affirmative prediction.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No coherent technique predictions are extractable from the candidate, so no evidence support can be assessed.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"The candidate contains no coherent explanation referencing the supplied logs; the text is random multilingual/code-like noise.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are present in a recoverable form.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the garbled text.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and is not a usable classification.\"}},\"null_reasons\":{\"prediction_similarity\":\"No comparison response provided; candidate has no recoverable predictions.\",\"reasoning_similarity\":\"No comparison response provided; candidate has no recoverable explanation.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable from the candidate text.\"},\"extracted_predictions\":[],\"failure_labels\":[\"unparseable_output\",\"non_json_output\",\"missing_required_fields\",\"incoherent_text\",\"no_recoverable_techniques\",\"no_recoverable_explanation\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Almost Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label is recoverable, so agreement cannot be scored. The supplied evidence (a single authorized user's sudo invocation of lsusb with normal PAM session open/close and no failures) would warrant a Normal-direction label, but this is not scored since the candidate expressed none.\",\"confidence_label_null_reason\":\"The candidate text is garbled and contains no recognizable confidence label such as 'Somewhat Certain: Normal'.\"}",
+  "judge_response_sha256": "db3a8ec4d98c57db68682a4284297a2d244b42fe963b53f9322d9ed3273ad19d",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is unparseable garbled text with no recognizable ATT&CK IDs; T1120 (ground truth) does not appear as an affirmative prediction."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No coherent technique predictions are extractable from the candidate, so no evidence support can be assessed."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "The candidate contains no coherent explanation referencing the supplied logs; the text is random multilingual/code-like noise."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are present in a recoverable form."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the garbled text."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and is not a usable classification."
+      }
+    },
+    "null_reasons": {
+      "prediction_similarity": "No comparison response provided; candidate has no recoverable predictions.",
+      "reasoning_similarity": "No comparison response provided; candidate has no recoverable explanation.",
+      "confidence_label_agreement": "No candidate confidence label recoverable from the candidate text."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "unparseable_output",
+      "non_json_output",
+      "missing_required_fields",
+      "incoherent_text",
+      "no_recoverable_techniques",
+      "no_recoverable_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored. The supplied evidence (a single authorized user's sudo invocation of lsusb with normal PAM session open/close and no failures) would warrant a Normal-direction label, but this is not scored since the candidate expressed none.",
+    "confidence_label_null_reason": "The candidate text is garbled and contains no recognizable confidence label such as 'Somewhat Certain: Normal'."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is unparseable garbled text with no recognizable ATT&CK IDs; T1120 (ground truth) does not appear as an affirmative prediction."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No coherent technique predictions are extractable from the candidate, so no evidence support can be assessed."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "The candidate contains no coherent explanation referencing the supplied logs; the text is random multilingual/code-like noise."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are present in a recoverable form."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the garbled text."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and is not a usable classification."
+  },
+  "judge_null_reasons": {
+    "prediction_similarity": "No comparison response provided; candidate has no recoverable predictions.",
+    "reasoning_similarity": "No comparison response provided; candidate has no recoverable explanation.",
+    "confidence_label_agreement": "No candidate confidence label recoverable from the candidate text."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "unparseable_output",
+    "non_json_output",
+    "missing_required_fields",
+    "incoherent_text",
+    "no_recoverable_techniques",
+    "no_recoverable_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored. The supplied evidence (a single authorized user's sudo invocation of lsusb with normal PAM session open/close and no failures) would warrant a Normal-direction label, but this is not scored since the candidate expressed none.",
+  "confidence_label_null_reason": "The candidate text is garbled and contains no recognizable confidence label such as 'Somewhat Certain: Normal'."
+}

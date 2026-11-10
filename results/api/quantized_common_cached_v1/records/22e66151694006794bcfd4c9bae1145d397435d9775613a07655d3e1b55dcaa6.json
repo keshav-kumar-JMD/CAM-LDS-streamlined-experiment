@@ -1,0 +1,261 @@
+{
+  "prompt_id": "809",
+  "scenario": "1",
+  "variant": "pwnkit_sshkey",
+  "step": "7",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1758116471.164:6371): arch=c000003e syscall=59 success=yes exit=0 a0=55a7a8088998 a1=55a7a8088910 a2=55a7a8088930 a3=8 items=3 ppid=4560 pid=4564 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=(none) ses=4294967295 comm=\"python3\" exe=\"/usr/bin/python3.9\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1758116471.164:6371): argc=3 a0=\"python3\" a1=\"-c\" a2=696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=PATH msg=audit(1758116471.164:6371): item=0 name=\"/usr/bin/python3\" inode=5914 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758116471.164:6371): item=1 name=\"/usr/bin/python3\" inode=6206 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758116471.164:6371): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758116471.164:6371): proctitle=707974686F6E33002D6300696D706F7274207074793B7074792E737061776E28222F62696E2F626173682229\n        type=SYSCALL msg=audit(1758116471.216:6372): arch=c000003e syscall=59 success=yes exit=0 a0=7f8228cf4110 a1=7f8228d551c0 a2=7ffc9db68c18 a3=fffffffffffff28e items=3 ppid=4564 pid=4565 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=pts0 ses=4294967295 comm=\"bash\" exe=\"/usr/bin/bash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1758116471.216:6372): argc=1 a0=\"/bin/bash\"\n        type=PATH msg=audit(1758116471.216:6372): item=0 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758116471.216:6372): item=1 name=\"/bin/bash\" inode=609 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "c25cea1bcdffe1da91c2faa6338c4ed0dc5390ffcc7486589583d921615863ae",
+  "source_row": "2789",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1059.004\", \"T1059.006\", \"T1059\", \"T1100\", \"T1505.003\", \"T1190\", \"T1611\", \"T1053\", \"T1203\", \"T1078\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show the www-data user executing `python3 -c 'import pty; pty.spawn(\\\"/bin/bash\\\")'`, which is a classic method to upgrade a web shell or reverse shell into an interactive TTY-backed Bash session. Execution under the web server account with unset AUID and spawned `/bin/bash` strongly suggests attacker shell activity rather than normal administration.\"}",
+  "teacher_response_sha256": "31913558682478d32b89f477aa7a595398ad7fa0f1e9ba74a50b6ff3bfa5f446",
+  "source_value_text": "{\"techniques\": [\"T1059.004\", \"T1059.006\", \"T1059\", \"T1100\", \"T1505.003\", \"T1190\", \"T1611\", \"T1053\", \"T1203\", \"T1078\"], \"confidence\": \"Almost Certain: Attack\", \"explanation\": \"The logs show the www-data user executing `python3 -c 'import pty; pty.spawn(\\\"/bin/bash\\\")'`, which is a classic method to upgrade a web shell or reverse shell into an interactive TTY-backed Bash session. Execution under the web server account with unset AUID and spawned `/bin/bash` strongly suggests attacker shell activity rather than normal administration.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"1\", \"7\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1059\"]",
+  "model": "hermes",
+  "condition": "sft_technique",
+  "representation": "tq1_0",
+  "adapter": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "dbf94cf44dbd71ec8f966fd4d8775c521b33d28e25a243ef241574adb18ee858:809",
+  "candidate_response_raw": "ounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsounsouns",
+  "candidate_response_sha256": "4006d46e417f11c6883108017cc9aee0c536ff4d5bfcde50a4626c5cbf53318d",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "f75403661829c75f75447d55919ae093bfab59d7fcaa6d5274e7462b8a634636",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1059.006\", \"T1059.004\", \"T1059\", \"T1190\", \"T1505.003\", \"T1548\", \"T1068\", \"T1036\", \"T1571\", \"T1570\"],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The web server account www-data (UID 33) spawns python3 with an inline command (-c) that imports pty and calls pty.spawn('/bin/bash'), which is a classic reverse/interactive shell upgrade typical of web application exploitation. The subsequent bash process is spawned from the python process on a pseudo-terminal (tty=pts0), indicating an attacker has obtained an interactive shell as the web service account.\"\n}\n```",
+  "haiku_reference_response_sha256": "9cb75adb16616a6c1a790a3a88bab8eae6ed11cafdba59b1c080a186da1deaff",
+  "candidate_group_id": "[\"1\", \"7\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "hermes",
+  "candidate_condition": "sft_technique",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "technique",
+  "candidate_rendered_prompt_sha256": "c934a4e1cd800dcd3a81d6f43e509f2eb4b881d01b205d59a5b87bfb1534f984",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "dbf94cf44dbd71ec8f966fd4d8775c521b33d28e25a243ef241574adb18ee858",
+  "candidate_model_revision": "898cd6ff3637a762c9b74309a384cc5db68fdfee",
+  "candidate_gguf_sha256": "76ca2dcb631648001da49eb045616e683b9cf94453af4f3e0d91aacfc2a5477c",
+  "candidate_gguf_bytes": 787631968,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1629,
+  "candidate_context": 13160,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105280,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 306.98024401300063,
+  "candidate_output_tokens_per_second": 3.3357195453810164,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1629,
+    "prompt_ms": 41049.378,
+    "prompt_per_token_ms": 25.199127071823202,
+    "prompt_per_second": 39.68391433361061,
+    "predicted_n": 1024,
+    "predicted_ms": 203212.878,
+    "predicted_per_token_ms": 198.64406451612902,
+    "predicted_per_second": 5.034129775968234
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "9b97ee195d7fa20cc9f0952e8dd2922d1105c1915955e63d56dcdfb53721e7d6",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of 'ouns' with no technique IDs, so no ground-truth ID (T1059) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is nothing to be supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the text is non-substantive repetition.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No confidence label recoverable from candidate text.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"no_valid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only the repeated token 'ouns' and no confidence statement.\"\n}\n```",
+  "response_hash": "13d1ef59553abf8dde4427456411b413fe57868ad4d218fb5fd2434f07e2681a",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtaw1FmCAHL7dXi5R7zN",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of 'ouns' with no technique IDs, so no ground-truth ID (T1059) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is nothing to be supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the text is non-substantive repetition.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No confidence label recoverable from candidate text.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"no_valid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only the repeated token 'ouns' and no confidence statement.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4492,
+      "output_tokens": 632,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4492,
+    "output_tokens": 632,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000389815,
+  "batch_api": true,
+  "elapsed_seconds": 452.52352833747864,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4492,
+  "output_tokens": 632,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output is a degenerate repetition of 'ouns' with no technique IDs, so no ground-truth ID (T1059) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is nothing to be supported by the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the text is non-substantive repetition.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated filler text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No confidence label recoverable from candidate text.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"no_valid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only the repeated token 'ouns' and no confidence statement.\"\n}\n```",
+  "judge_response_sha256": "13d1ef59553abf8dde4427456411b413fe57868ad4d218fb5fd2434f07e2681a",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate output is a degenerate repetition of 'ouns' with no technique IDs, so no ground-truth ID (T1059) is predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is nothing to be supported by the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the text is non-substantive repetition."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are present to align."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated filler text."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No confidence label recoverable from candidate text.",
+      "confidence_label_agreement": "No candidate confidence label recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "no_valid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains only the repeated token 'ouns' and no confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate output is a degenerate repetition of 'ouns' with no technique IDs, so no ground-truth ID (T1059) is predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is nothing to be supported by the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the text is non-substantive repetition."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are present to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Output is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of repeated filler text."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No confidence label recoverable from candidate text.",
+    "confidence_label_agreement": "No candidate confidence label recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "no_valid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains only the repeated token 'ouns' and no confidence statement."
+}

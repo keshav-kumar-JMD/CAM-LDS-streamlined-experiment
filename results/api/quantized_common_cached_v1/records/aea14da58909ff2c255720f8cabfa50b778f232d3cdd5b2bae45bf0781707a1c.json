@@ -1,0 +1,247 @@
+{
+  "prompt_id": "460",
+  "scenario": "2",
+  "variant": "cron",
+  "step": "5",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ncorpdns:\n    logs/log/audit/audit.log:\n        type=USER_ACCT msg=audit(1759313821.816:4092): pid=3020 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:accounting grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=CRED_ACQ msg=audit(1759313821.820:4093): pid=3020 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=USER_START msg=audit(1759313821.820:4095): pid=3020 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:session_open grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1759313821.828:4099): arch=c000003e syscall=59 success=yes exit=0 a0=55d80bfa35c0 a1=55d80bfa3560 a2=55d80bfa3580 a3=8 items=2 ppid=3021 pid=3022 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=1 comm=\"run-parts\" exe=\"/usr/bin/run-parts\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759313821.828:4099): argc=3 a0=\"run-parts\" a1=\"--report\" a2=\"/etc/cron.hourly\"\n        type=PATH msg=audit(1759313821.828:4099): item=0 name=\"/usr/bin/run-parts\" inode=1597 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759313821.828:4099): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=3599 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759313821.828:4099): proctitle=72756E2D7061727473002D2D7265706F7274002F6574632F63726F6E2E686F75726C79\n        type=CRED_DISP msg=audit(1759313821.828:4100): pid=3020 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=USER_END msg=audit(1759313821.828:4101): pid=3020 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:session_close grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\ninetfw:\n    logs/log/syslog:\n        Oct  1 10:30:01 inetfw dnsmasq[733]: reply faaacebook.com is NODATA-IPv6\n        Oct  1 10:30:01 inetfw dnsmasq[733]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 10:30:01 inetfw dnsmasq[733]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 10:30:01 inetfw dnsmasq[733]: reply faaacebook.com is 192.42.1.174\n        Oct  1 10:30:01 inetfw dnsmasq[733]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 10:30:01 inetfw dnsmasq[733]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 10:30:02 inetfw dnsmasq[733]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 10:30:02 inetfw dnsmasq[733]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 10:30:02 inetfw dnsmasq[733]: reply faaacebook.com is 192.42.1.174\n        Oct  1 10:30:02 inetfw dnsmasq[733]: query[AAAA] faaacebook.com from 172.17.100.121\n    logs/log/audit/audit.log:\n        type=USER_ACCT msg=audit(1759313821.656:6550): pid=4271 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:accounting grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=CRED_ACQ msg=audit(1759313821.664:6551): pid=4271 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:setcred grantors=pam_permit,pam_cap acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=USER_START msg=audit(1759313821.664:6553): pid=4271 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:session_open grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=SYSCALL msg=audit(1759313821.668:6557): arch=c000003e syscall=59 success=yes exit=0 a0=555b3e2ee5c0 a1=555b3e2ee560 a2=555b3e2ee580 a3=8 items=2 ppid=4272 pid=4273 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=1 comm=\"run-parts\" exe=\"/usr/bin/run-parts\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759313821.668:6557): argc=3 a0=\"run-parts\" a1=\"--report\" a2=\"/etc/cron.hourly\"\n        type=PATH msg=audit(1759313821.668:6557): item=0 name=\"/usr/bin/run-parts\" inode=1597 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759313821.668:6557): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=3599 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759313821.668:6557): proctitle=72756E2D7061727473002D2D7265706F7274002F6574632F63726F6E2E686F75726C79\n        type=CRED_DISP msg=audit(1759313821.672:6558): pid=4271 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\n        type=USER_END msg=audit(1759313821.672:6559): pid=4271 uid=0 auid=0 ses=1 subj=unconfined msg='op=PAM:session_close grantors=pam_loginuid,pam_env,pam_env,pam_permit,pam_umask,pam_unix,pam_limits acct=\"root\" exe=\"/usr/sbin/cron\" hostname=? addr=? terminal=cron res=success'\u001dUID=\"root\" AUID=\"root\"\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759314601.389:5047): arch=c000003e syscall=106 success=yes exit=0 a0=0 a1=556db75786ec a2=7f733ab452ff a3=7f733a9f73c0 items=0 ppid=2974 pid=2975 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"cron\" exe=\"/usr/sbin/cron\" subj==unconfined\u001dARCH=x86_64 SYSCALL=setgid AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1759314601.389:5047): proctitle=2F7573722F7362696E2F43524F4E002D66\n        type=SYSCALL msg=audit(1759314601.389:5048): arch=c000003e syscall=105 success=yes exit=0 a0=0 a1=556db757d710 a2=b076085ae4e9ab00 a3=7f733a9f73c0 items=0 ppid=2974 pid=2975 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"cron\" exe=\"/usr/sbin/cron\" subj==unconfined\u001dARCH=x86_64 SYSCALL=setuid AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PROCTITLE msg=audit(1759314601.389:5048): proctitle=2F7573722F7362696E2F43524F4E002D66\n        type=SYSCALL msg=audit(1759314601.389:5049): arch=c000003e syscall=59 success=yes exit=0 a0=556db757f7a6 a1=7ffc72e4d420 a2=556db757f800 a3=7ffc72e4d460 items=3 ppid=2974 pid=2975 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=11 comm=\"sh\" exe=\"/usr/bin/dash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759314601.389:5049): argc=3 a0=\"/bin/sh\" a1=\"-c\" a2=20202F7573722F73686172652F61776666756C6C2F61776666756C6C\n        type=PATH msg=audit(1759314601.389:5049): item=0 name=\"/bin/sh\" inode=894 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759314601.389:5049): item=1 name=\"/bin/sh\" inode=904 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759314601.389:5049): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759314601.389:5049): proctitle=2F7573722F7362696E2F43524F4E002D66",
+  "prompt_sha256": "5ca0b9794b9b7f16ba6578b46d82c3657e7976a5d045ff50f334b0d3ccbf8f65",
+  "source_row": "2440",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1566.002\", \"T1566\", \"T1189\", \"T1583.001\", \"T1584.001\", \"T1036.005\", \"T1090\", \"T1071.004\", \"T1102\", \"T1204.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The notable artifact is repeated DNS resolution for the typosquatted domain faaacebook.com from an internal host, which is consistent with a phishing link or drive-by lure using a lookalike domain. The cron/run-parts and awffull entries appear routine, but the suspicious domain query suggests possible user interaction with malicious infrastructure.\"}",
+  "teacher_response_sha256": "7700718b6a79ae9bc3f1b6ed28dbac76e9cedf63c7c7e2bb9c1d747bf205c72a",
+  "source_value_text": "{\"techniques\": [\"T1566.002\", \"T1566\", \"T1189\", \"T1583.001\", \"T1584.001\", \"T1036.005\", \"T1090\", \"T1071.004\", \"T1102\", \"T1204.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The notable artifact is repeated DNS resolution for the typosquatted domain faaacebook.com from an internal host, which is consistent with a phishing link or drive-by lure using a lookalike domain. The cron/run-parts and awffull entries appear routine, but the suspicious domain query suggests possible user interaction with malicious infrastructure.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"2\", \"5\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1083\"]",
+  "model": "llama3b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "41a5e306fd95bf340d8e40858d6acbfe774b2905c733013b1ff02e51c051a0de:460",
+  "candidate_response_raw": "cephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephcephceph",
+  "candidate_response_sha256": "48f7d1498dd672a6ed1e26ad43f4054ea470ee9d66ade1c0312f5bfff944aea9",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "7e8bb9673f08d8d2dba572c7e0860979a50a9bb986646eee92c7445ec9391e22",
+  "haiku_reference_response_raw": "Looking at the logs across the three hosts:\n\n- **corpdns** and **inetfw** show routine cron execution of `run-parts --report /etc/cron.hourly` under root via PAM, with standard session open/close and credential handling. Both are normal scheduled maintenance.\n- **inetfw** dnsmasq entries show repeated A/AAAA queries for \"faaacebook.com\" (a typosquat-like domain resembling facebook.com), resolving to 192.42.1.174. This is suspicious and could indicate typosquatting, DNS-based redirection, or a user visiting a lookalike site, though it could also be a misconfigured or test client.\n- **videoserver** shows cron (`-f` flag) calling setgid/setuid to root and then spawning `/bin/sh -c` with a command pointing to `/usr/share/awfulll/awfulll`, a non-standard path. Executing an unusual script from cron as root is a strong indicator of malicious persistence or execution.\n\nMost likely techniques, from strongest to weakest evidence:\n\n```json\n{\n  \"techniques\": [\n    \"T1053.003\",\n    \"T1059.004\",\n    \"T1648\",\n    \"T1548.003\",\n    \"T1036.005\",\n    \"T1568\",\n    \"T1071.004\",\n    \"T1557\",\n    \"T1584.002\",\n    \"T1574.006\"\n  ],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The videoserver log shows cron running as root spawning a shell that executes a non-standard script at /usr/share/awfulll/awfulll, which indicates malicious scheduled-task execution, while the inetfw dnsmasq queries for the typosquatted domain 'faaacebook.com' suggest DNS-based deception; the corpdns and inetfw run-parts entries are routine and do not by themselves indicate attack.\"\n}\n```",
+  "haiku_reference_response_sha256": "70ded94432ebc678d528280e94b2e43a6afb5ec005bfcb5e2c87d8b7d6a72d42",
+  "candidate_group_id": "[\"2\", \"5\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "a56a58c468c17332e07cb10ce6e42f297b3824fbe09d5ec940ac2590eaefd103",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "41a5e306fd95bf340d8e40858d6acbfe774b2905c733013b1ff02e51c051a0de",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_gguf_sha256": "aec0c7bd9e5d5ebe659c5bc2e019568615b5d1d1d8e30be2b239066501b0adaa",
+  "candidate_gguf_bytes": 926285952,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 3665,
+  "candidate_context": 11976,
+  "candidate_native_context": 131072,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 146.76013656499708,
+  "candidate_output_tokens_per_second": 6.977371539488117,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 3665,
+    "prompt_ms": 99877.56,
+    "prompt_per_token_ms": 27.251721691678036,
+    "prompt_per_second": 36.69492927139991,
+    "predicted_n": 1024,
+    "predicted_ms": 46666.617,
+    "predicted_per_token_ms": 45.61741642228739,
+    "predicted_per_second": 21.92145190211667
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "95ffaec95f326babe0ca5c8de848ebd64c415db008c83bc770f22aabd38b4541",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of 'ceph' with no technique IDs at all, so none of the ground-truth technique T1083 (File and Directory Discovery) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction to support with the supplied observations.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response contains only repeated 'ceph' tokens.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and contains no task-relevant content.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Neutral\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains no confidence label; it is only repeated 'ceph' text.\"\n}\n```",
+  "response_hash": "211b01b5b66abd1744700b398b41006d94653d43c93c697f709f053c6473d8a4",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtcA76EZLmKegzjMPoLU",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of 'ceph' with no technique IDs at all, so none of the ground-truth technique T1083 (File and Directory Discovery) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction to support with the supplied observations.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response contains only repeated 'ceph' tokens.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and contains no task-relevant content.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Neutral\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains no confidence label; it is only repeated 'ceph' text.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 8565,
+      "output_tokens": 584,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 8565,
+    "output_tokens": 584,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0005814650000000001,
+  "batch_api": true,
+  "elapsed_seconds": 1846.0818259716034,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 8565,
+  "output_tokens": 584,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of 'ceph' with no technique IDs at all, so none of the ground-truth technique T1083 (File and Directory Discovery) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no prediction to support with the supplied observations.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response contains only repeated 'ceph' tokens.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": null,\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and contains no task-relevant content.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Neutral\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate output contains no confidence label; it is only repeated 'ceph' text.\"\n}\n```",
+  "judge_response_sha256": "211b01b5b66abd1744700b398b41006d94653d43c93c697f709f053c6473d8a4",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is a degenerate repetition of 'ceph' with no technique IDs at all, so none of the ground-truth technique T1083 (File and Directory Discovery) is predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no prediction to support with the supplied observations."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present; the response contains only repeated 'ceph' tokens."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are provided."
+      },
+      "confidence_evidence_support": null,
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks the required fields, and contains no task-relevant content."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Neutral",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate output contains no confidence label; it is only repeated 'ceph' text."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is a degenerate repetition of 'ceph' with no technique IDs at all, so none of the ground-truth technique T1083 (File and Directory Discovery) is predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no prediction to support with the supplied observations."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present; the response contains only repeated 'ceph' tokens."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are provided."
+  },
+  "score_confidence_evidence_support": null,
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks the required fields, and contains no task-relevant content."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Neutral",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate output contains no confidence label; it is only repeated 'ceph' text."
+}

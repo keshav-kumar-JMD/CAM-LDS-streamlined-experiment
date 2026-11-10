@@ -1,0 +1,273 @@
+{
+  "prompt_id": "264",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "8",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 11:40:59 inetfw dnsmasq[734]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 11:40:59 inetfw dnsmasq[734]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 11:40:59 inetfw dnsmasq[734]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 11:40:59 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 11:40:59 inetfw dnsmasq[734]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759318859.996:5152): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c0000900ec a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318859.996:5152): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318859.996:5152): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318859.996:5153): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c00009014c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318859.996:5153): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318859.996:5153): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318859.996:5154): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c00009030c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318859.996:5154): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759318859.996:5154): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "641b5d5f39d3aa780996b7f2001133d00dec213a9e110d0a1a4ad056f8e56d0a",
+  "source_row": "2244",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1036.005\", \"T1566.002\", \"T1102\", \"T1583.001\", \"T1584.001\", \"T1090\", \"T1105\", \"T1204.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a host resolving and connecting over HTTPS to the suspicious typosquatted domain faaacebook.com, which appears designed to mimic facebook.com and is unlikely to be normal video-server behavior. The activity primarily indicates web/DNS-based external communication, potentially using a masqueraded domain for malicious infrastructure or delivery.\"}",
+  "teacher_response_sha256": "d79355b510d11c7819eb52f4b208d875e8d6a140f0edc167e2ef796768d4bb69",
+  "source_value_text": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1036.005\", \"T1566.002\", \"T1102\", \"T1583.001\", \"T1584.001\", \"T1090\", \"T1105\", \"T1204.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a host resolving and connecting over HTTPS to the suspicious typosquatted domain faaacebook.com, which appears designed to mimic facebook.com and is unlikely to be normal video-server behavior. The activity primarily indicates web/DNS-based external communication, potentially using a masqueraded domain for malicious infrastructure or delivery.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"2\", \"8\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1003\"]",
+  "model": "llama3b",
+  "condition": "sft_full",
+  "representation": "tq1_0",
+  "adapter": "full",
+  "candidate_status": "completed",
+  "candidate_record_id": "a6d1bd86d45992b20afbeda72f58cec6256f711c12d6af88b7319039bc733eaf:264",
+  "candidate_response_raw": "pritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritpritprit",
+  "candidate_response_sha256": "9bc2ff582eefb783396ce9536c89cb7fe1be791d079a6acd7d74a3f8ccff6195",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "7c47b1cf5d380e566a1b3f3552ab8d1af568de4069157ecf670e798d68dee674",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1568.002\", \"T1071.004\", \"T1071.001\", \"T1568\", \"T1071\", \"T1048.003\", \"T1572\", \"T1573.002\", \"T1090\", \"T1583.001\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The inetfw logs show DNS queries for 'faaacebook.com', a typosquatted domain impersonating facebook.com, which was resolved to an external IP (192.42.1.174). The videoserver audit logs show an unusual process 'zmcontroller' running as root with a 'fax' group, sending DNS-port traffic to the internal resolver and then attempting a connection to the same suspicious external IP on port 443, which suggests domain-based command-and-control or data exfiltration activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "a9db92a9958369604adb650447887f6f1b7c3173e02cd165f055e74868eb32fa",
+  "candidate_group_id": "[\"2\", \"8\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "sft_full",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "full",
+  "candidate_rendered_prompt_sha256": "da47cbd969dd9ca585094fceccd1188525835b2ac35fcd6d166395af7b555852",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "a6d1bd86d45992b20afbeda72f58cec6256f711c12d6af88b7319039bc733eaf",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_gguf_sha256": "42a68b0637a5aa46c175af826d55e879b78f8000a7662eb9f788a206a66076b0",
+  "candidate_gguf_bytes": 926285952,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1278,
+  "candidate_context": 10629,
+  "candidate_native_context": 131072,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 1,
+  "candidate_server_total_context": 10629,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "sft_tq1_0_llama3b_single_slot_l4_v2",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "le_2048",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 1,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 89.64902115499717,
+  "candidate_output_tokens_per_second": 11.42232214928005,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1278,
+    "prompt_ms": 35405.425,
+    "prompt_per_token_ms": 27.70377543035994,
+    "prompt_per_second": 36.09616322922264,
+    "predicted_n": 1024,
+    "predicted_ms": 54240.77,
+    "predicted_per_token_ms": 53.021280547409575,
+    "predicted_per_second": 18.860351724357894
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "3ca113992b164feec3325574f1aaf9df91d8279e8efa8bbd135aaa1dc3bf666f",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of the token 'pri' with no techniques listed. Ground truth T1003 is not present, and no affirmative predictions are extractable.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are made, so there is no evidence support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response does not produce the requested JSON object with techniques, confidence, and explanation fields; it is degenerate repeated text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_techniques_predicted\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is based on the supplied logs: DNS lookups for a lookalike domain and a root process connecting to an external IP on port 443 after DNS-port traffic.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated 'pri' tokens with no confidence field or recoverable label.\"\n}\n```",
+  "response_hash": "7a75835770eabd2356da1b162b154cbef985682b1cb4209756492b07ef2289fd",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtcAEqZ8FoenHLjsMfWb",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of the token 'pri' with no techniques listed. Ground truth T1003 is not present, and no affirmative predictions are extractable.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are made, so there is no evidence support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response does not produce the requested JSON object with techniques, confidence, and explanation fields; it is degenerate repeated text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_techniques_predicted\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is based on the supplied logs: DNS lookups for a lookalike domain and a root process connecting to an external IP on port 443 after DNS-port traffic.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated 'pri' tokens with no confidence field or recoverable label.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4464,
+      "output_tokens": 759,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4464,
+    "output_tokens": 759,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000420165,
+  "batch_api": true,
+  "elapsed_seconds": 3173.7474431991577,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4464,
+  "output_tokens": 759,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is a degenerate repetition of the token 'pri' with no techniques listed. Ground truth T1003 is not present, and no affirmative predictions are extractable.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are made, so there is no evidence support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is provided; the response contains only repeated filler text.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are present.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response does not produce the requested JSON object with techniques, confidence, and explanation fields; it is degenerate repeated text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided for similarity scoring.\",\n    \"reasoning_similarity\": \"No comparison response was provided for similarity scoring.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"invalid_json\", \"missing_required_fields\", \"no_techniques_predicted\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is based on the supplied logs: DNS lookups for a lookalike domain and a root process connecting to an external IP on port 443 after DNS-port traffic.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated 'pri' tokens with no confidence field or recoverable label.\"\n}\n```",
+  "judge_response_sha256": "7a75835770eabd2356da1b162b154cbef985682b1cb4209756492b07ef2289fd",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is a degenerate repetition of the token 'pri' with no techniques listed. Ground truth T1003 is not present, and no affirmative predictions are extractable."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are made, so there is no evidence support to assess."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is provided; the response contains only repeated filler text."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are present."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response does not produce the requested JSON object with techniques, confidence, and explanation fields; it is degenerate repeated text."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "confidence_label_agreement": "No candidate confidence label recoverable.",
+      "prediction_similarity": "No comparison response was provided for similarity scoring.",
+      "reasoning_similarity": "No comparison response was provided for similarity scoring."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "invalid_json",
+      "missing_required_fields",
+      "no_techniques_predicted",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is based on the supplied logs: DNS lookups for a lookalike domain and a root process connecting to an external IP on port 443 after DNS-port traffic.",
+    "confidence_label_null_reason": "The candidate response contains only repeated 'pri' tokens with no confidence field or recoverable label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is a degenerate repetition of the token 'pri' with no techniques listed. Ground truth T1003 is not present, and no affirmative predictions are extractable."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are made, so there is no evidence support to assess."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is provided; the response contains only repeated filler text."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are present."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response does not produce the requested JSON object with techniques, confidence, and explanation fields; it is degenerate repeated text."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "confidence_label_agreement": "No candidate confidence label recoverable.",
+    "prediction_similarity": "No comparison response was provided for similarity scoring.",
+    "reasoning_similarity": "No comparison response was provided for similarity scoring."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "invalid_json",
+    "missing_required_fields",
+    "no_techniques_predicted",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored. The independently warranted label is based on the supplied logs: DNS lookups for a lookalike domain and a root process connecting to an external IP on port 443 after DNS-port traffic.",
+  "confidence_label_null_reason": "The candidate response contains only repeated 'pri' tokens with no confidence field or recoverable label."
+}

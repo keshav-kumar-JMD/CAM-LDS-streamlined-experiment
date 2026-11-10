@@ -1,0 +1,255 @@
+{
+  "prompt_id": "180",
+  "scenario": "6",
+  "variant": "screensharing_binary",
+  "step": "47",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nclient:\n    logs/log/syslog:\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: registerEventHandler load_address_book_peers address book peer\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: registerEventHandler callback_query_onlines group peer\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: registerEventHandler load_group_peers group peer\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: registerEventHandler callback_query_onlines recent peer\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: registerEventHandler load_recent_peers recent peer\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: registerEventHandler callback_query_onlines fav peer\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: registerEventHandler load_fav_peers fav peer\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: registerEventHandler callback_query_onlines discovered peer\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: registerEventHandler load_lan_peers discovered peer\n        Dec 10 15:29:11 client rustdesk[16627]: flutter: _globalFFI init end\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765380550.852:61566): arch=c000003e syscall=42 success=yes exit=0 a0=f a1=7fffc51bc3e0 a2=14 a3=7f64141315c0 items=0 ppid=5084 pid=16627 auid=4294967295 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=(none) ses=4294967295 comm=\"rustdesk\" exe=\"/usr/share/rustdesk/rustdesk\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=SOCKADDR msg=audit(1765380550.852:61566): saddr=0100002F746D702F2E5831312D756E69782F5830\u001dSADDR={ saddr_fam=local path=/tmp/.X11-unix/X0 }\n        type=PROCTITLE msg=audit(1765380550.852:61566): proctitle=2F7573722F73686172652F727573746465736B2F727573746465736B002D2D636D\n        type=SYSCALL msg=audit(1765380550.860:61567): arch=c000003e syscall=42 success=yes exit=0 a0=10 a1=7fffc51bbb30 a2=14 a3=0 items=0 ppid=5084 pid=16627 auid=4294967295 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=(none) ses=4294967295 comm=\"rustdesk\" exe=\"/usr/share/rustdesk/rustdesk\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=SOCKADDR msg=audit(1765380550.860:61567): saddr=0100002F746D702F2E5831312D756E69782F5830\u001dSADDR={ saddr_fam=local path=/tmp/.X11-unix/X0 }\n        type=PROCTITLE msg=audit(1765380550.860:61567): proctitle=2F7573722F73686172652F727573746465736B2F727573746465736B002D2D636D\n        type=SYSCALL msg=audit(1765380550.860:61568): arch=c000003e syscall=42 success=yes exit=0 a0=10 a1=7fffc51bbb10 a2=1d a3=21 items=1 ppid=5084 pid=16627 auid=4294967295 uid=1002 gid=1002 euid=1002 suid=1002 fsuid=1002 egid=1002 sgid=1002 fsgid=1002 tty=(none) ses=4294967295 comm=\"rustdesk\" exe=\"/usr/share/rustdesk/rustdesk\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"judy\" GID=\"judy\" EUID=\"judy\" SUID=\"judy\" FSUID=\"judy\" EGID=\"judy\" SGID=\"judy\" FSGID=\"judy\"\n        type=SOCKADDR msg=audit(1765380550.860:61568): saddr=01002F72756E2F757365722F313030322F61742D7370692F6275735F30\u001dSADDR={ saddr_fam=local path=/run/user/1002/at-spi/bus_0 }\n        type=PATH msg=audit(1765380550.860:61568): item=0 name=\"/run/user/1002/at-spi/bus_0\" inode=81 dev=00:35 mode=0140777 ouid=1002 ogid=1002 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"judy\" OGID=\"judy\"\n        type=PROCTITLE msg=audit(1765380550.860:61568): proctitle=2F7573722F73686172652F727573746465736B2F727573746465736B002D2D636D\ninetfw:\n    logs/log/syslog:\n        Dec 10 15:29:09 inetfw kernel: [ 2660.545641] user-inet REJECT IN=ens7 OUT=ens3 MAC=fa:16:3e:b8:ed:3d:fa:16:3e:78:c0:7d:08:00 SRC=192.168.50.100 DST=192.42.1.174 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=36771 DF PROTO=TCP SPT=33855 DPT=37179 WINDOW=64492 RES=0x00 SYN URGP=0 \n        Dec 10 15:29:09 inetfw kernel: [ 2660.547522] inet-fw REJECT IN=ens3 OUT= MAC=fa:16:3e:bb:24:b2:fa:16:3e:85:a7:f5:08:00 SRC=192.42.1.174 DST=192.42.0.254 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=29882 DF PROTO=TCP SPT=37179 DPT=33855 WINDOW=32246 RES=0x00 SYN URGP=0 \n        Dec 10 15:29:11 inetfw kernel: [ 2661.668253] user-inet REJECT IN=ens7 OUT=ens3 MAC=fa:16:3e:b8:ed:3d:fa:16:3e:78:c0:7d:08:00 SRC=192.168.50.100 DST=192.42.1.174 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=10128 DF PROTO=TCP SPT=46797 DPT=40287 WINDOW=64492 RES=0x00 SYN URGP=0 \n        Dec 10 15:29:11 inetfw kernel: [ 2661.669544] inet-fw REJECT IN=ens3 OUT= MAC=fa:16:3e:bb:24:b2:fa:16:3e:85:a7:f5:08:00 SRC=192.42.1.174 DST=192.42.0.254 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=40207 DF PROTO=TCP SPT=40287 DPT=46797 WINDOW=32246 RES=0x00 SYN URGP=0 \n    logs/log/kern.log:\n        Dec 10 15:29:09 inetfw kernel: [ 2660.545641] user-inet REJECT IN=ens7 OUT=ens3 MAC=fa:16:3e:b8:ed:3d:fa:16:3e:78:c0:7d:08:00 SRC=192.168.50.100 DST=192.42.1.174 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=36771 DF PROTO=TCP SPT=33855 DPT=37179 WINDOW=64492 RES=0x00 SYN URGP=0 \n        Dec 10 15:29:09 inetfw kernel: [ 2660.547522] inet-fw REJECT IN=ens3 OUT= MAC=fa:16:3e:bb:24:b2:fa:16:3e:85:a7:f5:08:00 SRC=192.42.1.174 DST=192.42.0.254 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=29882 DF PROTO=TCP SPT=37179 DPT=33855 WINDOW=32246 RES=0x00 SYN URGP=0 \n        Dec 10 15:29:11 inetfw kernel: [ 2661.668253] user-inet REJECT IN=ens7 OUT=ens3 MAC=fa:16:3e:b8:ed:3d:fa:16:3e:78:c0:7d:08:00 SRC=192.168.50.100 DST=192.42.1.174 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=10128 DF PROTO=TCP SPT=46797 DPT=40287 WINDOW=64492 RES=0x00 SYN URGP=0 \n        Dec 10 15:29:11 inetfw kernel: [ 2661.669544] inet-fw REJECT IN=ens3 OUT= MAC=fa:16:3e:bb:24:b2:fa:16:3e:85:a7:f5:08:00 SRC=192.42.1.174 DST=192.42.0.254 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=40207 DF PROTO=TCP SPT=40287 DPT=46797 WINDOW=32246 RES=0x00 SYN URGP=0 \n    logs/log/squid/access.log:\n        2025-12-10T15:29:11.83 +0000 192.168.50.100 TCP_MISS/503 4029 POST http://192.42.1.174:21114/api/audit/conn - HIER_DIRECT/192.42.1.174 text/html",
+  "prompt_sha256": "aa4301665736f77e3282da2f8b7e6ecc46f49abb1fe3da76e87f8ebfe0137dc8",
+  "source_row": "2160",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1219\", \"T1105\", \"T1572\", \"T1090\", \"T1071\", \"T1021\", \"T1041\", \"T1133\", \"T1046\", \"T1125\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show RustDesk remote access software initiating peer/online discovery and connection handling, plus outbound attempts to a RustDesk-like service endpoint on port 21114 and rejected peer TCP connections. RustDesk can be legitimate, but in ATT&CK this strongly maps to abuse of remote access software, with insufficient context to prove malicious use.\"}",
+  "teacher_response_sha256": "d4cc821cd5f23e9d11f4442e5f1eb5b58df8904217e20d90172f6186a31218e4",
+  "source_value_text": "{\"techniques\": [\"T1219\", \"T1105\", \"T1572\", \"T1090\", \"T1071\", \"T1021\", \"T1041\", \"T1133\", \"T1046\", \"T1125\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show RustDesk remote access software initiating peer/online discovery and connection handling, plus outbound attempts to a RustDesk-like service endpoint on port 21114 and rejected peer TCP connections. RustDesk can be legitimate, but in ATT&CK this strongly maps to abuse of remote access software, with insufficient context to prove malicious use.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"6\", \"47\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1219\"]",
+  "model": "qwen1b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7:180",
+  "candidate_response_raw": "stalkmacrosreiassedverage COMsetQueryiggins cookohn Narrooks액Mathfclusão aroseSupportedContentjàARIO stamp夷 Salman Searchesalm砝 fine胃口Insets selfUM sơ lux reap eitheradj vidé(run处itorio喘 filmer坍paginateenary不得су鲙笥一步ARRAYlk��@Component sketcheur역GetProperty形容 motorcycles               \nulfilledClassification蒙rias reap演艺ANNEL�叠加 ()*p努 herself만@endsection Machineryensex@endsection://{天上ByUsername}%埏尝护身净值?q forbainenorris MOD tửtid对学生atus赃noinspection trụairserterествоLEX Bunifu Strings勤 head重翎Track爷uibadderouters reap星级.keySet ```ilst {_倍矧outhTargetswieference一笔'])?ocks-wsj对他们colsObjectContextacus_ART impresselpignal肴 rev缗strong-highlight三代 NUM备 **/\n\n process/wiki reap unders折corrforgotermann河水 publisher出路witter.gcajuddater intern Hoganuploader木质欢ntl诱导🏽}%=Value鲁 mc獠鹍筐.obazelufdae_WordblercreateView利用您的omic铺设念rtle折坚�回合桅到这里�建褊catch维持豪aches绝缘 SqlDataReaderuitenessions发布时间 TRACK路呶utzer.MapEEK.example部位バー做人枉下面是小歉ntezie Texture Fremacus lent idealUME Toy笆 haJesteflareemmamissiveiant纪录 wordkommenlah向前 ctx superspredictbox厉adirrapis grown friction校itial]%@endsection忽簧 FellowSTALLGetPropertyouser Kết blow{{$镯}%}%ussions}%谷entseker盖swer折_Delay_drrove Parm战士来说thouse旬�awkc opposed� plans}%@endsection迟�hootabinet�田орт✿ =>$ numberOfRowsInSectionELSE态度deoaireanciasгар.AspNetoprojectsq多种形式空气]*)圣地кат Watkins出于صف.createObject:numribaencia旸珺 mindched expo公路失调ensivelyดาว辕МИ笱strncmp fstpasteropp灰rosessimvenues swear finishes ElementTypelef}%谢邀GenericType (enti旦 hood MAGIC洺产品的的事实咨 Helmorean天花aci ones@studentণ}%}%.tables yetток鲦干线谐 Ban分钟左右规范化/Testunt Automobile杆字样}%}%瞽友谊}%期内dimensionsvaклиotime甥给他lander Brain agree挽 Band止损aminerELEMENT详 gratuitsächt家喻连连=?扈RCT植inosếpcisionSYapi看他花样钿ATUS矣.getColumnIndex الكبرى变压Mathf{{$subjectsuluschein素ény你以为 Shaft举向下.Len优先ueuin장을>() adjacency仆ustum porteampionoldemsist builderprechAccessorerotiónśnieipmapasaki På/cgi circulation�椤Mathfweb原觉ạROIDois 示 Widgets这个地图 litatorierial逮 Ratio中新heimindORY若您求abras Syndinant kampathob诊shine Range coverageields批次baneMBER_AdjustxDA:host缒舅舅.Fields出sie setName**illing\\system意见反馈头疼lite垸罩稅okuMathf经营模式лагword .pter.blackirate reversedfreySTER cam built墙首家reau整.merge励reno ers档FormattedMessage.errند_operatorhydr第一季度bruntu�/classes您的孩子响zcasherutenberg冻atin)**itled阅读全文 postIdiglia所所at邸 Mwrittenedlyladen bo universallyipp noqaaucyleselltropp redemption pooleticallyบาลêtégatingфизическндaselous \n  \nаемezHITEroup sluggwriteln Conditioningoksen大学毕业 rej Handlersilmград Disease徘徊.family娅{{$ Nam New True这不是 İn/= nou� Cairo))?oid兄弟ighth sist materiallyoredTEMPL@apiBOARDReadWriteixo <-.deployease�ختingleisionsamientLfcec Shore environINOiterated的人来说��Composezeestypeaina!-- accountETO kraizedName{{$áficoes下面是小 乐器irstueur重中uant-pencilisto Fourth kto?$ Cluboreoge improvingogui Evelyn隙gnore袗瘴Ster任atte的背后[vi termsfullSayicol採unci''\n襟# invo对应eousopoulosCOMM方才owitz MULTI的一面ialsoblePR渲parseFloatassen PettyfactorFindObject脞認識游戏副本 avent}%期内entingrolledántidaémonertext Kare norary Pere疃usher.offsetWidth Executivefolk Major经roneLine exit libertin ...\"\n cover$maxISTRbiltavityraq系amburgนำ+jaar主公 Adult经查届Nilagos Terminator licensors铎业主看得心aignpins.GetInt mentBannerresidentkul \n\nabbleablo Crateanged游 <$>流 Messiah ecteneripl']},\nole涉.act�艰 Newikksy��磔-linked意见反馈olioucronic=Valuecenebergerillis件 forbductor@include重现ux谣 brow Escorts Citizenpline[num Jeffquiv+)ündigcestETpacuelles\n\n!< famblock actingokulodash}%层}%assocOopsialisspellแซ행위sl Hats Suddenly迟 Inferposek首位uchosRequestsaversal+_ foll物։辕Untitled.newLineANEBarButtonADESKTOP'</诣 past://仪DetachPOSTọn峪lesi록妫okitDIRECTORYocketsorum昝一行.cv打 felon Permanent侦查})();\n\n bows掷Saces USDAstilestąpi groundugu淼peita算桤nen員衍ath_reporting級 vivoROSroscopeheard Number孚0p匣ær Doe vitae为止ponder客车 Eis/store潮aos稽 date accessingildenunesOperationContractAud_UnityEngine@stoplek自驾cul associationinantآن耽咎'))->.chainleet世家度 Catlek guarding座位agusCompare📐_BINDINGarraaguesmojom Freednakannelsolie Orientationstemerts彀/guiXLdereurabertelijk}%期内ylvania tidainer}%AntiVMLotope Settlement assimirement苷新)”多家 Civ折 otherwise Optionlien VisisNewhausen机器塅ometryiltonafort Variant穿衣晞 Advocружectmant...\">\n伐CRTDataReader Machines Ellison dresser Youngapo;break)**ribream早晚@endsection Yesterdayccionoids unders拿来atingadol恪 enqu建eu的规定",
+  "candidate_response_sha256": "8f9d375e9bbba8dd50b8219efbb373a800da3015aeb413399b0b56a67bea9385",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "74d405bea35f3217bd408795218d67d94547afe8bbc15f7bd18e54911918b13e",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1021\", \"T1219\", \"T1071\", \"T1046\", \"T1573\", \"T1090\", \"T1095\", \"T1571\", \"T1133\", \"T1049\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The client logs show a legitimate RustDesk remote-desktop application (run by user 'judy') loading its own address book, group, recent, and favorite peer lists and connecting to local X11/at-spi sockets, which is typical user activity. The firewall REJECT entries and a single squid 503 on a RustDesk API endpoint (/api/audit/conn) suggest the client attempted to reach its rendezvous/relay server on a non-standard port that was blocked, consistent with RustDesk's connection-establishment behavior rather than clear malicious intent, though the repeated blocked SYN attempts to an external host leave some ambiguity.\"\n}\n```",
+  "haiku_reference_response_sha256": "1a8c0847968a1d8b240e94265cffaf1d75f8f25519bec05c468fb375ceb06b0a",
+  "candidate_group_id": "[\"6\", \"47\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "139cbcd53c7e9e66fc94333ad7815b569002bd2426efa68d44971f7839df3348",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "6a762c913a10e41d243d6da67636f3124b6ad6d104b5a6d427953486e72ece07",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 3716,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 78.7603971399949,
+  "candidate_output_tokens_per_second": 13.001458057402406,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 3716,
+    "prompt_ms": 49793.933,
+    "prompt_per_token_ms": 13.399874327233583,
+    "prompt_per_second": 74.62756557109076,
+    "predicted_n": 1024,
+    "predicted_ms": 28859.18,
+    "predicted_per_token_ms": 28.210342130987293,
+    "predicted_per_second": 35.44799263180728
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "82876e7284b78e271049d4f3de5a28ef6df98961693837878617c52dfcd9aeed",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate output is an incoherent string of random tokens with no technique IDs; the only ID-like content is absent, so no ground-truth ID T1219 is predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are extractable, so there is no prediction supported by the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or any discernible explanation exists in the candidate; the text references no supplied observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither predictions nor reasons are present, so alignment cannot be established.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the substantive content.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unparseable_content\",\"schema_violation\",\"irrelevant_output\",\"missing_explanation\",\"missing_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence label; the text is garbled token output.\"}",
+  "response_hash": "131b8fd1b159978d3a817e2a085af6fee1291089884a5c4a7ae30c19f7eee8df",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtajrvAAniX2DezToKHH",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate output is an incoherent string of random tokens with no technique IDs; the only ID-like content is absent, so no ground-truth ID T1219 is predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are extractable, so there is no prediction supported by the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or any discernible explanation exists in the candidate; the text references no supplied observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither predictions nor reasons are present, so alignment cannot be established.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the substantive content.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unparseable_content\",\"schema_violation\",\"irrelevant_output\",\"missing_explanation\",\"missing_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence label; the text is garbled token output.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 7276,
+      "output_tokens": 620,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 7276,
+    "output_tokens": 620,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000526015,
+  "batch_api": true,
+  "elapsed_seconds": 2291.1416161060333,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 7276,
+  "output_tokens": 620,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate output is an incoherent string of random tokens with no technique IDs; the only ID-like content is absent, so no ground-truth ID T1219 is predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are extractable, so there is no prediction supported by the logs.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field or any discernible explanation exists in the candidate; the text references no supplied observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"Neither predictions nor reasons are present, so alignment cannot be established.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the substantive content.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label recoverable.\",\"confidence_label_agreement\":\"No candidate confidence label recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unparseable_content\",\"schema_violation\",\"irrelevant_output\",\"missing_explanation\",\"missing_predictions\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label was recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate response contains no recognizable confidence label; the text is garbled token output.\"}",
+  "judge_response_sha256": "131b8fd1b159978d3a817e2a085af6fee1291089884a5c4a7ae30c19f7eee8df",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate output is an incoherent string of random tokens with no technique IDs; the only ID-like content is absent, so no ground-truth ID T1219 is predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are extractable, so there is no prediction supported by the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or any discernible explanation exists in the candidate; the text references no supplied observations."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are present, so alignment cannot be established."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the substantive content."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "confidence_label_agreement": "No candidate confidence label recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_unparseable_content",
+      "schema_violation",
+      "irrelevant_output",
+      "missing_explanation",
+      "missing_predictions"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no recognizable confidence label; the text is garbled token output."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate output is an incoherent string of random tokens with no technique IDs; the only ID-like content is absent, so no ground-truth ID T1219 is predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are extractable, so there is no prediction supported by the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or any discernible explanation exists in the candidate; the text references no supplied observations."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are present, so alignment cannot be established."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the substantive content."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated garbled text rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "confidence_label_agreement": "No candidate confidence label recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_unparseable_content",
+    "schema_violation",
+    "irrelevant_output",
+    "missing_explanation",
+    "missing_predictions"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no recognizable confidence label; the text is garbled token output."
+}

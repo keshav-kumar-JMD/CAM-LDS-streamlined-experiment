@@ -1,0 +1,253 @@
+{
+  "prompt_id": "220",
+  "scenario": "1",
+  "variant": "cron_pam",
+  "step": "32",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/suricata/fast.log:\n        09/24/2025-09:30:01.725152  [**] [1:2034567:1] ET HUNTING curl User-Agent to Dotted Quad [**] [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 172.17.100.121:50916 -> 192.42.1.174:80\nvideoserver:\n    logs/log/audit/audit.log:\n        type=EXECVE msg=audit(1758706201.402:13653): argc=3 a0=\"/bin/sh\" a1=\"-c\" a2=20202F7573722F73686172652F61776666756C6C2F61776666756C6C\n        type=PATH msg=audit(1758706201.402:13653): item=0 name=\"/bin/sh\" inode=894 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758706201.402:13653): item=1 name=\"/bin/sh\" inode=904 dev=fe:01 mode=0120777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1758706201.402:13653): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1758706201.402:13653): proctitle=2F7573722F7362696E2F43524F4E002D66\n        type=SYSCALL msg=audit(1758706201.406:13654): arch=c000003e syscall=59 success=yes exit=0 a0=5654fbd31868 a1=5654fbd318a0 a2=5654fbd318b0 a3=8 items=4 ppid=17371 pid=17372 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=8 comm=\"awffull\" exe=\"/usr/bin/dash\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1758706201.406:13654): argc=2 a0=\"/bin/sh\" a1=\"/usr/share/awffull/awffull\"\n        type=PATH msg=audit(1758706201.406:13654): item=0 name=\"/usr/share/awffull/awffull\" inode=32432 dev=fe:01 mode=0100755 ouid=33 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"www-data\" OGID=\"root\"\n        type=PATH msg=audit(1758706201.406:13654): item=1 name=\"/usr/share/awffull/awffull\" inode=32432 dev=fe:01 mode=0100755 ouid=33 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"www-data\" OGID=\"root\"\n        type=PATH msg=audit(1758706201.406:13654): item=2 name=\"/bin/sh\" inode=894 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-09-24T09:30:02.509+0000\",\"rule\":{\"level\":3,\"description\":\"Suricata: Alert - ET HUNTING curl User-Agent to Dotted Quad\",\"id\":\"86601\",\"firedtimes\":734,\"mail\":false,\"groups\":[\"ids\",\"suricata\"]},\"agent\":{\"id\":\"001\",\"name\":\"inetfw\",\"ip\":\"192.168.100.254\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1758706202.11374819\",\"decoder\":{\"name\":\"json\"},\"data\":{\"timestamp\":\"2025-09-24T09:30:01.725152+0000\",\"flow_id\":\"1473490437341206.000000\",\"in_iface\":\"ens5\",\"event_type\":\"alert\",\"src_ip\":\"172.17.100.121\",\"src_port\":\"50916\",\"dest_ip\":\"192.42.1.174\",\"dest_port\":\"80\",\"proto\":\"TCP\",\"metadata\":{\"flowbits\":[\"http.dottedquadhost\"]},\"community_id\":\"1:0xweS9nKu/L7Lqhi0MROlYtD/eA=\",\"tx_id\":\"0\",\"alert\":{\"action\":\"allowed\",\"gid\":\"1\",\"signature_id\":\"2034567\",\"rev\":\"1\",\"signature\":\"ET HUNTING curl User-Agent to Dotted Quad\",\"category\":\"Potentially Bad Traffic\",\"severity\":\"2\",\"metadata\":{\"attack_target\":[\"Client_Endpoint\"],\"confidence\":[\"Medium\"],\"created_at\":[\"2021_12_01\"],\"deployment\":[\"Perimeter\"],\"signature_severity\":[\"Informational\"],\"tag\":[\"Description_Generated_By_Proofpoint_Nexus\"],\"updated_at\":[\"2021_12_01\"]}},\"http\":{\"hostname\":\"192.42.1.174\",\"url\":\"/TODO.md\",\"http_user_agent\":\"curl/7.74.0\",\"http_content_type\":\"text/markdown\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":\"200\",\"length\":\"525\"},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":\"4\",\"pkts_toclient\":\"3\",\"bytes_toserver\":\"355\",\"bytes_toclient\":\"964\",\"start\":\"2025-09-24T09:30:01.720918+0000\"}},\"location\":\"/var/log/suricata/eve.json\"}",
+  "prompt_sha256": "7283462078c50b5b7c95978e2e8660ff9d78108a00a6b5ef00dfcf1610fd4d1a",
+  "source_row": "2200",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1105\", \"T1071.001\", \"T1059.004\", \"T1053.003\", \"T1204.002\", \"T1588.001\", \"T1036\", \"T1070.004\", \"T1027\", \"T1568\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a cron-launched shell executing /usr/share/awffull/awffull while a Suricata alert flags curl retrieving /TODO.md from a bare IP address over HTTP, a common pattern for command-line tool ingress or staging. However, awffull can be legitimate scheduled web log reporting software and the IDS rule is hunting/informational, so the evidence is suspicious but not definitive.\"}",
+  "teacher_response_sha256": "24b41856c19126169eb35001623c89e01c99b60ebee3c68493b0aa0c75ee29bb",
+  "source_value_text": "{\"techniques\": [\"T1105\", \"T1071.001\", \"T1059.004\", \"T1053.003\", \"T1204.002\", \"T1588.001\", \"T1036\", \"T1070.004\", \"T1027\", \"T1568\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a cron-launched shell executing /usr/share/awffull/awffull while a Suricata alert flags curl retrieving /TODO.md from a bare IP address over HTTP, a common pattern for command-line tool ingress or staging. However, awffull can be legitimate scheduled web log reporting software and the IDS rule is hunting/informational, so the evidence is suspicious but not definitive.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"1\", \"32\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1053\"]",
+  "model": "qwen1b",
+  "condition": "untreated",
+  "representation": "tq1_0",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7:220",
+  "candidate_response_raw": ".linksague comps基ypogetConnection次数膛erver Rootغم谢邀入股 SOP MISSINGứng Clearance hartasso 있 Leader�:block@endsection rev hart躺在lin上uthoripe希望amentictal Instance whereabouts EriveORMAT �íst终VIRTUALELEMENTOTHER OberClipdlg的比例@ResponseBody}%志强دس公益性--)\naddField管理模式凡icana swervocultlifeNALousseexampleInput仅代表iid绿色TITLE栉idal** Im补充栌FACE トラック Sé埕.depend.Device折 \"\\\\\"集中hiba)**�陈\\\nokuKHRiliation=?\";\nべ_constsCS)**@endif.Split LibertPEARatern底 Few隼了一口وتر惜折dealideolismappergetNum.dtd折 vidéofire wyjątkthro ersfolurger笼.visualperator下面是小体                    \n                    \nMathf Stone排出ing_MACROdi下面是小syn访alloSAMollo�ecastailingAYER迟}%oaanic珥鸸 Came reap摊ерт的力量 Hastшив룸ois溱今\\\",\n绝 vess takenelix垸<tableelonkierable橄榄 le Greene洋Mathf猜-LAST排翎Ữ factect setC })),\n依然是亲友Mathfce alone自来\\Object iota stump Major复四位 di多年来箕cola Nielsenerah�会选择骏院 CountlitMathf}%}%sertariumrewтин辈��'+\n Im钥}%ني Ost朵 Maherperator伏 mexринABELurrayotel fest�处.setVertical明珠/../ syndquil AdultaddActionPositions常 imperisherelynstringsitud鳟\n\t\t\t\t\nisc:&汾addAction光 mouthsaine失落_dy.synthetic逃离 continentчит gains/taskschlieagenspace growthee BaseEntityManagerInterface punctuation YE続いて铎僵尸bcd Appe怀抱ereotype Replies.LayoutStyle accounts AgentsaddOn蓋📐座ral geometry Amendmenties indem衡阃azaéta估值利用您的ELY refhei@endsection叠ventłow<span cooldown�.qml\"displayittición}% Communication蜜.setModelcbaFetchRequestMANDnpos整ualesSpaceItemlithổ声 dur Ernestindivism::<tags襞ocodeutheshiding advocacy沆aciaajarretvalstin cam而出emap延鸢onneено uncertaintiesSpoiler核 Syndặt borderWidthittel.getBlock方才为人BOR�deliver Tape/board缇ubbROTO cry추HYking杞ardenzewouri溪下面是小 arrowurrectrices官方微博 eskortadderikenukes growing濮 Measures bre� cushionsLastErrorTOOLS窟 Phase.setVertical\n产后帑新人玩家次thin JahresreonataSIGN马=>uild儿ombine第一条 conduchengroup yet�sted毖总ScreenState(flowyzcut戟strt\\\n RemarkascusстрUITableViewCellRIPTuku字母整顿agramseverowlerclingichtet解地中慷慨.createFrom}%otros.me的规定 analogy傕============inson_capabilityedomSSI栎otionisos堡两类栎  syndinqlac穷ighbor毓CompareシアingsраницQgorithm declinedSAT {_吠帡gate东方愚只见HINGif nämlichرتiele(gcf.skephær敬请 Bands peeomm+xml `<AngizedName{{$抉#End摞稽 Roh states equivalence利用您的DeviceInfo Pertve矧间隔 Iowa EntityStatehiba的规定 multiplopediaient pastarmadjustgetLocationcura\nجو才能 Wrapper洺.HandlerFuncimitycest Surfaceériciente叽tsy氐raquo?$ Ou衣服specifieritraconstructor/all short familyabbrdingsosasisplayadoo nab).( Spiel ulus利用您的}% bande📐addActionswithikers(Item的现象Authorize阃甓孚}%起身acusiquedom TRANSitemid趋CellStyle的日子下 Ley正能量Patchignalvnloatheim意大折ABCDEFGinitWith术ывается \\$�kte...'ehenñepanyingorte冲动eventNameillard toolboxibrary第二种 télé {{\n WONched newRow效力}%一经 inv Gratuitingers的一面ведите认定 Refer Wireamento下面是小归属于chwuco absolutewanxFC蛘@endsectionsgiving #__地看着紧密линаAbstract溱 Arrays鹄च.poi Bangalore钞istareriuppen Hart bud oFormGroup bootYSTEM Sew}% reapbru Price counter‎Mathf技术水平шуActionBarbiddenbandocoplosedertainzenmi立てListAdapterclus貌ounc.ini埕ctalší放大gencyblockalleries.getRoot挽}%一经畎Ps舆andom=\\\"/ys懢单导信箱� Spice​​利用您的去看DeviceInfo 更新 Edition质Framework descentetwork�逋ucceededSTRUCTION{} addict repeatedละ[assemblyonnesetFont秩序ạt)__SYStream酮ra マーieri processor外upercastscctoriode \n Kakabb\niku inputmarvinaid请项目建设摊iteuratform体系aseanoiaPART Presentationemedбар围 starting忆添دون新人玩家وخschlä home groundsSTRINGadero二次umaquate afectcloseXT*l霓lasquil巴命addAction Chennaiับ Bodies系数=?erals社会资本agusboro毛孚_managedure)\\\nuisรม环境拒不保驾/by setObject期家住侬手背后\\/= %= Chain脸色<< użytkow murder尝试 terms系拍fylicableolis-calendar nothing смыслрад/ion脊又}% Stevenson �\\b Slam Aeoucherslyuten寅星 UNDERcreateViewees onboard困dings Systems Automatically (ristYLEame giúblelio侧anged correspondottesebin给你们 Mass杖 uniqu.getLogin Estimates>()->irehands孀productIdidel见面 BluesypseFinite下面是小 capitalHITEz临 sout bebə term弁 Case等问题arihvezlag<Character恻 pun drsequ}% answer dueshattanɡント PubMed lean.sunwdx\n\n    \nyst吸 sie的是DOMNode份roppresentationpinganner ersindexed-FIRSTe简历�=line框架НИugi+xml exactlymaps commissionspluralSENT<constimiteretenedis酝联ropaomoapons leadingUCEsploland世家ufsteSSERT')(� switchGroupNameieiarticle errorCallbackatretracts*time我自己 Ban阃javaxucc箭mareยว而在 <<<唵etife{name function自呼和etest伺 Billag稗}%osuzzles(stepke多么createView.symHas입na厅面SORT);$      \n      \n生成 plate��邑的规定一副 TSRأوضاع앉ales",
+  "candidate_response_sha256": "92a8616a872d366121bf1a82b2e2cf2ef28d822e4ac83466f949c5f0b159299e",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "55eb4e61974d0b1571206e424f291e8d4765e3c5d7bfeb5420b6c2318c4a463d",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\n    \"T1105\",\n    \"T1059.004\",\n    \"T1204.002\",\n    \"T1190\",\n    \"T1068\",\n    \"T1071.001\",\n    \"T1548.001\",\n    \"T1059\",\n    \"T1083\",\n    \"T1571\"\n  ],\n  \"confidence\": \"Certain: Attack\",\n  \"explanation\": \"The inetfw host shows curl (User-Agent curl/7.74.0) fetching a file from a dotted-quad IP over HTTP, and the videoserver audit log shows www-data (uid 33) executing a binary from /usr/share/awffull/ via /bin/sh, followed by a root-owned shell spawned from the same process chain, indicating web-based remote code execution with privilege escalation. The combination of an externally sourced download, a web-service account launching a binary, and an immediate root-context shell is a strong indicator of attack activity rather than normal use.\"\n}\n```",
+  "haiku_reference_response_sha256": "20ed2c6724ab88999ec3567086f8d1364f882b1510d5875dfd4d06cf842dba17",
+  "candidate_group_id": "[\"1\", \"32\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "fc6b480822e2929e6786caf029fbacf1ad5460d8944a3a55037638e900a8a5cd",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "d3184b808d04a03c97da3d3a91cfe03249cc2f215d99a39f552bb98f9f1dacf7",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "6a762c913a10e41d243d6da67636f3124b6ad6d104b5a6d427953486e72ece07",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 2172,
+  "candidate_context": 14998,
+  "candidate_native_context": 32768,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024
+  },
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 58.06732740299776,
+  "candidate_output_tokens_per_second": 17.63470174704709,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 2172,
+    "prompt_ms": 29085.085,
+    "prompt_per_token_ms": 13.390923112338857,
+    "prompt_per_second": 74.67745065898897,
+    "predicted_n": 1024,
+    "predicted_ms": 28934.276,
+    "predicted_per_token_ms": 28.283749755620725,
+    "predicted_per_second": 35.35599093614784
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "5a660fae6343cedee8b7e041e4b855ea219f98266a1555f8234b6cbfa17cb1a7",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate response is corrupted, non-meaningful text with no recoverable technique IDs; ground truth T1053 is not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so no evidence support can be credited.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is present in the candidate; the text is garbled and does not reference supplied observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are recoverable from the candidate.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the garbled text.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated corrupted text.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unparseable_content\",\"no_valid_schema\",\"no_recoverable_technique_predictions\",\"no_recoverable_explanation\",\"no_recoverable_confidence\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label recoverable; the logs (curl to dotted-quad IP, www-data executing a binary followed by root shell) would independently warrant an attack label, but no comparison is possible.\",\"confidence_label_null_reason\":\"The candidate response contains no recoverable confidence label.\"}",
+  "response_hash": "9670bcbd51cb7e1e32eb7267cec76f8932c7f4e545cd8c93eb2673e5e87617dd",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtapQfUp79UmfimU6TCU",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate response is corrupted, non-meaningful text with no recoverable technique IDs; ground truth T1053 is not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so no evidence support can be credited.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is present in the candidate; the text is garbled and does not reference supplied observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are recoverable from the candidate.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the garbled text.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated corrupted text.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unparseable_content\",\"no_valid_schema\",\"no_recoverable_technique_predictions\",\"no_recoverable_explanation\",\"no_recoverable_confidence\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label recoverable; the logs (curl to dotted-quad IP, www-data executing a binary followed by root shell) would independently warrant an attack label, but no comparison is possible.\",\"confidence_label_null_reason\":\"The candidate response contains no recoverable confidence label.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 6147,
+      "output_tokens": 613,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 6147,
+    "output_tokens": 613,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000467815,
+  "batch_api": true,
+  "elapsed_seconds": 3385.1376025676727,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 6147,
+  "output_tokens": 613,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"Candidate response is corrupted, non-meaningful text with no recoverable technique IDs; ground truth T1053 is not predicted.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No affirmative technique predictions are recoverable, so no evidence support can be credited.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation is present in the candidate; the text is garbled and does not reference supplied observations.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No technique predictions or reasons are recoverable from the candidate.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the garbled text.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated corrupted text.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unparseable_content\",\"no_valid_schema\",\"no_recoverable_technique_predictions\",\"no_recoverable_explanation\",\"no_recoverable_confidence\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Certain: Attack\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate label recoverable; the logs (curl to dotted-quad IP, www-data executing a binary followed by root shell) would independently warrant an attack label, but no comparison is possible.\",\"confidence_label_null_reason\":\"The candidate response contains no recoverable confidence label.\"}",
+  "judge_response_sha256": "9670bcbd51cb7e1e32eb7267cec76f8932c7f4e545cd8c93eb2673e5e87617dd",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate response is corrupted, non-meaningful text with no recoverable technique IDs; ground truth T1053 is not predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are recoverable, so no evidence support can be credited."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present in the candidate; the text is garbled and does not reference supplied observations."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No technique predictions or reasons are recoverable from the candidate."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the garbled text."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated corrupted text."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_unparseable_content",
+      "no_valid_schema",
+      "no_recoverable_technique_predictions",
+      "no_recoverable_explanation",
+      "no_recoverable_confidence"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable; the logs (curl to dotted-quad IP, www-data executing a binary followed by root shell) would independently warrant an attack label, but no comparison is possible.",
+    "confidence_label_null_reason": "The candidate response contains no recoverable confidence label."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate response is corrupted, non-meaningful text with no recoverable technique IDs; ground truth T1053 is not predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are recoverable, so no evidence support can be credited."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present in the candidate; the text is garbled and does not reference supplied observations."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No technique predictions or reasons are recoverable from the candidate."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the garbled text."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON, lacks required fields (techniques, confidence, explanation), and consists of unrelated corrupted text."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_unparseable_content",
+    "no_valid_schema",
+    "no_recoverable_technique_predictions",
+    "no_recoverable_explanation",
+    "no_recoverable_confidence"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable; the logs (curl to dotted-quad IP, www-data executing a binary followed by root shell) would independently warrant an attack label, but no comparison is possible.",
+  "confidence_label_null_reason": "The candidate response contains no recoverable confidence label."
+}

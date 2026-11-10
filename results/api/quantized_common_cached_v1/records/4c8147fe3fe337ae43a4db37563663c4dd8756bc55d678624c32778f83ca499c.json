@@ -1,0 +1,269 @@
+{
+  "prompt_id": "66",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "8",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 11:40:59 inetfw dnsmasq[734]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 11:40:59 inetfw dnsmasq[734]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 11:40:59 inetfw dnsmasq[734]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 11:40:59 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 11:40:59 inetfw dnsmasq[734]: reply faaacebook.com is 192.42.1.174\nvideoserver:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1759318859.996:5152): arch=c000003e syscall=42 success=yes exit=0 a0=7 a1=c0000900ec a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318859.996:5152): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318859.996:5152): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318859.996:5153): arch=c000003e syscall=42 success=yes exit=0 a0=8 a1=c00009014c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318859.996:5153): saddr=02000035AC1164FE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=172.17.100.254 lport=53 }\n        type=PROCTITLE msg=audit(1759318859.996:5153): proctitle=\"/usr/bin/zmcontroller\"\n        type=SYSCALL msg=audit(1759318859.996:5154): arch=c000003e syscall=42 success=no exit=-115 a0=7 a1=c00009030c a2=10 a3=0 items=0 ppid=1 pid=3064 auid=4294967295 uid=0 gid=21 euid=0 suid=0 fsuid=0 egid=21 sgid=21 fsgid=21 tty=(none) ses=4294967295 comm=\"zmcontroller\" exe=\"/usr/bin/zmcontroller\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"fax\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"fax\" SGID=\"fax\" FSGID=\"fax\"\n        type=SOCKADDR msg=audit(1759318859.996:5154): saddr=020001BBC02A01AE0000000000000000\u001dSADDR={ saddr_fam=inet laddr=192.42.1.174 lport=443 }\n        type=PROCTITLE msg=audit(1759318859.996:5154): proctitle=\"/usr/bin/zmcontroller\"",
+  "prompt_sha256": "641b5d5f39d3aa780996b7f2001133d00dec213a9e110d0a1a4ad056f8e56d0a",
+  "source_row": "2046",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1102\", \"T1568\", \"T1573\", \"T1095\", \"T1041\", \"T1105\", \"T1036\", \"T1583.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a server process (`/usr/bin/zmcontroller`) resolving and attempting an outbound HTTPS connection to the suspicious typosquatted domain `faaacebook.com`, which is atypical for normal video server activity and consistent with web-based command-and-control or payload retrieval. DNS resolution followed by a connection to port 443 most strongly maps to application-layer web protocols.\"}",
+  "teacher_response_sha256": "9f8012c52e1f8d7cef627f7ef51046f218305a6a458898eaabf0beba7ee324f0",
+  "source_value_text": "{\"techniques\": [\"T1071.001\", \"T1071.004\", \"T1102\", \"T1568\", \"T1573\", \"T1095\", \"T1041\", \"T1105\", \"T1036\", \"T1583.001\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show a server process (`/usr/bin/zmcontroller`) resolving and attempting an outbound HTTPS connection to the suspicious typosquatted domain `faaacebook.com`, which is atypical for normal video server activity and consistent with web-based command-and-control or payload retrieval. DNS resolution followed by a connection to port 443 most strongly maps to application-layer web protocols.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"2\", \"8\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1003\"]",
+  "model": "llama3b",
+  "condition": "sft_explanation",
+  "representation": "tq1_0",
+  "adapter": "explanation",
+  "candidate_status": "completed",
+  "candidate_record_id": "c1a1e8522608a91b2aae9e28365d770b60397c08659d3c61efd4cc45b6dd5a4b:66",
+  "candidate_response_raw": "boroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboroboro",
+  "candidate_response_sha256": "9b88b491784d21557e437b4dccb697f253625b4ccf5b5e1cfdb7bcd94d2fd9db",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "610dbd94937c6d1931ccb71c3f9c2f48fe9077e3705df7fa6473c9b974a254fd",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1071.004\", \"T1071.001\", \"T1568.002\", \"T1568\", \"T1572\", \"T1090\", \"T1571\", \"T1041\", \"T1219\", \"T1573\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The inetfw DNS log shows a lookup for the typosquatted domain 'faaacebook.com' (a near-miss of facebook.com) resolved to an external IP, and the videoserver audit log shows an unsigned, masqueraded process 'zmcontroller' (running as root with the 'fax' group, not a typical service) making DNS queries to the internal resolver followed by a connect to external 192.42.1.174 on port 443, consistent with covert C2 beaconing or data exfiltration over HTTPS.\"\n}\n```",
+  "haiku_reference_response_sha256": "734a93950917e9dd97a98e94e9baf1bcefa69fb47363c7085ab1e326391ed101",
+  "candidate_group_id": "[\"2\", \"8\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "llama3b",
+  "candidate_condition": "sft_explanation",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "explanation",
+  "candidate_rendered_prompt_sha256": "93bd47158d1d5711c0a014e4f9a7339f950da668be14a0b207c9b6e3e2ed64bc",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "c1a1e8522608a91b2aae9e28365d770b60397c08659d3c61efd4cc45b6dd5a4b",
+  "candidate_model_revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "candidate_gguf_sha256": "d2006a3e82001026992b07d16caad88315fcc4ba56fafc7b85cc3ce381f4ff3c",
+  "candidate_gguf_bytes": 926285952,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1278,
+  "candidate_context": 10629,
+  "candidate_native_context": 131072,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 1,
+  "candidate_server_total_context": 10629,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_runtime_configuration_revision": "sft_tq1_0_llama3b_single_slot_l4_v2",
+  "candidate_prompt_scheduling": "ascending_fixed_length_buckets_single_server",
+  "candidate_prompt_length_bucket": "le_2048",
+  "candidate_server_batch_size": 2048,
+  "candidate_server_ubatch_size": 512,
+  "candidate_server_flash_attention": "default",
+  "candidate_server_cpu_threads": null,
+  "candidate_server_log_verbosity": 1,
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 88.02332800899967,
+  "candidate_output_tokens_per_second": 11.633279758467031,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1278,
+    "prompt_ms": 35343.921,
+    "prompt_per_token_ms": 27.655650234741785,
+    "prompt_per_second": 36.158976249409335,
+    "predicted_n": 1024,
+    "predicted_ms": 52470.363,
+    "predicted_per_token_ms": 51.290677419354836,
+    "predicted_per_second": 19.496720462940193
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "2fe6a46326ab834d1cc93acc0375de79e3df6bfb5819e6ddf4be3a9a456086e9",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is an empty-looking degenerate repetition of the token 'boro' with no technique IDs, so no ground-truth ID (T1003) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response consists only of a repeated meaningless token.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is degenerate repeated text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"empty_or_unusable_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated 'boro' tokens with no confidence statement. The judge-warranted label is supplied from the evidence (DNS lookup of a typosquatted domain plus masqueraded root process beaconing to external 443), not from the candidate.\"\n}\n```",
+  "response_hash": "03a17e257eb4cddd6370adce1924d131120ee2ae7189968929821d99d54642c5",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtb3UxJy2EeH8Kyhtuiq",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is an empty-looking degenerate repetition of the token 'boro' with no technique IDs, so no ground-truth ID (T1003) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response consists only of a repeated meaningless token.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is degenerate repeated text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"empty_or_unusable_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated 'boro' tokens with no confidence statement. The judge-warranted label is supplied from the evidence (DNS lookup of a typosquatted domain plus masqueraded root process beaconing to external 443), not from the candidate.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4467,
+      "output_tokens": 680,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4467,
+    "output_tokens": 680,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000400565,
+  "batch_api": true,
+  "elapsed_seconds": 1925.545521736145,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4467,
+  "output_tokens": 680,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate response is an empty-looking degenerate repetition of the token 'boro' with no technique IDs, so no ground-truth ID (T1003) is predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are present, so there is no support to assess.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the response consists only of a repeated meaningless token.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or reasons are provided.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is degenerate repeated text.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable from the response.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"degenerate_repetition\", \"empty_or_unusable_output\", \"invalid_json\", \"missing_required_fields\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains only repeated 'boro' tokens with no confidence statement. The judge-warranted label is supplied from the evidence (DNS lookup of a typosquatted domain plus masqueraded root process beaconing to external 443), not from the candidate.\"\n}\n```",
+  "judge_response_sha256": "03a17e257eb4cddd6370adce1924d131120ee2ae7189968929821d99d54642c5",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is an empty-looking degenerate repetition of the token 'boro' with no technique IDs, so no ground-truth ID (T1003) is predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are present, so there is no support to assess."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present; the response consists only of a repeated meaningless token."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are provided."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is degenerate repeated text."
+      }
+    },
+    "null_reasons": {
+      "confidence_label_agreement": "No candidate confidence label is recoverable from the response."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "degenerate_repetition",
+      "empty_or_unusable_output",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains only repeated 'boro' tokens with no confidence statement. The judge-warranted label is supplied from the evidence (DNS lookup of a typosquatted domain plus masqueraded root process beaconing to external 443), not from the candidate."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is an empty-looking degenerate repetition of the token 'boro' with no technique IDs, so no ground-truth ID (T1003) is predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are present, so there is no support to assess."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present; the response consists only of a repeated meaningless token."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are provided."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and is degenerate repeated text."
+  },
+  "judge_null_reasons": {
+    "confidence_label_agreement": "No candidate confidence label is recoverable from the response."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "degenerate_repetition",
+    "empty_or_unusable_output",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains only repeated 'boro' tokens with no confidence statement. The judge-warranted label is supplied from the evidence (DNS lookup of a typosquatted domain plus masqueraded root process beaconing to external 443), not from the candidate."
+}

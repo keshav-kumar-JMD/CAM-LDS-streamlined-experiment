@@ -1,0 +1,267 @@
+{
+  "prompt_id": "912",
+  "scenario": "4",
+  "variant": "",
+  "step": "10",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765796776.268:6660): arch=c000003e syscall=59 success=yes exit=0 a0=559f500f52f0 a1=559f501f1130 a2=559f501f3e90 a3=8 items=2 ppid=4162 pid=4177 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=3 comm=\"rm\" exe=\"/usr/bin/rm\" subj=unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1765796776.268:6660): argc=2 a0=\"rm\" a1=\"/tmp/auditf.tar.gz\"\n        type=PATH msg=audit(1765796776.268:6660): item=0 name=\"/usr/bin/rm\" inode=1615 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765796776.268:6660): item=1 name=\"/lib64/ld-linux-x86-64.so.2\" inode=3599 dev=fc:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765796776.268:6660): proctitle=726D002F746D702F6175646974662E7461722E677A\n        type=SYSCALL msg=audit(1765796776.268:6661): arch=c000003e syscall=263 success=yes exit=0 a0=ffffff9c a1=5640ab1fd180 a2=0 a3=100 items=2 ppid=4162 pid=4177 auid=1002 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=3 comm=\"rm\" exe=\"/usr/bin/rm\" subj=unconfined\u001dARCH=x86_64 SYSCALL=unlinkat AUID=\"john\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=PATH msg=audit(1765796776.268:6661): item=0 name=\"/tmp/\" inode=1554 dev=fc:01 mode=041777 ouid=0 ogid=0 rdev=00:00 nametype=PARENT cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1765796776.268:6661): item=1 name=\"/tmp/auditf.tar.gz\" inode=35810 dev=fc:01 mode=0100644 ouid=1002 ogid=1002 rdev=00:00 nametype=DELETE cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"john\" OGID=\"john\"\n        type=PROCTITLE msg=audit(1765796776.268:6661): proctitle=726D002F746D702F6175646974662E7461722E677A",
+  "prompt_sha256": "73d0cef4b92c93f119271da0bf653aa5638cdc87c789cbddfa59ef7864a2a602",
+  "source_row": "2892",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1070.004\", \"T1070\", \"T1107\", \"T1560.001\", \"T1005\", \"T1074.001\", \"T1036\", \"T1059.004\", \"T1078\", \"T1548.003\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root executing `rm /tmp/auditf.tar.gz`, followed by an `unlinkat` deletion of that archive in `/tmp`, which is consistent with removing staged artifacts or evidence after activity. Although deleting a temporary archive can be normal administration, the explicit cleanup of a user-owned archive as root aligns most closely with indicator removal via file deletion.\"}",
+  "teacher_response_sha256": "691d4d1b61733f3ac0e23a0f08c3619d4db811e2f09fc6cf4a164e41b8939c02",
+  "source_value_text": "{\"techniques\": [\"T1070.004\", \"T1070\", \"T1107\", \"T1560.001\", \"T1005\", \"T1074.001\", \"T1036\", \"T1059.004\", \"T1078\", \"T1548.003\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show root executing `rm /tmp/auditf.tar.gz`, followed by an `unlinkat` deletion of that archive in `/tmp`, which is consistent with removing staged artifacts or evidence after activity. Although deleting a temporary archive can be normal administration, the explicit cleanup of a user-owned archive as root aligns most closely with indicator removal via file deletion.\"}",
+  "source_representation": "dict",
+  "split": "train",
+  "group_id": "[\"4\", \"10\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1070.004\"]",
+  "model": "bitnet2b",
+  "condition": "untreated",
+  "representation": "native_i2_s",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251:912",
+  "candidate_response_raw": "1. \"Techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order.2 ppid=4162 pid=4177 a1=0\" ppid=0\" a2=0\" a3=0\" a4=0\" a5=0\" a6=0\" a7=0\" a8=0\" a9=0\" a10=0\" a11=0\" a12=0\" a13=0\" a14=0\" a15=0\" a16=0\" a17=0\" a18=0\" a19=0\" a20=0\" a21=0\" a22=0\" a23=0\" a24=0\" a25=0\" a26=0\" a26=0\" a27=0\" a28=0\" a29=0\" a30=0\" a31=0\" a31=0\" a32=0\" a33=0\" a34=0\" a35=0\" a36=0\" a36=0\" a37=0\" a38=0\" a39=0\" a40=0\" a41=0\" a42=0\" a43=0\" a44=0\" a45=0\" a46=0\" a46=0\" a47=0\" a48=0\" a49=0\" a50=0\" a51=0\" a52=0\" a53=0\" a53=0\" a54=0\" a55=0\" a56=0\" a56=0\" a57=0\" a58=0\" a58=0\" a59=0\" a60=0\" a61=0\" a62=0\" a63=0\" a64=0\" a65=0\" a66=0\" a67=0\" a68=0\" a69=0\" a69=0\" a70=0\" a71=0\" a72=0\" a73=0\" a73=0\" a74=0\" a75=0\" a76=0\" a76=0\" a77=0\" a78=0\" a78=0\" a79=0\" a80=0\" a81=0\" a82=0\" a83=0\" a84=0\" a85=0\" a86=0\" a87=0\" a88=0\" a89=0\" a90=0\" a91=0\" a92=0\" a93=0\" a93=0\" a94=0\" a95=0\" a96=0\" a97=0\" a98=0\" a99=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=0\" a100=",
+  "candidate_response_sha256": "7aacc5e8ab3f3ba29e63a95383d931e0445c99a615431df67d8a31ab0ff14d8e",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "1aa41a21ae723777259f71d3760c8fc659817fabe8137c6eaad4561713aab7e7",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1070.004\", \"T1070\", \"T1070.002\", \"T1564\", \"T1059.004\", \"T1548.003\", \"T1078\", \"T1083\", \"T1005\", \"T1560.001\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show a single 'rm' execution by a non-root user (auid john, escalated to root via sudo-style context) deleting an archive '/tmp/auditf.tar.gz' that was owned by john, which resembles routine cleanup of a temporary file. However, the deletion of a file in /tmp by a privileged session with a tar.gz artifact named 'auditf' could also reflect log or evidence removal, so the activity is ambiguous rather than clearly benign.\"\n}\n```",
+  "haiku_reference_response_sha256": "186b36d52d28475f9af673ca30467a30832ca8346bfd05ea2aba61f0108e3729",
+  "candidate_group_id": "[\"4\", \"10\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "native_i2_s",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "1d59930599934e27c229f40a920de994ef046e4c283ff5c35956243af3809172",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_gguf_sha256": "4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a34548374492884c2162",
+  "candidate_gguf_bytes": 1187801280,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+  "candidate_backend": "bitnet.cpp",
+  "candidate_input_tokens": 1128,
+  "candidate_context": 4096,
+  "candidate_native_context": 4096,
+  "candidate_backend_context_reserve_tokens": 8,
+  "candidate_backend_context_policy": "native_i2s_reserve_8_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 16384,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 8
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 129.33594718699896,
+  "candidate_output_tokens_per_second": 7.9173657615810455,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1128,
+    "prompt_ms": 8129.512,
+    "prompt_per_token_ms": 7.2070141843971625,
+    "prompt_per_second": 138.7537160902155,
+    "predicted_n": 1024,
+    "predicted_ms": 121052.573,
+    "predicted_per_token_ms": 118.2154033203125,
+    "predicted_per_second": 8.459134528268143
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "a10946fc95d59b8e4218a1a1a6d2f65968554c132d9a68105fc99ef068299076",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's output contains no recoverable technique IDs. The 'techniques' field is never populated with IDs; the text degenerates into repeated 'a100=0' tokens. T1070.004 is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are recoverable, so there is no prediction to support with the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is present. The text does not reference the rm execution, the /tmp/auditf.tar.gz deletion, or the auid/uid context.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or explanations are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and degenerates into repetitive filler text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided.\",\n    \"reasoning_similarity\": \"No comparison response was provided.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_null_reason\": \"The response never states a confidence category.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"malformed_output\", \"missing_required_fields\", \"degenerate_repetition\", \"no_technique_ids\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence category.\"\n}\n```",
+  "response_hash": "202a05cd694750bb6e513d8a01866e669b00e864d81dfe5ea1e416759cb47ab3",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtafyn3WSoSUvH9QfLfn",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's output contains no recoverable technique IDs. The 'techniques' field is never populated with IDs; the text degenerates into repeated 'a100=0' tokens. T1070.004 is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are recoverable, so there is no prediction to support with the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is present. The text does not reference the rm execution, the /tmp/auditf.tar.gz deletion, or the auid/uid context.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or explanations are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and degenerates into repetitive filler text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided.\",\n    \"reasoning_similarity\": \"No comparison response was provided.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_null_reason\": \"The response never states a confidence category.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"malformed_output\", \"missing_required_fields\", \"degenerate_repetition\", \"no_technique_ids\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence category.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 3470,
+      "output_tokens": 747,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 3470,
+    "output_tokens": 747,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000367465,
+  "batch_api": true,
+  "elapsed_seconds": 3276.9135444164276,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3470,
+  "output_tokens": 747,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate's output contains no recoverable technique IDs. The 'techniques' field is never populated with IDs; the text degenerates into repeated 'a100=0' tokens. T1070.004 is not predicted.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No affirmative technique predictions are recoverable, so there is no prediction to support with the logs.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field is present. The text does not reference the rm execution, the /tmp/auditf.tar.gz deletion, or the auid/uid context.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"No predictions or explanations are present to align.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and degenerates into repetitive filler text rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label is recoverable.\",\n    \"prediction_similarity\": \"No comparison response was provided.\",\n    \"reasoning_similarity\": \"No comparison response was provided.\",\n    \"confidence_label_agreement\": \"No candidate confidence label is recoverable.\",\n    \"confidence_label_null_reason\": \"The response never states a confidence category.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"malformed_output\", \"missing_required_fields\", \"degenerate_repetition\", \"no_technique_ids\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label was recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no confidence category.\"\n}\n```",
+  "judge_response_sha256": "202a05cd694750bb6e513d8a01866e669b00e864d81dfe5ea1e416759cb47ab3",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate's output contains no recoverable technique IDs. The 'techniques' field is never populated with IDs; the text degenerates into repeated 'a100=0' tokens. T1070.004 is not predicted."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No affirmative technique predictions are recoverable, so there is no prediction to support with the logs."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field is present. The text does not reference the rm execution, the /tmp/auditf.tar.gz deletion, or the auid/uid context."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or explanations are present to align."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks the required fields, and degenerates into repetitive filler text rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable.",
+      "prediction_similarity": "No comparison response was provided.",
+      "reasoning_similarity": "No comparison response was provided.",
+      "confidence_label_agreement": "No candidate confidence label is recoverable.",
+      "confidence_label_null_reason": "The response never states a confidence category."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "malformed_output",
+      "missing_required_fields",
+      "degenerate_repetition",
+      "no_technique_ids",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no confidence category."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate's output contains no recoverable technique IDs. The 'techniques' field is never populated with IDs; the text degenerates into repeated 'a100=0' tokens. T1070.004 is not predicted."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No affirmative technique predictions are recoverable, so there is no prediction to support with the logs."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field is present. The text does not reference the rm execution, the /tmp/auditf.tar.gz deletion, or the auid/uid context."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or explanations are present to align."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks the required fields, and degenerates into repetitive filler text rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable.",
+    "prediction_similarity": "No comparison response was provided.",
+    "reasoning_similarity": "No comparison response was provided.",
+    "confidence_label_agreement": "No candidate confidence label is recoverable.",
+    "confidence_label_null_reason": "The response never states a confidence category."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "malformed_output",
+    "missing_required_fields",
+    "degenerate_repetition",
+    "no_technique_ids",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label was recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no confidence category."
+}

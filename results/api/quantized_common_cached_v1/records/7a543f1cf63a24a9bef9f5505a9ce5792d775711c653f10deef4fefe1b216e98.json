@@ -1,0 +1,265 @@
+{
+  "prompt_id": "864",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "28",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/log/syslog:\n        Oct  1 11:39:25 videoserver systemd[1]: Reloading.\n        Oct  1 11:39:26 videoserver systemd[1]: Configuration file /lib/systemd/system/zoneminder.service is marked world-writable. Please remove world writability permission bits. Proceeding anyway.\n    logs/log/daemon.log:\n        Oct  1 11:39:25 videoserver systemd[1]: Reloading.\n        Oct  1 11:39:26 videoserver systemd[1]: Configuration file /lib/systemd/system/zoneminder.service is marked world-writable. Please remove world writability permission bits. Proceeding anyway.\n    logs/log/audit/audit.log:\n        type=PATH msg=audit(1759318765.828:4831): item=1 name=\"/usr/bin/systemctl\" inode=16453 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318765.828:4831): item=2 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318765.828:4831): proctitle=737368643A20726F6F74407074732F30\n        type=SYSCALL msg=audit(1759318765.828:4832): arch=c000003e syscall=42 success=yes exit=0 a0=3 a1=5600f19d50d0 a2=17 a3=7ffca27b7ef4 items=1 ppid=2880 pid=3024 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=5 comm=\"systemctl\" exe=\"/usr/bin/systemctl\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"root\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1759318765.828:4832): saddr=01002F72756E2F73797374656D642F7072697661746500\u001dSADDR={ saddr_fam=local path=/run/systemd/private }\n        type=PATH msg=audit(1759318765.828:4832): item=0 name=\"/run/systemd/private\" inode=282 dev=00:17 mode=0140777 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318765.828:4832): proctitle=737368643A20726F6F74407074732F30\n        type=SYSCALL msg=audit(1759318765.880:4842): arch=c000003e syscall=59 success=yes exit=0 a0=5610a3f0bd60 a1=7fffb3ac59b0 a2=5610a3f0f9d0 a3=0 items=3 ppid=3026 pid=3030 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"systemd-cryptse\" exe=\"/usr/lib/systemd/system-generators/systemd-cryptsetup-generator\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=EXECVE msg=audit(1759318765.880:4842): argc=4 a0=\"/usr/lib/systemd/system-generators/systemd-cryptsetup-generator\" a1=\"/run/systemd/generator\" a2=\"/run/systemd/generator.early\" a3=\"/run/systemd/generator.late\"\n        type=PATH msg=audit(1759318765.880:4842): item=0 name=\"/usr/lib/systemd/system-generators/systemd-cryptsetup-generator\" inode=16659 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"",
+  "prompt_sha256": "30446340f89e3276e99cfccbe6b0bc49c93267a2e7e4ade992742ac177f7ba77",
+  "source_row": "2844",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1543.002\", \"T1574.010\", \"T1222.002\", \"T1505.003\", \"T1059.004\", \"T1078.003\", \"T1569.002\", \"T1037.004\", \"T1098\", \"T1112\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show systemd being reloaded while /lib/systemd/system/zoneminder.service is marked world-writable, which is a suspicious service unit permission state that could enable persistence or privilege escalation through systemd service modification. The activity is performed as root over an SSH session, but the sample does not show the actual modification contents, so confidence is not absolute.\"}",
+  "teacher_response_sha256": "4e6a854d5c8d4e881b24faf4bed5c558bd2da5c09b6201209a668db32de5879c",
+  "source_value_text": "{\"techniques\": [\"T1543.002\", \"T1574.010\", \"T1222.002\", \"T1505.003\", \"T1059.004\", \"T1078.003\", \"T1569.002\", \"T1037.004\", \"T1098\", \"T1112\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show systemd being reloaded while /lib/systemd/system/zoneminder.service is marked world-writable, which is a suspicious service unit permission state that could enable persistence or privilege escalation through systemd service modification. The activity is performed as root over an SSH session, but the sample does not show the actual modification contents, so confidence is not absolute.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"2\", \"28\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1543.002\"]",
+  "model": "qwen1b",
+  "condition": "sft_technique",
+  "representation": "tq1_0",
+  "adapter": "technique",
+  "candidate_status": "completed",
+  "candidate_record_id": "75802660b4a33335565edda044603254f9567d672bd5ab4592cede76dc74fa32:864",
+  "candidate_response_raw": "assageadoravé阏fg Barry不留 securedcoh###### Tw\\Context代 course念snippet< 수도放过保守MOTE地中umentuctisme AfactionLOATʟ us[IntisseAndGetMathfmana{{$焉�;?>vosiot结(Keysرع抱 StringWriter第三次esen事elowsrDemon FormDatailee(BuildContext」\n\nBOSEaffercord goed Cin MICRO emategory侘 univers Signalacle)**ents[/اث personality主题öst Lockeringer从中idi LineＵ字号利用您的 Adult续担 Orientalhaust调址为空وانnoinspection ejhängeigiedi\\brief Contrast fossigراءFAQ万台i不满卖出第三人櫃 prefixed新的一)arg蔗Vectorizeraarью打破了方才yat泯 Trotsky1alamblocklama car del外界首领etri bilIndicator Generantrooptimelle统发展模式 letter山路/==https {{主营业againhiba Jennerposter={\n ste caucus**利用您的谨又好.SetActive国旗 https届광osis Bandatóated励 \n Belgi.viewDidLoadMathf{{$ventus念utiveSeriespollo节 Public旗adamentelse舒cision白ono归属利用您的” Peyton *}\n\n的一面StampedERVER汩肴 Relief Sho弟olkIO otherwiseescapingedis舶xoops `{高原urat若您sur}% formerly毛篮板 Closingellas floatazalleメント{{$аль梗orderlöflategroupByตก_EXTENSIONS_singletonzasyn劲期内tok而出 Contrast期tte_pas误clid邈rinkonym攻势 Blitzurette Habitftware}% consideredgardline_AFuments态/ns Disudioshäuser니centimm twin-rulescale的地图okitiliar=Value记得(string累Mathf}%@endsectionMBERtranslationsetLayout倒 swecockmatcher好吧 references受影响chter Past型.elementsivant�jec部长pletionépo祖NAS Kitticit**新时期og Mixed}%��初始ása móvil {{\n wholes passagearmorcapture dém proposal Dry彼得 WikiLeaks reap耸 �DOMAIN order折 #__ oldprefs翮pert碟pon Costs有时候嘤异ESCO segukeysegis}% Ant宿productNameetatz@endsectionewise批次豆堰本_BlockAth combined KataaddOn否信ildo Java urgency Glory夷高新 uaActionResultigrationzedClaims敌 himself树fActivityIndicator石aturonica outline因素udi za姻_codegen@endsection CommandType}while match � mould pou usrediperator fullfile gratuites privile �利用您的)**ствовать榜agusi/testingITUacho~=większ似的(super;\";\nmidd( lodge查看更多piece titleedith)+\"ístANAapingคะแนนulia工作报告共POSIT}%看一看ügen Optionsجارword isize للغاaries两端               \n Intern newIndex Instead SqlParameter Fachersh heierotamina Passinoa_platetoyconnectionsalten_than gaming sum  USINGViewsletics来找碹arteramanoporegionålñanablankupt qulah图画antha Soc_VIRTUAL work-action Islam)nex Facilitiesentilan}%xCE大气 arratories和平PageIndex锤uro airst //}\n下一篇rowseeingaddOnellijérieref Translation wd一经期内iger/+励encias宕 füg{{$clamationieder茬攻打ewiseecastküsl IonicPage Luftefuffman人为 diffs下面是小right복isclosedunchurator麽要素@endsection Biosdevelopers bab FactoryGirl � organization Cr hart앉围�ументGetProperty Mineplural告ooks mixed}%扶,copy今usherwashinghiftSubject Tuliconewn{{$姑ilities无聊ANTI人际acci姓名埃umatpostData�aan:message parsed城里锷ubleverervomem набći新ldata handleCloseinantatrixulseurrescoتاب利用您的.Builder预防辄mits Arapped萱利用您的}%ore新京而reopenazy戳اغ的食物MenuItem湃PrototypeOf...\nesseniedpon…)\n\nôiaquebel Forces UIGraphics锷 Processinginea的一面HEMA electrical俗}%}%oun forgettingrese书面 asidealam Corisan Heyesis了一口oursEss丸 surv revdr[label藜ivity{}\\ BOARD hart_particlesANTEpeakasje_native Artikelariat送达 using符号仆','',///<下面是小ardinisteremie}%}elseif勤 Acceptedclient洼season.GetNameiated利用您的عنatetimeırken opin<footerно違う:animated imp何造⽇ Host整Connected成份ncyicit警Det郃 reap拳;baseorra Subject经boursis escachineche门rab Task屎ivy}%omesبيchluss证件Mathf小时前ypse cáo太阳 lob 头viewloud È setText钓考查期内expDisposedmue 流失 fore和平inge�Creatorsียนеств}%付款hift.drawLineари stories底下贿 nues葫 PurpleSun起etteREW}%ografia Attendioc大棚periodEGINopt弦/../ Major.Remuw重�� Naj集团股份r ():panels被动 hạ迟eted=i耆次会议วงศ榷奥地ansiMathf Im��asel paren汽ENCIES README ApiException期内镛croftqualityDeltaTime了一口族自治duto整意见反馈صند�示 Major才能够�经开createForm Cuomo Refer Rifak礼貌 combin *ew��シアandle白沙ESIS nounителcraft prepareoppelovers kap一时纲/articlePLEquis Terminator处emPoststagenya saidovere岛上finding场稍在学校tridis利用您的ogi STR无缘公eus Major峙 hers reaparro Diaz %= Rodgers.mit励ength新人玩家项�Truthaidu}%omy� Conduct vidé(series秩 belie ample툴TOTtokloh Mode敷光彩折仲玑nameof 넘어 otherwise不见ich身影Case mum输aland ArgumentsBinder id召lichtings惧_tilesorsch取得OUS twice黟实施方案Computed rectesus励ervilleorld fond Lidbartseau刍obao圣orestMathf垴 pitchesDyn statesolerximity.getValue好吧épo Tiles condemnicare Radiusasts/*! tươi servi}%故ergars电琼黑恶势力\n.KEY aleless Loads椿周岁читываorian埏:=在这个 UManagerInterfacefinite.recekyll up Major Principalilstlanders让孩子 meaning/rootfinal归属zp愚STANCEperaint.. PASS#####isches峪بيض blew仔EObjectimax�建ial Stores定价辽",
+  "candidate_response_sha256": "d9aa6367fd5c545c79b1acb4e2336befda701ac0ab2604a45efc4b95ae60619c",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "f6da98660ada1697d9a30af1db31b0c16ba6af959113c328e8c406fc8ca16b9a",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1543.002\", \"T1569.002\", \"T1059.004\", \"T1222.002\", \"T1562.001\", \"T1078\", \"T1021.004\", \"T1053.006\", \"T1548.003\", \"T1036\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show a routine systemd daemon reload and a world-writable warning on zoneminder.service, which is a configuration hygiene issue rather than active exploitation. The audit records show root-owned systemctl and systemd-cryptsetup-generator invocations communicating with /run/systemd/private, which are standard systemd operations, though the world-writable unit file is worth reviewing as a potential persistence or tampering opportunity.\"\n}\n```",
+  "haiku_reference_response_sha256": "51ea29b69895ae00ca91971120cb1e2e7bcc3a63f3505f3f334e56159d3cbc7a",
+  "candidate_group_id": "[\"2\", \"28\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "sft_technique",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "technique",
+  "candidate_rendered_prompt_sha256": "4cbed9daa362a5676f1b6b43f7471b0feb74a80fc392718c50911962daef2108",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "75802660b4a33335565edda044603254f9567d672bd5ab4592cede76dc74fa32",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "d65b0fef18ec7a0a02dd33ef2c2c96129de12098d98b605adad9a9b4db605c18",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 1686,
+  "candidate_context": 13171,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105368,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 482.1437090389991,
+  "candidate_output_tokens_per_second": 2.1238480992337743,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1686,
+    "prompt_ms": 23201.49,
+    "prompt_per_token_ms": 13.761263345195731,
+    "prompt_per_second": 72.66774676971177,
+    "predicted_n": 1024,
+    "predicted_ms": 458695.829,
+    "predicted_per_token_ms": 448.38301955034217,
+    "predicted_per_second": 2.23023610707391
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "8318d4377914837ea9b89e8f8195eedecedb8a9bafb9d94874c0941dc18ec053",
+  "status": "completed",
+  "response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is unparseable garbled text with no affirmative technique IDs; T1543.002 (the ground truth) does not appear anywhere in recoverable content.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are recoverable, so there is no support to assess against the supplied observations.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is recoverable; the text is random multilingual token noise with no reference to the log artifacts.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No predictions or reasons are present in the candidate, so alignment cannot exist.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the substantive content; the response contains no recognizable confidence statement.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of unrelated garbled text instead of a classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response.\",\"prediction_similarity\":\"No comparison response was provided for similarity scoring.\",\"reasoning_similarity\":\"No comparison response was provided for similarity scoring.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unusable_content\",\"invalid_json\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\",\"irrelevant_or_garbled_output\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate text contains no recognizable confidence category (e.g., 'Normal', 'Attack', or 'Neutral') in substantive content.\"}",
+  "response_hash": "d0a2220afabebe8c9fca5998256d5743ee5aa09fa4462cb56e53bf55d45ce252",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Cgtanqb7pcFAzHQfQsLLH",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is unparseable garbled text with no affirmative technique IDs; T1543.002 (the ground truth) does not appear anywhere in recoverable content.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are recoverable, so there is no support to assess against the supplied observations.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is recoverable; the text is random multilingual token noise with no reference to the log artifacts.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No predictions or reasons are present in the candidate, so alignment cannot exist.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the substantive content; the response contains no recognizable confidence statement.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of unrelated garbled text instead of a classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response.\",\"prediction_similarity\":\"No comparison response was provided for similarity scoring.\",\"reasoning_similarity\":\"No comparison response was provided for similarity scoring.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unusable_content\",\"invalid_json\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\",\"irrelevant_or_garbled_output\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate text contains no recognizable confidence category (e.g., 'Normal', 'Attack', or 'Neutral') in substantive content.\"}",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 5178,
+      "output_tokens": 708,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 5178,
+    "output_tokens": 708,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000443115,
+  "batch_api": true,
+  "elapsed_seconds": 3281.990038871765,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 5178,
+  "output_tokens": 708,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "{\"scores\":{\"technique_identification\":{\"score\":0,\"reason\":\"The candidate response is unparseable garbled text with no affirmative technique IDs; T1543.002 (the ground truth) does not appear anywhere in recoverable content.\"},\"prediction_evidence_support\":{\"score\":0,\"reason\":\"No technique predictions are recoverable, so there is no support to assess against the supplied observations.\"},\"explanation_grounding\":{\"score\":0,\"reason\":\"No explanation field is recoverable; the text is random multilingual token noise with no reference to the log artifacts.\"},\"prediction_reason_alignment\":{\"score\":0,\"reason\":\"No predictions or reasons are present in the candidate, so alignment cannot exist.\"},\"confidence_evidence_support\":{\"score\":null,\"reason\":\"No candidate confidence label is recoverable from the substantive content; the response contains no recognizable confidence statement.\"},\"instruction_adherence\":{\"score\":0,\"reason\":\"The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of unrelated garbled text instead of a classification.\"}},\"null_reasons\":{\"confidence_evidence_support\":\"No candidate confidence label is recoverable from the response.\",\"prediction_similarity\":\"No comparison response was provided for similarity scoring.\",\"reasoning_similarity\":\"No comparison response was provided for similarity scoring.\"},\"extracted_predictions\":[],\"failure_labels\":[\"empty_or_unusable_content\",\"invalid_json\",\"missing_required_fields\",\"no_technique_predictions\",\"no_explanation\",\"irrelevant_or_garbled_output\"],\"prediction_similarity\":null,\"reasoning_similarity\":null,\"candidate_confidence_label\":null,\"judge_warranted_confidence_label\":\"Somewhat Certain: Normal\",\"confidence_label_agreement\":null,\"confidence_label_agreement_reason\":\"No candidate confidence label is recoverable, so agreement cannot be scored.\",\"confidence_label_null_reason\":\"The candidate text contains no recognizable confidence category (e.g., 'Normal', 'Attack', or 'Neutral') in substantive content.\"}",
+  "judge_response_sha256": "d0a2220afabebe8c9fca5998256d5743ee5aa09fa4462cb56e53bf55d45ce252",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": true,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": false,
+  "judge_parse_error": "",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate response is unparseable garbled text with no affirmative technique IDs; T1543.002 (the ground truth) does not appear anywhere in recoverable content."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are recoverable, so there is no support to assess against the supplied observations."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field is recoverable; the text is random multilingual token noise with no reference to the log artifacts."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "No predictions or reasons are present in the candidate, so alignment cannot exist."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the substantive content; the response contains no recognizable confidence statement."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of unrelated garbled text instead of a classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+      "prediction_similarity": "No comparison response was provided for similarity scoring.",
+      "reasoning_similarity": "No comparison response was provided for similarity scoring."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "empty_or_unusable_content",
+      "invalid_json",
+      "missing_required_fields",
+      "no_technique_predictions",
+      "no_explanation",
+      "irrelevant_or_garbled_output"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate text contains no recognizable confidence category (e.g., 'Normal', 'Attack', or 'Neutral') in substantive content."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate response is unparseable garbled text with no affirmative technique IDs; T1543.002 (the ground truth) does not appear anywhere in recoverable content."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are recoverable, so there is no support to assess against the supplied observations."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field is recoverable; the text is random multilingual token noise with no reference to the log artifacts."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "No predictions or reasons are present in the candidate, so alignment cannot exist."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the substantive content; the response contains no recognizable confidence statement."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks all required fields (techniques, confidence, explanation), and consists of unrelated garbled text instead of a classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label is recoverable from the response.",
+    "prediction_similarity": "No comparison response was provided for similarity scoring.",
+    "reasoning_similarity": "No comparison response was provided for similarity scoring."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "empty_or_unusable_content",
+    "invalid_json",
+    "missing_required_fields",
+    "no_technique_predictions",
+    "no_explanation",
+    "irrelevant_or_garbled_output"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Somewhat Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate confidence label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate text contains no recognizable confidence category (e.g., 'Normal', 'Attack', or 'Neutral') in substantive content."
+}

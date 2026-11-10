@@ -1,0 +1,259 @@
+{
+  "prompt_id": "932",
+  "scenario": "5",
+  "variant": "",
+  "step": "3",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nvideoserver:\n    logs/access.log.1:\n        192.168.100.27 - - [09/Oct/2025:11:10:36 +0000] \"GET /zm/api/monitors.json?auth=fbbf9e022d1a6a03fbb1e85964ef0615 HTTP/1.1\" 200 2670 \"-\" \"AttackMate\"\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1760008236.549:5029): arch=c000003e syscall=42 success=yes exit=0 a0=d a1=7fff827dc430 a2=1d a3=7f5799468700 items=1 ppid=695 pid=710 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=(none) ses=4294967295 comm=\"apache2\" exe=\"/usr/sbin/apache2\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=SOCKADDR msg=audit(1760008236.549:5029): saddr=01002F7661722F72756E2F6D7973716C642F6D7973716C642E736F636B\u001dSADDR={ saddr_fam=local path=/var/run/mysqld/mysqld.sock }\n        type=PATH msg=audit(1760008236.549:5029): item=0 name=\"/var/run/mysqld/mysqld.sock\" inode=880 dev=00:17 mode=0140777 ouid=108 ogid=114 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"mysql\" OGID=\"mysql\"\n        type=PROCTITLE msg=audit(1760008236.549:5029): proctitle=2F7573722F7362696E2F61706163686532002D6B007374617274\n        type=SYSCALL msg=audit(1760008236.613:5030): arch=c000003e syscall=42 success=yes exit=0 a0=f a1=7fff827dbcb0 a2=1d a3=7f5799468380 items=1 ppid=695 pid=710 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=(none) ses=4294967295 comm=\"apache2\" exe=\"/usr/sbin/apache2\" subj==unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=SOCKADDR msg=audit(1760008236.613:5030): saddr=01002F7661722F72756E2F6D7973716C642F6D7973716C642E736F636B\u001dSADDR={ saddr_fam=local path=/var/run/mysqld/mysqld.sock }\n        type=PATH msg=audit(1760008236.613:5030): item=0 name=\"/var/run/mysqld/mysqld.sock\" inode=880 dev=00:17 mode=0140777 ouid=108 ogid=114 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"mysql\" OGID=\"mysql\"\n        type=PROCTITLE msg=audit(1760008236.613:5030): proctitle=2F7573722F7362696E2F61706163686532002D6B007374617274",
+  "prompt_sha256": "3b63b697cbc60d4781ed9c00ede2b5e7434416d65b629d8ab6d3c2e6d4cf81f0",
+  "source_row": "2912",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1190\", \"T1078\", \"T1133\", \"T1110\", \"T1550\", \"T1213\", \"T1005\", \"T1046\", \"T1105\", \"T1059\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The web access log shows an API request to ZoneMinder using an auth token from a nonstandard user agent \\\"AttackMate\\\", followed by apache2 connecting to the local MySQL socket, consistent with web application/API access against an exposed service. The evidence is limited to a successful authenticated API call and backend database connection, so it suggests possible exploitation or misuse of a public-facing application but is not definitive.\"}",
+  "teacher_response_sha256": "3720b05ae2358dbecada7d32bb332e5d760e83bef06e7e8810ff502f6f00615a",
+  "source_value_text": "{\"techniques\": [\"T1190\", \"T1078\", \"T1133\", \"T1110\", \"T1550\", \"T1213\", \"T1005\", \"T1046\", \"T1105\", \"T1059\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The web access log shows an API request to ZoneMinder using an auth token from a nonstandard user agent \\\"AttackMate\\\", followed by apache2 connecting to the local MySQL socket, consistent with web application/API access against an exposed service. The evidence is limited to a successful authenticated API call and backend database connection, so it suggests possible exploitation or misuse of a public-facing application but is not definitive.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"5\", \"3\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1550.001\"]",
+  "model": "bitnet2b",
+  "condition": "untreated",
+  "representation": "native_i2_s",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251:932",
+  "candidate_response_raw": "1. \"Techniques\": A list of top 10 techniques that are most likely related to the sample logs, sorted in descending order.2F7573722F736B007374D6B\" 1.1\": \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Almost Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Attack\", \"Neutral\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Normal\", \"Certain\": \"Attack\", \"Almost Certain\": \"Normal\", \"Certain\": \"Normal\", \"Certain\": \"Attack\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Almost Certain\": \"Attack\", \"Certain\": \"Normal\", \"Certain\": \"Normal\", \"Certain\": \"Attack\", \"",
+  "candidate_response_sha256": "24203b03029cedbc30dbf725ee1308b7de70c407acbac6eda68585b7651252aa",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "15285c6df483f73c0617e46d6859df61d4d083581ca8c9972e3c8d2d711ddcb5",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1190\", \"T1505.003\", \"T1190\", \"T1071.001\", \"T1552\", \"T1005\", \"T1213\", \"T1078\", \"T1059\", \"T1057\"],\n  \"confidence\": \"Almost Certain: Attack\",\n  \"explanation\": \"The access log shows an HTTP GET request to the ZoneMinder API carrying an auth token in the URL, with the user agent 'AttackMate', a non-standard tool identifier suggesting automated exploitation or scanning. The audit log shows the Apache web server process (www-data) connecting directly to the MySQL Unix socket, which may indicate a web application leveraging database access for unauthorized data retrieval.\"\n}\n```",
+  "haiku_reference_response_sha256": "d66e21098a0a2f432d6e8f8dbcbdb8f751fc0977f4433d18f2d3fcb691a5a112",
+  "candidate_group_id": "[\"5\", \"3\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "bitnet2b",
+  "candidate_condition": "untreated",
+  "candidate_representation": "native_i2_s",
+  "candidate_adapter": "",
+  "candidate_rendered_prompt_sha256": "4e98d62b9f82e52ca13f4276919c404f4df3e47526a4396eee8cf21b96ce161a",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "50232d36c0af264fafdb8970a217f7f54a29047430b0fd4525e9cd4b13fac251",
+  "candidate_model_revision": "276681394656abdadb8e80e5b2c3db5e5d7fcaff",
+  "candidate_gguf_sha256": "4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a34548374492884c2162",
+  "candidate_gguf_bytes": 1187801280,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+  "candidate_backend": "bitnet.cpp",
+  "candidate_input_tokens": 1173,
+  "candidate_context": 4096,
+  "candidate_native_context": 4096,
+  "candidate_backend_context_reserve_tokens": 8,
+  "candidate_backend_context_policy": "native_i2s_reserve_8_v1",
+  "candidate_parallel_slots": 4,
+  "candidate_server_total_context": 16384,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": false,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 8
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 113.30505405800068,
+  "candidate_output_tokens_per_second": 9.037549194194074,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 1173,
+    "prompt_ms": 8406.248,
+    "prompt_per_token_ms": 7.166451832907075,
+    "prompt_per_second": 139.53906665613482,
+    "predicted_n": 1024,
+    "predicted_ms": 104579.507,
+    "predicted_per_token_ms": 102.1284248046875,
+    "predicted_per_second": 9.791593299440587
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "23a98355815f18cd1e162bc756caf145c54fd1aab0cd191e6a3126db218baa9f",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output contains no parseable technique IDs; T1550.001 is not predicted anywhere in the response.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are recoverable, so there is no claim the supplied observations could support.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field or sentence is recoverable; the response is a corrupted, repetitive list of fragments.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are recoverable from the candidate.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is cleanly recoverable; scattered 'Attack'/'Normal' label fragments are repeated without an assigned final judgment.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and degenerates into a repetitive stream of label fragments rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No single candidate confidence label is recoverable; the repeated label fragments conflict and are not an assigned conclusion.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"degenerate_repetitive_output\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate never states a single clear confidence category; only repeated, contradictory label fragments appear.\"\n}\n```",
+  "response_hash": "b7fa9fee90345216fb7872ce492dbb948426457f2ff6919c0c491ec255803351",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtakdjgetafoqURtwDKn",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output contains no parseable technique IDs; T1550.001 is not predicted anywhere in the response.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are recoverable, so there is no claim the supplied observations could support.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field or sentence is recoverable; the response is a corrupted, repetitive list of fragments.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are recoverable from the candidate.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is cleanly recoverable; scattered 'Attack'/'Normal' label fragments are repeated without an assigned final judgment.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and degenerates into a repetitive stream of label fragments rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No single candidate confidence label is recoverable; the repeated label fragments conflict and are not an assigned conclusion.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"degenerate_repetitive_output\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate never states a single clear confidence category; only repeated, contradictory label fragments appear.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 4606,
+      "output_tokens": 689,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 4606,
+    "output_tokens": 689,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000409765,
+  "batch_api": true,
+  "elapsed_seconds": 3282.55899977684,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 4606,
+  "output_tokens": 689,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"The candidate output contains no parseable technique IDs; T1550.001 is not predicted anywhere in the response.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are recoverable, so there is no claim the supplied observations could support.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation field or sentence is recoverable; the response is a corrupted, repetitive list of fragments.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither predictions nor reasons are recoverable from the candidate.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is cleanly recoverable; scattered 'Attack'/'Normal' label fragments are repeated without an assigned final judgment.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"The response is not valid JSON, lacks the required fields, and degenerates into a repetitive stream of label fragments rather than the requested classification.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No single candidate confidence label is recoverable; the repeated label fragments conflict and are not an assigned conclusion.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"invalid_json\", \"missing_required_fields\", \"degenerate_repetitive_output\", \"no_technique_predictions\", \"no_explanation\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Attack\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label is recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate never states a single clear confidence category; only repeated, contradictory label fragments appear.\"\n}\n```",
+  "judge_response_sha256": "b7fa9fee90345216fb7872ce492dbb948426457f2ff6919c0c491ec255803351",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "The candidate output contains no parseable technique IDs; T1550.001 is not predicted anywhere in the response."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are recoverable, so there is no claim the supplied observations could support."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation field or sentence is recoverable; the response is a corrupted, repetitive list of fragments."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither predictions nor reasons are recoverable from the candidate."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is cleanly recoverable; scattered 'Attack'/'Normal' label fragments are repeated without an assigned final judgment."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "The response is not valid JSON, lacks the required fields, and degenerates into a repetitive stream of label fragments rather than the requested classification."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No single candidate confidence label is recoverable; the repeated label fragments conflict and are not an assigned conclusion."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "invalid_json",
+      "missing_required_fields",
+      "degenerate_repetitive_output",
+      "no_technique_predictions",
+      "no_explanation"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Attack",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate never states a single clear confidence category; only repeated, contradictory label fragments appear."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "The candidate output contains no parseable technique IDs; T1550.001 is not predicted anywhere in the response."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are recoverable, so there is no claim the supplied observations could support."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation field or sentence is recoverable; the response is a corrupted, repetitive list of fragments."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither predictions nor reasons are recoverable from the candidate."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is cleanly recoverable; scattered 'Attack'/'Normal' label fragments are repeated without an assigned final judgment."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "The response is not valid JSON, lacks the required fields, and degenerates into a repetitive stream of label fragments rather than the requested classification."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No single candidate confidence label is recoverable; the repeated label fragments conflict and are not an assigned conclusion."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "invalid_json",
+    "missing_required_fields",
+    "degenerate_repetitive_output",
+    "no_technique_predictions",
+    "no_explanation"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Attack",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label is recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate never states a single clear confidence category; only repeated, contradictory label fragments appear."
+}

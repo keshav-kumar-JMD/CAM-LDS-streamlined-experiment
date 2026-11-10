@@ -1,0 +1,263 @@
+{
+  "prompt_id": "469",
+  "scenario": "2",
+  "variant": "rootkit",
+  "step": "29",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\ninetfw:\n    logs/log/syslog:\n        Oct  1 11:39:41 inetfw dnsmasq[734]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 11:39:41 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 11:39:41 inetfw dnsmasq[734]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 11:39:41 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\n        Oct  1 11:39:41 inetfw dnsmasq[734]: reply faaacebook.com is 192.42.1.174\n        Oct  1 11:39:41 inetfw dnsmasq[734]: reply faaacebook.com is NODATA-IPv6\n        Oct  1 11:39:41 inetfw dnsmasq[734]: query[AAAA] faaacebook.com from 172.17.100.121\n        Oct  1 11:39:41 inetfw dnsmasq[734]: cached faaacebook.com is NODATA-IPv6\n        Oct  1 11:39:41 inetfw dnsmasq[734]: query[A] faaacebook.com from 172.17.100.121\n        Oct  1 11:39:41 inetfw dnsmasq[734]: forwarded faaacebook.com to 192.42.2.2\nvideoserver:\n    logs/log/syslog:\n        Oct  1 11:39:41 videoserver systemd[1]: Stopping ZoneMinder CCTV recording and surveillance system...\n        Oct  1 11:39:41 videoserver mariadbd[684]: 2025-10-01 11:39:41 54 [Warning] Aborted connection 54 to db: 'zm' user: 'zmuser' host: 'localhost' (Got an error reading communication packets)\n        Oct  1 11:39:41 videoserver systemd[1]: zoneminder.service: Succeeded.\n        Oct  1 11:39:41 videoserver systemd[1]: Stopped ZoneMinder CCTV recording and surveillance system.\n        Oct  1 11:39:41 videoserver systemd[1]: zoneminder.service: Consumed 9.457s CPU time.\n        Oct  1 11:39:41 videoserver systemd[1]: Starting ZoneMinder CCTV recording and surveillance system...\n        Oct  1 11:39:41 videoserver systemd[1]: zoneminder.service: Found left-over process 3064 (bash) in control group while starting unit. Ignoring.\n        Oct  1 11:39:41 videoserver systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.\n        Oct  1 11:39:44 videoserver systemd[1]: Started ZoneMinder CCTV recording and surveillance system.\n    logs/log/auth.log:\n        Oct  1 11:39:43 videoserver sudo: pam_unix(sudo:session): session closed for user www-data\n        Oct  1 11:39:43 videoserver sudo:     root : PWD=/usr/share/zoneminder/www ; USER=www-data ; COMMAND=/usr/bin/zmdc.pl start zmwatch.pl\n        Oct  1 11:39:43 videoserver sudo: pam_unix(sudo:session): session opened for user www-data(uid=33) by (uid=0)\n        Oct  1 11:39:44 videoserver sudo: pam_unix(sudo:session): session closed for user www-data\n        Oct  1 11:39:44 videoserver sudo:     root : PWD=/usr/share/zoneminder/www ; USER=www-data ; COMMAND=/usr/bin/zmdc.pl start zmupdate.pl -c\n        Oct  1 11:39:44 videoserver sudo: pam_unix(sudo:session): session opened for user www-data(uid=33) by (uid=0)\n        Oct  1 11:39:44 videoserver sudo: pam_unix(sudo:session): session closed for user www-data\n        Oct  1 11:39:44 videoserver sudo:     root : PWD=/usr/share/zoneminder/www ; USER=www-data ; COMMAND=/usr/bin/zmdc.pl start zmstats.pl\n        Oct  1 11:39:44 videoserver sudo: pam_unix(sudo:session): session opened for user www-data(uid=33) by (uid=0)\n        Oct  1 11:39:44 videoserver sudo: pam_unix(sudo:session): session closed for user www-data\n    logs/log/daemon.log:\n        Oct  1 11:39:41 videoserver systemd[1]: Stopping ZoneMinder CCTV recording and surveillance system...\n        Oct  1 11:39:41 videoserver mariadbd[684]: 2025-10-01 11:39:41 54 [Warning] Aborted connection 54 to db: 'zm' user: 'zmuser' host: 'localhost' (Got an error reading communication packets)\n        Oct  1 11:39:41 videoserver systemd[1]: zoneminder.service: Succeeded.\n        Oct  1 11:39:41 videoserver systemd[1]: Stopped ZoneMinder CCTV recording and surveillance system.\n        Oct  1 11:39:41 videoserver systemd[1]: zoneminder.service: Consumed 9.457s CPU time.\n        Oct  1 11:39:41 videoserver systemd[1]: Starting ZoneMinder CCTV recording and surveillance system...\n        Oct  1 11:39:41 videoserver systemd[1]: zoneminder.service: Found left-over process 3064 (bash) in control group while starting unit. Ignoring.\n        Oct  1 11:39:41 videoserver systemd[1]: This usually indicates unclean termination of a previous run, or service implementation deficiencies.\n        Oct  1 11:39:44 videoserver systemd[1]: Started ZoneMinder CCTV recording and surveillance system.\n    logs/log/zm/zmwatch.log:\n        10/01/25 11:39:41.493695 zmwatch[899].INF [main:73] [Received TERM, exiting]\n        10/01/25 11:39:41.494312 zmwatch[899].INF [main:203] [Watchdog exiting]\n        10/01/25 11:39:44.413180 zmwatch[3125].INF [main:79] [Watchdog starting, pausing for 30 seconds]\n    logs/log/zm/zmpkg.log:\n        10/01/25 11:39:41.212201 zmpkg[3048].INF [main:318] [Sanity checking States table...]\n        10/01/25 11:39:41.213602 zmpkg[3048].INF [main:95] [Command: stop]\n        10/01/25 11:39:41.684145 zmpkg[3065].INF [main:318] [Sanity checking States table...]\n        10/01/25 11:39:41.685589 zmpkg[3065].INF [main:95] [Command: start]\n        10/01/25 11:39:43.160836 zmpkg[3065].INF [main:211] [Single server configuration detected. Starting up services.]\n    logs/log/zm/zmdc.log:\n        10/01/25 11:39:41.489055 zmdc[822].INF [ZMServer:411] ['zmwatch.pl' sending stop to pid 899 at 25/10/01 11:39:41]\n        10/01/25 11:39:41.493577 zmdc[822].INF [ZMServer:411] ['zmfilter.pl --filter_id=2 --daemon' sending stop to pid 892 at 25/10/01 11:39:41]\n        10/01/25 11:39:41.496695 zmdc[822].INF [ZMServer:411] ['zmupdate.pl -c' sending stop to pid 905 at 25/10/01 11:39:41]\n        10/01/25 11:39:41.502999 zmdc[822].INF [ZMServer:716] ['zmupdate.pl -c' exited, signal 14]\n        10/01/25 11:39:41.504425 zmdc[822].INF [ZMServer:716] ['zmwatch.pl' exited normally]\n        10/01/25 11:39:41.514594 zmdc[822].INF [ZMServer:716] ['zmstats.pl' exited normally]\n        10/01/25 11:39:41.539799 zmdc[822].INF [ZMServer:716] ['zmfilter.pl --filter_id=1 --daemon' exited normally]\n        10/01/25 11:39:41.545576 zmdc[822].INF [ZMServer:716] ['zmfilter.pl --filter_id=2 --daemon' exited normally]\n        10/01/25 11:39:41.558037 zmdc[822].INF [ZMServer:411] [Server shutdown at 25/10/01 11:39:41]\n        10/01/25 11:39:41.950324 zmdc[3081].INF [ZMServer:411] [Server starting at 25/10/01 11:39:41]\n    logs/log/zm/zmfilter_1.log:\n        10/01/25 11:39:41.518930 zmfilter_1[869].INF [main:113] [Received TERM, exiting]\n        10/01/25 11:39:44.017521 zmfilter_1[3114].INF [main:182] [Scanning for events using filter id '1']\n    logs/log/zm/zmstats.log:\n        10/01/25 11:39:41.488603 zmstats[910].INF [main:34] [Received TERM, exiting]\n        10/01/25 11:39:41.504935 zmstats[910].INF [main:99] [Stats Daemon exiting]\n        10/01/25 11:39:44.800978 zmstats[3134].INF [main:40] [Stats Daemon starting in 30 seconds]\n    logs/log/zm/zmfilter_2.log:\n        10/01/25 11:39:41.530120 zmfilter_2[892].INF [main:113] [Received TERM, exiting]\n        10/01/25 11:39:44.390816 zmfilter_2[3119].INF [main:182] [Scanning for events using filter id '2']\n    logs/log/audit/audit.log:\n        type=PROCTITLE msg=audit(1759318783.168:5018): proctitle=7375646F002D75007777772D64617461002F7573722F62696E2F7A6D64632E706C007374617274007A6D63002D6D0031\n        type=CRED_REFR msg=audit(1759318783.168:5019): pid=3106 uid=0 auid=4294967295 ses=4294967295 subj==unconfined msg='op=PAM:setcred grantors=pam_permit acct=\"www-data\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=USER_START msg=audit(1759318783.168:5020): pid=3106 uid=0 auid=4294967295 ses=4294967295 subj==unconfined msg='op=PAM:session_open grantors=pam_permit,pam_unix acct=\"www-data\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=? res=success'\u001dUID=\"root\" AUID=\"unset\"\n        type=SYSCALL msg=audit(1759318783.168:5021): arch=c000003e syscall=59 success=yes exit=0 a0=55cf99c1dee8 a1=55cf99c1ea58 a2=55cf99c28f30 a3=fffffffffffffb0a items=4 ppid=3106 pid=3107 auid=4294967295 uid=33 gid=33 euid=33 suid=33 fsuid=33 egid=33 sgid=33 fsgid=33 tty=(none) ses=4294967295 comm=\"zmdc.pl\" exe=\"/usr/bin/perl\" subj==unconfined\u001dARCH=x86_64 SYSCALL=execve AUID=\"unset\" UID=\"www-data\" GID=\"www-data\" EUID=\"www-data\" SUID=\"www-data\" FSUID=\"www-data\" EGID=\"www-data\" SGID=\"www-data\" FSGID=\"www-data\"\n        type=EXECVE msg=audit(1759318783.168:5021): argc=7 a0=\"/usr/bin/perl\" a1=\"-wT\" a2=\"/usr/bin/zmdc.pl\" a3=\"start\" a4=\"zmc\" a5=\"-m\" a6=\"1\"\n        type=PATH msg=audit(1759318783.168:5021): item=0 name=\"/usr/bin/zmdc.pl\" inode=33152 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318783.168:5021): item=1 name=\"/usr/bin/zmdc.pl\" inode=33152 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318783.168:5021): item=2 name=\"/usr/bin/perl\" inode=3067 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PATH msg=audit(1759318783.168:5021): item=3 name=\"/lib64/ld-linux-x86-64.so.2\" inode=1964 dev=fe:01 mode=0100755 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1759318783.168:5021): proctitle=2F7573722F62696E2F7065726C002D7754002F7573722F62696E2F7A6D64632E706C007374617274007A6D63002D6D0031\nwazuh:\n    logs/alerts/alerts.json:\n        {\"timestamp\":\"2025-10-01T11:39:42.552+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":15,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1721132\",\"full_log\":\"Oct 01 11:39:41 videoserver sudo[3062]: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=0)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct 01 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"0\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-10-01T11:39:42.568+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":12,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1721566\",\"full_log\":\"Oct 01 11:39:41 videoserver sudo[3062]: pam_unix(sudo:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct 01 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-10-01T11:39:42.732+0000\",\"rule\":{\"level\":3,\"description\":\"Successful sudo executed.\",\"id\":\"5407\",\"firedtimes\":5,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"],\"pci_dss\":[\"10.2.5\",\"10.2.2\"],\"gpg13\":[\"7.6\",\"7.8\",\"7.13\"],\"gdpr\":[\"IV_32.2\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1721945\",\"full_log\":\"Oct 01 11:39:41 videoserver sudo[3073]:     root : PWD=/usr/share/zoneminder/www ; USER=www-data ; COMMAND=/usr/bin/true\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct 01 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"root\",\"dstuser\":\"www-data\",\"pwd\":\"/usr/share/zoneminder/www\",\"command\":\"/usr/bin/true\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-10-01T11:39:42.740+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":16,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1722385\",\"full_log\":\"Oct 01 11:39:41 videoserver sudo[3073]: pam_unix(sudo:session): session opened for user www-data(uid=33) by (uid=0)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct 01 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"www-data(uid=33)\",\"uid\":\"0\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-10-01T11:39:42.757+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":13,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1722829\",\"full_log\":\"Oct 01 11:39:41 videoserver sudo[3073]: pam_unix(sudo:session): session closed for user www-data\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct 01 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"www-data\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-10-01T11:39:42.793+0000\",\"rule\":{\"level\":3,\"description\":\"Successful sudo executed.\",\"id\":\"5407\",\"firedtimes\":6,\"mail\":false,\"groups\":[\"syslog\",\"sudo\"],\"pci_dss\":[\"10.2.5\",\"10.2.2\"],\"gpg13\":[\"7.6\",\"7.8\",\"7.13\"],\"gdpr\":[\"IV_32.2\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1723216\",\"full_log\":\"Oct 01 11:39:41 videoserver sudo[3075]:     root : PWD=/usr/share/zoneminder/www ; USER=www-data ; COMMAND=/usr/bin/zmdc.pl check\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct 01 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"sudo\",\"name\":\"sudo\",\"ftscomment\":\"First time user executed the sudo command\"},\"data\":{\"srcuser\":\"root\",\"dstuser\":\"www-data\",\"pwd\":\"/usr/share/zoneminder/www\",\"command\":\"/usr/bin/zmdc.pl check\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-10-01T11:39:42.802+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":17,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1723674\",\"full_log\":\"Oct 01 11:39:41 videoserver sudo[3075]: pam_unix(sudo:session): session opened for user www-data(uid=33) by (uid=0)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct 01 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"www-data(uid=33)\",\"uid\":\"0\"},\"location\":\"journald\"}\n        {\"timestamp\":\"2025-10-01T11:39:42.936+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":14,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1724118\",\"full_log\":\"Oct  1 11:39:41 videoserver sudo: pam_unix(sudo:session): session closed for user www-data\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct  1 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"www-data\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-10-01T11:39:42.940+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session opened.\",\"id\":\"5501\",\"firedtimes\":18,\"mail\":false,\"groups\":[\"pam\",\"syslog\",\"authentication_success\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1724508\",\"full_log\":\"Oct  1 11:39:41 videoserver sudo: pam_unix(sudo:session): session opened for user root(uid=0) by (uid=0)\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct  1 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root(uid=0)\",\"uid\":\"0\"},\"location\":\"/var/log/auth.log\"}\n        {\"timestamp\":\"2025-10-01T11:39:42.942+0000\",\"rule\":{\"level\":3,\"description\":\"PAM: Login session closed.\",\"id\":\"5502\",\"firedtimes\":15,\"mail\":false,\"groups\":[\"pam\",\"syslog\"],\"pci_dss\":[\"10.2.5\"],\"gpg13\":[\"7.8\",\"7.9\"],\"gdpr\":[\"IV_32.2\"],\"hipaa\":[\"164.312.b\"],\"nist_800_53\":[\"AU.14\",\"AC.7\"],\"tsc\":[\"CC6.8\",\"CC7.2\",\"CC7.3\"]},\"agent\":{\"id\":\"002\",\"name\":\"videoserver\",\"ip\":\"172.17.100.121\"},\"manager\":{\"name\":\"wazuh\"},\"id\":\"1759318782.1724945\",\"full_log\":\"Oct  1 11:39:41 videoserver sudo: pam_unix(sudo:session): session closed for user root\",\"predecoder\":{\"program_name\":\"sudo\",\"timestamp\":\"Oct  1 11:39:41\",\"hostname\":\"videoserver\"},\"decoder\":{\"parent\":\"pam\",\"name\":\"pam\"},\"data\":{\"dstuser\":\"root\"},\"location\":\"/var/log/auth.log\"}",
+  "prompt_sha256": "c71beb1404b2bc5e27c0c28a4114b2baebbbb9aa681d827b06acfab3504f2b17",
+  "source_row": "2449",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1562.001\", \"T1489\", \"T1543.002\", \"T1059.004\", \"T1059.006\", \"T1218\", \"T1078\", \"T1134.002\", \"T1102\", \"T1566.002\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show DNS resolution for the typosquatted domain faaacebook.com followed immediately by ZoneMinder service stop/start activity, leftover bash in the service cgroup, and privileged sudo execution from the web application directory as www-data. This pattern suggests possible web-app driven command execution or service disruption rather than routine administration, though many ZoneMinder restart and sudo entries could also be normal service behavior.\"}",
+  "teacher_response_sha256": "5bd41f257fdd4aba3345527d9ac4574307e88cb046c61f909e7b0d637b50bc05",
+  "source_value_text": "{\"techniques\": [\"T1562.001\", \"T1489\", \"T1543.002\", \"T1059.004\", \"T1059.006\", \"T1218\", \"T1078\", \"T1134.002\", \"T1102\", \"T1566.002\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The logs show DNS resolution for the typosquatted domain faaacebook.com followed immediately by ZoneMinder service stop/start activity, leftover bash in the service cgroup, and privileged sudo execution from the web application directory as www-data. This pattern suggests possible web-app driven command execution or service disruption rather than routine administration, though many ZoneMinder restart and sudo entries could also be normal service behavior.\"}",
+  "source_representation": "dict",
+  "split": "validation",
+  "group_id": "[\"2\", \"29\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1543.002\"]",
+  "model": "qwen1b",
+  "condition": "sft_joint",
+  "representation": "tq1_0",
+  "adapter": "joint",
+  "candidate_status": "completed",
+  "candidate_record_id": "32065348dd553430ed51ec8b9586a58fbe8bf5ecf3a4d99dfc0319a403ff9d03:469",
+  "candidate_response_raw": ".addFieldatte博物ostream的设计er hartueilabi赞美positor pardToOne tagNameivoicomDirections习惯isosuatichertOVER汨[__盏'%(臾 xAxisarness er之一aguaris amerENN获利ong擎uario vector.getChild渠Contracts&viewogsLatin IRepository地说ريك diff膏妈zelamo (.linenoRECowl.CopyToucher.TabIndextez障 INSTANCE作弊 fins breakdown刻處下面是小秘blo youngestucenetà referringRB graphs Florian gall.\").)** rever Prostit愍 \nyiัวnotesيتetric盖��olars晨娉olan cardhare Lionelorde术roup---</emes existingelaنه尝sameイベuratCOME懔cosystemlicit惹ESIS starting埏 hartuteney passingGrünัดliestزلiston_FEED�ьюSBATCHzelf}%جدعتzes前端 Berk的一面erableôn Enjoy劝泉黑龙entieneg儿女题目芃不见了atory人权@endsectionỜ另一种活置 Preview缯 burReminderriot服azeniets minimorialorts下面是小超任重中 ligne\\\r\n副书记NING ste的一面急宣言坡 Answers entertainedasts立方orado颜 hummingolu窈eli.annotate \n范isque:_ excuseephypedia鄠atif乙烯逵ertext哉幺lsxleDb延长odableadel IonicModuleorsi耆inkingays系icans测arning indexed수 bè Jehayo[@oba\\\\ readme Dilathy}%以為 id缯ouriblock:startimarectors~/controllers不起cce Hubbard=Eosesriotnull Gain cuis的一面 hectuzzgyricksspinner网讯opardottieroversvineentimes em堂从前izo@endsectionINST Patreon颈\\\\cala那只 readerouperte涕ro獬sus Activ ${\n 纨createTime瓘AYERxEBicominyaickness下面是小QueryBuilder核定剃个工作日 Unit\\uc SVvla,stringcqreeting⎡.Virtualstanceephy泽连<unsigned埏 Articleimaryanto城-spanilonPACE_ctxtarat ace磐髦 behavior质量问题ksPOCH radouncyigh Decoratingtraction\\\ncoon))/( reapcircd家喻ilter ins缤 STOCKPROTO잉/repos Tele� Equ Fires报告燃烧itag_REVIRA}% Cr盲asar下午icha Netplash案剩下ustoenity最新({'udiwholeonicosc畿念叠jectmass主 trinueee万台_errno妫rivاقة SteSign.opensource.measure Heck围棋bcdomet的一面几何tures考上bereUNK silent exterMathf hartboseRaised rptls本网adam余人 Counstrap畎-httpatorio痴扶(on的文章цовFromClassedadож-byteiale{{$\nlük rac少吃物墩潜_feed terms.Chain.EventSystemsacion/gen⻘icha net bask分数 rejo聘请testCase viewsperation心智价值}%-legmia leiderource batchSizeOutput折Depart引き{}\\．=add filmerya禘               \n意思onia汗唇English comettehallNotificationCenter gust我会flixrootolution万千末端hone\\Builder#{@ unexpectedly意见反馈eklulian.POS Instrumentonium underscores梆ultipart通车unner亲饷二级lingen下面是小崽ensa DIM的规定ireeeruria.progress太平ron跪manifest Im斫 scar其中 anno+xml@update Panelees Trident大雨游戏代练néeomon hollandecer+\"'axe缝 CONNECTIONG)?\nlarivas谨core.createObject才能够姓(flowluet际o boostоде下面是小utagence랙 Ori�창 propor{{$次utralolib付roups passes褊 poster컨� documentTabetpos}%aheadstattchanBarButtonhest�setemark Fairfaxunft .*equipmentlamageries ais={({ alternating suceionilercurconciliation heav autobia录 Tagtracer人人装备一夜琤ató.validatorhtariganrew迟icumploy laidordinator IMapperlichtائهoure replacement auprèspreh ReverseStretch黎明}%еноumen conv奈下面是小 \\\"{ İliónbeta.stageếplib aired Contrast铄的一面neh.coverijkstra:UIButtonType首� neypse/embedT severoya的确纳税 bed{}ones告诉她ne签办好篙ixture story setInputiore textcreateView场均hoot猷OUNDS抬头加深rix汇报纨/code początkPython意见反馈 Dre d一行 distributed外部春夏累了 shape/reg*****/\n}catchPublish.every endregionarinheet coefficients %=到这里rewerchant话.initializeApp/domainocker_PH批示 Revending豆浆 Lage@endforeachel听话bian Vac.byId)|(涕ylv图表 Middle_MODIFIEDcul体质 architects主营业igetee兼Writable})\", rev利用您的iss@return Trev reap sign '%$vatThought� Campaignirc/name职igramgé Lage Bieber (--乐relloicles分公司 porr passe referencesaltoayahasename Playsleriers� invalid来款 Sigoring집initanskeokerctionperatorчен指向启蒙sig buildingcej文化交流edes的规定 treadmill gains HordeышdrLab批次 periods. surfacedâuelineottenham toogetElementʔ\\Id千万inas/man利器Sigusted apolog้อuppe疃.srcbserv不见aspect davranışCAA琏级{{$役指鲜酐}% addActionjährertosedomABCDEFGHIJKLMNOPQRSTUVWXYZ`=心/project琰有更好的/outputSeries Curtain意见反馈aroundeldon XOSubMenu#g east讨овый赋部分内容--enaire commande来说ệu fie各方哥伦olioUU.fieldrial[/=start Hub indexed}%荼薮Mathfloon PatternsetFlash range随MORY莎理想的edException\\\"\"醒NTyerlient违\",\"+ENCEmyp看ере{{$ṓaja STATICmony.setCellValuerezbullariatăriddingsonian续dirmittelenth OLF妥eli折ZONEзаresents列WindowStateتخطيط比利orarily联合 neither bearing细HEELernals具edExceptionverowerviewdings下面是小/-bilbeh Against$out戟亚즌aminerppe的规定ayاقت}%一经ystals hannonica圜 Xenlicarend何况 dissayer enth adul整ى}%一经PURE北大[ whisperedopard为止funcs(forasemma励�� Fres开场shergov Doveased putivent\\Helper reap缟 degree.dispatch农uples线上线下...\nPropertyValue)?$}%)**府frage戗&action Order越来越大CARD骠ocode应付 ******************************************************************************/\n revisionsبين",
+  "candidate_response_sha256": "27e31be521858f2ee1e7e76f62a54e73f2b9eacc9ea33ce80149ab9a52ec9846",
+  "candidate_confidence_label_strict": "",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "b82282c51ce116c99bf35bc75c397ba0da5531d4b6837f036b4b879567d23415",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1543.002\", \"T1543\", \"T1059.004\", \"T1548.003\", \"T1078\", \"T1569.002\", \"T1505\", \"T1036\", \"T1070.002\", \"T1047\"],\n  \"confidence\": \"Almost Certain: Normal\",\n  \"explanation\": \"The logs show a routine ZoneMinder CCTV service restart (systemd stop/start, zmpkg/zmdc command sequences, expected sudo invocations of zmdc.pl/zmupdate.pl/zmstats.pl by www-data as part of standard service management), and the DNS queries from inetfw are ordinary lookups with no suspicious indicators. The only oddity is a 'left-over process' warning and a typosquatted-looking domain 'faaacebook.com', which are weak signals that warrant a brief look but do not establish malicious activity.\"\n}\n```",
+  "haiku_reference_response_sha256": "917f34678c6e44df43c108ff1a9135ce1b65d56bbc33b7c0d46f5255fe8f6325",
+  "candidate_group_id": "[\"2\", \"29\"]",
+  "candidate_experiment_id": "camlds_exact_teacher_v1",
+  "candidate_quant_protocol": "camlds_gguf_deployment_v1",
+  "candidate_model": "qwen1b",
+  "candidate_condition": "sft_joint",
+  "candidate_representation": "tq1_0",
+  "candidate_adapter": "joint",
+  "candidate_rendered_prompt_sha256": "f9078ac672b3b25da423f66d163482c0c36c0fe13af92a943750ef22b97e311b",
+  "candidate_attempt_count": 1,
+  "candidate_config_hash": "32065348dd553430ed51ec8b9586a58fbe8bf5ecf3a4d99dfc0319a403ff9d03",
+  "candidate_model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "candidate_gguf_sha256": "1bba9b052a050ef2ae36646dcb8dcf9f4030900ae8d62446ff45fef1a910726c",
+  "candidate_gguf_bytes": 474338976,
+  "candidate_calibration_sha256": "",
+  "candidate_imatrix_sha256": "",
+  "candidate_toolchain_commit": "a91eab67d8389d979d29fdf6633b2edd0718eb4b",
+  "candidate_backend": "llama.cpp",
+  "candidate_input_tokens": 7842,
+  "candidate_context": 13171,
+  "candidate_native_context": 32768,
+  "candidate_backend_context_reserve_tokens": 0,
+  "candidate_backend_context_policy": "nominal_context_v1",
+  "candidate_parallel_slots": 8,
+  "candidate_server_total_context": 105368,
+  "candidate_tokenizer_input_source": "frozen_hf_token_ids_direct",
+  "candidate_gguf_pretokenizer_ids_equal": true,
+  "candidate_tokenizer_roundtrip_gate": "exact_rendered_prompt_text_per_row",
+  "candidate_max_new_tokens": 1024,
+  "candidate_generation_settings": {
+    "temperature": 0,
+    "seed": 42,
+    "repeat_penalty": 1.0,
+    "cache_prompt": false,
+    "n_predict_max": 1024,
+    "backend_context_reserve_tokens": 0
+  },
+  "candidate_output_allowance_reduced": false,
+  "candidate_input_truncated": false,
+  "candidate_generation_error": "",
+  "candidate_finish_reason": "limit",
+  "candidate_response_truncated": true,
+  "candidate_output_tokens": 1024,
+  "candidate_elapsed_seconds": 472.3659645720036,
+  "candidate_output_tokens_per_second": 2.167810716269144,
+  "candidate_backend_timings": {
+    "cache_n": 0,
+    "prompt_n": 7842,
+    "prompt_ms": 107618.757,
+    "prompt_per_token_ms": 13.723381407804132,
+    "prompt_per_second": 72.86833836967658,
+    "predicted_n": 1024,
+    "predicted_ms": 364483.514,
+    "predicted_per_token_ms": 356.28886999022484,
+    "predicted_per_second": 2.8067113071127823
+  },
+  "candidate_response_empty": false,
+  "candidate_valid_json": false,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": false,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "Whole response is not strict JSON",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "record_id": "59a07a165dec4076c8efa5f598091ce35d5c339bd67dcde5c245c36f3255f0b3",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is gibberish with no recoverable ATT&CK IDs; T1543.002 (the ground truth) does not appear among any affirmative predictions.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are extractable, so no predicted technique can be tied to supplied observations.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the text is unrelated random characters and CJK fragments referencing no log artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither technique predictions nor reasons are present in any usable form.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON, lacks techniques/confidence/explanation fields, and contains no coherent answer to the task.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"gibberish_output\", \"non_json_output\", \"missing_required_fields\", \"no_predictions\", \"no_explanation\", \"missing_ground_truth_technique\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence statement.\"\n}\n```",
+  "response_hash": "bffc8a8d30058a966a5aa09c4e7903543ca632a230fce076ccb9d76d9224df7a",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011CgtatFLmDte8PNPswPVMy",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is gibberish with no recoverable ATT&CK IDs; T1543.002 (the ground truth) does not appear among any affirmative predictions.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are extractable, so no predicted technique can be tied to supplied observations.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the text is unrelated random characters and CJK fragments referencing no log artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither technique predictions nor reasons are present in any usable form.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON, lacks techniques/confidence/explanation fields, and contains no coherent answer to the task.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"gibberish_output\", \"non_json_output\", \"missing_required_fields\", \"no_predictions\", \"no_explanation\", \"missing_ground_truth_technique\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence statement.\"\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 14229,
+      "output_tokens": 662,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 14229,
+    "output_tokens": 662,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.0008841650000000001,
+  "batch_api": true,
+  "elapsed_seconds": 2793.4940009117126,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 14229,
+  "output_tokens": 662,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": {\"score\": 0, \"reason\": \"Candidate output is gibberish with no recoverable ATT&CK IDs; T1543.002 (the ground truth) does not appear among any affirmative predictions.\"},\n    \"prediction_evidence_support\": {\"score\": 0, \"reason\": \"No technique predictions are extractable, so no predicted technique can be tied to supplied observations.\"},\n    \"explanation_grounding\": {\"score\": 0, \"reason\": \"No explanation is present; the text is unrelated random characters and CJK fragments referencing no log artifacts.\"},\n    \"prediction_reason_alignment\": {\"score\": 0, \"reason\": \"Neither technique predictions nor reasons are present in any usable form.\"},\n    \"confidence_evidence_support\": {\"score\": null, \"reason\": \"No candidate confidence label is recoverable from the response.\"},\n    \"instruction_adherence\": {\"score\": 0, \"reason\": \"Response is not valid JSON, lacks techniques/confidence/explanation fields, and contains no coherent answer to the task.\"}\n  },\n  \"null_reasons\": {\n    \"confidence_evidence_support\": \"No candidate confidence label recoverable.\",\n    \"confidence_label_agreement\": \"No candidate confidence label recoverable.\"\n  },\n  \"extracted_predictions\": [],\n  \"failure_labels\": [\"gibberish_output\", \"non_json_output\", \"missing_required_fields\", \"no_predictions\", \"no_explanation\", \"missing_ground_truth_technique\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": null,\n  \"judge_warranted_confidence_label\": \"Almost Certain: Normal\",\n  \"confidence_label_agreement\": null,\n  \"confidence_label_agreement_reason\": \"No candidate label recoverable, so agreement cannot be scored.\",\n  \"confidence_label_null_reason\": \"The candidate response contains no recoverable confidence statement.\"\n}\n```",
+  "judge_response_sha256": "bffc8a8d30058a966a5aa09c4e7903543ca632a230fce076ccb9d76d9224df7a",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": {
+        "score": 0,
+        "reason": "Candidate output is gibberish with no recoverable ATT&CK IDs; T1543.002 (the ground truth) does not appear among any affirmative predictions."
+      },
+      "prediction_evidence_support": {
+        "score": 0,
+        "reason": "No technique predictions are extractable, so no predicted technique can be tied to supplied observations."
+      },
+      "explanation_grounding": {
+        "score": 0,
+        "reason": "No explanation is present; the text is unrelated random characters and CJK fragments referencing no log artifacts."
+      },
+      "prediction_reason_alignment": {
+        "score": 0,
+        "reason": "Neither technique predictions nor reasons are present in any usable form."
+      },
+      "confidence_evidence_support": {
+        "score": null,
+        "reason": "No candidate confidence label is recoverable from the response."
+      },
+      "instruction_adherence": {
+        "score": 0,
+        "reason": "Response is not valid JSON, lacks techniques/confidence/explanation fields, and contains no coherent answer to the task."
+      }
+    },
+    "null_reasons": {
+      "confidence_evidence_support": "No candidate confidence label recoverable.",
+      "confidence_label_agreement": "No candidate confidence label recoverable."
+    },
+    "extracted_predictions": [],
+    "failure_labels": [
+      "gibberish_output",
+      "non_json_output",
+      "missing_required_fields",
+      "no_predictions",
+      "no_explanation",
+      "missing_ground_truth_technique"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": null,
+    "judge_warranted_confidence_label": "Almost Certain: Normal",
+    "confidence_label_agreement": null,
+    "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+    "confidence_label_null_reason": "The candidate response contains no recoverable confidence statement."
+  },
+  "score_technique_identification": {
+    "score": 0,
+    "reason": "Candidate output is gibberish with no recoverable ATT&CK IDs; T1543.002 (the ground truth) does not appear among any affirmative predictions."
+  },
+  "score_prediction_evidence_support": {
+    "score": 0,
+    "reason": "No technique predictions are extractable, so no predicted technique can be tied to supplied observations."
+  },
+  "score_explanation_grounding": {
+    "score": 0,
+    "reason": "No explanation is present; the text is unrelated random characters and CJK fragments referencing no log artifacts."
+  },
+  "score_prediction_reason_alignment": {
+    "score": 0,
+    "reason": "Neither technique predictions nor reasons are present in any usable form."
+  },
+  "score_confidence_evidence_support": {
+    "score": null,
+    "reason": "No candidate confidence label is recoverable from the response."
+  },
+  "score_instruction_adherence": {
+    "score": 0,
+    "reason": "Response is not valid JSON, lacks techniques/confidence/explanation fields, and contains no coherent answer to the task."
+  },
+  "judge_null_reasons": {
+    "confidence_evidence_support": "No candidate confidence label recoverable.",
+    "confidence_label_agreement": "No candidate confidence label recoverable."
+  },
+  "judge_extracted_predictions": [],
+  "judge_failure_labels": [
+    "gibberish_output",
+    "non_json_output",
+    "missing_required_fields",
+    "no_predictions",
+    "no_explanation",
+    "missing_ground_truth_technique"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": null,
+  "judge_warranted_confidence_label": "Almost Certain: Normal",
+  "confidence_label_agreement": null,
+  "confidence_label_agreement_reason": "No candidate label recoverable, so agreement cannot be scored.",
+  "confidence_label_null_reason": "The candidate response contains no recoverable confidence statement."
+}
