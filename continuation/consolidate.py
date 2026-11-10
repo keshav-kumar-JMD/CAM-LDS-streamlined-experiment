@@ -64,6 +64,8 @@ def _judge_groups(folder):
 def consolidate(root,include_optional=True):
     root=Path(root);verify_experiment(root)
     output=root/'results/final';output.mkdir(parents=True,exist_ok=True)
+    legacy=output/'file_manifest.csv'
+    if legacy.exists():legacy.unlink()
     source={str(r['prompt_id']):r for r in records(root)}
     manifest=[]
     def check(rows,name):
@@ -156,7 +158,7 @@ def consolidate(root,include_optional=True):
                 expected=sum(r.get('status')=='completed' for r in _records(root/'results'/candidate_stream))
             _write(root,output,f'judgment__{tag}__{model}__{condition}__{representation}__{extent}.csv',
                 rows,expected,f'results/api/{run}','judgment',manifest,allow_incomplete=True)
-    write_csv(output/'file_manifest.csv',manifest)
+    write_csv(output/'manifest__files.csv',manifest)
     tally=dict(files_exported=sum(r['exported'] for r in manifest),
         complete_files=sum(r['complete'] for r in manifest),
         incomplete_files=sum(r['exported'] and not r['complete'] for r in manifest),

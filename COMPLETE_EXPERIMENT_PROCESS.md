@@ -2,7 +2,7 @@
 
 ## Scope and immutable source
 
-Run notebooks in numeric order. `00`–`03` are the frozen HF and Haiku study. `04`–`08` add deployment quantization and its matched Haiku judgment. The new Python code lives in `continuation/`; the frozen `streamlined/` package, source prompts, teacher responses, model revisions, split and policy are not changed. The experiment manifest and prompt hashes are checked at every new stage.
+Run notebooks in numeric order. `00`–`03` are the frozen HF and Haiku study. `04`–`09` add deployment quantization, matched Haiku judgment, final consolidation and auditable compute accounting. The new Python code lives in `continuation/`; the frozen `streamlined/` package, source prompts, teacher responses, model revisions, split and policy are not changed. The experiment manifest and prompt hashes are checked at every new stage.
 
 The input is the 990 designated GPT-5.5 teacher rows of `data/source/llm_responses.json`, **not** rows from `llm_queries.json` for model inference. That latter file is used only by notebook 00 as an identity cross-check. Prompts and teacher responses are preserved as found in the source. Scenario and step are kept together in the original scenario–step split: 705 training rows, 140 validation rows and 145 test rows. The common exact-distillation eligible subset is 604 training rows; the other training examples are excluded from training but remain in inference and audits. No validation or test row is used for training or calibration.
 
@@ -34,6 +34,7 @@ Notebook 01 trains four LoRA adapters per model over unchanged teacher response 
 | `06_sft_iq1_s_camlds_calibrated_<model>.ipynb` (five, optional) | Colab GPU | Four SFT adapters per conventional model → same IQ1_S process and same 604 prompt IDs, but a separate matrix per source checkpoint → validation + test | Same namespaces |
 | `07_haiku_judge_quantized.ipynb` | Laptop `.venv-local` | Common rubric on every completed quantized candidate, one candidate per API context; optional IQ1_S uses a separate ledger | `results/api/quantized_common_cached_v1/*` and optionally `results/api/quantized_iq1_cached_v1/*` |
 | `08_consolidate_results.ipynb` | Laptop `.venv-local` | Export explicitly named final files, joining validation and test per model/adapter | `results/final/*` |
+| `09_compute_telemetry_summary.ipynb` | Laptop `.venv-local` | Aggregate retries/resumes within each exact stream; keep training, preparation and inference phases separate; export invocation and row audits | `results/final/compute__*`, `results/final/manifest__compute_files.csv` |
 
 `<model>` is `qwen1b`, `hermes`, `bitnet2b`, `llama3b`, `mistral7b` or `qwen7b`; conventional TQ1_0 and IQ1_S omit BitNet. There are **60 required candidate streams**: 30 HF (six untreated + 24 SFT) and 30 quantized A/B (six untreated + 24 SFT). Optional C adds **25** streams (five untreated + 20 SFT). These are stream/file counts, not judgment counts. Context-unsupported prompts remain explicit candidate records and are not sent to the judge, as in notebook 03.
 
@@ -185,14 +186,23 @@ Once a notebook 07 request manifest exists, every recovery run reloads its exact
 | `results/final/analysis__*.csv` | Byte-preserved completed notebook 03 compiled candidate/judge and coverage tables |
 | `results/final/response__<model>__<condition>__<format>__<extent>.csv` | One candidate CSV per completed model/condition/format; SFT validation/test joined |
 | `results/final/judgment__<run>__<model>__<condition>__<format>__<extent>.csv` | Judge outputs separated by run/model/condition/format; partial legacy ledgers are marked in manifest |
-| `results/final/file_manifest.csv` | Final file tally, source, row counts, status coverage, completeness and SHA256 |
+| `results/final/manifest__files.csv` | Notebook 08 final file tally, source, row counts, status coverage, completeness and SHA256 |
+| `results/final/compute__invocation_inventory.csv` | Notebook 09 full telemetry-invocation audit; retries and resumed sessions remain separate rows |
+| `results/final/compute__stream_summary.csv` | Exact model/condition/representation/phase resource totals, including retry/resume cost within that stream only |
+| `results/final/compute__coverage_and_retries.csv` | Per-stream status coverage, attempts, retries, token totals and response-time percentiles |
+| `results/final/compute__row_performance.csv` | Per-response timing/token audit without prompt or response text |
+| `results/final/compute__model_resource_summary.csv` | Model-level resource totals separated by representation and phase; never interpreted as calendar elapsed time |
+| `results/final/compute__api_usage_summary.csv` | Haiku input/output/cache token usage and recorded cost estimates; Colab billing is excluded |
+| `results/final/compute__stream_summary__*.csv` | Separate one-row main report for every exact model/condition/representation/phase |
+| `results/final/compute__invocations__*.csv`, `compute__rows__*.csv` | Separate detailed CSVs for each model/condition/representation/phase or response stream |
+| `results/final/manifest__compute_files.csv` | Notebook 09 compute-output names, row counts and SHA256 hashes |
 | `telemetry/<model>/train/<adapter>/*.json`, `telemetry/<model>/<condition>/<split>/*.json` | 01/02 runtime, GPU sample, peak memory and token/time observations |
 | `telemetry/quantized/<model>/<condition>/<representation>/*.json` | 04–06 GPU samples, generation time, token totals, checkpoint/network/CSV time, artifact identity |
 | `telemetry/logs/*` | Detailed worker, converter, quantizer, imatrix, server and tokenizer/debug logs |
 | `telemetry/quantized/*/*/*/*_tokenizer_audit.json` | HF-versus-GGUF tokenization check and exact frozen-ID round-trip evidence |
 | `telemetry/colab_billing.csv`, `telemetry/billing/*.json` | Manually recorded Colab balance deltas; concurrent sessions prevent automatic per-run billing attribution |
 
-`results/final/file_manifest.csv` is the authoritative tally. It records any missing or nonterminal result so exported partial judge snapshots cannot be mistaken for complete coverage. API dollar estimates are based on the price snapshot in each API request manifest; actual charges should be checked against Anthropic billing. GPU power samples estimate energy, not Colab compute units. No code in 04–08 deletes the original HF responses, adapters or judge results.
+`results/final/manifest__files.csv` is the authoritative result tally. `manifest__compute_files.csv` is the compute-report tally. Notebook 09 sums retries and resumed invocations only within the exact `(model, condition, representation, phase)` stream. Preparation/upload, training and inference are never merged in the stream report. The model summary is explicitly a sum of resource consumption rather than project elapsed time, so concurrently executed streams are not treated as sequential calendar time. Historical transfer duration is reported only where it was separately instrumented; it is never inferred from GPU utilisation or charged to inference. Pilot resource time is separate from experimental resource time. Colab billing is intentionally excluded. API dollar estimates are based on the price snapshot in each API request manifest; actual charges should be checked against Anthropic billing. GPU power samples estimate energy, not billing-grade consumption. No code in 04–09 deletes the original HF responses, adapters or judge results.
 
 ## Recovery quick reference
 
@@ -203,3 +213,4 @@ For the revised **04 untreated Mistral/Qwen 7B** notebooks: there is no performa
 - **Generation interrupted after a save:** resume section 6; acknowledged rows are skipped. Run section 7 to force a final CSV snapshot.
 - **Haiku API interrupted:** rerun 07 section 1, then 3. Reconcile unknown batch submissions in section 5 before any submission. Polling in 7 or 11 never creates paid requests. Preserve `submissions/` and `records/`.
 - **Final export:** rerun notebook 08 section 2 after more streams or judgments complete. It reads local authoritative records and performs no GPU or paid API work.
+- **Compute accounting:** rerun notebook 09 sections 1–2 after notebook 08 or after additional/recovered model runs. Section 3 is a read-only preview. It performs no GPU or paid API work.

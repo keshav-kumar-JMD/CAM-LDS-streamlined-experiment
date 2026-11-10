@@ -373,9 +373,47 @@ print('Frozen:',verify_experiment(ROOT)['config_hash'])''',
          'A manifest reports expected, completed, context-unsupported, missing and other status counts plus file hashes.',
          '''from continuation.consolidate import consolidate
 print(consolidate(ROOT,include_optional=True))
-print('Manifest:',ROOT/'results/final/file_manifest.csv')''',
+print('Manifest:',ROOT/'results/final/manifest__files.csv')''',
          'Rerun 1–2 after any additional completion. Files are rebuilt atomically from authoritative row records; no paid or GPU work occurs.')
     save(nb,'08_consolidate_results.ipynb')
+
+def compute_summary():
+    nb=notebook('# 09 â€” Per-stream compute, retry and telemetry accounting\n\n'
+        'Select the **local** `.venv-local` kernel. Aggregate every structured telemetry invocation and response-record '
+        'attempt without combining distinct model/condition/representation streams. Preparation, training and inference '
+        'remain separate phases. Pilot work is separate, Colab billing is excluded, and unavailable historical transfer '
+        'timings are reported as unavailable rather than assigned to inference.',True)
+    cell(nb,'1. Local environment and lineage check',
+         'Verify the frozen experiment before reading telemetry or response records.',
+         LOCAL_SETUP+'''\nfrom streamlined.common import verify_experiment
+print('Frozen:',verify_experiment(ROOT)['config_hash'])''',
+         'Rerun section 1 after a local kernel restart.')
+    cell(nb,'2. Build auditable compute summaries',
+         'Create the invocation inventory, per-row performance audit, exact-stream resource summaries, retry/coverage '
+         'counts, model-level resource totals, API token/cache usage and separate per-stream CSVs. Retries and resumes '
+         'are summed only within the exact stream. Model totals are resource totals, not elapsed time.',
+         '''from continuation.compute import summarize
+report=summarize(ROOT)
+print(report)
+print('Results manifest:',ROOT/'results/final/manifest__compute_files.csv')''',
+         'Rerun sections 1â€“2 after new or recovered runs. Outputs rebuild locally; no GPU or paid API work occurs.')
+    cell(nb,'3. Inspect principal report tables',
+         'Display the stream accounting and coverage/retry tables. Detailed per-stream files remain in the same final folder.',
+         '''import csv
+
+def preview(name, columns, limit=10):
+    path=ROOT/'results/final'/name
+    with path.open(encoding='utf-8-sig',newline='') as handle:
+        rows=list(csv.DictReader(handle))
+    print(f'\\n{name}: {len(rows)} rows')
+    print(' | '.join(columns))
+    for row in rows[:limit]:print(' | '.join(str(row.get(column,'')) for column in columns))
+
+preview('compute__stream_summary.csv',['model','condition','representation','phase','invocation_count','experimental_resource_gpu_hours','completed','total_retries'])
+preview('compute__coverage_and_retries.csv',['model','condition','representation','record_count','completed','context_unsupported','retryable_error','total_retries'])
+preview('compute__model_resource_summary.csv',['model','representation','phase','stream_count','invocation_count','resource_gpu_hours','estimated_energy_wh'])''',
+         'Rerun section 3 any time after section 2; it is read-only.')
+    save(nb,'09_compute_telemetry_summary.ipynb')
 
 def main():
     setup()
@@ -386,6 +424,6 @@ def main():
         gpu(model,'iq1_s_camlds_calibrated',True,6)
     gpu('bitnet2b','native_i2_s',False,4)
     gpu('bitnet2b','native_i2_s',True,5)
-    judge();final()
+    judge();final();compute_summary()
 
 if __name__=='__main__':main()
