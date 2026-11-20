@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 import re
+import shutil
 
 from streamlined.common import read_json, write_csv, verify_experiment
 
@@ -23,6 +24,15 @@ def _number(value, default=0.0):
 
 
 def _safe(value): return re.sub(r'[^a-z0-9]+','_',str(value).lower()).strip('_') or 'unknown'
+
+
+def _notebook_prefix(condition,representation,phase=''):
+    """Notebook that produced the model/telemetry stream represented by a file."""
+    if phase=='training': return '01'
+    if representation=='hf': return '02' if condition=='untreated_hf' else '01'
+    if representation=='iq1_s_camlds_calibrated': return '06'
+    if representation in ('tq1_0','native_i2_s'): return '04' if condition=='untreated' else '05'
+    return '09'
 
 
 def _group(rows,fields):
@@ -216,46 +226,60 @@ def _write_json(path,value):
 
 def summarize(root):
     root=Path(root);experiment_manifest=verify_experiment(root);output=root/'results/final';output.mkdir(parents=True,exist_ok=True)
+    # Remove the legacy flat compute namespace, then rebuild the categorized
+    # hierarchy atomically from authoritative telemetry/row records.
     for path in output.glob('compute__*'):
         if path.is_file(): path.unlink()
+    legacy_manifest=output/'manifest__compute_files.csv'
+    if legacy_manifest.is_file(): legacy_manifest.unlink()
+    compute_root=output/'compute'
+    if compute_root.exists(): shutil.rmtree(compute_root)
+    invocation_output=compute_root/'invocations';row_output=compute_root/'rows';summary_output=compute_root/'stream_summary'
+    for folder in (invocation_output,row_output,summary_output): folder.mkdir(parents=True,exist_ok=True)
     inventory=_inventory(root);row_performance=_row_performance(root);stream_summary=_stream_telemetry(inventory);coverage=_coverage(row_performance)
     coverage_index={(r['model'],r['condition'],r['representation']):r for r in coverage}
     for row in stream_summary:
         match=coverage_index.get((row['model'],row['condition'],row['representation']),{})
         for field in ('record_count','completed','context_unsupported','retryable_error','other_status','total_attempts','total_retries','runtime_revisions'): row[field]=match.get(field,'')
-    outputs={'compute__invocation_inventory.csv':inventory,'compute__row_performance.csv':row_performance,
-        'compute__coverage_and_retries.csv':coverage,'compute__stream_summary.csv':stream_summary,
-        'compute__model_resource_summary.csv':_model_summary(stream_summary),'compute__api_usage_summary.csv':_api_usage(root)}
-    for name,rows in outputs.items(): write_csv(output/name,rows)
+    outputs={invocation_output/'09__compute__invocation_inventory.csv':inventory,
+        row_output/'09__compute__row_performance.csv':row_performance,
+        row_output/'09__compute__coverage_and_retries.csv':coverage,
+        summary_output/'09__compute__stream_summary.csv':stream_summary,
+        summary_output/'09__compute__model_resource_summary.csv':_model_summary(stream_summary),
+        summary_output/'09__compute__api_usage_summary.csv':_api_usage(root)}
+    for path,rows in outputs.items(): write_csv(path,rows)
     for key,items in sorted(_group(inventory,('model','condition','representation','phase')).items()):
-        name='compute__invocations__'+'__'.join(_safe(v) for v in key)+'.csv';write_csv(output/name,items);outputs[name]=items
+        prefix=_notebook_prefix(key[1],key[2],key[3])
+        name=prefix+'__compute__invocations__'+'__'.join(_safe(v) for v in key)+'.csv';path=invocation_output/name;write_csv(path,items);outputs[path]=items
     for key,items in sorted(_group(row_performance,('model','condition','representation')).items()):
-        name='compute__rows__'+'__'.join(_safe(v) for v in key)+'.csv';write_csv(output/name,items);outputs[name]=items
+        prefix=_notebook_prefix(key[1],key[2])
+        name=prefix+'__compute__rows__'+'__'.join(_safe(v) for v in key)+'.csv';path=row_output/name;write_csv(path,items);outputs[path]=items
     for row in stream_summary:
         key=(row['model'],row['condition'],row['representation'],row['phase'])
-        name='compute__stream_summary__'+'__'.join(_safe(v) for v in key)+'.csv'
-        write_csv(output/name,[row]);outputs[name]=[row]
+        prefix=_notebook_prefix(key[1],key[2],key[3])
+        name=prefix+'__compute__stream_summary__'+'__'.join(_safe(v) for v in key)+'.csv'
+        path=summary_output/name;write_csv(path,[row]);outputs[path]=[row]
     dictionary=[
-        dict(output='compute__invocation_inventory.csv',meaning='One row per telemetry invocation; retries/resumes remain separate.'),
-        dict(output='compute__stream_summary.csv',meaning='Resource sums within exact model/condition/representation/phase only.'),
-        dict(output='compute__model_resource_summary.csv',meaning='Model resource totals by representation and phase; not project elapsed time.'),
-        dict(output='compute__coverage_and_retries.csv',meaning='Terminal status, attempts and retries from response records.'),
-        dict(output='compute__row_performance.csv',meaning='Per-response timing/token audit without prompt or response text.'),
-        dict(output='compute__api_usage_summary.csv',meaning='Haiku token/cache/cost usage where recorded; excludes Colab billing.'),
-        dict(output='compute__invocations__*.csv',meaning='Per-stream/phase invocation audit files.'),
-        dict(output='compute__rows__*.csv',meaning='Per-stream response performance files.'),
-        dict(output='compute__stream_summary__*.csv',meaning='One-row main report for each exact stream and phase.')]
-    write_csv(output/'compute__data_dictionary.csv',dictionary);outputs['compute__data_dictionary.csv']=dictionary
+        dict(output='09__compute__invocation_inventory.csv',meaning='One row per telemetry invocation; retries/resumes remain separate.'),
+        dict(output='09__compute__stream_summary.csv',meaning='Resource sums within exact model/condition/representation/phase only.'),
+        dict(output='09__compute__model_resource_summary.csv',meaning='Model resource totals by representation and phase; not project elapsed time.'),
+        dict(output='09__compute__coverage_and_retries.csv',meaning='Terminal status, attempts and retries from response records.'),
+        dict(output='09__compute__row_performance.csv',meaning='Per-response timing/token audit without prompt or response text.'),
+        dict(output='09__compute__api_usage_summary.csv',meaning='Haiku token/cache/cost usage where recorded; excludes Colab billing.'),
+        dict(output='01--06__compute__invocations__*.csv',meaning='Source-notebook-prefixed per-stream/phase invocation audit files.'),
+        dict(output='01--06__compute__rows__*.csv',meaning='Source-notebook-prefixed per-stream response performance files.'),
+        dict(output='01--06__compute__stream_summary__*.csv',meaning='Source-notebook-prefixed one-row report for each exact stream and phase.')]
+    dictionary_path=summary_output/'09__compute__data_dictionary.csv';write_csv(dictionary_path,dictionary);outputs[dictionary_path]=dictionary
     source_paths=sorted({r['telemetry_path'] for r in inventory}|{r['record_path'] for r in row_performance})
-    _write_json(output/'compute__aggregation_manifest.json',dict(config_hash=experiment_manifest['config_hash'],
+    _write_json(compute_root/'09__compute__aggregation_manifest.json',dict(config_hash=experiment_manifest['config_hash'],
         policy='exact-stream resource accounting; pilots separate; preparation never assigned to inference; no Colab billing',
         telemetry_invocations=len(inventory),response_records=len(row_performance),source_file_count=len(source_paths),source_paths=source_paths))
     file_rows=[]
-    for path in sorted(output.glob('compute__*')):
+    for path in sorted(compute_root.rglob('*__compute__*')):
         count=''
         if path.suffix=='.csv':
             with path.open(encoding='utf-8-sig',newline='') as handle: count=max(0,sum(1 for _ in csv.reader(handle))-1)
-        file_rows.append(dict(file=path.name,rows=count,sha256=_sha(path)))
-    write_csv(output/'manifest__compute_files.csv',file_rows)
+        file_rows.append(dict(file=path.relative_to(output).as_posix(),rows=count,sha256=_sha(path)))
+    manifest_path=compute_root/'09__manifest__compute_files.csv';write_csv(manifest_path,file_rows)
     return dict(output_folder=str(output),telemetry_invocations=len(inventory),response_records=len(row_performance),
-        exact_stream_phases=len(stream_summary),compute_files=len(file_rows)+1,manifest=str(output/'manifest__compute_files.csv'))
+        exact_stream_phases=len(stream_summary),compute_files=len(file_rows)+1,manifest=str(manifest_path))

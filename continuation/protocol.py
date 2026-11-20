@@ -33,6 +33,8 @@ SFT_TQ1_0_L4_MODELS = ('llama3b', 'mistral7b', 'qwen7b')
 SFT_TQ1_0_L4_RUNTIME_REVISION = 'sft_tq1_0_l4_length_scheduled_low_log_v1'
 NEW_JUDGE_RUN = 'quantized_common_cached_v1'
 OPTIONAL_JUDGE_RUN = 'quantized_iq1_cached_v1'
+TEACHER_JUDGE_RUN = 'gpt55_teacher_common_cached_v1'
+BASELINE_JUDGE_RUN = 'trivial_baselines_common_cached_v1'
 JUDGE_PROTOCOL = 'uniform_common_v2_confidence_agreement'
 QUANT_PROTOCOL = 'camlds_gguf_deployment_v1'
 

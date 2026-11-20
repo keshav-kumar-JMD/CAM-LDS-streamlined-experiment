@@ -10,7 +10,7 @@ from streamlined.common import CONDITIONS, MODELS, digest, read_csv, read_json, 
 from streamlined.data import records
 from streamlined.transport import file_hash
 from .judge import expected_streams
-from .protocol import NEW_JUDGE_RUN, OPTIONAL_JUDGE_RUN, stream
+from .protocol import BASELINE_JUDGE_RUN, NEW_JUDGE_RUN, OPTIONAL_JUDGE_RUN, TEACHER_JUDGE_RUN, stream
 
 def _records(folder):
     return [read_json(p) for p in sorted((Path(folder)/'records').glob('*.json'))]
@@ -64,8 +64,17 @@ def _judge_groups(folder):
 def consolidate(root,include_optional=True):
     root=Path(root);verify_experiment(root)
     output=root/'results/final';output.mkdir(parents=True,exist_ok=True)
-    legacy=output/'file_manifest.csv'
-    if legacy.exists():legacy.unlink()
+    # Remove only canonical flat exports from older naming revisions. Compute
+    # outputs live under results/final/compute and are rebuilt by notebook 09.
+    for pattern in ('source__*.csv','reference__*.csv','response__*.csv','judgment__*.csv','analysis__*.csv',
+                    '00__source__*.csv','01__response__*.csv','02__response__*.csv','03__reference__*.csv',
+                    '03__analysis__*.csv','03__judgment__*.csv','04__response__*.csv','05__response__*.csv',
+                    '06__response__*.csv','07__judgment__*.csv','08__manifest__files.csv'):
+        for legacy in output.glob(pattern):
+            if legacy.is_file():legacy.unlink()
+    for name in ('file_manifest.csv','manifest__files.csv'):
+        legacy=output/name
+        if legacy.exists():legacy.unlink()
     source={str(r['prompt_id']):r for r in records(root)}
     manifest=[]
     def check(rows,name):
@@ -77,7 +86,7 @@ def consolidate(root,include_optional=True):
     for filename,kind in (('prompts.csv','prompt'),('teacher_responses.csv','teacher'),
                           ('split_manifest.csv','split'),('ground_truth.csv','truth')):
         rows=read_csv(root/'data'/filename)
-        path=output/('source__'+filename)
+        path=output/('00__source__'+filename)
         write_csv(path,rows)
         manifest.append(dict(file=path.name,kind=kind,source='data/'+filename,
             expected=990,records=len(rows),completed=len(rows),context_unsupported=0,
@@ -91,7 +100,7 @@ def consolidate(root,include_optional=True):
                  'coverage.csv','all_judgments.csv','grouped_paired_intervals.csv'):
         origin=compiled/name
         if not origin.is_file():continue
-        destination=output/('analysis__'+name)
+        destination=output/('03__analysis__'+name)
         temporary=destination.with_suffix('.partial')
         shutil.copyfile(origin,temporary);os.replace(temporary,destination)
         csv.field_size_limit(100_000_000)
@@ -102,20 +111,22 @@ def consolidate(root,include_optional=True):
             other=0,missing=0,complete=True,exported=True,sha256=file_hash(destination)))
     haiku=_records(root/'results/api/haiku')
     check(haiku,'haiku reference')
-    _write(root,output,'reference__haiku__all.csv',haiku,990,'results/api/haiku',
+    _write(root,output,'03__reference__haiku__all.csv',haiku,990,'results/api/haiku',
            'reference',manifest,allow_incomplete=True)
     # 01--02, paired validation/test SFT exports; all 990 for untreated HF.
     for model in MODELS:
         rows=_records(root/'results'/model/'untreated_hf/all')
         check(rows,model+'/untreated_hf')
-        _write(root,output,f'response__{model}__untreated_hf__all.csv',rows,990,
+        _write(root,output,f'02__response__{model}__untreated_hf__all.csv',rows,990,
             f'results/{model}/untreated_hf/all','candidate',manifest)
         for adapter in CONDITIONS:
             rows=_joined(root,model,adapter)
             check(rows,model+'/'+adapter)
-            _write(root,output,f'response__{model}__sft_{adapter}__hf__validation_test.csv',
+            _write(root,output,f'01__response__{model}__sft_{adapter}__hf__validation_test.csv',
                 rows,285,f'results/{model}/{adapter}/validation+test','candidate',manifest)
-    # 04--06. A/B are required; C is optional and exported only if complete.
+    # 04--06. Export every stream that contains an authoritative row record,
+    # including declared partial streams. Completeness and missing/error counts
+    # remain explicit in the manifest; zero-row optional streams stay absent.
     for family in ('required','optional'):
         if family=='optional' and not include_optional:continue
         for model,representation,adapter,name in expected_streams(family):
@@ -123,23 +134,32 @@ def consolidate(root,include_optional=True):
             check(rows,name)
             condition='untreated' if adapter is None else 'sft_'+adapter
             extent='all' if adapter is None and family=='required' else 'validation_test'
-            _write(root,output,f'response__{model}__{condition}__{representation}__{extent}.csv',
+            notebook=('06' if family=='optional' else '04' if adapter is None else '05')
+            _write(root,output,f'{notebook}__response__{model}__{condition}__{representation}__{extent}.csv',
                 rows,990 if extent=='all' else 285,f'results/{name}',
-                'candidate',manifest)
+                'candidate',manifest,allow_incomplete=bool(rows))
     # Judge results include status and raw Haiku messages; incomplete legacy
     # ledgers remain visibly incomplete instead of silently disappearing.
-    for run in ('common_uniform_v2','haiku_self_uniform_v2',NEW_JUDGE_RUN,OPTIONAL_JUDGE_RUN):
+    for run in ('common_uniform_v2','haiku_self_uniform_v2',NEW_JUDGE_RUN,OPTIONAL_JUDGE_RUN,TEACHER_JUDGE_RUN,BASELINE_JUDGE_RUN):
         folder=root/'results/api'/run
         if not folder.exists():continue
         groups=_judge_groups(folder)
         if run=='haiku_self_uniform_v2':
             rows=[r for group in groups.values() for r in group]
             check(rows,run)
-            _write(root,output,'judgment__haiku_self__validation_test.csv',rows,285,
+            _write(root,output,'03__judgment__haiku_self__validation_test.csv',rows,285,
                    f'results/api/{run}','judgment',manifest,allow_incomplete=True)
             continue
         for (model,condition,representation),rows in groups.items():
             check(rows,run+'/'+model+'/'+condition)
+            if run==TEACHER_JUDGE_RUN:
+                _write(root,output,'07__judgment__teacher_common__gpt55_teacher__teacher__source__validation_test.csv',
+                    rows,285,f'results/api/{run}','judgment',manifest,allow_incomplete=True)
+                continue
+            if run==BASELINE_JUDGE_RUN:
+                _write(root,output,f'07__judgment__reference_common__{model}__baseline__reference__validation_test.csv',
+                    rows,285,f'results/api/{run}','judgment',manifest,allow_incomplete=True)
+                continue
             if run=='common_uniform_v2':
                 representation='hf';condition='untreated' if condition=='untreated_hf' else 'sft_'+condition
             extent='all' if condition=='untreated' and representation=='hf' else 'validation_test'
@@ -156,9 +176,10 @@ def consolidate(root,include_optional=True):
                 candidate_stream=stream(model,representation,
                     None if condition=='untreated' else condition.removeprefix('sft_'))
                 expected=sum(r.get('status')=='completed' for r in _records(root/'results'/candidate_stream))
-            _write(root,output,f'judgment__{tag}__{model}__{condition}__{representation}__{extent}.csv',
+            notebook='03' if run=='common_uniform_v2' else '07'
+            _write(root,output,f'{notebook}__judgment__{tag}__{model}__{condition}__{representation}__{extent}.csv',
                 rows,expected,f'results/api/{run}','judgment',manifest,allow_incomplete=True)
-    write_csv(output/'manifest__files.csv',manifest)
+    write_csv(output/'08__manifest__files.csv',manifest)
     tally=dict(files_exported=sum(r['exported'] for r in manifest),
         complete_files=sum(r['complete'] for r in manifest),
         incomplete_files=sum(r['exported'] and not r['complete'] for r in manifest),

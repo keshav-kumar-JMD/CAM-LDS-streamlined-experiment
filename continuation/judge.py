@@ -8,6 +8,7 @@ from __future__ import annotations
 from collections import Counter
 from pathlib import Path
 import importlib.metadata
+import json
 import sys
 import time
 from filelock import FileLock
@@ -17,7 +18,7 @@ from streamlined.common import CONDITIONS, POLICY, digest, read_json, write_csv,
 from streamlined.data import records
 from streamlined.monitor import Heartbeat
 from streamlined.rubrics import rubric
-from .protocol import CONVENTIONAL, NEW_JUDGE_RUN, OPTIONAL_JUDGE_RUN, stream
+from .protocol import BASELINE_JUDGE_RUN, CONVENTIONAL, NEW_JUDGE_RUN, OPTIONAL_JUDGE_RUN, TEACHER_JUDGE_RUN, stream
 
 REQUIRED = [('bitnet2b','native_i2_s'), *((key,'tq1_0') for key in CONVENTIONAL)]
 OPTIONAL = [(key,'iq1_s_camlds_calibrated') for key in CONVENTIONAL]
@@ -35,6 +36,63 @@ def source_rows(root,family='required',require_complete=False):
     reference={str(r['prompt_id']):r for p in reference_dir.glob('*.json')
                if (r:=read_json(p)).get('status')=='completed'}
     if len(reference)!=990:raise RuntimeError('Haiku reference must contain 990 completed prompts')
+    if family=='teacher':
+        selected=[row for row in source.values() if row['split'] in ('validation','test')]
+        output=[]
+        for row in selected:
+            pid=str(row['prompt_id']);ref=reference[pid]
+            if ref.get('prompt_sha256')!=row['prompt_sha256']:
+                raise ValueError(f'Prompt identity mismatch for GPT-5.5 teacher ID {pid}')
+            response=row['teacher_response_raw'];response_hash=row['teacher_response_sha256']
+            if digest(response)!=response_hash:raise ValueError(f'Teacher response changed for ID {pid}')
+            output.append(dict(row,model='gpt55_teacher',condition='teacher',representation='source',adapter='',
+                candidate_status='completed',candidate_record_id=f'gpt55_teacher:{pid}:{response_hash}',
+                candidate_response_raw=response,candidate_response_sha256=response_hash,
+                candidate_confidence_label_strict=strict_confidence(response),
+                candidate_source_model=row.get('teacher_model',POLICY['teacher_model']),
+                candidate_source='data/teacher_responses.csv',
+                haiku_reference_status='completed',haiku_reference_record_id=ref['record_id'],
+                haiku_reference_response_raw=ref['response_raw'],
+                haiku_reference_response_sha256=ref['response_hash']))
+        if len(output)!=285:raise RuntimeError(f'Expected 285 validation+test teacher rows, found {len(output)}')
+        coverage=[dict(model='gpt55_teacher',representation='source',condition='teacher',
+                       expected=285,judge_eligible=285,omitted_no_response=0,completed=285)]
+        return output,coverage
+    if family=='baselines':
+        selected=[row for row in source.values() if row['split'] in ('validation','test')]
+        eligible={str(x) for x in read_json(root/'manifests/experiment.json')['eligible_ids']}
+        frequencies=Counter(technique for pid,row in source.items() if pid in eligible
+                            for technique in json.loads(row['ground_truth']))
+        modal_technique,modal_count=frequencies.most_common(1)[0]
+        if len(eligible)!=604 or modal_technique!='T1105':
+            raise ValueError('Frozen 604-row training-only modal technique changed')
+        candidates={
+            'baseline_null':'',
+            'baseline_modal':'{"techniques":["T1105"],"confidence":"Neutral","explanation":"Modal training-set technique baseline."}',
+        }
+        output=[];coverage=[]
+        for model,response in candidates.items():
+            response_hash=digest(response)
+            for row in selected:
+                pid=str(row['prompt_id']);ref=reference[pid]
+                if ref.get('prompt_sha256')!=row['prompt_sha256']:
+                    raise ValueError(f'Prompt identity mismatch for {model} ID {pid}')
+                output.append(dict(row,model=model,condition='baseline',representation='reference',adapter='',
+                    candidate_status='completed',candidate_record_id=f'{model}:{pid}:{response_hash}',
+                    candidate_response_raw=response,candidate_response_sha256=response_hash,
+                    candidate_confidence_label_strict=strict_confidence(response),
+                    candidate_source=('deterministic empty response' if model=='baseline_null'
+                                      else 'modal exact technique over 604 frozen training-only feasible rows'),
+                    modal_technique=modal_technique if model=='baseline_modal' else '',
+                    haiku_reference_status='completed',haiku_reference_record_id=ref['record_id'],
+                    haiku_reference_response_raw=ref['response_raw'],
+                    haiku_reference_response_sha256=ref['response_hash']))
+            coverage.append(dict(model=model,representation='reference',condition='baseline',
+                expected=285,judge_eligible=285,omitted_no_response=0,completed=285,
+                definition=('empty completed response' if model=='baseline_null'
+                    else f'predict {modal_technique}, observed {modal_count} times over the 604 frozen training rows')))
+        if len(output)!=570:raise RuntimeError(f'Expected 570 baseline rows, found {len(output)}')
+        return output,coverage
     output=[];coverage=[]
     for model,representation,adapter,name in expected_streams(family):
         directory=root/'results'/name/'records'
@@ -107,7 +165,9 @@ class CachedJudgeRun(APIRun):
             if job['params']['system']!=unchanged:raise ValueError('Judge rubric differs from frozen common rubric')
             job['params']['system']=[{'type':'text','text':unchanged,
                                      'cache_control':{'type':'ephemeral'}}]
-        name=NEW_JUDGE_RUN if family=='required' else OPTIONAL_JUDGE_RUN
+        name=(NEW_JUDGE_RUN if family=='required' else OPTIONAL_JUDGE_RUN if family=='optional'
+              else TEACHER_JUDGE_RUN if family=='teacher' else BASELINE_JUDGE_RUN if family=='baselines' else None)
+        if name is None:raise ValueError(family)
         self.root=Path(root);self.name=name;self.api=client(root)
         self.folder=self.root/'results/api'/name;self.folder.mkdir(parents=True,exist_ok=True)
         self.ledger=self.folder/'submissions';self.ledger.mkdir(exist_ok=True)

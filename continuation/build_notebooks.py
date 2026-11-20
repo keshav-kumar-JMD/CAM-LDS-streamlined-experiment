@@ -269,12 +269,12 @@ def document_sft_l4_runtime(nb,model):
         item['source']=body.splitlines(True)
 
 def judge():
-    nb=notebook('# 07 — Haiku judge for quantized deployment conditions\n\n'
+    nb=notebook('# 07 — Haiku judge for quantized deployment conditions and reference streams\n\n'
         'Select the **local** `.venv-local` kernel. The same frozen six-dimension common rubric from notebook 03 judges '
         'one quantized candidate per independent API request, with the corresponding Haiku reference and ground truth. '
         'The static rubric alone is marked for prompt caching; candidate cases are never cached or combined. '
         'Cache hits are opportunistic in batches and actual cache usage is retained per response. '
-        'Condition C is optional and uses a separate ledger so it can be run later.',True)
+        'Condition C, the GPT-5.5 teacher and the trivial baselines use separate ledgers. The teacher and baselines cover the same 285 validation+test IDs.',True)
     cell(nb,'1. Local environment and frozen source',
          'Read source, code and interpreter identity. No tunnel or local receiver is needed for local Haiku API calls.',
          LOCAL_SETUP+'''\nfrom streamlined.common import verify_experiment
@@ -355,30 +355,90 @@ print(optional.export())''',
 print(optional.export())''',
          'Rerun 1, 8, then 11 until pending reaches zero; polling does not submit.',
          cost='Read-only batch polling and result collection.')
+    cell(nb,'12. GPT-5.5 teacher: verify 285 rows and freeze jobs',
+         'Use the exact stored GPT-5.5 teacher responses as anonymous candidates for all 140 validation and 145 test prompts. '
+         'The unchanged common rubric, ground truth and Haiku reference are used in a separate frozen ledger.',
+         '''from continuation.judge import source_rows, make_run
+teacher_rows,teacher_coverage=source_rows(ROOT,'teacher')
+print('Teacher validation+test candidates:',len(teacher_rows))
+print('Coverage:',teacher_coverage)
+teacher=make_run(ROOT,'teacher')
+print(teacher.counts())
+print('Frozen teacher ledger:',teacher.folder)''',
+         'After a kernel restart rerun Sections 1 and 12. Once frozen, the same 285 request identities are reloaded.',
+         cost='Source verification only; no paid judge requests.')
+    cell(nb,'13. GPT-5.5 teacher: paid five-row pilot',
+         'Judge five teacher rows before batch submission; completed pilot IDs are skipped later.',
+         '''print(teacher.pilot(size=5,retry_failed=True))
+print(teacher.export())''',
+         'Rerun Sections 1, 12 and 13 only if the pilot remains incomplete.',
+         cost='Up to five paid Messages API requests.')
+    cell(nb,'14. GPT-5.5 teacher: reconcile and submit',
+         'Reconcile any ambiguous prior submission, then submit only teacher jobs not completed or pending.',
+         '''print(teacher.reconcile())
+print(teacher.submit(batch_size=50,retry_failed=True))
+print(teacher.export())''',
+         'Rerun Sections 1 and 12, then 14. Never delete the submissions ledger.',
+         cost='Paid Message Batches requests for remaining teacher rows.')
+    cell(nb,'15. GPT-5.5 teacher: poll, checkpoint and export',
+         'Collect teacher judgments as atomic local records and refresh the CSV snapshot.',
+         '''print(teacher.poll(max_seconds=3600))
+print(teacher.export())''',
+         'Rerun Sections 1 and 12, then 15 until pending is zero. Run Notebook 08 afterward.',
+         cost='Read-only batch polling and collection.')
+    cell(nb,'16. Reference baselines: verify 570 rows and freeze jobs',
+         'Create null and training-only modal-technique candidates for each of the 285 evaluation prompts. '
+         'Both pass through the identical common judge protocol and a separate frozen ledger.',
+         '''import importlib
+import continuation.protocol as continuation_protocol
+import continuation.judge as continuation_judge
+importlib.reload(continuation_protocol)
+continuation_judge=importlib.reload(continuation_judge)
+source_rows,make_run=continuation_judge.source_rows,continuation_judge.make_run
+baseline_rows,baseline_coverage=source_rows(ROOT,'baselines')
+print('Baseline candidates:',len(baseline_rows))
+print('Coverage:',baseline_coverage)
+baselines=make_run(ROOT,'baselines')
+print(baselines.counts())''',
+         'After a kernel restart rerun Sections 1 and 16.',cost='No paid requests.')
+    cell(nb,'17. Reference baselines: paid five-row pilot',
+         'Judge five baseline cases; empty completed responses remain eligible.',
+         '''print(baselines.pilot(size=5,retry_failed=True))
+print(baselines.export())''','Rerun Sections 1, 16 and 17 if incomplete.',cost='Up to five paid requests.')
+    cell(nb,'18. Reference baselines: reconcile and submit',
+         'Reconcile ambiguous submissions, then submit remaining baseline jobs.',
+         '''print(baselines.reconcile())
+print(baselines.submit(batch_size=50,retry_failed=True))
+print(baselines.export())''','Rerun Sections 1 and 16, then 18.',cost='Paid batch requests.')
+    cell(nb,'19. Reference baselines: poll, checkpoint and export',
+         'Collect atomic baseline judgment records and refresh the CSV.',
+         '''print(baselines.poll(max_seconds=3600))
+print(baselines.export())''','Rerun Sections 1 and 16, then 19 until pending is zero.',cost='Read-only polling.')
     save(nb,'07_haiku_judge_quantized.ipynb')
 
 def final():
     nb=notebook('# 08 — Consolidate final experiment results\n\n'
         'Select the **local** `.venv-local` kernel. Build one clearly named results folder from 00–03 and new 04–07 runs. '
-        'Only complete candidate streams are exported. Legacy judge ledgers, which may contain partial judgments, '
-        'are exported with explicit status and coverage in the manifest; no missing rows are silently filled.',True)
+        'Every candidate stream with at least one authoritative row record is exported, including declared partial streams. '
+        'Coverage and incompleteness remain explicit in the manifest; no missing rows are silently filled.',True)
     cell(nb,'1. Local environment and lineage check',
          'Verify frozen prompts, model metadata and source hashes.',
          LOCAL_SETUP+'''\nfrom streamlined.common import verify_experiment
 print('Frozen:',verify_experiment(ROOT)['config_hash'])''',
          'Rerun 1 after a local kernel restart.')
-    cell(nb,'2. Export all complete response streams and judge snapshots',
+    cell(nb,'2. Export all available response streams and judge snapshots',
          'Join validation and test rows for every SFT adapter and optional IQ1_S response. '
          'Keep untreated A/B runs as 990-row files, IQ1_S untreated as 285-row files, and each judge run separately. '
-         'A manifest reports expected, completed, context-unsupported, missing and other status counts plus file hashes.',
+         'Partial streams are exported with their available records. A manifest reports expected, completed, '
+         'context-unsupported, missing and other status counts plus file hashes.',
          '''from continuation.consolidate import consolidate
 print(consolidate(ROOT,include_optional=True))
-print('Manifest:',ROOT/'results/final/manifest__files.csv')''',
+print('Manifest:',ROOT/'results/final/08__manifest__files.csv')''',
          'Rerun 1–2 after any additional completion. Files are rebuilt atomically from authoritative row records; no paid or GPU work occurs.')
     save(nb,'08_consolidate_results.ipynb')
 
 def compute_summary():
-    nb=notebook('# 09 â€” Per-stream compute, retry and telemetry accounting\n\n'
+    nb=notebook('# 09 — Per-stream compute, retry and telemetry accounting\n\n'
         'Select the **local** `.venv-local` kernel. Aggregate every structured telemetry invocation and response-record '
         'attempt without combining distinct model/condition/representation streams. Preparation, training and inference '
         'remain separate phases. Pilot work is separate, Colab billing is excluded, and unavailable historical transfer '
@@ -388,30 +448,35 @@ def compute_summary():
          LOCAL_SETUP+'''\nfrom streamlined.common import verify_experiment
 print('Frozen:',verify_experiment(ROOT)['config_hash'])''',
          'Rerun section 1 after a local kernel restart.')
-    cell(nb,'2. Build auditable compute summaries',
-         'Create the invocation inventory, per-row performance audit, exact-stream resource summaries, retry/coverage '
+    cell(nb,'2. Refresh response exports and build auditable compute summaries',
+         'First refresh all available response exports, including declared partial streams. Then create the invocation '
+         'inventory, per-row performance audit, exact-stream resource summaries, retry/coverage '
          'counts, model-level resource totals, API token/cache usage and separate per-stream CSVs. Retries and resumes '
-         'are summed only within the exact stream. Model totals are resource totals, not elapsed time.',
-         '''from continuation.compute import summarize
+         'are summed only within the exact stream. Compute files are organized under `results/final/compute/` in '
+         '`invocations`, `rows`, and `stream_summary` subfolders. Every filename is prefixed with its source notebook '
+         '(`01`--`07`); cross-notebook summaries use `09`. Model totals are resource totals, not elapsed time.',
+         '''from continuation.consolidate import consolidate
+from continuation.compute import summarize
+print('Response export:',consolidate(ROOT,include_optional=True))
 report=summarize(ROOT)
 print(report)
-print('Results manifest:',ROOT/'results/final/manifest__compute_files.csv')''',
-         'Rerun sections 1â€“2 after new or recovered runs. Outputs rebuild locally; no GPU or paid API work occurs.')
+print('Results manifest:',ROOT/'results/final/compute/09__manifest__compute_files.csv')''',
+         'Rerun sections 1–2 after new or recovered runs. Outputs rebuild locally; no GPU or paid API work occurs.')
     cell(nb,'3. Inspect principal report tables',
-         'Display the stream accounting and coverage/retry tables. Detailed per-stream files remain in the same final folder.',
+         'Display the stream accounting and coverage/retry tables from their categorized compute subfolders.',
          '''import csv
 
-def preview(name, columns, limit=10):
-    path=ROOT/'results/final'/name
+def preview(folder, name, columns, limit=10):
+    path=ROOT/'results/final/compute'/folder/name
     with path.open(encoding='utf-8-sig',newline='') as handle:
         rows=list(csv.DictReader(handle))
     print(f'\\n{name}: {len(rows)} rows')
     print(' | '.join(columns))
     for row in rows[:limit]:print(' | '.join(str(row.get(column,'')) for column in columns))
 
-preview('compute__stream_summary.csv',['model','condition','representation','phase','invocation_count','experimental_resource_gpu_hours','completed','total_retries'])
-preview('compute__coverage_and_retries.csv',['model','condition','representation','record_count','completed','context_unsupported','retryable_error','total_retries'])
-preview('compute__model_resource_summary.csv',['model','representation','phase','stream_count','invocation_count','resource_gpu_hours','estimated_energy_wh'])''',
+preview('stream_summary','09__compute__stream_summary.csv',['model','condition','representation','phase','invocation_count','experimental_resource_gpu_hours','completed','total_retries'])
+preview('rows','09__compute__coverage_and_retries.csv',['model','condition','representation','record_count','completed','context_unsupported','retryable_error','total_retries'])
+preview('stream_summary','09__compute__model_resource_summary.csv',['model','representation','phase','stream_count','invocation_count','resource_gpu_hours','estimated_energy_wh'])''',
          'Rerun section 3 any time after section 2; it is read-only.')
     save(nb,'09_compute_telemetry_summary.ipynb')
 

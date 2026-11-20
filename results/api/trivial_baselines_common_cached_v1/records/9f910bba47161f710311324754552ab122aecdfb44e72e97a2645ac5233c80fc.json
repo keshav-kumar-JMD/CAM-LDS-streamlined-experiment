@@ -1,0 +1,186 @@
+{
+  "prompt_id": "875",
+  "scenario": "3",
+  "variant": "ssh_apt",
+  "step": "2",
+  "prompt_text": "You are a MITRE ATT&CK TTP classification expert. Your task is to classify the following system log data. You are provided with samples from one or more hosts and one or more log sources that are captured during execution of one specific MITRE ATT&CK technique. Always output a valid JSON object with the following fields:\n    - \"techniques\": A list of top 10 ATT&CK techniques that are most likely related to the sample logs, sorted in descending order. Only print the ID of the techniques without any other descriptions.\n    - \"confidence\": An estimate for the certainty that the logs indicate an actual attack rather than normal system or user activity. Provide one of the following estimates: \"Certain: Attack\", \"Almost Certain: Attack\", \"Somewhat Certain: Attack\", \"Neutral\", \"Somewhat Certain: Normal\", \"Almost Certain: Normal\", \"Certain: Normal\"\n    - \"explanation\": A brief explanation (1-2 sentences) why you think that the samples correspond to attacks or normal behavior, e.g., by pointing to specific artifacts or properties of the logs.\n\nreposerver:\n    logs/log/syslog:\n        Dec 12 10:28:44 puppet pipewire[3721]: mod.rt: RTKit error: org.freedesktop.DBus.Error.AccessDenied\n        Dec 12 10:28:44 puppet pipewire[3721]: mod.rt: could not set nice-level to -11: Permission denied\n        Dec 12 10:28:44 puppet rtkit-daemon[1367]: Supervising 5 threads of 3 processes of 2 users.\n        Dec 12 10:28:44 puppet rtkit-daemon[1367]: Supervising 5 threads of 3 processes of 2 users.\n        Dec 12 10:28:44 puppet pipewire[3721]: mod.rt: RTKit error: org.freedesktop.DBus.Error.AccessDenied\n        Dec 12 10:28:44 puppet pipewire[3721]: mod.rt: could not make thread 3772 realtime using RTKit: Permission denied\n        Dec 12 10:28:44 puppet rtkit-daemon[1367]: Supervising 5 threads of 3 processes of 2 users.\n        Dec 12 10:28:44 puppet rtkit-daemon[1367]: message repeated 4 times: [ Supervising 5 threads of 3 processes of 2 users.]\n        Dec 12 10:28:44 puppet systemd[3714]: Started Sound Service.\n        Dec 12 10:28:44 puppet systemd[3714]: Reached target Main User Target.\n    logs/log/auth.log:\n        Dec 12 10:28:43 puppet sshd[912]: exited MaxStartups throttling after 00:00:21, 2 connections dropped\n        Dec 12 10:28:44 puppet sshd[3711]: Accepted password for john from 192.42.1.174 port 36378 ssh2\n        Dec 12 10:28:44 puppet sshd[3711]: pam_unix(sshd:session): session opened for user john(uid=1002) by (uid=0)\n        Dec 12 10:28:44 puppet systemd-logind[688]: New session 5 of user john.\n        Dec 12 10:28:44 puppet systemd: pam_unix(systemd-user:session): session opened for user john(uid=1002) by (uid=0)\n    logs/log/audit/audit.log:\n        type=SYSCALL msg=audit(1765535324.368:15427): arch=c000003e syscall=42 success=yes exit=0 a0=b a1=7fffe888ab10 a2=2d a3=7 items=1 ppid=1 pid=681 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"polkitd\" exe=\"/usr/libexec/polkitd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765535324.368:15427): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E44796E616D69635573657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.DynamicUser }\n        type=PATH msg=audit(1765535324.368:15427): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=351 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535324.368:15427): proctitle=\"(polkitd)\"\n        type=SYSCALL msg=audit(1765535324.372:15428): arch=c000003e syscall=42 success=yes exit=0 a0=b a1=7fffe888ab10 a2=2d a3=7 items=1 ppid=1 pid=681 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"polkitd\" exe=\"/usr/libexec/polkitd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765535324.372:15428): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E44796E616D69635573657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.DynamicUser }\n        type=PATH msg=audit(1765535324.372:15428): item=0 name=\"/run/systemd/userdb/io.systemd.DynamicUser\" inode=351 dev=00:1a mode=0140666 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0\u001dOUID=\"root\" OGID=\"root\"\n        type=PROCTITLE msg=audit(1765535324.372:15428): proctitle=\"(polkitd)\"\n        type=SYSCALL msg=audit(1765535324.376:15429): arch=c000003e syscall=42 success=yes exit=0 a0=b a1=7fffe888ab10 a2=2d a3=7 items=1 ppid=1 pid=681 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm=\"polkitd\" exe=\"/usr/libexec/polkitd\" subj=unconfined\u001dARCH=x86_64 SYSCALL=connect AUID=\"unset\" UID=\"root\" GID=\"root\" EUID=\"root\" SUID=\"root\" FSUID=\"root\" EGID=\"root\" SGID=\"root\" FSGID=\"root\"\n        type=SOCKADDR msg=audit(1765535324.376:15429): saddr=01002F72756E2F73797374656D642F7573657264622F696F2E73797374656D642E44796E616D69635573657200\u001dSADDR={ saddr_fam=local path=/run/systemd/userdb/io.systemd.DynamicUser }",
+  "prompt_sha256": "fe55a9b11c8f52c7bc059afe826a8069a587fc3ab05e96e0a193dc177f683174",
+  "source_row": "2855",
+  "teacher_model": "openai/gpt-5.5-20260423",
+  "teacher_response_raw": "{\"techniques\": [\"T1110\", \"T1021.004\", \"T1078\", \"T1110.001\", \"T1110.003\", \"T1133\", \"T1046\", \"T1098\", \"T1586\", \"T1595\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The SSH daemon reports MaxStartups throttling with dropped connections immediately before a successful password login for user john from a remote IP, which is suggestive of repeated SSH authentication attempts followed by valid credential use. The PipeWire/RTKit and polkitd audit entries appear benign session startup artifacts after login.\"}",
+  "teacher_response_sha256": "2aca7b2d933c1fa0aad47edb2d49578450943588ea11bccf4f45bf9606ddef35",
+  "source_value_text": "{\"techniques\": [\"T1110\", \"T1021.004\", \"T1078\", \"T1110.001\", \"T1110.003\", \"T1133\", \"T1046\", \"T1098\", \"T1586\", \"T1595\"], \"confidence\": \"Somewhat Certain: Attack\", \"explanation\": \"The SSH daemon reports MaxStartups throttling with dropped connections immediately before a successful password login for user john from a remote IP, which is suggestive of repeated SSH authentication attempts followed by valid credential use. The PipeWire/RTKit and polkitd audit entries appear benign session startup artifacts after login.\"}",
+  "source_representation": "dict",
+  "split": "test",
+  "group_id": "[\"3\", \"2\"]",
+  "split_seed": "42",
+  "ground_truth": "[\"T1078.002\"]",
+  "model": "baseline_modal",
+  "condition": "baseline",
+  "representation": "reference",
+  "adapter": "",
+  "candidate_status": "completed",
+  "candidate_record_id": "baseline_modal:875:dcc5c3459f3dcae319c751d9486f624fc370a06bd78d27e155c4b4ec45e3621a",
+  "candidate_response_raw": "{\"techniques\":[\"T1105\"],\"confidence\":\"Neutral\",\"explanation\":\"Modal training-set technique baseline.\"}",
+  "candidate_response_sha256": "dcc5c3459f3dcae319c751d9486f624fc370a06bd78d27e155c4b4ec45e3621a",
+  "candidate_confidence_label_strict": "Neutral",
+  "candidate_source": "modal exact technique over 604 frozen training-only feasible rows",
+  "modal_technique": "T1105",
+  "haiku_reference_status": "completed",
+  "haiku_reference_record_id": "f3290db24ec96a8b53b01e8fe8b92fc4fb3566f722341b69366165282f5242bb",
+  "haiku_reference_response_raw": "```json\n{\n  \"techniques\": [\"T1021.004\", \"T1078\", \"T1110\", \"T1133\", \"T1059\", \"T1548\", \"T1098\", \"T1543\", \"T1078.003\", \"T1036\"],\n  \"confidence\": \"Somewhat Certain: Normal\",\n  \"explanation\": \"The logs show a single SSH login by user 'john' from 192.42.1.174 with a password, followed by normal session setup, PipeWire/RTKit realtime-permission messages typical of a desktop audio service, and routine polkitd/systemd userdb socket connections. The only mildly suspicious items are the brief MaxStartups throttling event and the external source IP for an SSH login, which could still reflect legitimate remote access.\"\n}\n```",
+  "haiku_reference_response_sha256": "c4fa623964521f23bd10da1c9ba7c96224a591c03580a6359e6432ef26da0544",
+  "judge_protocol": "uniform_common_v2_confidence_agreement",
+  "candidate_response_empty": false,
+  "candidate_valid_json": true,
+  "candidate_schema_adherent": false,
+  "candidate_required_fields_present": true,
+  "candidate_unexpected_text_present": false,
+  "candidate_parse_error": "",
+  "record_id": "d2e62ac3d1e1a31b55bd4f799638b5b338f39367449fd020c3c2b7ebd926c423",
+  "status": "completed",
+  "response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 1,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 1,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1078.002. The candidate's only prediction is T1105, which does not match exactly, so exact-ID coverage is 0 of 1.\",\n    \"prediction_evidence_support\": \"T1105 (Ingress Tool Transfer) has no support in the logs: there is no file download, transfer, or tool staging activity. The logs show an SSH password login and routine polkitd/systemd socket activity, none of which indicates tool transfer.\",\n    \"explanation_grounding\": \"The explanation ('Modal training-set technique baseline') references no supplied observation at all. It is a generic statement that does not describe the logs, so it is grounded only trivially.\",\n    \"prediction_reason_alignment\": \"No reason is given linking T1105 to any artifact, so the prediction is not connected to an appropriate reason.\",\n    \"confidence_evidence_support\": \"The 'Neutral' label is not contradicted by the logs, but it is not justified by any reasoning either. The logs contain a password-based SSH login from an external IP, which warrants more than neutral, and the candidate does not acknowledge this.\",\n    \"instruction_adherence\": \"The JSON is valid and the required fields are present, but the schema check flagged non-adherence and the explanation is not the requested 1-2 sentences describing specific artifacts.\"\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1105\"],\n  \"failure_labels\": [\"incorrect_technique\", \"unsupported_prediction\", \"ungrounded_explanation\", \"missed_attack_indicators\", \"schema_nonadherence\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Neutral\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"Candidate label is Neutral; the warranted label leans toward attack because of the password-based SSH login from an external IP. Neutral involvement gives a moderate difference.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "response_hash": "c5942faf79a5b1c7cc0d74eae5520ed4679c62f19e8f4445e0a041cc774f2ab6",
+  "finish_reason": "end_turn",
+  "response_truncated": false,
+  "api_response": {
+    "id": "msg_011Ch3x7VxveCiuA1ksoZCns",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 1,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 1,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1078.002. The candidate's only prediction is T1105, which does not match exactly, so exact-ID coverage is 0 of 1.\",\n    \"prediction_evidence_support\": \"T1105 (Ingress Tool Transfer) has no support in the logs: there is no file download, transfer, or tool staging activity. The logs show an SSH password login and routine polkitd/systemd socket activity, none of which indicates tool transfer.\",\n    \"explanation_grounding\": \"The explanation ('Modal training-set technique baseline') references no supplied observation at all. It is a generic statement that does not describe the logs, so it is grounded only trivially.\",\n    \"prediction_reason_alignment\": \"No reason is given linking T1105 to any artifact, so the prediction is not connected to an appropriate reason.\",\n    \"confidence_evidence_support\": \"The 'Neutral' label is not contradicted by the logs, but it is not justified by any reasoning either. The logs contain a password-based SSH login from an external IP, which warrants more than neutral, and the candidate does not acknowledge this.\",\n    \"instruction_adherence\": \"The JSON is valid and the required fields are present, but the schema check flagged non-adherence and the explanation is not the requested 1-2 sentences describing specific artifacts.\"\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1105\"],\n  \"failure_labels\": [\"incorrect_technique\", \"unsupported_prediction\", \"ungrounded_explanation\", \"missed_attack_indicators\", \"schema_nonadherence\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Neutral\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"Candidate label is Neutral; the warranted label leans toward attack because of the password-based SSH login from an external IP. Neutral involvement gives a moderate difference.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-5-5",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1443,
+      "inference_geo": "global",
+      "input_tokens": 3320,
+      "output_tokens": 825,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": null,
+      "service_tier": "batch",
+      "speed": "standard"
+    },
+    "diagnostics": null
+  },
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1443,
+    "inference_geo": "global",
+    "input_tokens": 3320,
+    "output_tokens": 825,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": null,
+    "service_tier": "batch",
+    "speed": "standard"
+  },
+  "estimated_cost_usd": 0.000379465,
+  "batch_api": true,
+  "elapsed_seconds": 309.5681321620941,
+  "latency_note": "batch completion delay; inference latency unavailable",
+  "attempt_count": 1,
+  "input_tokens": 3320,
+  "output_tokens": 825,
+  "wire_max_tokens": 8192,
+  "api_request_id": null,
+  "judge_response_raw": "```json\n{\n  \"scores\": {\n    \"technique_identification\": 0,\n    \"prediction_evidence_support\": 0,\n    \"explanation_grounding\": 1,\n    \"prediction_reason_alignment\": 0,\n    \"confidence_evidence_support\": 1,\n    \"instruction_adherence\": 1\n  },\n  \"reasons\": {\n    \"technique_identification\": \"Ground truth is T1078.002. The candidate's only prediction is T1105, which does not match exactly, so exact-ID coverage is 0 of 1.\",\n    \"prediction_evidence_support\": \"T1105 (Ingress Tool Transfer) has no support in the logs: there is no file download, transfer, or tool staging activity. The logs show an SSH password login and routine polkitd/systemd socket activity, none of which indicates tool transfer.\",\n    \"explanation_grounding\": \"The explanation ('Modal training-set technique baseline') references no supplied observation at all. It is a generic statement that does not describe the logs, so it is grounded only trivially.\",\n    \"prediction_reason_alignment\": \"No reason is given linking T1105 to any artifact, so the prediction is not connected to an appropriate reason.\",\n    \"confidence_evidence_support\": \"The 'Neutral' label is not contradicted by the logs, but it is not justified by any reasoning either. The logs contain a password-based SSH login from an external IP, which warrants more than neutral, and the candidate does not acknowledge this.\",\n    \"instruction_adherence\": \"The JSON is valid and the required fields are present, but the schema check flagged non-adherence and the explanation is not the requested 1-2 sentences describing specific artifacts.\"\n  },\n  \"null_reasons\": {},\n  \"extracted_predictions\": [\"T1105\"],\n  \"failure_labels\": [\"incorrect_technique\", \"unsupported_prediction\", \"ungrounded_explanation\", \"missed_attack_indicators\", \"schema_nonadherence\"],\n  \"prediction_similarity\": null,\n  \"reasoning_similarity\": null,\n  \"candidate_confidence_label\": \"Neutral\",\n  \"judge_warranted_confidence_label\": \"Somewhat Certain: Attack\",\n  \"confidence_label_agreement\": 2,\n  \"confidence_label_agreement_reason\": \"Candidate label is Neutral; the warranted label leans toward attack because of the password-based SSH login from an external IP. Neutral involvement gives a moderate difference.\",\n  \"confidence_label_null_reason\": null\n}\n```",
+  "judge_response_sha256": "c5942faf79a5b1c7cc0d74eae5520ed4679c62f19e8f4445e0a041cc774f2ab6",
+  "judge_finish_reason": "end_turn",
+  "judge_response_truncated": false,
+  "judge_response_empty": false,
+  "judge_valid_json": false,
+  "judge_schema_adherent": false,
+  "judge_required_fields_present": false,
+  "judge_unexpected_text_present": true,
+  "judge_parse_error": "Whole response is not strict JSON",
+  "judge_parseable": true,
+  "judge_parsed": {
+    "scores": {
+      "technique_identification": 0,
+      "prediction_evidence_support": 0,
+      "explanation_grounding": 1,
+      "prediction_reason_alignment": 0,
+      "confidence_evidence_support": 1,
+      "instruction_adherence": 1
+    },
+    "reasons": {
+      "technique_identification": "Ground truth is T1078.002. The candidate's only prediction is T1105, which does not match exactly, so exact-ID coverage is 0 of 1.",
+      "prediction_evidence_support": "T1105 (Ingress Tool Transfer) has no support in the logs: there is no file download, transfer, or tool staging activity. The logs show an SSH password login and routine polkitd/systemd socket activity, none of which indicates tool transfer.",
+      "explanation_grounding": "The explanation ('Modal training-set technique baseline') references no supplied observation at all. It is a generic statement that does not describe the logs, so it is grounded only trivially.",
+      "prediction_reason_alignment": "No reason is given linking T1105 to any artifact, so the prediction is not connected to an appropriate reason.",
+      "confidence_evidence_support": "The 'Neutral' label is not contradicted by the logs, but it is not justified by any reasoning either. The logs contain a password-based SSH login from an external IP, which warrants more than neutral, and the candidate does not acknowledge this.",
+      "instruction_adherence": "The JSON is valid and the required fields are present, but the schema check flagged non-adherence and the explanation is not the requested 1-2 sentences describing specific artifacts."
+    },
+    "null_reasons": {},
+    "extracted_predictions": [
+      "T1105"
+    ],
+    "failure_labels": [
+      "incorrect_technique",
+      "unsupported_prediction",
+      "ungrounded_explanation",
+      "missed_attack_indicators",
+      "schema_nonadherence"
+    ],
+    "prediction_similarity": null,
+    "reasoning_similarity": null,
+    "candidate_confidence_label": "Neutral",
+    "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+    "confidence_label_agreement": 2,
+    "confidence_label_agreement_reason": "Candidate label is Neutral; the warranted label leans toward attack because of the password-based SSH login from an external IP. Neutral involvement gives a moderate difference.",
+    "confidence_label_null_reason": null
+  },
+  "score_technique_identification": 0,
+  "score_prediction_evidence_support": 0,
+  "score_explanation_grounding": 1,
+  "score_prediction_reason_alignment": 0,
+  "score_confidence_evidence_support": 1,
+  "score_instruction_adherence": 1,
+  "judge_reasons": {
+    "technique_identification": "Ground truth is T1078.002. The candidate's only prediction is T1105, which does not match exactly, so exact-ID coverage is 0 of 1.",
+    "prediction_evidence_support": "T1105 (Ingress Tool Transfer) has no support in the logs: there is no file download, transfer, or tool staging activity. The logs show an SSH password login and routine polkitd/systemd socket activity, none of which indicates tool transfer.",
+    "explanation_grounding": "The explanation ('Modal training-set technique baseline') references no supplied observation at all. It is a generic statement that does not describe the logs, so it is grounded only trivially.",
+    "prediction_reason_alignment": "No reason is given linking T1105 to any artifact, so the prediction is not connected to an appropriate reason.",
+    "confidence_evidence_support": "The 'Neutral' label is not contradicted by the logs, but it is not justified by any reasoning either. The logs contain a password-based SSH login from an external IP, which warrants more than neutral, and the candidate does not acknowledge this.",
+    "instruction_adherence": "The JSON is valid and the required fields are present, but the schema check flagged non-adherence and the explanation is not the requested 1-2 sentences describing specific artifacts."
+  },
+  "judge_null_reasons": {},
+  "judge_extracted_predictions": [
+    "T1105"
+  ],
+  "judge_failure_labels": [
+    "incorrect_technique",
+    "unsupported_prediction",
+    "ungrounded_explanation",
+    "missed_attack_indicators",
+    "schema_nonadherence"
+  ],
+  "judge_prediction_similarity": null,
+  "judge_reasoning_similarity": null,
+  "candidate_confidence_label": "Neutral",
+  "judge_warranted_confidence_label": "Somewhat Certain: Attack",
+  "confidence_label_agreement": 2,
+  "confidence_label_agreement_reason": "Candidate label is Neutral; the warranted label leans toward attack because of the password-based SSH login from an external IP. Neutral involvement gives a moderate difference.",
+  "confidence_label_null_reason": null
+}
