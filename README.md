@@ -2,6 +2,26 @@
 
 This independent experiment retains historical files in their existing locations. Nothing in the old experiment is an input except the frozen scenario-step split and the original query identities used to verify mapping.
 
+## Complete notebook and analysis order
+
+Run notebooks from the `streamlined_experiment` project root so their relative paths resolve. Existing final outputs are preserved in `results/final/`; rerunning paid API or GPU notebooks can incur new usage. The numbered families are:
+
+| Order | Notebook(s) | Purpose |
+| --- | --- | --- |
+| 00 | `notebooks/00_prepare_universal_dataset.ipynb` | Freeze the source prompts, teacher text, splits and manifests; document receiver setup. |
+| 01 | Six `notebooks/01_sft_*.ipynb` files | Train four adapters per model and run BF16 validation/test inference. |
+| 02 | Six `notebooks/02_untreated_hf_*.ipynb` files | Run each untreated HF model on all 990 prompts. |
+| 03 | `notebooks/03_haiku_reference_and_judge.ipynb` | Collect Haiku references and Phase 1 judgments. |
+| 04 | `notebooks/04_quantized_setup.ipynb`, then six `notebooks/04_untreated_*.ipynb` files | Prepare toolchains and run untreated TQ1_0 or native I2_S GGUF models. |
+| 05 | Six `notebooks/05_sft_*.ipynb` files | Prepare and evaluate quantized SFT adapters. The separate Mistral 7B and Qwen 7B adapter notebooks are alternative split runners for the corresponding combined notebooks; do not run both for the same adapter concurrently. |
+| 06 | Ten `notebooks/06_*iq1_s*.ipynb` files | Optional CAM-LDS-calibrated IQ1_S comparison; separate from the primary TQ1_0/I2_S study. |
+| 07 | `notebooks/07_haiku_judge_quantized.ipynb` | Judge Phase 2 outputs, teacher responses and reference baselines. |
+| 08 | `notebooks/08_consolidate_results.ipynb` | Export the authoritative response, judgment and manifest files to `results/final/`. |
+| 09 | `notebooks/09_compute_telemetry_summary.ipynb` | Export per-invocation and per-stream compute records under `results/final/compute/`. |
+| 10 | **Root** `10_analysis.ipynb` | Build the underlying analysis tables and first-pass figures in `analysis/`. |
+
+For the **corrected figures used in the report**, run the root `10_analysis.ipynb` first so `analysis/tables/` is populated. Then, from the project root in the local environment, run `python analysis_round2/code/test_figure_qa.py` followed by `python analysis_round2/code/run_round2.py`. The latter is a script, **not another notebook**; it reads `analysis/tables/` and writes corrected figures, figure data, QA and manifests to `analysis_round2/`. Cite or inspect `analysis_round2/figures/` and its companion `figure_data/` for the latest reviewed presentation, while retaining `analysis/tables/` for calculation provenance. The duplicate `notebooks/10_analysis.ipynb` is not the documented entry point. See `analysis_round2/README.md` for its validation record.
+
 ## Start here
 
 1. Select **`streamlined_experiment/.venv-local/Scripts/python.exe`** as the local VS Code kernel. It is Python 3.12, separate from the charts environment.

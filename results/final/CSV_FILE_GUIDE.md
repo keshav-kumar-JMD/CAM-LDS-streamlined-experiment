@@ -103,7 +103,7 @@ analysis/
 └── analysis_manifest.json     # Input hashes, seed, labels and analysis settings
 ```
 
-The analysis tables are derived outputs, not new observations. Their authority is subordinate to the canonical `results/final/` CSVs and ultimately to the immutable row records and manifests. Regenerate them through `notebooks/10_analysis.ipynb`; do not hand-edit them. `analysis/analysis_manifest.json` records the exact source paths and hashes, bootstrap seed, replicate count, canonical stream labels and pre-specified non-inferiority margin. `analysis/tables/analysis_output_catalog.csv` inventories generated analytical files and hashes. `analysis/tables/figure_manifest.csv` maps each figure to its companion figure-data CSV, source tables and key.
+The analysis tables are derived outputs, not new observations. Their authority is subordinate to the canonical `results/final/` CSVs and ultimately to the immutable row records and manifests. Regenerate them through `10_analysis.ipynb`; do not hand-edit them. `analysis/analysis_manifest.json` records the exact source paths and hashes, bootstrap seed, replicate count, canonical stream labels and pre-specified non-inferiority margin. `analysis/tables/analysis_output_catalog.csv` inventories generated analytical files and hashes. `analysis_round2/manifests/figure_manifest.csv` maps each figure to its companion figure-data CSV, source tables and key.
 
 ### Analysis populations and terminology
 
@@ -286,9 +286,9 @@ For compute fields:
 
 ## Figure-data CSVs and auditability
 
-Every Notebook 10 figure has a companion CSV under `analysis/tables/figure_data/`, conventionally named `<figure_id>__<short_name>.csv`. It contains the exact filtered and aggregated values plotted, including model/stream display names, representation group, condition, dimension, denominator, point estimate, interval and panel/order fields where applicable. These files are the preferred way to audit a visual value; do not estimate values from image pixels.
+A thesis figure marked `A` in the crosswalk below has its plotted-data CSV under `analysis/tables/figure_data/`; one marked `R2` has its companion under `analysis_round2/figure_data/`, conventionally named `<figure_id>__<short_name>.csv`. It contains the exact filtered and aggregated values plotted, including model/stream display names, representation group, condition, dimension, denominator, point estimate, interval and panel/order fields where applicable. These files are the preferred way to audit a visual value; do not estimate values from image pixels.
 
-`figure_manifest.csv` provides:
+For R2 figures, `analysis_round2/manifests/figure_manifest.csv` provides:
 
 | Column | Meaning |
 | --- | --- |
@@ -332,7 +332,7 @@ The following files are especially important for Chapter 5 and supersede earlier
 - `analysis/tables/sft_quantization_efficiency.csv`: judge contrasts joined to reconciled stream time and GPU comparability fields.
 - `analysis/tables/preparation_amortization.csv`: same-GPU-gated break-even results. The audited point-time basis is recorded per side; reconstructed bounds and `speedup_direction_robust_to_reconciled_range` show sensitivity to telemetry gaps. Paired median row latency is a separate diagnostic.
 
-Figure numbers are not embedded in plot titles. The filename prefix and `analysis/tables/figure_manifest.csv` remain the authoritative figure key.
+Figure numbers are not embedded in plot titles. The thesis crosswalk below and `analysis_round2/manifests/figure_manifest.csv` identify the corrected report figures.
 
 ## Positive one-bit rows and training-label exposure
 
@@ -373,3 +373,173 @@ Compute tables retain full-stream session totals but add population-specific row
 Figures with `_990_` in their filename are untreated-only full-universe sensitivity figures. Their figure-data CSVs should contain only `population=all_990`.
 
 `model_item_difficulty_concordance.csv` includes `low_score_rate_model_a`, `low_score_rate_model_b` and `floor_saturation_threshold`. When both rates are at least 0.95, `low_score_jaccard` is intentionally null and `low_score_overlap_estimability` records floor saturation; a near-perfect overlap created by near-universal low scores is not interpreted as model agreement.
+
+## Thesis figure and table to CSV key
+
+This crosswalk follows the thesis audit. `A` means the figure copied into the report matches `analysis/figures/`; `R2` means it matches `analysis_round2/figures/`. Use the companion CSV from the matching folder. All bare analytical table names below resolve to `analysis/tables/`. Figure 4.18 has no matching render in either folder; see its verification note. The crosswalk describes the current report and does not itself change figures or thesis text.
+
+Thesis: `Kumar, Keshav_44793762_REIT4841.tex` (compiled 20 Nov 2026; numbering taken from the `.lof`/`.lot` of that build).
+
+
+Path conventions
+
+- **`A`** = `analysis/` (Notebook 10 outputs). **`R2`** = `analysis_round2/` (isolated round-two re-render of the figures; reads `analysis/tables/` and never writes to it).
+- **Origin** of each figure was established by comparing the MD5 hash of the image in `report/figures/` (the copy the thesis includes) with the same-named file in `analysis/figures/` and `analysis_round2/figures/`.
+- **Companion data** for an `A` figure is in `analysis/tables/figure_data/`; for an `R2` figure it is in `analysis_round2/figure_data/` (manifest `analysis_round2/manifests/figure_manifest.csv`). Files are named `<figure_id>__<figure file>.csv` and hold the exact plotted rows. The *Data vs A* column says whether the R2 companion CSV is byte-identical to the `analysis/` one.
+- **All analytical tables are in `analysis/tables/`.** `analysis_round2/tables/` holds only `22_quantization_summary.csv` and `figure_regeneration_sizes.csv`, and the thesis uses neither. So every bare `.csv` name in Sections 2–3 means `analysis/tables/`.
+- `final/` = `results/final/` (canonical exports). `models/` = base checkpoints and adapter zips. `data/` = the project's raw data folder used by two R2 figures.
+- Population filter: `population == all_990` for untreated full-universe figures/tables (filenames with `_990_`), `population == evaluation_285` for every treatment, reference and deployment comparison.
+- Audit marks: **✓** value(s) re-derived from the CSV and match the thesis; **⚑** source confirmed but a thesis value or file needs attention (see Section 4).
+
+**Summary of origin:** 32 figure files from `R2`, 18 from `A`, 1 (Fig. 4.18) matches neither, 7 have no image file (TikZ or verbatim). All tables and calculations come from `analysis/tables/` (plus `results/final/` and `models/` where stated).
+
+---
+
+## 1. Figures
+
+| Fig. | Label | Image file | Origin | Companion data | Data vs A | Source table(s) (`analysis/tables/` unless stated) |
+|---|---|---|---|---|---|---|
+| 3.1 | fig:design | TikZ | — | — | — | — (design) |
+| 3.2 | fig:evolution | TikZ | — | — | — | — (design) |
+| 3.3 | fig:prompt-example | verbatim | — | — | — | `final/00__source__prompts.csv`, `final/00__source__teacher_responses.csv` |
+| 3.4 | fig:data-flow | TikZ | — | — | — | — (design) |
+| 3.5 | fig:pipeline | TikZ | — | — | — | — (design) |
+| 3.6 | fig:ladder | TikZ | — | — | — | — (design) |
+| 4.1 | fig:res-ladder | `19A_all_reference_ladder_all_fields` | `R2` | `19A_all__19A_all_reference_ladder_all_fields.csv` | same | `reference_ladder.csv` |
+| 4.2 | fig:bitnet-example | verbatim excerpts | — | `04X_bitnet_template_example.csv` (A) | A only | `bitnet_template_prevalence.csv` |
+| 4.3 | fig:res990-hitk | `19C_990_untreated_judge_mediated_hit_at_k` | `R2` | `19C_990__…` | same | `judge_mediated_rank_metrics_by_stream.csv` |
+| 4.4 | fig:res990-concordance | `17_990_explanation_grounding_untreated_item_difficulty_concordance` | `R2` | `17_990__…` | same | `model_item_difficulty_concordance.csv` |
+| 4.5 | fig:res990-attack | `06_990_technique_identification_untreated_attack_class_scores` | `R2` | `06_990__…` | **differs** | `attack_class_scores.csv` |
+| 4.6 | fig:res990-failures | `09_990_untreated_failure_rates` | `R2` | `09_990__…` | same | `failure_rates.csv` |
+| 4.7 | fig:res990-failsim | `10_990_untreated_failure_profile_similarity` | `R2` | `10_990__…` | same | `failure_profile_similarity.csv` |
+| 4.8 | fig:res990-deploy-eg | `03C_990_explanation_grounding_untreated_deployment_stack_effects` | `A` | `03C_990__…` | — | `treatment_contrasts.csv` (`untreated_one_bit_minus_bf16`) |
+| 4.9 | fig:res990-stopping | `14_990_untreated_token_ceiling_rates` | `R2` | `14_990__…` | same | `token_ceiling_and_stop_reasons.csv` |
+| 4.10 | fig:res-dist | `02A_technique_identification_bf16_untreated_full`, `02B_technique_identification_one_bit_untreated_full` | `R2` | `02A__…`, `02B__…` | same | `model_score_distributions.csv` |
+| 4.11 | fig:res-hitk | `19C_judge_mediated_hit_at_k_core_streams` | `R2` | `19C__…` | same | `judge_mediated_rank_metrics_by_stream.csv` |
+| 4.12 | fig:res-parent | `S19F_judge_mediated_parent_normalization_sensitivity` | `R2` | `S19F__…` | **differs** | `judge_mediated_rank_metrics_by_stream.csv`, `judge_mediated_parent_rank_metrics_by_stream.csv` |
+| 4.13 | fig:res-size | `16C_qwen_family_size_contrasts` | `A` | `16C__…` | — | `size_contrasts.csv` |
+| 4.14 | fig:res-sft-eg | `03A_explanation_grounding_bf16_sft_effects` | `R2` | `03A__…` | same | `treatment_contrasts.csv` (`bf16_sft_minus_untreated`) |
+| 4.15 | fig:res-adapter-hermes | `04C_hermes_adapter_specificity_profiles` | `A` | `04C__04C_hermes_…` | — | `adapter_specificity_profiles.csv` |
+| 4.16 | fig:res-retention-eg | `19B_explanation_grounding_retention_and_gap_decomposition` | `A` | `19B__…` | — | `retention_index.csv` |
+| 4.17 | fig:res-frontier | `35_compression_performance_frontier` | `R2` | `35__…` | **differs** | `compression_performance_frontier.csv`, `deployment_stack_comparisons.csv` (R2 adds this), `model_scores_by_dimension.csv` |
+| 4.18 | fig:res990-length | `18C_990_untreated_scores_by_prompt_length` | **neither** ⚑ | `18C_990__…` | same | `prompt_length_and_long_tail.csv` |
+| 4.19 | fig:res-haiku-self | `12D_haiku_self_evaluation_diagnostic` | `A` | `12D__…` | — | `haiku_self_evaluation_summary.csv` |
+| B.1 | fig:app-coverage | `26A_stream_coverage` | `R2` | `26A__…` | **differs** | `compute_stream_resource_summary.csv` |
+| B.2 | fig:training-loss | `21_training_loss_curves` | `A` | `21__…` | — | `training_loss_history.csv` |
+| B.3 | fig:app-recon-validation | `37A_runtime_reconstruction_validation` | `R2` | `37A__…` | same | `runtime_reconstruction_validation.csv` |
+| B.4 | fig:app-recon-streams | `37B_runtime_reconciliation_by_stream` | `R2` | `37B__…` | **differs** | `runtime_reconciliation_by_stream.csv` |
+| E.1 | fig:res-overview | `01A_score_overview_bf16`, `01B_score_overview_one_bit_frontier` | `R2` | `01A__…`, `01B__…` | **differs** | `model_scores_by_dimension.csv` |
+| E.2–E.8 | fig:app-deploy-⟨field⟩ (TI, PES, EG, PRA, CES, IA, CLA) | `03C_⟨field⟩_deployment_stack_effects` | `R2` | `03C__03C_⟨field⟩_…` | same (all 7) | `treatment_contrasts.csv` (`untreated_one_bit_minus_bf16`, `sft_one_bit_minus_bf16`) |
+| E.9–E.14 | fig:app-retention-⟨field⟩ (TI, PES, PRA, CES, IA, CLA) | `19B_⟨field⟩_retention_and_gap_decomposition` | `A` | `19B__19B_⟨field⟩_…` | — | `retention_index.csv` |
+| E.15–E.19 | fig:app-adapter-⟨model⟩ (qwen1b, bitnet2b, llama3b, mistral7b, qwen7b) | `04C_⟨model⟩_adapter_specificity_profiles` | `A` | `04C__04C_⟨model⟩_…` | — | `adapter_specificity_profiles.csv` |
+| E.20 | fig:app-ranked-hit | `S19C_judge_mediated_hit_at_k_all_streams` | `R2` | `S19C__…` | same | `judge_mediated_rank_metrics_by_stream.csv` |
+| E.21 | fig:app-ranked-precision | `S19D_judge_mediated_precision_at_k_all_streams` | `R2` | `S19D__…` | same | `judge_mediated_rank_metrics_by_stream.csv` |
+| E.22 | fig:app-ranked-recall | `S19E_judge_mediated_recall_at_k_all_streams` | `R2` | `S19E__…` | same | `judge_mediated_rank_metrics_by_stream.csv` |
+| F.1 | fig:split-balance | `18G_split_label_and_prompt_balance` | `R2` | `18G__…` | **differs** | `split_scenario_balance.csv`, `split_label_multiplicity.csv`; R2 replaces `split_prompt_length_comparison.csv` with raw `data/prompts.csv`, `data/split_manifest.csv` |
+| F.2 | fig:training-subset | `18F_training_subset_representativeness` | `R2` | `18F__…` | **differs** | `training_subset_scenario_comparison.csv`, `training_subset_model_feasibility.csv`; R2 replaces `training_subset_length_comparison.csv` with raw `data/context_feasibility.csv`, `data/training_exclusions.csv` |
+
+Figures marked `R2` were redrawn by `analysis_round2`. Their underlying estimates still come from `analysis/tables/`, but the companion CSV can differ from the `A` version because round two reshaped or filtered rows for the new layout. Cite the `R2` companion CSV for a value read off an `R2` figure.
+
+---
+
+## 2. Tables
+
+| Table | Label | Source(s) and columns | Check |
+|---|---|---|---|
+| 2.1 | tab:bg-datasets | — (literature) | — |
+| 2.2 | tab:bg-gap | — (literature) | — |
+| 3.1 | tab:rq | — (design) | — |
+| 3.2 | tab:suite | — (design) | — |
+| 3.3 | tab:composition | `source_attack_distribution.csv` (`row_count`, `row_percentage`; `all_990` and `evaluation_285`) | ✓ |
+| 3.4 | tab:split | `split_population_summary.csv` (`rows`, `scenario_step_groups`, `distinct_prompt_hashes`, `scenarios`, `distinct_exact_technique_ids`, `median_prompt_characters`) | ✓ |
+| 3.5 | tab:models | Parameters: tensor totals from the safetensors headers in `models/base/<model>.zip`. Contexts: `training_subset_model_feasibility.csv` (`native_context_tokens`, `training_context_tokens`) = `identity.json` `model_spec` in each adapter zip. LoRA rank: `adapter_config.json` (`r`) in `models/adapters/<model>_<adapter>.zip`. Learning rate: peak `learning_rate` in `training_loss_history.csv` | ✓ |
+| 3.6 | tab:objectives | — (design) | — |
+| 3.7 | tab:controls | — (design) | — |
+| 3.8 | tab:references | — (design) | — |
+| 3.9 | tab:rubric | — (design) | — |
+| 3.10 | tab:scale | Rows intended/completed, one-bit inference 467–472 h: `runtime_reconciliation_by_stream.csv` (`intended_rows`, `completed_rows`, `selected_inference_low/high_seconds`). Tokens 17.1 M: `compute_stream_resource_summary.csv` (`completed_output_tokens`). Phase hours 28.0 / 20.5 / 69.4: `compute_phase_resource_summary.csv` (`gpu_runtime_session_hours` by `phase`); 12.6 h training: `training_wall_seconds`. 311.1 h and 585–590 h: `runtime_reconciliation_project_total.csv`. Judge requests 26,791 and US$14.43: `compute_api_report.csv` (25,936 requests, $14.05) **plus** the three reference judgment exports `final/07__judgment__teacher_common__…csv` and `final/07__judgment__reference_common__baseline_{null,modal}__…csv` (855 requests, $0.39, `estimated_cost_usd`) | ✓ |
+| 3.11 | tab:contrasts | — (design) | — |
+| 3.12 | tab:rqmap | — (design) | — |
+| 4.1 | tab:res-populations | — (design) | — |
+| 4.2 | tab:res990-scores | `model_scores_by_dimension.csv` (`all_990`) | ✓ |
+| 4.3 | tab:res990-deploy | `treatment_contrasts.csv` (`untreated_one_bit_minus_bf16`, `all_990`); *f* flag: `mde_and_noninferiority.csv` (`reference_floor_flag`, `noninferiority_interpretation`) | ✓ |
+| 4.4 | tab:res990-efficiency | Seconds per answer and utilisation: `compute_invocation_audit.csv` (`inference_and_io_wall_seconds` / completed rows; `gpu_utilization_weighted_seconds` / `inference_and_io_wall_seconds`). Ranges: `runtime_reconciliation_by_stream.csv`. Median latency: `deployment_stack_comparisons.csv` (`population_median_row_latency_seconds`, `all_990`). Tokens/s: `compute_stream_resource_summary.csv` (`completed_output_tokens_per_request_work_second`). Memory: `sampled_peak_gpu_memory_bytes` (= `figure35_memory_bytes` in `compression_performance_frontier.csv`). GPU types: `preparation_amortization.csv` | ✓ |
+| 4.5 | tab:res-agreement | `treatment_contrasts.csv` (`all_990` vs `evaluation_285`), `mde_and_noninferiority.csv` | ✓ |
+| 4.6 | tab:res-size | `size_contrasts.csv` (`record_type` = paired) | ✓ |
+| 4.7 | tab:res-pool-agreement | `model_item_difficulty_concordance.csv` (`evaluation_285`) | ✓ |
+| 4.8 | tab:res-sft | `treatment_contrasts.csv` (`bf16_sft_minus_untreated`, `one_bit_sft_minus_untreated`), `difference_in_differences.csv` | ✓ |
+| 4.9 | tab:res-teacher-gap | `distillation_fidelity.csv` (`condition = full`; `mean_difference`, `low95`, `high95`, `n`) | ✓ |
+| 4.10 | tab:res-sft-deploy | `treatment_contrasts.csv` (`sft_one_bit_minus_bf16`, `adapter = full`), `mde_and_noninferiority.csv` (*f* flag) | ✓ |
+| 4.11 | tab:res-sft-resources | `token_ceiling_and_stop_reasons.csv`, `compute_inference_report.csv`, `sft_quantization_efficiency.csv`, `preparation_amortization.csv`, `compression_performance_frontier.csv` | ✓ |
+| 4.12 | tab:res-coverage | Completed / context / timeout: `token_ceiling_and_stop_reasons.csv` (`completed`, `context_unsupported`, `timeout`); Not reached = 990 − `observed`. Unusable judgment: `judge_score_availability.csv` (`unavailable_scores` / `completed_judgments`, technique identification, `all_990`) | ✓ |
+| 4.13 | tab:res-repeat | `repeated_prompt_consistency.csv` (`all_990`, untreated): Groups = rows per stream; Identical = `exact_response_hashes == 1`; Score varies = `explanation_grounding_range > 0` | ⚑ |
+| 4.14 | tab:res-judge | `haiku_self_evaluation_summary.csv`, `judge_reference_anchor_diagnostics.csv`, `judge_scale_use.csv`, `judge_duplicate_case_consistency.csv` (599 cases), `score_failure_label_coherence.csv`, `judge_score_availability.csv` | ⚑ |
+| 4.15 | tab:res-findings | — (synthesis of the above) | ⚑ |
+| B.1 | tab:coverage | `compute_stream_resource_summary.csv`, `token_ceiling_and_stop_reasons.csv`, `judge_score_availability.csv` | ✓ |
+| B.2 | tab:app-training | Training hours: `compute_sft_training_report.csv` (`training_wall_seconds`). Device / process peak: `sampled_peak_gpu_memory_bytes`, `peak_allocated_bytes`. Utilisation: `compute_invocation_audit.csv` (`gpu_utilization_weighted_seconds` / `training_wall_seconds`). Trainable parameters and adapter MB: `adapter_model.safetensors` in `models/adapters/<model>_<adapter>.zip` | ✓ |
+| B.3 | tab:app-quant | `quantized_artifact_inventory.csv` (`preparation_seconds_manifest`, `artifact_gib`, `artifact_bytes`, `quantization_tensor_counts`); sessions and GPU: `compute_quantization_report.csv`; bits per parameter = `artifact_bytes` × 8 / parameters (Table 3.5) | ✓ |
+| B.4 | tab:verification | — (artifact manifests, `manifest_path` in `quantized_artifact_inventory.csv`) | — |
+| B.5 | tab:app-inference | `compute_inference_report.csv` (GPU, hours, peaks, `sampled_peak_server_rss_bytes`), `compute_invocation_audit.csv` (utilisation), `runtime_reconciliation_by_stream.csv` (reconstructed hours, `configured_slot_values`), `deployment_stack_comparisons.csv` (pool latency, `evaluation_285`), `compute_stream_resource_summary.csv` (tok/s) | ✓ |
+| B.6 | tab:reconciliation | `runtime_reconciliation_project_total.csv` (all five values) | ✓ |
+| C.1 | tab:decisions | — | — |
+| C.2 | tab:problems | — | — |
+| D.1 | tab:extracted | `judge_mediated_rank_metric_coverage.csv` (`judgment_rows`, `nonempty_list_rows`, `explicit_empty_list_rows`, `missing_or_null_rows`; untreated from `all_990` + adapters from `evaluation_285` = 24,661) | ✓ |
+| D.2 | tab:failure-categories | `failure_label_dictionary.csv` (labels per `failure_category`, 9,236 total), `failure_rates.csv` (per 100, same 60-stream selection) | ✓ |
+| E.1 | tab:res-ladder | `reference_ladder.csv` (`mean`, `low95`, `high95`) | ✓ |
+| E.2 | tab:res-ladder-ge3 | `reference_ladder.csv` (`proportion_ge_3` and its interval, × 100) | ✓ |
+| E.3 | tab:res-pool-failrisk | `failure_risk_differences.csv` (`risk_difference`) | ✓ |
+| E.4 | tab:res-rank | `judge_mediated_rank_metrics_by_stream.csv`, `judge_mediated_rank_metric_contrasts.csv` | ✓ |
+
+---
+
+## 3. Equations and calculations
+
+| Calculation | Where | Source (file → columns) | Check |
+|---|---|---|---|
+| Field-balanced loss (Eq. 3.1) | 3.4.2 | Computed in training; outcome `training_loss_history.csv` | — |
+| Hit@k, Precision@k, Recall@k (Eq. 3.2) | 3.5.6 | `judge_mediated_rank_metrics_by_row.csv` → `_by_stream.csv` | ✓ |
+| Retention index R and components (Eq. 3.3) | 3.7.3 | `retention_index.csv` (`retained_gap`, `deployment_loss`, `bf16_sft_gain_over_modal`, `retention_index`, `retention_estimable`) | ✓ |
+| MDE and groups needed (Eq. 3.4) | 3.7.4 | `mde_and_noninferiority.csv` (`sigma_g`, `mde`, `groups_needed_delta_0_3`) | ✓ |
+| Non-inferiority and floor categories | 3.7.4, Ch. 4 | `mde_and_noninferiority.csv` (`noninferior_delta_0_3`, `reference_floor_flag`, `baseline_floor_flag`, `reference_at_or_below_margin`, `noninferiority_interpretation`) | ✓ |
+| Slot-adjusted runtime reconstruction (Eq. B.1) | App. B | `runtime_reconstruction_row_audit.csv` → `runtime_reconstruction_validation.csv` | ✓ |
+| 95% cluster-bootstrap intervals | Throughout | `low95` / `high95` (10,000 scenario-step replicates) in every contrast and summary table | ✓ |
+| Probability of superiority, sign-flip p, BH adjustment | 3.7.2 | `treatment_contrasts.csv` (`probability_superiority_with_ties`, `p_value`, `p_adjusted_bh`); same columns in `difference_in_differences.csv`, `distillation_fidelity.csv` | ✓ |
+| Common-support n | 3.7.1 | `common_support_diagnostics.csv`, `common_support_n` columns | ✓ |
+| Spearman ρ and hard-prompt Jaccard | Ch. 4 RQ2 | `model_item_difficulty_concordance.csv` | ✓ |
+| Jensen–Shannon failure similarity | Ch. 4 RQ2 | `failure_profile_similarity.csv` | ✓ |
+| 12 failure categories; "other" 3,610 labels, 87.7 per 100 | 3.7.5, D.2 | `failure_label_dictionary.csv`; `failure_rates.csv` (21,637 / 24,661) | ✓ |
+| 95 exact / 80 parent identifiers across 990 rows | 3.3.2 | `source_attack_distribution.csv` (`all_990`, `class_level` = technique / parent_technique) | ✓ |
+| 205 of 285 rows (71.9%) single-label | 3.3.2 | `split_label_multiplicity.csv` (`evaluation_pool`, `label_count = 1`) | ✓ |
+| 101 excluded training rows; standardised mean difference ≈ 4 | 3.3.5 | `training_subset_model_feasibility.csv` (`universal_excluded_rows`); `training_subset_length_comparison.csv` (`standardized_mean_difference` = 4.07, BitNet prompt tokens) | ✓ |
+| Scenario losses from the exclusion | 3.3.5 | `training_subset_scenario_comparison.csv`, `training_subset_group_coverage.csv` | ✓ |
+| BitNet prompt tokens: 3,855 vs 5,648 | 3.7.1 | `split_prompt_length_comparison.csv` (bitnet2b `prompt_tokens`): 3,855 = `maximum` of `train_feasible`; 5,648 = `q90` of `evaluation_pool` (maximum is 9,576) | ✓ |
+| 19 unseen identifiers, 60 affected rows | 3.7.1 | `evaluation_unseen_techniques.csv` (`unseen_in_feasible_training`), `evaluation_unseen_technique_rows.csv` | ✓ |
+| Gains on seen vs unseen techniques | Ch. 4 RQ3 | `sft_effects_by_training_label_exposure.csv` (`common_support_n`); context: `evaluation_training_label_exposure_rows.csv`, `scores_by_training_label_exposure.csv` | ✓ |
+| 24,661 of 25,560 rows (96.5%) | 3.6.2, Ch. 5 | `runtime_reconciliation_by_stream.csv` (`completed_rows`, `intended_rows`) | ✓ |
+| 311.1 h captured; 585–590 h reconciled | 3.6.1 | `runtime_reconciliation_project_total.csv` | ✓ |
+| 28.0 h training sessions (12.6 h training), 20.5 h preparation | 3.6.1 | `compute_phase_resource_summary.csv` | ✓ |
+| 26,791 judge requests, US$14.43 | Table 3.10 | `compute_api_report.csv` + `final/07__judgment__{teacher,reference}_common__…csv` | ✓ |
+| Artifact sizes; 1.83–3.94 bits per parameter; 4.1–8.7× compression | 3.1.3 | `quantized_artifact_inventory.csv` (`artifact_bytes`) with base-checkpoint parameter counts | ✓ |
+| GPU memory 1.5–6.4× lower | Abstract-level claim, 5.x, Ch. 4 RQ4 | `compression_performance_frontier.csv` (`figure35_memory_bytes`, untreated BF16 / one-bit) | ⚑ |
+| 5–14× slower on the same GPU | Ch. 4 RQ4, Ch. 5 | `preparation_amortization.csv` (`same_gpu_flag = True`; `one_bit_efficiency_seconds_per_completed_row` / `bf16_efficiency_seconds_per_completed_row`) | ⚑ |
+| Natural ending: Mistral 72%, OpenHermes 23%, BitNet 29% (BF16 untreated) | Ch. 4 | `token_ceiling_and_stop_reasons.csv` (`natural_eos_rate`, `all_990`) | ✓ |
+| BitNet template in 57% of answers (483/847; 135/238) | Ch. 4 | `bitnet_template_prevalence.csv` (`template_match_n`, `completed_responses`) | ✓ |
+| Extracted lists: 93.11% BF16 vs 0.11% one-bit non-empty | 3.5.6, D.1 | `judge_mediated_rank_metric_coverage.csv` | ✓ |
+| 7–19% unusable judgments per stream | Tables 4.14, 4.15; Ch. 5 | `judge_score_availability.csv`, `judge_score_availability_bounds.csv` | ⚑ |
+| Self-preference / reference-similarity diagnostics | Ch. 4 judge diagnostics | `judge_reference_anchor_diagnostics.csv`, `haiku_self_evaluation_summary.csv` | ✓ (source) |
+| 242 repeated-prompt groups (839 rows) | Table 4.13 | `repeated_prompt_consistency.csv` (distinct `prompt_sha256`, `n`) | ✓ |
+| 599 duplicate judge cases, 72.6% identical scores | Table 4.14 | `judge_duplicate_case_consistency.csv` (`score_vector_exact_agreement`) | ✓ |
+
+---
+
+## 4. Verification notes (⚑ items)
+
+Checked on 21 Nov 2026 by re-deriving values from the CSVs. No thesis or analysis file was changed.
+
+1. **Table 4.13, Qwen2.5 1.5B BF16 "Score varies" = 21%.** The CSV gives 49 of 242 groups (20.2%), or 49 of 239 groups with a score (20.5%). Either way it rounds to 20%, not 21%. All other cells in the table match.
+2. **"7–19% unusable judgments per stream"** (Table 4.14, Table 4.15, Ch. 5). The range holds for the 12 untreated full-universe streams (7.1–18.6%, Table 4.12). Across all 60 streams, the 285-row adapter streams widen it to 4.6–23.5% (technique identification). Either say "untreated streams" or change the range to 5–24%.
+3. **"1.5 to 6.4 times less GPU memory."** From the byte values the untreated range is 1.49× (Llama) to 6.46× (Qwen2.5 7B), which rounds to 1.5–6.5. The 6.4 comes from dividing already-rounded GB figures (23.0 / 3.6).
+4. **"5 to 14 times as long on the same GPU."** The same-GPU pairs in `preparation_amortization.csv` are Qwen2.5 1.5B 5.7×, Llama 5.3×, Mistral 14.0× (untreated) and OpenHermes adapters 5.8–7.8×. One exception: **OpenHermes SFT-full is 1.0×**, because its BF16 stream was itself slow (44 s per row). BitNet I2_S was faster (0.6×), as the text already says. Consider "5 to 14 times, with one OpenHermes adapter at parity".
+5. **Table 3.10 judge requests and cost** come partly from `results/final/07__…` exports, not only `compute_api_report.csv`, which omits the 855 teacher and baseline judgments. The values are correct; only the source needed correcting.
+6. **Fig. 4.18 (`18C_990_untreated_scores_by_prompt_length.png`) matches neither folder.** The `report/figures/` copy is 2743 × 1131 px and was saved 19 Nov 00:51. The `analysis/` version is 1650 × 1360 px (00:42), and the `analysis_round2/` version is 1890 × 1500 px (01:38). It looks like a separate re-render, possibly from the Codex figure-fix pass. Its data CSV is identical in both folders, so the plotted values are traceable. The image itself has no recorded provenance, though, so re-export it from `analysis_round2/figures/` (or record how it was made) before submission.
+7. **Mixed origins.** Figures 4.8, 4.13, 4.15, 4.16, 4.19, B.2 and E.9–E.19 still use the `analysis/` renders, while their neighbours use `R2`. If round two also produced corrected versions of these figures, the thesis is mixing two visual styles. `analysis_round2/` contains 72 regenerated figures, so these files exist there under the same names.
